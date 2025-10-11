@@ -1,0 +1,14 @@
+vaalikone-test/
+├── index.html
+├── css/
+│   └── style.css
+├── js/
+│   ├── app.js
+│   ├── question-manager.js
+│   ├── tag-system.js
+│   ├── duplicate-detector.js
+│   ├── rating-system.js
+│   └── integrity-checker.js
+└── data/
+    ├── questions.json
+    └── tags.json

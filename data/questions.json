@@ -1,0 +1,39 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "created": "2025-01-15T10:00:00.000Z",
+    "description": "Initial questions database"
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "content": "Pitäisikö perustulon olla kansalaispalkka?",
+      "category": "sosiaalipolitiikka",
+      "tags": ["perustulo", "talous"],
+      "rating": 1200,
+      "comparisons": 0,
+      "createdAt": "2024-01-15T10:00:00.000Z",
+      "status": "active"
+    },
+    {
+      "id": "q2", 
+      "content": "Tuleeko Suomen liittyä Natoon?",
+      "category": "ulkopolitiikka",
+      "tags": ["nato", "turvallisuus"],
+      "rating": 1200,
+      "comparisons": 0,
+      "createdAt": "2024-01-15T10:00:00.000Z",
+      "status": "active"
+    },
+    {
+      "id": "q3",
+      "content": "Pitäisikö ydinvoiman käyttöä lisätä?",
+      "category": "ympäristö", 
+      "tags": ["ydinvoima", "energia"],
+      "rating": 1200,
+      "comparisons": 0,
+      "createdAt": "2024-01-15T10:00:00.000Z",
+      "status": "active"
+    }
+  ]
+}
