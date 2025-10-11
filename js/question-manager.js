@@ -2,8 +2,8 @@ class QuestionManager {
     constructor() {
         this.questions = new Map();
         this.nextId = 1;
-        this.storageKey = 'vaalikone-questions';
-        this.statsKey = 'vaalikone-stats';
+        this.storageKey = 'electionmachine-questions';
+        this.statsKey = 'electionmachine-stats';
         this.jsonFilePath = 'data/questions.json';
         
         this.runJSONTest().then(() => {
@@ -12,14 +12,14 @@ class QuestionManager {
     }
 
     async runJSONTest() {
-        console.log('🧪 Aloitetaan JSON-tiedoston käsittelytesti...');
+        console.log('🧪 Starting JSON file processing test...');
         
         try {
             await this.testJSONFileAccess();
             const stats = await this.updateAccessStats();
-            console.log('✅ JSON-testi läpäisty:', stats);
+            console.log('✅ JSON test passed:', stats);
         } catch (error) {
-            console.warn('❌ JSON-testi epäonnistui, käytetään fallback-dataa:', error.message);
+            console.warn('❌ JSON test failed, using fallback data:', error.message);
             await this.initializeFallbackData();
         }
     }
@@ -34,12 +34,12 @@ class QuestionManager {
                     return response.json();
                 })
                 .then(data => {
-                    console.log('📁 JSON-tiedosto ladattu onnistuneesti:', data);
+                    console.log('📁 JSON file loaded successfully:', data);
                     resolve(data);
                 })
                 .catch(error => {
-                    console.warn('JSON-tiedostoa ei voitu ladata:', error.message);
-                    console.log('🔄 Siirrytään suoraan fallback-dataan');
+                    console.warn('JSON file could not be loaded:', error.message);
+                    console.log('🔄 Switching directly to fallback data');
                     resolve(null);
                 });
         });
@@ -64,25 +64,25 @@ class QuestionManager {
             stats.fileStatus = 'tested';
 
             localStorage.setItem(this.statsKey, JSON.stringify(stats));
-            console.log(`📊 Tilastot päivitetty: Käyttökerrat ${stats.accessCount}`);
+            console.log(`📊 Statistics updated: Access count ${stats.accessCount}`);
             
             return stats;
         } catch (error) {
-            console.error('Tilastojen päivitys epäonnistui:', error);
+            console.error('Statistics update failed:', error);
             stats.fileStatus = 'error';
             return stats;
         }
     }
 
     async initializeFallbackData() {
-        console.log('🔄 Alustetaan fallback-data...');
+        console.log('🔄 Initializing fallback data...');
         
         const fallbackQuestions = [
             {
                 id: 'q1',
-                content: 'Pitäisikö perustulon olla kansalaispalkka?',
-                category: 'sosiaalipolitiikka',
-                tags: ['perustulo', 'talous'],
+                content: 'Should basic income be a citizen salary?',
+                category: 'socialpolicy',
+                tags: ['basicincome', 'economy'],
                 rating: 1200,
                 comparisons: 0,
                 createdAt: new Date().toISOString(),
@@ -91,9 +91,9 @@ class QuestionManager {
             },
             {
                 id: 'q2',
-                content: 'Tuleeko Suomen liittyä Natoon?',
-                category: 'ulkopolitiikka', 
-                tags: ['nato', 'turvallisuus'],
+                content: 'Should Finland join NATO?',
+                category: 'foreignpolicy', 
+                tags: ['nato', 'security'],
                 rating: 1200,
                 comparisons: 0,
                 createdAt: new Date().toISOString(),
@@ -102,9 +102,9 @@ class QuestionManager {
             },
             {
                 id: 'q3',
-                content: 'Pitäisikö ydinvoiman käyttöä lisätä?',
-                category: 'ympäristö',
-                tags: ['ydinvoima', 'energia'],
+                content: 'Should nuclear power usage be increased?',
+                category: 'environment',
+                tags: ['nuclearpower', 'energy'],
                 rating: 1200,
                 comparisons: 0,
                 createdAt: new Date().toISOString(),
@@ -125,7 +125,7 @@ class QuestionManager {
         stats.fileStatus = 'fallback_used';
         localStorage.setItem(this.statsKey, JSON.stringify(stats));
 
-        console.log('✅ Fallback-data alustettu:', this.questions.size, 'kysymystä');
+        console.log('✅ Fallback data initialized:', this.questions.size, 'questions');
     }
 
     async getStats() {
@@ -138,7 +138,7 @@ class QuestionManager {
                 fileStatus: 'unknown'
             };
         } catch (error) {
-            console.error('Tilastojen lukeminen epäonnistui:', error);
+            console.error('Reading statistics failed:', error);
             return {
                 accessCount: 0,
                 lastAccess: null,
@@ -149,7 +149,7 @@ class QuestionManager {
     }
 
     async exportToJSON() {
-        console.log('💾 Viedään data JSON-tiedostoon...');
+        console.log('💾 Exporting data to JSON file...');
         
         try {
             const data = {
@@ -157,20 +157,20 @@ class QuestionManager {
                     exportedAt: new Date().toISOString(),
                     version: '1.0',
                     totalQuestions: this.questions.size,
-                    source: 'vaalikone-web3'
+                    source: 'electionmachine-web3'
                 },
                 questions: Array.from(this.questions.values()),
                 stats: await this.getStats()
             };
 
             const jsonString = JSON.stringify(data, null, 2);
-            localStorage.setItem('vaalikone-export', jsonString);
+            localStorage.setItem('electionmachine-export', jsonString);
             this.createDownloadableJSON(jsonString);
             
-            console.log('✅ Data viety JSON-muotoon onnistuneesti');
+            console.log('✅ Data exported to JSON format successfully');
             return data;
         } catch (error) {
-            console.error('JSON-vienti epäonnistui:', error);
+            console.error('JSON export failed:', error);
             throw error;
         }
     }
@@ -181,8 +181,8 @@ class QuestionManager {
         
         const a = document.createElement('a');
         a.href = url;
-        a.download = `vaalikone-data-${new Date().toISOString().split('T')[0]}.json`;
-        a.textContent = 'Lataa JSON-tiedosto';
+        a.download = `electionmachine-data-${new Date().toISOString().split('T')[0]}.json`;
+        a.textContent = 'Download JSON file';
         a.style.display = 'block';
         a.style.margin = '10px 0';
         a.style.padding = '10px';
@@ -194,17 +194,17 @@ class QuestionManager {
         
         document.body.appendChild(a);
         this.updateAccessStats();
-        console.log('📥 Ladattava JSON-tiedosto luotu:', a.download);
+        console.log('📥 Downloadable JSON file created:', a.download);
     }
 
     async importFromJSON(jsonData) {
-        console.log('📤 Tuodaan data JSON-tiedostosta...');
+        console.log('📤 Importing data from JSON file...');
         
         try {
             const data = typeof jsonData === 'string' ? JSON.parse(jsonData) : jsonData;
             
             if (!data.questions || !Array.isArray(data.questions)) {
-                throw new Error('Virheellinen JSON-data: questions-kenttä puuttuu tai ei ole taulukko');
+                throw new Error('Invalid JSON data: questions field missing or not an array');
             }
 
             this.questions.clear();
@@ -212,8 +212,8 @@ class QuestionManager {
             data.questions.forEach(q => {
                 const question = {
                     id: q.id || `q${this.nextId++}`,
-                    content: q.content || 'Nimetön kysymys',
-                    category: q.category || 'yleinen',
+                    content: q.content || 'Untitled question',
+                    category: q.category || 'general',
                     tags: q.tags || [],
                     rating: q.rating || 1200,
                     comparisons: q.comparisons || 0,
@@ -235,30 +235,30 @@ class QuestionManager {
             stats.importedQuestions = data.questions.length;
             localStorage.setItem(this.statsKey, JSON.stringify(stats));
 
-            console.log('✅ JSON-data tuotu onnistuneesti:', this.questions.size, 'kysymystä');
+            console.log('✅ JSON data imported successfully:', this.questions.size, 'questions');
             return this.questions.size;
         } catch (error) {
-            console.error('JSON-tuonti epäonnistui:', error);
+            console.error('JSON import failed:', error);
             throw error;
         }
     }
 
     async initialize() {
-        console.log('🔄 Alustetaan QuestionManager...');
+        console.log('🔄 Initializing QuestionManager...');
         
         if (this.questions.size === 0) {
-            console.log('Ei dataa saatavilla, ladataan fallback-data...');
+            console.log('No data available, loading fallback data...');
             await this.initializeFallbackData();
         } else {
-            console.log('Data saatavilla:', this.questions.size, 'kysymystä');
+            console.log('Data available:', this.questions.size, 'questions');
         }
 
         const stats = await this.getStats();
-        console.log('📈 Järjestelmän tilastot:', stats);
+        console.log('📈 System statistics:', stats);
         return true;
     }
 
-    // LISÄTYT METODIT LUOKAN SISÄLLE:
+    // ADDED METHODS INSIDE THE CLASS:
     getAllQuestions() {
         return Array.from(this.questions.values());
     }
@@ -285,7 +285,7 @@ class QuestionManager {
         };
     }
 
-    async createQuestion(content, category = 'yleinen', tags = []) {
+    async createQuestion(content, category = 'general', tags = []) {
         const question = {
             id: `q${this.nextId++}`,
             content,
@@ -323,7 +323,7 @@ class QuestionManager {
             const stored = localStorage.getItem(this.storageKey);
             if (stored) {
                 const data = JSON.parse(stored);
-                console.log('📂 Ladataan kysymykset localStoragesta:', data.questions?.length || 0);
+                console.log('📂 Loading questions from localStorage:', data.questions?.length || 0);
                 
                 if (data.questions && Array.isArray(data.questions)) {
                     data.questions.forEach(q => {
@@ -333,7 +333,7 @@ class QuestionManager {
                 }
             }
         } catch (e) {
-            console.error('❌ Virhe ladattaessa localStoragesta:', e);
+            console.error('❌ Error loading from localStorage:', e);
         }
     }
 
@@ -345,9 +345,9 @@ class QuestionManager {
                 savedAt: new Date().toISOString()
             };
             localStorage.setItem(this.storageKey, JSON.stringify(data));
-            console.log('💾 Kysymykset tallennettu localStorageen:', data.questions.length);
+            console.log('💾 Questions saved to localStorage:', data.questions.length);
         } catch (e) {
-            console.error('❌ Virhe tallennettaessa localStorageen:', e);
+            console.error('❌ Error saving to localStorage:', e);
         }
     }
 }

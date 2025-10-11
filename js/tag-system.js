@@ -2,18 +2,18 @@ class TagSystem {
     constructor() {
         this.tags = new Map();
         this.questionTags = new Map();
-        this.storageKey = 'vaalikone-tags';
+        this.storageKey = 'electionmachine-tags';
         this.loadFromStorage();
     }
 
     async initialize() {
-        // Lataa esimerkkitägit vain jos ei tallennettuja tägejä
+        // Load sample tags only if no saved tags exist
         if (this.tags.size === 0) {
-            this.createTag('perustulo', 'Perustuloon liittyvät kysymykset');
-            this.createTag('nato', 'Natoon ja puolustukseen liittyvät kysymykset');
-            this.createTag('ympäristö', 'Ympäristö- ja ilmastokysymykset');
-            this.createTag('terveys', 'Terveydenhuoltoon liittyvät kysymykset');
-            this.createTag('koulutus', 'Koulutukseen liittyvät kysymykset');
+            this.createTag('basicincome', 'Questions related to basic income');
+            this.createTag('nato', 'Questions about NATO and defense');
+            this.createTag('environment', 'Environmental and climate questions');
+            this.createTag('healthcare', 'Questions related to healthcare');
+            this.createTag('education', 'Questions related to education');
             await this.saveToStorage();
         }
         
@@ -26,12 +26,12 @@ class TagSystem {
             if (stored) {
                 const data = JSON.parse(stored);
                 
-                // Lataa tägit
+                // Load tags
                 data.tags.forEach(tag => {
                     this.tags.set(tag.id, tag);
                 });
                 
-                // Lataa kysymysten tägit
+                // Load question tags
                 data.questionTags.forEach(([questionId, tagIds]) => {
                     this.questionTags.set(questionId, new Set(tagIds));
                 });
@@ -105,7 +105,7 @@ class TagSystem {
         return name.toLowerCase()
             .trim()
             .replace(/\s+/g, '-')
-            .replace(/[^a-z0-9äöå\-]/g, '');
+            .replace(/[^a-z0-9\-]/g, '');
     }
 }
 

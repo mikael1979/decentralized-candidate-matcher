@@ -3,8 +3,8 @@
 Decentralized web-based election machine built with JavaScript, designed for future IPFS deployment.
 
 ## 🌍 Available Languages
-- [Suomi](README.fi.md)
-- [Svenska](README.sv.md) 
+- [Finnish](README.fi.md)
+- [Swedish](README.sv.md) 
 - [English](README.md) (current)
 
 ## 🚀 Features

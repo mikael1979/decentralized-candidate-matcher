@@ -1,4 +1,4 @@
-class VaalikoneApp {
+class ElectionMachineApp {
     constructor() {
         this.currentView = 'compare';
         this.comparisonCount = 0;
@@ -544,7 +544,7 @@ class VaalikoneApp {
     }
 }
 
-// GLOBAL FUNCTIONS - MOVE TO TOP OF FILE
+// GLOBAL FUNCTIONS
 function showView(viewName) {
     if (window.app && window.app.initialized) {
         window.app.showView(viewName);
@@ -656,6 +656,6 @@ function showStats() {
 // Start app when page is loaded
 window.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM loaded, initializing app...');
-    window.app = new VaalikoneApp();
+    window.app = new ElectionMachineApp();
     await window.app.initializeApp();
 });

@@ -4,12 +4,12 @@ class CandidateManager {
         this.answers = new Map(); // candidateId -> Map(questionId -> answer)
         this.justifications = new Map(); // candidateId -> Map(questionId -> justification)
         this.userAnswers = new Map(); // questionId -> userAnswer
-        this.storageKey = 'vaalikone-candidates';
+        this.storageKey = 'electionmachine-candidates';
         this.loadFromStorage();
     }
 
     async initialize() {
-        // Luo esimerkkehdokkaat jos ei ole olemassa
+        // Create sample candidates if none exist
         if (this.candidates.size === 0) {
             await this.createSampleCandidates();
             await this.generateSampleAnswers();
@@ -23,27 +23,27 @@ class CandidateManager {
         const sampleCandidates = [
             {
                 id: 'c1',
-                name: 'Matti Meikäläinen',
+                name: 'John Smith',
                 party: 'SDP',
-                description: 'Kokenut kansalainen, joka ajaa sosiaalista oikeudenmukaisuutta',
+                description: 'Experienced citizen advocating for social justice',
                 image: '👨‍💼',
-                contact: 'matti@example.com'
+                contact: 'john@example.com'
             },
             {
                 id: 'c2', 
-                name: 'Liisa Laatikainen',
-                party: 'Kokoomus',
-                description: 'Uusi ajattelu talouspolitiikkaan',
+                name: 'Lisa Johnson',
+                party: 'Coalition Party',
+                description: 'New thinking for economic policy',
                 image: '👩‍💼',
-                contact: 'liisa@example.com'
+                contact: 'lisa@example.com'
             },
             {
                 id: 'c3',
-                name: 'Pekka Puupää',
-                party: 'Vihreät',
-                description: 'Luonto ja ympäristö etusijalla',
+                name: 'Peter Green',
+                party: 'Green Party',
+                description: 'Nature and environment first',
                 image: '👨‍🌾',
-                contact: 'pekka@example.com'
+                contact: 'peter@example.com'
             }
         ];
 
@@ -51,45 +51,45 @@ class CandidateManager {
     }
 
     async generateSampleAnswers() {
-        // Odota että QuestionManager on alustettu
+        // Wait for QuestionManager to initialize
         if (!window.questionManager || !window.questionManager.getAllQuestions) {
-            console.warn('QuestionManager ei ole vielä alustettu, odota...');
+            console.warn('QuestionManager not yet initialized, waiting...');
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
         
         const questions = await window.questionManager.getAllQuestions();
         console.log('Generating sample answers for', questions.length, 'questions');
         
-        // Alusta vastaukset tyhjillä mapeilla jos ei ole olemassa
+        // Initialize answers with empty maps if they don't exist
         if (!this.answers.has('c1')) this.answers.set('c1', new Map());
         if (!this.answers.has('c2')) this.answers.set('c2', new Map());
         if (!this.answers.has('c3')) this.answers.set('c3', new Map());
 
-        // Ehdokas 1: SDP-mieltymykset
+        // Candidate 1: SDP preferences
         const c1Answers = this.answers.get('c1');
         questions.forEach((q, index) => {
-            if (index === 0) c1Answers.set(q.id, 5); // Täysin samaa mieltä perustulosta
-            else if (index === 1) c1Answers.set(q.id, 2); // Eri mieltä NATO-jäsenyydestä
-            else if (index === 2) c1Answers.set(q.id, 4); // Melko samaa mieltä ydinvoimasta
-            else c1Answers.set(q.id, Math.floor(Math.random() * 5) + 1); // Satunnainen
+            if (index === 0) c1Answers.set(q.id, 5); // Strongly agree with basic income
+            else if (index === 1) c1Answers.set(q.id, 2); // Disagree with NATO membership
+            else if (index === 2) c1Answers.set(q.id, 4); // Somewhat agree with nuclear power
+            else c1Answers.set(q.id, Math.floor(Math.random() * 5) + 1); // Random
         });
 
-        // Ehdokas 2: Kokoomus-mieltymykset  
+        // Candidate 2: Coalition Party preferences  
         const c2Answers = this.answers.get('c2');
         questions.forEach((q, index) => {
-            if (index === 0) c2Answers.set(q.id, 1); // Täysin eri mieltä perustulosta
-            else if (index === 1) c2Answers.set(q.id, 5); // Täysin samaa mieltä NATO-jäsenyydestä
-            else if (index === 2) c2Answers.set(q.id, 5); // Täysin samaa mieltä ydinvoimasta
-            else c2Answers.set(q.id, Math.floor(Math.random() * 5) + 1); // Satunnainen
+            if (index === 0) c2Answers.set(q.id, 1); // Strongly disagree with basic income
+            else if (index === 1) c2Answers.set(q.id, 5); // Strongly agree with NATO membership
+            else if (index === 2) c2Answers.set(q.id, 5); // Strongly agree with nuclear power
+            else c2Answers.set(q.id, Math.floor(Math.random() * 5) + 1); // Random
         });
 
-        // Ehdokas 3: Vihreät-mieltymykset
+        // Candidate 3: Green Party preferences
         const c3Answers = this.answers.get('c3');
         questions.forEach((q, index) => {
-            if (index === 0) c3Answers.set(q.id, 4); // Melko samaa mieltä perustulosta
-            else if (index === 1) c3Answers.set(q.id, 3); // Neutraali NATO-jäsenyydestä
-            else if (index === 2) c3Answers.set(q.id, 1); // Täysin eri mieltä ydinvoimasta
-            else c3Answers.set(q.id, Math.floor(Math.random() * 5) + 1); // Satunnainen
+            if (index === 0) c3Answers.set(q.id, 4); // Somewhat agree with basic income
+            else if (index === 1) c3Answers.set(q.id, 3); // Neutral on NATO membership
+            else if (index === 2) c3Answers.set(q.id, 1); // Strongly disagree with nuclear power
+            else c3Answers.set(q.id, Math.floor(Math.random() * 5) + 1); // Random
         });
 
         await this.saveToStorage();
@@ -98,25 +98,25 @@ class CandidateManager {
     async generateSampleJustifications() {
         const questions = await window.questionManager.getAllQuestions();
         
-        // Ehdokas 1: SDP-mieltymykset
+        // Candidate 1: SDP preferences
         const c1Justifications = new Map();
-        c1Justifications.set(questions[0].id, 'Perustulo takaa kaikille kansalaisille turvaverkon ja vähentää byrokratiaa. Se on moderni tapa taistella köyhyyttä vastaan.');
-        c1Justifications.set(questions[1].id, 'Suomen pitäisi keskittyä EU-yhteistyöhön ja maidenväliseen rauhanturvaamiseen Naton sijaan.');
-        c1Justifications.set(questions[2].id, 'Uusiutuvat energialähteet ovat tulevaisuus, mutta ydinvoimaa voidaan käyttää siirtymävaiheessa.');
+        c1Justifications.set(questions[0].id, 'Basic income provides a safety net for all citizens and reduces bureaucracy. It is a modern way to fight poverty.');
+        c1Justifications.set(questions[1].id, 'Finland should focus on EU cooperation and international peacekeeping instead of NATO.');
+        c1Justifications.set(questions[2].id, 'Renewable energy sources are the future, but nuclear power can be used during the transition phase.');
         this.justifications.set('c1', c1Justifications);
 
-        // Ehdokas 2: Kokoomus-mieltymykset  
+        // Candidate 2: Coalition Party preferences  
         const c2Justifications = new Map();
-        c2Justifications.set(questions[0].id, 'Perustulo heikentää kannustimia työntekoon. Parempi ratkaisu on keventää työn verotusta ja investoida koulutukseen.');
-        c2Justifications.set(questions[1].id, 'Nato-jäsenyys vahvistaisi Suomen turvallisuutta ja läheistä yhteistyötä lähimaidemme kanssa.');
-        c2Justifications.set(questions[2].id, 'Ydinvoima on luotettava ja päästötön energianlähde, joka takaa kilpailukykyisen sähkönhinnan.');
+        c2Justifications.set(questions[0].id, 'Basic income weakens work incentives. A better solution is to reduce work taxation and invest in education.');
+        c2Justifications.set(questions[1].id, 'NATO membership would strengthen Finland security and close cooperation with neighboring countries.');
+        c2Justifications.set(questions[2].id, 'Nuclear power is a reliable and emission-free energy source that ensures competitive electricity prices.');
         this.justifications.set('c2', c2Justifications);
 
-        // Ehdokas 3: Vihreät-mieltymykset
+        // Candidate 3: Green Party preferences
         const c3Justifications = new Map();
-        c3Justifications.set(questions[0].id, 'Perustulo voi olla osa ratkaisua, mutta tarvitaan myös kunnollisia palveluja ja asumisen tukea.');
-        c3Justifications.set(questions[1].id, 'Suomen tulisi keskittyä rauhanrakentamiseen ja ympäristönsuojeluun globaaleina turvallisuushaasteina.');
-        c3Justifications.set(questions[2].id, 'Tulevaisuus on uusiutuvissa energialähteissä. Ydinvoima tuottaa vaarallista jätettä ja on liian kallista.');
+        c3Justifications.set(questions[0].id, 'Basic income could be part of the solution, but we also need proper services and housing support.');
+        c3Justifications.set(questions[1].id, 'Finland should focus on peacebuilding and environmental protection as global security challenges.');
+        c3Justifications.set(questions[2].id, 'The future is in renewable energy sources. Nuclear power produces dangerous waste and is too expensive.');
         this.justifications.set('c3', c3Justifications);
     }
 
@@ -160,12 +160,12 @@ class CandidateManager {
 
         if (answeredQuestions === 0) return 0;
 
-        // Muunna ero prosentteiksi (0-100%)
-        // Maksimiero 4 (1-5 asteikolla) per kysymys
+        // Convert difference to percentage (0-100%)
+        // Maximum difference 4 (on 1-5 scale) per question
         const maxDifference = answeredQuestions * 4;
         const compatibility = 100 - (totalDifference / maxDifference * 100);
         
-        return Math.round(compatibility * 10) / 10; // Pyöristä 1 desimaaliin
+        return Math.round(compatibility * 10) / 10; // Round to 1 decimal
     }
 
     getAllCandidates() {
@@ -182,24 +182,24 @@ class CandidateManager {
             if (stored) {
                 const data = JSON.parse(stored);
                 
-                // Lataa ehdokkaat
+                // Load candidates
                 data.candidates.forEach(c => {
                     this.candidates.set(c.id, c);
                 });
                 
-                // Lataa vastaukset
+                // Load answers
                 data.answers.forEach(([candidateId, answers]) => {
                     this.answers.set(candidateId, new Map(answers));
                 });
                 
-                // Lataa perustelut
+                // Load justifications
                 if (data.justifications) {
                     data.justifications.forEach(([candidateId, justifications]) => {
                         this.justifications.set(candidateId, new Map(justifications));
                     });
                 }
                 
-                // Lataa käyttäjän vastaukset
+                // Load user answers
                 if (data.userAnswers) {
                     this.userAnswers = new Map(data.userAnswers);
                 }

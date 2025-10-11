@@ -5,39 +5,39 @@
   },
   "tags": [
     {
-      "id": "perustulo",
-      "name": "perustulo",
-      "description": "Perustuloon liittyvät kysymykset",
+      "id": "basicincome",
+      "name": "basicincome",
+      "description": "Questions related to basic income",
       "usageCount": 1
     },
     {
       "id": "nato", 
       "name": "nato",
-      "description": "Natoon ja puolustukseen liittyvät kysymykset",
+      "description": "Questions about NATO and defense",
       "usageCount": 1
     },
     {
-      "id": "ydinvoima",
-      "name": "ydinvoima", 
-      "description": "Ydinvoimaan liittyvät kysymykset",
+      "id": "nuclearpower",
+      "name": "nuclearpower", 
+      "description": "Questions related to nuclear power",
       "usageCount": 1
     },
     {
-      "id": "talous",
-      "name": "talous",
-      "description": "Talouteen liittyvät kysymykset", 
+      "id": "economy",
+      "name": "economy",
+      "description": "Questions related to economy", 
       "usageCount": 1
     },
     {
-      "id": "turvallisuus",
-      "name": "turvallisuus",
-      "description": "Turvallisuuteen liittyvät kysymykset",
+      "id": "security",
+      "name": "security",
+      "description": "Questions related to security",
       "usageCount": 1
     },
     {
-      "id": "energia",
-      "name": "energia",
-      "description": "Energiaan liittyvät kysymykset",
+      "id": "energy",
+      "name": "energy",
+      "description": "Questions related to energy",
       "usageCount": 1
     }
   ]
