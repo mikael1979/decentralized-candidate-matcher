@@ -8,8 +8,6 @@ Decentralized web-based election machine built with JavaScript, designed for fut
 - [English](README.md) (current)
 
 ## 🚀 Features
-- **Geographical selection** - Country → Region → Municipality hierarchy
-- **Three-level election system** - European, national, municipal
 - **Real-time compatibility calculation**
 - **Responsive user interface**
 - **LocalStorage-based data management**
