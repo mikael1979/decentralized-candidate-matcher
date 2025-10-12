@@ -11,7 +11,7 @@ Decentralized web-based election machine built with JavaScript, designed for fut
 - **Real-time compatibility calculation**
 - **Responsive user interface**
 - **LocalStorage-based data management**
-- **IPFS-ready architecture** - Pure frontend JavaScript
+- **(In future) IPFS-ready architecture** - Pure frontend JavaScript
 
 ## 🏗️ Architecture
 - **Frontend-only** - No server dependencies
