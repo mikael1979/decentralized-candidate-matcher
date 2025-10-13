@@ -61,3 +61,21 @@ Thumbs.db
 rakenne.txt
 json-test.html 
 env
+# Virtual environments
+dcm_env/
+env/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Test data backups  
+*.backup-*.json
