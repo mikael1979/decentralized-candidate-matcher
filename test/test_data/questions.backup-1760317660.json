@@ -36,17 +36,17 @@
         ]
       },
       "elo_rating": {
-        "rating": 1485,
-        "total_matches": 1,
+        "rating": 1500,
+        "total_matches": 0,
         "wins": 0,
-        "losses": 1,
-        "last_updated": "2025-10-13T04:07:40.507865"
+        "losses": 0,
+        "last_updated": "2025-10-13T04:07:40.475823"
       }
     }
   ],
   "integrity": {
     "algorithm": "sha256",
-    "hash": "sha256:e71eaa890786dd1e4f77a8ddbaa044494cb519ae2b6186d79e6ac77b42e3358e",
-    "computed": "2025-10-13T04:07:40.509526"
+    "hash": "sha256:cbac30f0edb22b42c8a941570ba7c91ea26eb0c4dcfe063c661b1f40994399a0",
+    "computed": "2025-10-13T04:07:40.476219"
   }
 }

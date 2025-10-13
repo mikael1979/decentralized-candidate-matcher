@@ -4,16 +4,14 @@
   "question_type": "user_submitted",
   "questions": [
     {
-      "id": "user_1760315609363",
+      "id": "user_1760317660476",
       "original_id": 1001,
       "category": {
         "fi": "Liikenne",
-        "sv": "Trafik",
         "en": "Transportation"
       },
       "question": {
         "fi": "Pitäisikö kaupunkipyörien määrää lisätä kesäkaudella?",
-        "sv": "Bör antalet stadscyklar ökas under sommarsäsongen?",
         "en": "Should the number of city bikes be increased during summer season?"
       },
       "scale": {
@@ -31,30 +29,17 @@
         "fi": [
           "liikenne",
           "kaupunkipyörät",
-          "kesä",
-          "kestävä liikenne"
-        ],
-        "sv": [
-          "trafik",
-          "stadscyklar",
-          "sommar",
-          "hållbar transport"
-        ],
-        "en": [
-          "transportation",
-          "city_bikes",
-          "summer",
-          "sustainable_mobility"
+          "kesä"
         ]
       },
-      "user_comment": "Kesäkaudella pyöräily on suosittua, joten tarvitaan enemmän pyöriä",
+      "user_comment": "Kesäkaudella pyöräily on suosittua",
       "submission": {
-        "user_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIuser_1760315609",
-        "timestamp": "2025-10-13T03:33:29.363290",
+        "user_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIuser_1760317660",
+        "timestamp": "2025-10-13T04:07:40.476832",
         "status": "approved",
         "upvotes": 0,
         "downvotes": 0,
-        "user_comment": "Kesäkaudella pyöräily on suosittua, joten tarvitaan enemmän pyöriä"
+        "user_comment": "Kesäkaudella pyöräily on suosittua"
       },
       "moderation": {
         "moderated": false,
@@ -69,26 +54,26 @@
         "community_approved": true,
         "auto_moderated": true,
         "requires_admin_review": false,
-        "last_vote_update": "2025-10-13T03:33:29.363566"
+        "last_vote_update": "2025-10-13T04:07:40.508191"
       },
       "elo_rating": {
-        "rating": 1484,
+        "rating": 1531,
         "total_matches": 2,
-        "wins": 1,
-        "losses": 1,
-        "last_updated": "2025-10-13T03:33:29.363414"
+        "wins": 2,
+        "losses": 0,
+        "last_updated": "2025-10-13T04:07:40.507859"
       }
     },
     {
-      "id": "user_1760315609363",
+      "id": "user_1760317660477",
       "original_id": 1002,
       "category": {
-        "fi": "Ympäristö",
-        "en": "Environment"
+        "fi": "Koulutus",
+        "en": "Education"
       },
       "question": {
-        "fi": "Pitäisikö kaupungin lisätä viheralueita?",
-        "en": "Should the city increase green areas?"
+        "fi": "Pitäisikö kaupungin tarjota ilmaisia ohjelmointikursseja nuorille?",
+        "en": "Should the city offer free programming courses for youth?"
       },
       "scale": {
         "min": -5,
@@ -103,18 +88,19 @@
       },
       "tags": {
         "fi": [
-          "ympäristö",
-          "viheralueet",
-          "luonto"
+          "koulutus",
+          "ohjelmointi",
+          "nuoriso"
         ]
       },
+      "user_comment": "Digitaidot ovat tärkeitä tulevaisuuden työelämää varten",
       "submission": {
-        "user_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIuser_1760315609",
-        "timestamp": "2025-10-13T03:33:29.363386",
+        "user_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIuser_1760317660",
+        "timestamp": "2025-10-13T04:07:40.486980",
         "status": "pending",
         "upvotes": 0,
         "downvotes": 0,
-        "user_comment": ""
+        "user_comment": "Digitaidot ovat tärkeitä tulevaisuuden työelämää varten"
       },
       "moderation": {
         "moderated": false,
@@ -129,101 +115,25 @@
         "community_approved": false,
         "auto_moderated": false,
         "requires_admin_review": false
-      },
-      "elo_rating": {
-        "rating": 1500,
-        "total_matches": 0,
-        "wins": 0,
-        "losses": 0,
-        "last_updated": "2025-10-13T03:33:29.363388"
-      }
-    },
-    {
-      "id": "user_1760316600962",
-      "original_id": 1003,
-      "category": {
-        "fi": "Liikenne",
-        "sv": "Trafik",
-        "en": "Transportation"
-      },
-      "question": {
-        "fi": "Pitäisikö kaupunkipyörien määrää lisätä kesäkaudella?",
-        "sv": "Bör antalet stadscyklar ökas under sommarsäsongen?",
-        "en": "Should the number of city bikes be increased during summer season?"
-      },
-      "scale": {
-        "min": -5,
-        "max": 5,
-        "labels": {
-          "fi": {
-            "-5": "Täysin eri mieltä",
-            "0": "Neutraali",
-            "5": "Täysin samaa mieltä"
-          }
-        }
-      },
-      "tags": {
-        "fi": [
-          "liikenne",
-          "kaupunkipyörät",
-          "kesä",
-          "kestävä liikenne"
-        ],
-        "sv": [
-          "trafik",
-          "stadscyklar",
-          "sommar",
-          "hållbar transport"
-        ],
-        "en": [
-          "transportation",
-          "city_bikes",
-          "summer",
-          "sustainable_mobility"
-        ]
-      },
-      "user_comment": "Kesäkaudella pyöräily on suosittua, joten tarvitaan enemmän pyöriä",
-      "submission": {
-        "user_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIuser_1760316600",
-        "timestamp": "2025-10-13T03:50:00.962496",
-        "status": "approved",
-        "upvotes": 0,
-        "downvotes": 0,
-        "user_comment": "Kesäkaudella pyöräily on suosittua, joten tarvitaan enemmän pyöriä"
-      },
-      "moderation": {
-        "moderated": false,
-        "approved": true,
-        "blocked": false
-      },
-      "community_moderation": {
-        "status": "approved",
-        "votes_received": 11,
-        "inappropriate_ratio": 0.09090909090909091,
-        "confidence_score": 0.9090909090909091,
-        "community_approved": true,
-        "auto_moderated": true,
-        "requires_admin_review": false,
-        "last_vote_update": "2025-10-13T03:50:00.962747"
       },
       "elo_rating": {
         "rating": 1484,
-        "total_matches": 2,
-        "wins": 1,
+        "total_matches": 1,
+        "wins": 0,
         "losses": 1,
-        "last_updated": "2025-10-13T03:50:00.962630"
+        "last_updated": "2025-10-13T04:07:40.507751"
       }
     },
     {
-      "id": "user_1760316600962",
-      "original_id": 1004,
+      "id": "user_1760317660478",
+      "original_id": 1003,
       "category": {
-        "fi": "Ympäristö",
-        "en": "Environment"
+        "fi": "Terveys",
+        "en": "Health"
       },
       "question": {
-        "fi": "Pitäisikö kaupungin lisätä viheralueita?",
-        "en": "Should the city increase green areas?"
+        "fi": "Pitäisikö terveyskeskusten aukioloaikoja pidentää iltaan asti?",
+        "en": "Should health center opening hours be extended until evening?"
       },
       "scale": {
         "min": -5,
@@ -238,18 +148,19 @@
       },
       "tags": {
         "fi": [
-          "ympäristö",
-          "viheralueet",
-          "luonto"
+          "terveys",
+          "terveyskeskukset",
+          "aukioloajat"
         ]
       },
+      "user_comment": "Pitäisi olla palvelut saatavilla myös työaikojen jälkeen",
       "submission": {
-        "user_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIuser_1760316600",
-        "timestamp": "2025-10-13T03:50:00.962600",
+        "user_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIuser_1760317660",
+        "timestamp": "2025-10-13T04:07:40.497204",
         "status": "pending",
         "upvotes": 0,
         "downvotes": 0,
-        "user_comment": ""
+        "user_comment": "Pitäisi olla palvelut saatavilla myös työaikojen jälkeen"
       },
       "moderation": {
         "moderated": false,
@@ -270,13 +181,13 @@
         "total_matches": 0,
         "wins": 0,
         "losses": 0,
-        "last_updated": "2025-10-13T03:50:00.962604"
+        "last_updated": "2025-10-13T04:07:40.497237"
       }
     }
   ],
   "integrity": {
     "algorithm": "sha256",
-    "hash": "sha256:e688edf9cd3a0b7220633846f1e5b6852ef217f55f8707240b740b85dc8f4ecd",
-    "computed": "2025-10-13T03:50:00.963700"
+    "hash": "sha256:e4fd2a20c2b5bfa42db9fad8406d9a42e5e7cc97066f4d4c957912dae22e44d9",
+    "computed": "2025-10-13T04:07:40.509979"
   }
 }

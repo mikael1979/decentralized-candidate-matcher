@@ -3,7 +3,7 @@
   "language": "fi",
   "question_votes": [
     {
-      "question_id": "user_1760315609363",
+      "question_id": "user_1760317660476",
       "total_votes": 11,
       "appropriate_votes": 10,
       "inappropriate_votes": 1,
@@ -11,25 +11,14 @@
       "confidence_score": 0.0,
       "status": "pending",
       "auto_moderated": false,
-      "last_updated": "2025-10-13T03:33:29.363564"
-    },
-    {
-      "question_id": "user_1760316600962",
-      "total_votes": 11,
-      "appropriate_votes": 10,
-      "inappropriate_votes": 1,
-      "inappropriate_ratio": 0.09090909090909091,
-      "confidence_score": 0.0,
-      "status": "pending",
-      "auto_moderated": false,
-      "last_updated": "2025-10-13T03:50:00.962745"
+      "last_updated": "2025-10-13T04:07:40.508186"
     }
   ],
   "user_votes": [
     {
-      "vote_id": "vote_1760315609363",
-      "question_id": "user_1760315609363",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760315609",
+      "vote_id": "vote_user_1760317660479",
+      "question_id": "user_1760317660476",
+      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760317660",
       "vote": "appropriate",
       "confidence": 0.8,
       "reasons": [
@@ -37,13 +26,13 @@
         "constructive"
       ],
       "comments": "Hyvä kysymys, liittyy ajankohtaiseen aiheeseen",
-      "timestamp": "2025-10-13T03:33:29.363316",
+      "timestamp": "2025-10-13T04:07:40.507547",
       "voter_trust_score": 0.5
     },
     {
-      "vote_id": "vote_1760315609363",
-      "question_id": "user_1760315609363",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760315609",
+      "vote_id": "vote_user_1760317660480",
+      "question_id": "user_1760317660476",
+      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760317660",
       "vote": "appropriate",
       "confidence": 0.9,
       "reasons": [
@@ -51,26 +40,26 @@
         "factual"
       ],
       "comments": "Erittäin hyvin muotoiltu kysymys",
-      "timestamp": "2025-10-13T03:33:29.363339",
+      "timestamp": "2025-10-13T04:07:40.507615",
       "voter_trust_score": 0.5
     },
     {
-      "vote_id": "vote_1760315609363",
-      "question_id": "user_1760315609363",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760315609",
+      "vote_id": "vote_user_1760317660481",
+      "question_id": "user_1760317660476",
+      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760317660",
       "vote": "inappropriate",
       "confidence": 0.3,
       "reasons": [
         "off_topic"
       ],
       "comments": "Ei liity tarpeeksi kunnallispolitiikkaan",
-      "timestamp": "2025-10-13T03:33:29.363356",
+      "timestamp": "2025-10-13T04:07:40.507654",
       "voter_trust_score": 0.5
     },
     {
-      "vote_id": "vote_1760315609363",
-      "question_id": "user_1760315609363",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760315609",
+      "vote_id": "vote_user_1760317660482",
+      "question_id": "user_1760317660476",
+      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760317660",
       "vote": "appropriate",
       "confidence": 0.7,
       "reasons": [
@@ -78,13 +67,13 @@
         "constructive"
       ],
       "comments": "",
-      "timestamp": "2025-10-13T03:33:29.363442",
+      "timestamp": "2025-10-13T04:07:40.507938",
       "voter_trust_score": 0.5
     },
     {
-      "vote_id": "vote_1760315609363",
-      "question_id": "user_1760315609363",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760315609",
+      "vote_id": "vote_user_1760317660483",
+      "question_id": "user_1760317660476",
+      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760317660",
       "vote": "appropriate",
       "confidence": 0.73,
       "reasons": [
@@ -92,13 +81,13 @@
         "constructive"
       ],
       "comments": "",
-      "timestamp": "2025-10-13T03:33:29.363463",
+      "timestamp": "2025-10-13T04:07:40.507976",
       "voter_trust_score": 0.5
     },
     {
-      "vote_id": "vote_1760315609363",
-      "question_id": "user_1760315609363",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760315609",
+      "vote_id": "vote_user_1760317660484",
+      "question_id": "user_1760317660476",
+      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760317660",
       "vote": "appropriate",
       "confidence": 0.76,
       "reasons": [
@@ -106,13 +95,13 @@
         "constructive"
       ],
       "comments": "",
-      "timestamp": "2025-10-13T03:33:29.363478",
+      "timestamp": "2025-10-13T04:07:40.508007",
       "voter_trust_score": 0.5
     },
     {
-      "vote_id": "vote_1760315609363",
-      "question_id": "user_1760315609363",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760315609",
+      "vote_id": "vote_user_1760317660485",
+      "question_id": "user_1760317660476",
+      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760317660",
       "vote": "appropriate",
       "confidence": 0.7899999999999999,
       "reasons": [
@@ -120,13 +109,13 @@
         "constructive"
       ],
       "comments": "",
-      "timestamp": "2025-10-13T03:33:29.363501",
+      "timestamp": "2025-10-13T04:07:40.508037",
       "voter_trust_score": 0.5
     },
     {
-      "vote_id": "vote_1760315609363",
-      "question_id": "user_1760315609363",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760315609",
+      "vote_id": "vote_user_1760317660486",
+      "question_id": "user_1760317660476",
+      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760317660",
       "vote": "appropriate",
       "confidence": 0.82,
       "reasons": [
@@ -134,13 +123,13 @@
         "constructive"
       ],
       "comments": "",
-      "timestamp": "2025-10-13T03:33:29.363514",
+      "timestamp": "2025-10-13T04:07:40.508064",
       "voter_trust_score": 0.5
     },
     {
-      "vote_id": "vote_1760315609363",
-      "question_id": "user_1760315609363",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760315609",
+      "vote_id": "vote_user_1760317660487",
+      "question_id": "user_1760317660476",
+      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760317660",
       "vote": "appropriate",
       "confidence": 0.85,
       "reasons": [
@@ -148,13 +137,13 @@
         "constructive"
       ],
       "comments": "",
-      "timestamp": "2025-10-13T03:33:29.363527",
+      "timestamp": "2025-10-13T04:07:40.508092",
       "voter_trust_score": 0.5
     },
     {
-      "vote_id": "vote_1760315609363",
-      "question_id": "user_1760315609363",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760315609",
+      "vote_id": "vote_user_1760317660488",
+      "question_id": "user_1760317660476",
+      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760317660",
       "vote": "appropriate",
       "confidence": 0.8799999999999999,
       "reasons": [
@@ -162,13 +151,13 @@
         "constructive"
       ],
       "comments": "",
-      "timestamp": "2025-10-13T03:33:29.363539",
+      "timestamp": "2025-10-13T04:07:40.508120",
       "voter_trust_score": 0.5
     },
     {
-      "vote_id": "vote_1760315609363",
-      "question_id": "user_1760315609363",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760315609",
+      "vote_id": "vote_user_1760317660489",
+      "question_id": "user_1760317660476",
+      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760317660",
       "vote": "appropriate",
       "confidence": 0.9099999999999999,
       "reasons": [
@@ -176,166 +165,13 @@
         "constructive"
       ],
       "comments": "",
-      "timestamp": "2025-10-13T03:33:29.363562",
-      "voter_trust_score": 0.5
-    },
-    {
-      "vote_id": "vote_1760316600962",
-      "question_id": "user_1760316600962",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760316600",
-      "vote": "appropriate",
-      "confidence": 0.8,
-      "reasons": [
-        "relevant",
-        "constructive"
-      ],
-      "comments": "Hyvä kysymys, liittyy ajankohtaiseen aiheeseen",
-      "timestamp": "2025-10-13T03:50:00.962530",
-      "voter_trust_score": 0.5
-    },
-    {
-      "vote_id": "vote_1760316600962",
-      "question_id": "user_1760316600962",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760316600",
-      "vote": "appropriate",
-      "confidence": 0.9,
-      "reasons": [
-        "clear_question",
-        "factual"
-      ],
-      "comments": "Erittäin hyvin muotoiltu kysymys",
-      "timestamp": "2025-10-13T03:50:00.962552",
-      "voter_trust_score": 0.5
-    },
-    {
-      "vote_id": "vote_1760316600962",
-      "question_id": "user_1760316600962",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760316600",
-      "vote": "inappropriate",
-      "confidence": 0.3,
-      "reasons": [
-        "off_topic"
-      ],
-      "comments": "Ei liity tarpeeksi kunnallispolitiikkaan",
-      "timestamp": "2025-10-13T03:50:00.962568",
-      "voter_trust_score": 0.5
-    },
-    {
-      "vote_id": "vote_1760316600962",
-      "question_id": "user_1760316600962",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760316600",
-      "vote": "appropriate",
-      "confidence": 0.7,
-      "reasons": [
-        "relevant",
-        "constructive"
-      ],
-      "comments": "",
-      "timestamp": "2025-10-13T03:50:00.962653",
-      "voter_trust_score": 0.5
-    },
-    {
-      "vote_id": "vote_1760316600962",
-      "question_id": "user_1760316600962",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760316600",
-      "vote": "appropriate",
-      "confidence": 0.73,
-      "reasons": [
-        "relevant",
-        "constructive"
-      ],
-      "comments": "",
-      "timestamp": "2025-10-13T03:50:00.962667",
-      "voter_trust_score": 0.5
-    },
-    {
-      "vote_id": "vote_1760316600962",
-      "question_id": "user_1760316600962",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760316600",
-      "vote": "appropriate",
-      "confidence": 0.76,
-      "reasons": [
-        "relevant",
-        "constructive"
-      ],
-      "comments": "",
-      "timestamp": "2025-10-13T03:50:00.962679",
-      "voter_trust_score": 0.5
-    },
-    {
-      "vote_id": "vote_1760316600962",
-      "question_id": "user_1760316600962",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760316600",
-      "vote": "appropriate",
-      "confidence": 0.7899999999999999,
-      "reasons": [
-        "relevant",
-        "constructive"
-      ],
-      "comments": "",
-      "timestamp": "2025-10-13T03:50:00.962691",
-      "voter_trust_score": 0.5
-    },
-    {
-      "vote_id": "vote_1760316600962",
-      "question_id": "user_1760316600962",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760316600",
-      "vote": "appropriate",
-      "confidence": 0.82,
-      "reasons": [
-        "relevant",
-        "constructive"
-      ],
-      "comments": "",
-      "timestamp": "2025-10-13T03:50:00.962702",
-      "voter_trust_score": 0.5
-    },
-    {
-      "vote_id": "vote_1760316600962",
-      "question_id": "user_1760316600962",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760316600",
-      "vote": "appropriate",
-      "confidence": 0.85,
-      "reasons": [
-        "relevant",
-        "constructive"
-      ],
-      "comments": "",
-      "timestamp": "2025-10-13T03:50:00.962713",
-      "voter_trust_score": 0.5
-    },
-    {
-      "vote_id": "vote_1760316600962",
-      "question_id": "user_1760316600962",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760316600",
-      "vote": "appropriate",
-      "confidence": 0.8799999999999999,
-      "reasons": [
-        "relevant",
-        "constructive"
-      ],
-      "comments": "",
-      "timestamp": "2025-10-13T03:50:00.962727",
-      "voter_trust_score": 0.5
-    },
-    {
-      "vote_id": "vote_1760316600962",
-      "question_id": "user_1760316600962",
-      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter_1760316600",
-      "vote": "appropriate",
-      "confidence": 0.9099999999999999,
-      "reasons": [
-        "relevant",
-        "constructive"
-      ],
-      "comments": "",
-      "timestamp": "2025-10-13T03:50:00.962742",
+      "timestamp": "2025-10-13T04:07:40.508181",
       "voter_trust_score": 0.5
     }
   ],
   "integrity": {
     "algorithm": "sha256",
-    "hash": "sha256:b5182f347d0738741c1b8b66ef150f7e0d8dd0659f8afe4575be45d6f2f14006",
-    "computed": "2025-10-13T03:50:00.964783"
+    "hash": "sha256:1a286cd78f1b828d789433753d5e719775a96a8d64ccedd92359cad116ef3bb0",
+    "computed": "2025-10-13T04:07:40.510935"
   }
 }
