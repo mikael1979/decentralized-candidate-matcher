@@ -1,0 +1,10 @@
+{
+  "election_id": "test_election_2024",
+  "language": "fi",
+  "candidates": [],
+  "integrity": {
+    "algorithm": "sha256",
+    "hash": "sha256:9257fef75ec8cd5700bc5180660393d5892cf0fa1f3914fce57df7cf0aece74f",
+    "computed": "2025-10-13T03:50:00.964415"
+  }
+}

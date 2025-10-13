@@ -1,0 +1,59 @@
+{
+  "system": "Decentralized Candidate Matcher",
+  "version": "0.0.1",
+  "election": {
+    "id": "fi_municipal_2023",
+    "country": "FI",
+    "type": "municipal",
+    "name": {
+      "fi": "Kuntavaalit 2023",
+      "sv": "Kommunalval 2023",
+      "en": "Municipal Elections 2023"
+    },
+    "date": "2023-04-02",
+    "language": "fi",
+    "available_languages": [
+      "fi",
+      "sv",
+      "en"
+    ]
+  },
+  "community_moderation": {
+    "enabled": true,
+    "thresholds": {
+      "auto_block_inappropriate": 0.7,
+      "auto_block_min_votes": 10,
+      "community_approval": 0.8
+    }
+  },
+  "admins": [
+    {
+      "admin_id": "admin_1",
+      "public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIadmin1",
+      "name": "Test Admin",
+      "role": "super_admin"
+    }
+  ],
+  "content": {
+    "questions": {
+      "cid": "test-data/questions.json",
+      "hash": "sha256:initial",
+      "file": "questions.json"
+    },
+    "newquestions": {
+      "cid": "test-data/newquestions.json",
+      "hash": "sha256:initial",
+      "file": "newquestions.json"
+    },
+    "community_votes": {
+      "cid": "test-data/community_votes.json",
+      "hash": "sha256:initial",
+      "file": "community_votes.json"
+    }
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "hash": "sha256:793cf9eb061507ad4b50db0b1a67108ce9306ce77a29fb3b1b34dceda7b38bd8",
+    "computed": "2025-10-13T00:14:17.937Z"
+  }
+}

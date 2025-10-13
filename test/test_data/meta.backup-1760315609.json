@@ -1,0 +1,37 @@
+{
+  "system": "Decentralized Candidate Matcher",
+  "version": "1.0.0",
+  "election": {
+    "id": "test_election_2024",
+    "country": "FI",
+    "type": "test",
+    "name": {
+      "fi": "Test Vaalit 2024",
+      "en": "Test Election 2024"
+    },
+    "date": "2024-01-01",
+    "language": "fi"
+  },
+  "community_moderation": {
+    "enabled": true,
+    "thresholds": {
+      "auto_block_inappropriate": 0.7,
+      "auto_block_min_votes": 10,
+      "community_approval": 0.8
+    }
+  },
+  "admins": [
+    {
+      "admin_id": "admin_1",
+      "public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIadmin1",
+      "name": "Test Admin",
+      "role": "super_admin"
+    }
+  ],
+  "content": {},
+  "integrity": {
+    "algorithm": "sha256",
+    "hash": "sha256:6f60eb538805b45d5ec1ef8e05700376d7edf5d129b6b45146c46a373bd1c2d9",
+    "computed": "2025-10-13T03:33:29.362220"
+  }
+}
