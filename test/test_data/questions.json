@@ -1,0 +1,52 @@
+{
+  "election_id": "test_election_2024",
+  "language": "fi",
+  "questions": [
+    {
+      "id": 1,
+      "category": {
+        "fi": "Ympäristö",
+        "en": "Environment"
+      },
+      "question": {
+        "fi": "Pitäisikö kaupungin vähentää hiilidioksidipäästöjä 50% vuoteen 2030 mennessä?",
+        "en": "Should the city reduce carbon dioxide emissions by 50% by 2030?"
+      },
+      "scale": {
+        "min": -5,
+        "max": 5,
+        "labels": {
+          "fi": {
+            "-5": "Täysin eri mieltä",
+            "0": "Neutraali",
+            "5": "Täysin samaa mieltä"
+          }
+        }
+      },
+      "tags": {
+        "fi": [
+          "ympäristö",
+          "hiilidioksidi",
+          "ilmasto"
+        ],
+        "en": [
+          "environment",
+          "carbon_dioxide",
+          "climate"
+        ]
+      },
+      "elo_rating": {
+        "rating": 1470,
+        "total_matches": 2,
+        "wins": 0,
+        "losses": 2,
+        "last_updated": "2025-10-13T04:34:09.021193"
+      }
+    }
+  ],
+  "integrity": {
+    "algorithm": "sha256",
+    "hash": "sha256:00c5f4a5e03e02bcd43cb63f791b5294ca5ee2619bdabdd84195260d212d4d4d",
+    "computed": "2025-10-13T04:34:09.023045"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "decentralized-candidate-matcher-test",
+  "version": "1.0.0",
+  "description": "Test program for JSON file operations",
+  "main": "test-json-editor.js",
+  "scripts": {
+    "start": "node test-json-editor.js",
+    "test": "node test-json-editor.js"
+  },
+  "dependencies": {
+    "crypto": "^1.0.1"
+  }
+}

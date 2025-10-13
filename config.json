@@ -1,0 +1,36 @@
+{
+  "features": {
+    "GEO_HIERARCHY": true,
+    "ADMIN_MODERATION": true,
+    "CANDIDATE_MANAGEMENT": true,
+    "MULTI_PAGE": false,
+    "ADVANCED_STATS": true
+  },
+  "app": {
+    "name": "Decentralized Candidate Matcher",
+    "version": "1.1.0",
+    "maxComparisons": 10,
+    "defaultLanguage": "en",
+    "supportedLanguages": ["en", "fi", "sv"]
+  },
+  "areas": {
+    "enabled": true,
+    "defaultLevels": [
+      {
+        "id": "european",
+        "name": "European Elections",
+        "description": "European Parliament elections"
+      },
+      {
+        "id": "national", 
+        "name": "National Elections",
+        "description": "Country-level elections"
+      },
+      {
+        "id": "municipal",
+        "name": "Municipal Elections",
+        "description": "City and local elections"
+      }
+    ]
+  }
+}

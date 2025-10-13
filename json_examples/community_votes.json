@@ -1,0 +1,46 @@
+{
+  "election_id": "test_election_2024", 
+  "language": "fi",
+  "question_votes": [
+    {
+      "question_id": "user_1760317660476",
+      "total_votes": 11,
+      "appropriate_votes": 9,
+      "inappropriate_votes": 2,
+      "inappropriate_ratio": 0.18,
+      "confidence_score": 0.82,
+      "status": "approved",
+      "auto_moderated": true,
+      "last_updated": "2024-01-15T10:20:00Z"
+    }
+  ],
+  "user_votes": [
+    {
+      "vote_id": "vote_1760317661001",
+      "question_id": "user_1760317660476",
+      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter1key123456789",
+      "vote": "appropriate",
+      "confidence": 0.8,
+      "reasons": ["relevant", "constructive"],
+      "comments": "Hyvä kysymys, liittyy ajankohtaiseen aiheeseen",
+      "timestamp": "2024-01-15T10:16:00Z",
+      "voter_trust_score": 0.7
+    },
+    {
+      "vote_id": "vote_1760317661002", 
+      "question_id": "user_1760317660476",
+      "voter_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIvoter2key987654321",
+      "vote": "inappropriate",
+      "confidence": 0.3,
+      "reasons": ["off_topic"],
+      "comments": "Ei liity tarpeeksi kunnallispolitiikkaan",
+      "timestamp": "2024-01-15T10:17:00Z",
+      "voter_trust_score": 0.4
+    }
+  ],
+  "integrity": {
+    "algorithm": "sha256",
+    "hash": "sha256:stu901vwx234...",
+    "computed": "2024-01-15T10:30:00Z"
+  }
+}
