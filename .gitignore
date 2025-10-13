@@ -15,6 +15,7 @@ out/
 .env.development.local
 .env.test.local
 .env.production.local
+*dcm_env*
 
 # Logs
 logs
@@ -59,3 +60,4 @@ Thumbs.db
 # data/questions/
 rakenne.txt
 json-test.html 
+env
