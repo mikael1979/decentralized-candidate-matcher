@@ -80,3 +80,6 @@ __pycache__/
 # Test data backups  
 *.backup-*.json
 vaalikone_venv
+tiedostorakenne.txt
+requirements.txt
+*requirements.txt
