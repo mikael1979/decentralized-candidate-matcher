@@ -4,12 +4,12 @@
   "election": {
     "id": "test_election_2024",
     "country": "FI",
-    "type": "test",
+    "type": "municipal",
     "name": {
-      "fi": "Test Vaalit 2024",
-      "en": "Test Election 2024"
+      "fi": "Kunnallisvaalit 2024",
+      "en": "Municipal Election 2024"
     },
-    "date": "2024-01-01",
+    "date": "2024-04-14",
     "language": "fi"
   },
   "community_moderation": {
@@ -22,16 +22,30 @@
   },
   "admins": [
     {
-      "admin_id": "admin_1",
-      "public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIadmin1",
-      "name": "Test Admin",
-      "role": "super_admin"
+      "admin_id": "superadmin",
+      "public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKxH7qU4TgOBktR+hTmka53zlcq1fqJy3o3BPHt8MrhL superadmin@vaalikone",
+      "name": "Pääjärjestelmänvalvoja",
+      "role": "super_admin",
+      "created_by": "system",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "admin_id": "admin1",
+      "public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAbCdEfGhIjKlMnOpQrStUvWxYzAbc123456789 admin1@vaalikone",
+      "name": "Moderaattori Maija",
+      "role": "admin",
+      "created_by": "superadmin",
+      "created_at": "2024-01-15T10:00:00Z"
     }
   ],
-  "content": {},
+  "content": {
+    "last_updated": "2024-01-15T10:30:00Z",
+    "questions_count": 15,
+    "candidates_count": 45
+  },
   "integrity": {
     "algorithm": "sha256",
-    "hash": "sha256:6f60eb538805b45d5ec1ef8e05700376d7edf5d129b6b45146c46a373bd1c2d9",
-    "computed": "2025-10-13T04:34:09.022458"
+    "hash": "sha256:17b5314e8c8b8e6a4e8c9b8e6a4e8c9b8e6a4e8c9b8e6a4e8c9b8e6a4e8c9b8e6a",
+    "computed": "2024-01-15T10:30:00Z"
   }
 }
