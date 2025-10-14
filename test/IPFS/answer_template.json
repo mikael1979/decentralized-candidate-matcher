@@ -1,0 +1,37 @@
+{
+  "election_id": "test_election_2024",
+  "candidate_id": 1,
+  "candidate_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIcandidate1key123456789",
+  "answers": [
+    {
+      "question_id": 1,
+      "answer": 4,
+      "confidence": 0.8,
+      "comment": {
+        "fi": "Täysin samaa mieltä, mutta toteutus pitää olla kustannustehokas",
+        "en": "Strongly agree, but implementation must be cost-effective"
+      },
+      "timestamp": "2024-01-12T11:00:00Z"
+    },
+    {
+      "question_id": "user_1760317660476",
+      "answer": 3,
+      "confidence": 0.6,
+      "comment": {
+        "fi": "Jaa mielipiteen, mutta ensin pitää parantaa pyöräteitä",
+        "en": "Agree, but bicycle paths need improvement first"
+      },
+      "timestamp": "2024-01-12T11:05:00Z"
+    }
+  ],
+  "submission": {
+    "timestamp": "2024-01-12T11:30:00Z",
+    "signed_data": "-----BEGIN SIGNATURE-----\nCandidateSignature123...\n-----END SIGNATURE-----",
+    "signature_verified": true
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "hash": "sha256:mno345pqr678...",
+    "computed": "2024-01-12T11:30:00Z"
+  }
+}
