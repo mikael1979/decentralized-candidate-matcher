@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hajautettu Vaalikone</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e8e8e8;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        
+        .question {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .scale {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .answers {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .answer-option {
+            text-align: center;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .answer-option:hover {
+            border-color: #3498db;
+            background: #f8f9fa;
+        }
+        
+        .answer-option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #2980b9;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 20px auto;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .candidate {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 4px solid #27ae60;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .candidate h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .match-percentage {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 10px 0;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗳️ Hajautettu Vaalikone</h1>
+            <p>Löydä sinua parhaiten edustava ehdokas</p>
+        </div>
+        
+        <div class="content">
+            <div class="section" id="questions-section">
+                <h2>Vastaa kysymyksiin</h2>
+                <p>Valitse jokaisessa kysymyksessä mielipiteesi asteikolla -5 (täysin eri mieltä) - 5 (täysin samaa mieltä)</p>
+                
+                <div id="questions-container">
+                    <!-- Kysymykset tulee tähän -->
+                </div>
+                
+                <button class="btn" id="submit-btn" onclick="submitAnswers()" disabled>Lähetä vastaukset</button>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Etsitään sinulle sopivia ehdokkaita...</p>
+            </div>
+            
+            <div class="error" id="error-message"></div>
+            
+            <div class="section results" id="results-section">
+                <h2>Hakutulokset</h2>
+                <div id="results-container">
+                    <!-- Tulokset tulevat tähän -->
+                </div>
+                <button class="btn" onclick="resetQuiz()">Vastaa uudelleen</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let questions = [];
+        let userAnswers = {};
+        
+        // Hae kysymykset palvelimelta
+        async function loadQuestions() {
+            try {
+                const response = await fetch('/api/questions');
+                questions = await response.json();
+                displayQuestions();
+            } catch (error) {
+                showError('Kysymyksien lataus epäonnistui');
+            }
+        }
+        
+        // Näytä kysymykset
+        function displayQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            
+            questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <div class="question-text">${index + 1}. ${question.question.fi}</div>
+                    <div class="scale">
+                        <span>Täysin eri mieltä</span>
+                        <span>Neutraali</span>
+                        <span>Täysin samaa mieltä</span>
+                    </div>
+                    <div class="answers" id="answers-${question.id}">
+                        ${[-5, -3, 0, 3, 5].map(value => `
+                            <div class="answer-option" onclick="selectAnswer(${question.id}, ${value})">
+                                ${value}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+        
+        // Valitse vastaus
+        function selectAnswer(questionId, value) {
+            userAnswers[questionId] = value;
+            
+            // Päivitä näkymä
+            const answerContainer = document.getElementById(`answers-${questionId}`);
+            const options = answerContainer.getElementsByClassName('answer-option');
+            
+            for (let option of options) {
+                option.classList.remove('selected');
+                if (parseInt(option.textContent) === value) {
+                    option.classList.add('selected');
+                }
+            }
+            
+            // Tarkista onko kaikkiin vastattu
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = Object.keys(userAnswers).length !== questions.length;
+        }
+        
+        // Lähetä vastaukset
+        async function submitAnswers() {
+            const loading = document.getElementById('loading');
+            const questionsSection = document.getElementById('questions-section');
+            const resultsSection = document.getElementById('results-section');
+            const errorDiv = document.getElementById('error-message');
+            
+            // Näytä latausanimaatio
+            loading.style.display = 'block';
+            questionsSection.style.display = 'none';
+            errorDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userAnswers)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayResults(result.matches);
+                    resultsSection.style.display = 'block';
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                showError('Ehdokkaiden etsiminen epäonnistui');
+                questionsSection.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+        
+        // Näytä tulokset
+        function displayResults(matches) {
+            const container = document.getElementById('results-container');
+            container.innerHTML = '';
+            
+            if (matches.length === 0) {
+                container.innerHTML = '<p>Ei vastaavia ehdokkaita löytynyt.</p>';
+                return;
+            }
+            
+            matches.forEach(match => {
+                const candidateDiv = document.createElement('div');
+                candidateDiv.className = 'candidate';
+                candidateDiv.innerHTML = `
+                    <h3>${match.candidate.name}</h3>
+                    <p><strong>Puolue:</strong> ${match.candidate.party}</p>
+                    <p><strong>Vaalipiiri:</strong> ${match.candidate.district}</p>
+                    <div class="match-percentage">${match.match_percentage.toFixed(1)}% yhteensopivuus</div>
+                    <p><strong>Vastattuja kysymyksiä:</strong> ${match.matched_questions}/${match.match_details.length}</p>
+                `;
+                container.appendChild(candidateDiv);
+            });
+        }
+        
+        // Näytä virhe
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+        
+        // Nollaa ja aloita alusta
+        function resetQuiz() {
+            userAnswers = {};
+            document.getElementById('results-section').style.display = 'none';
+            document.getElementById('questions-section').style.display = 'block';
+            document.getElementById('submit-btn').disabled = true;
+            displayQuestions();
+        }
+        
+        // Alusta sivu
+        document.addEventListener('DOMContentLoaded', loadQuestions);
+    </script>
+</body>
+</html>
