@@ -3,72 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hajautettu Vaalikone</title>
-    <link rel="stylesheet" href="/styles.css">
+    <title>Hajautettu Vaalikone - Etusivu</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Ehdokkaiden Vertailu</h1>
-            <p class="subtitle">Vertaa ehdokkaiden vastauksia kysymyksiin ja löydä itsellesi sopivin ehdokas</p>
+            <h1>Hajautettu Vaalikone</h1>
+            <p class="subtitle">Avoin ja läpinäkyvä vaalikonnejärjestelmä</p>
         </header>
-        
-        <div class="progress-container">
-            <div class="progress-bar" id="progress-bar"></div>
-            <div class="progress-text" id="progress-text">0/0 kysymykseen vastattu</div>
-        </div>
-        
-        <div class="controls">
-            <div class="filter-controls">
-                <label for="category-filter">Suodata kategorialla:</label>
-                <select id="category-filter">
-                    <option value="all">Kaikki kategoriat</option>
-                </select>
+
+        <nav class="main-nav">
+            <a href="/vaalikone" class="nav-card">
+                <div class="nav-icon">🗳️</div>
+                <h3>Vaalikone</h3>
+                <p>Vastaa kysymyksiin ja löydä sopivin ehdokas</p>
+            </a>
+            
+            <a href="/kysymysten-hallinta" class="nav-card">
+                <div class="nav-icon">❓</div>
+                <h3>Kysymysten Hallinta</h3>
+                <p>Lähetä uusia kysymyksiä ja hallinnoi olemassa olevia</p>
+            </a>
+            
+            <a href="/puolueet" class="nav-card">
+                <div class="nav-icon">🏛️</div>
+                <h3>Puoluevertailu</h3>
+                <p>Vertaa puolueiden näkemyksiä ja konsensusta</p>
+            </a>
+            
+            <a href="/admin" class="nav-card">
+                <div class="nav-icon">⚙️</div>
+                <h3>Ylläpito</h3>
+                <p>Järjestelmän hallinta ja tilastot</p>
+            </a>
+        </nav>
+
+        <section class="status-cards">
+            <div class="status-card">
+                <h4>Kysymyksiä</h4>
+                <div class="status-number" id="questions-count">-</div>
             </div>
             
-            <div class="sort-controls">
-                <label for="sort-by">Järjestä:</label>
-                <select id="sort-by">
-                    <option value="match">Yhteensopivuus</option>
-                    <option value="name">Nimi</option>
-                    <option value="party">Puolue</option>
-                </select>
-                <button id="compare-btn">Vertaa vastauksia</button>
-                <button id="details-btn">Näytä yksityiskohdat</button>
+            <div class="status-card">
+                <h4>Ehdokkaita</h4>
+                <div class="status-number" id="candidates-count">-</div>
             </div>
-        </div>
-        
-        <div class="main-content">
-            <section class="questions-section">
-                <h2>Kysymykset</h2>
-                <div class="questions-list" id="questions-container">
-                    <div class="loading">Ladataan kysymyksiä...</div>
-                </div>
-            </section>
             
-            <section class="candidates-section">
-                <h2>Ehdokkaat</h2>
-                <div class="candidates-list" id="candidates-container">
-                    <div class="loading">Ladataan ehdokkaita...</div>
-                </div>
-            </section>
-        </div>
-        
-        <div class="export-controls">
-            <button id="export-btn">Vie tulokset</button>
-        </div>
-    </div>
-
-    <div class="comparison-modal" id="comparison-modal">
-        <div class="modal-content">
-            <span class="close-modal" id="close-modal">&times;</span>
-            <h2>Yksityiskohtainen vertailu</h2>
-            <div id="comparison-content">
-                <!-- Vertailutaulukko tulee tähän -->
+            <div class="status-card">
+                <h4>Puolueita</h4>
+                <div class="status-number" id="parties-count">-</div>
             </div>
-        </div>
+            
+            <div class="status-card">
+                <h4>Käyttäjien kysymyksiä</h4>
+                <div class="status-number" id="user-questions-count">-</div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Hajautettu Vaalikone - Avoin lähdekoodi - 2024</p>
+        </footer>
     </div>
 
-    <script src="/script.js"></script>
+    <script>
+        // Lataa tilastot
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                
+                document.getElementById('questions-count').textContent = data.official_questions;
+                document.getElementById('candidates-count').textContent = data.candidates;
+                document.getElementById('parties-count').textContent = data.parties || '-';
+                document.getElementById('user-questions-count').textContent = data.user_questions;
+            } catch (error) {
+                console.error('Virhe tilastojen lataamisessa:', error);
+            }
+        }
+        
+        loadStats();
+    </script>
 </body>
 </html>

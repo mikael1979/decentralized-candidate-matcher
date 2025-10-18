@@ -26,8 +26,16 @@
         }
       },
       "tags": {
-        "fi": ["liikenne", "kaupunkipyörät", "kesä"],
-        "en": ["transportation", "city_bikes", "summer"]
+        "fi": [
+          "liikenne",
+          "kaupunkipyörät",
+          "kesä"
+        ],
+        "en": [
+          "transportation",
+          "city_bikes",
+          "summer"
+        ]
       },
       "submission": {
         "user_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIuser123456789",
@@ -58,11 +66,38 @@
         "losses": 0,
         "last_updated": "2024-01-15T10:25:00Z"
       }
+    },
+    {
+      "question": {
+        "fi": "tetsi kysymys",
+        "en": "test qiestion"
+      },
+      "category": {
+        "fi": "Muu",
+        "en": "Muu"
+      },
+      "tags": {
+        "fi": [
+          "testi"
+        ],
+        "en": [
+          "testi"
+        ]
+      },
+      "scale": {
+        "min": -5,
+        "max": 5,
+        "labels": {
+          "fi": {
+            "0": "Neutraali",
+            "5": "Täysin samaa mieltä",
+            "-5": "Täysin eri mieltä"
+          }
+        }
+      },
+      "id": "120be746-9d75-456e-bc4b-e9eeda1452ee",
+      "submission_timestamp": "2025-10-18T03:02:39.757760",
+      "status": "pending"
     }
-  ],
-  "integrity": {
-    "algorithm": "sha256", 
-    "hash": "sha256:ghi789def012...",
-    "computed": "2024-01-15T10:30:00Z"
-  }
+  ]
 }

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaalikone - Hajautettu Vaalikone</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Vaalikone</h1>
+            <p class="subtitle">Vastaa kysymyksiin ja löydä itsellesi sopivin ehdokas</p>
+            <nav class="breadcrumb">
+                <a href="/">Etusivu</a> > <span>Vaalikone</span>
+            </nav>
+        </header>
+
+        <!-- Sama sisältö kuin aiemmassa index.html:ssä -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+            <div class="progress-text" id="progress-text">0/0 kysymykseen vastattu</div>
+        </div>
+        
+        <div class="controls">
+            <div class="filter-controls">
+                <label for="category-filter">Suodata kategorialla:</label>
+                <select id="category-filter">
+                    <option value="all">Kaikki kategoriat</option>
+                </select>
+            </div>
+            
+            <div class="sort-controls">
+                <label for="sort-by">Järjestä:</label>
+                <select id="sort-by">
+                    <option value="match">Yhteensopivuus</option>
+                    <option value="name">Nimi</option>
+                    <option value="party">Puolue</option>
+                </select>
+                <button id="compare-btn">Vertaa vastauksia</button>
+                <button id="details-btn">Näytä yksityiskohdat</button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <section class="questions-section">
+                <h2>Kysymykset</h2>
+                <div class="questions-list" id="questions-container">
+                    <div class="loading">Ladataan kysymyksiä...</div>
+                </div>
+            </section>
+            
+            <section class="candidates-section">
+                <h2>Ehdokkaat</h2>
+                <div class="candidates-list" id="candidates-container">
+                    <div class="loading">Ladataan ehdokkaita...</div>
+                </div>
+            </section>
+        </div>
+
+        <div class="export-controls">
+            <button id="export-btn">Vie tulokset</button>
+            <a href="/puolueet" class="btn secondary">Vertaa puolueita</a>
+        </div>
+    </div>
+
+    <div class="comparison-modal" id="comparison-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">&times;</span>
+            <h2>Yksityiskohtainen vertailu</h2>
+            <div id="comparison-content"></div>
+        </div>
+    </div>
+
+    <script src="/static/vaalikone.js"></script>
+</body>
+</html>

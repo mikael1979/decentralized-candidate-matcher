@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kysymysten Hallinta - Hajautettu Vaalikone</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Kysymysten Hallinta</h1>
+            <p class="subtitle">Lähetä uusia kysymyksiä ja hallinnoi olemassa olevia</p>
+            <nav class="breadcrumb">
+                <a href="/">Etusivu</a> > <span>Kysymysten Hallinta</span>
+            </nav>
+        </header>
+
+        <div class="management-tabs">
+            <button class="tab-button active" data-tab="submit">Lähetä uusi kysymys</button>
+            <button class="tab-button" data-tab="search">Hae kysymyksiä</button>
+            <button class="tab-button" data-tab="tags">Näytä tagit</button>
+            <button class="tab-button" data-tab="stats">Tilastot</button>
+        </div>
+        
+        <!-- Lähetä kysymys -välilehti -->
+        <div class="tab-content active" id="submit-tab">
+            <form id="question-form">
+                <div class="form-group">
+                    <label for="question-fi">Kysymys (suomeksi): *</label>
+                    <textarea id="question-fi" name="question-fi" required placeholder="Kirjoita kysymys suomeksi..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="question-en">Kysymys (englanniksi):</label>
+                    <textarea id="question-en" name="question-en" placeholder="Write the question in English..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Kategoria: *</label>
+                    <select id="category" name="category" required>
+                        <option value="">Valitse kategoria</option>
+                        <option value="Ympäristö">Ympäristö</option>
+                        <option value="Liikenne">Liikenne</option>
+                        <option value="Koulutus">Koulutus</option>
+                        <option value="Terveys">Terveys</option>
+                        <option value="Asuminen">Asuminen</option>
+                        <option value="Turvallisuus">Turvallisuus</option>
+                        <option value="Kulttuuri">Kulttuuri</option>
+                        <option value="Muu">Muu</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tags">Tagit (pilkulla eroteltuna): *</label>
+                    <input type="text" id="tags" name="tags" required placeholder="esim. ympäristö,hiilidioksidi,ilmasto">
+                    <small>Vähintään yksi tagi vaaditaan</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Asteikko: *</label>
+                    <div class="scale-info">
+                        <span>Min: -5 (Täysin eri mieltä)</span>
+                        <span>Max: +5 (Täysin samaa mieltä)</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn">Lähetä kysymys</button>
+            </form>
+            
+            <div id="submission-result"></div>
+        </div>
+        
+        <!-- Hae kysymyksiä -välilehti -->
+        <div class="tab-content" id="search-tab">
+            <div class="search-controls">
+                <input type="text" id="search-query" placeholder="Hae kysymyksiä...">
+                <button id="search-btn" class="btn">Hae</button>
+                <button id="fuzzy-search-btn" class="btn secondary">Sumea haku</button>
+            </div>
+            
+            <div id="search-results"></div>
+        </div>
+        
+        <!-- Näytä tagit -välilehti -->
+        <div class="tab-content" id="tags-tab">
+            <div id="tags-container">
+                <div class="loading">Ladataan tageja...</div>
+            </div>
+        </div>
+        
+        <!-- Tilastot -välilehti -->
+        <div class="tab-content" id="stats-tab">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Kysymysten jakauma</h3>
+                    <div id="category-stats"></div>
+                </div>
+                <div class="stat-card">
+                    <h3>Suosituimmat tagit</h3>
+                    <div id="tag-stats"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/question_management.js"></script>
+</body>
+</html>

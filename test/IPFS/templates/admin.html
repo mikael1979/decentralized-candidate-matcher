@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ylläpito - Hajautettu Vaalikone</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Järjestelmän Ylläpito</h1>
+            <p class="subtitle">Järjestelmän hallinta ja tilastot</p>
+            <nav class="breadcrumb">
+                <a href="/">Etusivu</a> > <span>Ylläpito</span>
+            </nav>
+        </header>
+
+        <div class="admin-grid">
+            <div class="admin-card">
+                <h3>Järjestelmän Tila</h3>
+                <div id="system-status"></div>
+            </div>
+            
+            <div class="admin-card">
+                <h3>Data Hallinta</h3>
+                <button id="export-data-btn" class="btn">Vie kaikki data</button>
+                <button id="import-data-btn" class="btn secondary">Tuo data</button>
+                <button id="clear-cache-btn" class="btn warning">Tyhjennä välimuisti</button>
+            </div>
+            
+            <div class="admin-card">
+                <h3>Kysymysten Moderaatio</h3>
+                <div id="moderation-queue">
+                    <div class="loading">Ladataan...</div>
+                </div>
+            </div>
+            
+            <div class="admin-card">
+                <h3>IPFS Tila</h3>
+                <div id="ipfs-status"></div>
+            </div>
+        </div>
+
+        <div class="admin-stats">
+            <h3>Käyttötilastot</h3>
+            <div class="stats-grid" id="admin-stats"></div>
+        </div>
+    </div>
+
+    <script src="/static/admin.js"></script>
+</body>
+</html>

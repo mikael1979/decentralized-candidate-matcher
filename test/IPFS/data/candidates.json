@@ -1,0 +1,40 @@
+{
+  "candidates": [
+    {
+      "id": 1,
+      "name": "Matti Meikäläinen",
+      "party": "Test Puolue",
+      "district": "Helsinki",
+      "answers": [
+        {
+          "question_id": 1,
+          "answer": 4,
+          "confidence": 0.8
+        },
+        {
+          "question_id": 2,
+          "answer": 3,
+          "confidence": 0.6
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Liisa Esimerkki",
+      "party": "Toinen Puolue",
+      "district": "Espoo",
+      "answers": [
+        {
+          "question_id": 1,
+          "answer": 2,
+          "confidence": 0.5
+        },
+        {
+          "question_id": 2,
+          "answer": 5,
+          "confidence": 0.8
+        }
+      ]
+    }
+  ]
+}
