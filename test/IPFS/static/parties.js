@@ -15,10 +15,12 @@ const partyComparisonResults = document.getElementById('party-comparison-results
 // Lataa puolueet
 async function loadParties() {
     try {
+        console.log('🔄 Ladataan puolueita...');
         const response = await fetch('/api/parties');
         if (!response.ok) throw new Error('Puolueita ei voitu ladata');
         
         state.parties = await response.json();
+        console.log('✅ Puolueet ladattu:', state.parties);
         renderParties();
         
     } catch (error) {
@@ -53,6 +55,7 @@ function renderParties() {
 // Lataa puolueen profiili
 async function loadPartyProfile(partyName) {
     try {
+        console.log(`🔄 Ladataan profiilia puolueelle: ${partyName}`);
         const response = await fetch(`/api/party/${encodeURIComponent(partyName)}`);
         if (!response.ok) throw new Error('Profiilia ei voitu ladata');
         
@@ -90,28 +93,6 @@ function displayPartyProfile(partyName, data) {
             <div class="stat">
                 <strong>Vastauksia:</strong> ${Object.keys(profile.averaged_answers || {}).length}
             </div>
-        </div>
-        ${renderPartyAnswers(profile.averaged_answers)}
-    `;
-}
-
-// Renderöi puolueen vastaukset
-function renderPartyAnswers(answers) {
-    if (!answers || Object.keys(answers).length === 0) {
-        return '<div class="no-data">Ei vastauksia</div>';
-    }
-    
-    return `
-        <div class="party-answers">
-            <h4>Keskeisimmät kannat:</h4>
-            ${Object.entries(answers).slice(0, 3).map(([qId, answer]) => `
-                <div class="party-answer">
-                    <div class="answer-value">${answer.answer}/5</div>
-                    <div class="answer-confidence">
-                        Luottamus: ${(answer.confidence * 100).toFixed(0)}%
-                    </div>
-                </div>
-            `).join('')}
         </div>
     `;
 }
@@ -214,34 +195,64 @@ function displayAllPartyComparisons(comparisons) {
     `;
 }
 
-// Luo puolueprofiilit
+// Luo puolueprofiilit - DEBUG VERSIO
 generateProfilesBtn.addEventListener('click', async () => {
+    console.log('🔄 Painike painettu - aloitetaan profiilien luonti');
+    
     try {
-        const responses = await Promise.all(
-            state.parties.map(party => 
-                fetch(`/api/generate_party_profile/${encodeURIComponent(party)}`)
-            )
-        );
+        // Testaa vain yhden puolueen kanssa ensin
+        const testParty = state.parties[0];
+        if (!testParty) {
+            alert('Ei puolueita saatavilla');
+            return;
+        }
         
-        const results = await Promise.all(responses.map(r => r.json()));
+        console.log(`🔍 Testataan puoluetta: "${testParty}"`);
         
-        alert(`Puolueprofiilit luotu onnistuneesti!`);
+        const encodedParty = encodeURIComponent(testParty);
+        console.log(`🔍 Encoded party: "${encodedParty}"`);
         
-        // Päivitä näkymä
-        state.parties.forEach(party => {
-            if (state.partyProfiles[party]) {
-                loadPartyProfile(party);
+        const response = await fetch(`/api/generate_party_profile/${encodedParty}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
             }
         });
         
+        console.log('📡 Vastaus saatu:', response.status, response.statusText);
+        
+        // Käsittele vastaus
+        const responseText = await response.text();
+        console.log('📄 Raaka vastaus:', responseText.substring(0, 200) + '...');
+        
+        let result;
+        try {
+            result = JSON.parse(responseText);
+            console.log('✅ JSON parsittu:', result);
+        } catch (e) {
+            console.error('❌ JSON parsiminen epäonnistui:', e);
+            throw new Error('Palvelin palautti virheellistä dataa: ' + responseText.substring(0, 100));
+        }
+        
+        if (!response.ok) {
+            throw new Error(`HTTP virhe! status: ${response.status}, viesti: ${result.error || 'Tuntematon virhe'}`);
+        }
+        
+        if (result.success) {
+            alert(`✅ Puolueprofiili luotu onnistuneesti!\nPuolue: ${testParty}\nCID: ${result.cid}`);
+        } else {
+            alert(`❌ Profiilin luonti epäonnistui: ${result.error}`);
+        }
+        
     } catch (error) {
-        console.error('Virhe profiilien luonnissa:', error);
-        alert('Profiilien luonti epäonnistui');
+        console.error('💥 Virhe profiilin luonnissa:', error);
+        alert('Profiilin luonti epäonnistui: ' + error.message);
     }
 });
 
 // Alustus
 function init() {
+    console.log('🚀 Alustetaan puolueet-sivu...');
     loadParties();
     
     // Lataa käyttäjän vastaukset localStoragesta
@@ -249,6 +260,8 @@ function init() {
     if (savedAnswers) {
         state.userAnswers = JSON.parse(savedAnswers);
     }
+    
+    console.log('✅ Puolueet-sivu alustettu');
 }
 
 document.addEventListener('DOMContentLoaded', init);

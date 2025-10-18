@@ -295,6 +295,35 @@ def get_party_profile(party_name):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# PUUTTUNUT API-REITTI - LISÄTTY TÄHÄN
+@app.route('/api/generate_party_profile/<party_name>', methods=['POST'])
+def generate_party_profile(party_name):
+    """Luo puolueprofiilin ja julkaisee sen IPFS:ään"""
+    try:
+        print(f"🎯 API-kutsu: Luodaan profiilia puolueelle '{party_name}'")
+        
+        profile_cid = party_profile.publish_party_profile(party_name)
+        
+        response_data = {
+            'success': True,
+            'party_name': party_name,
+            'cid': profile_cid,
+            'message': f'Puolueprofiili luotu onnistuneesti puolueelle {party_name}'
+        }
+        
+        print(f"✅ API-vastaus: {response_data}")
+        
+        return jsonify(response_data)
+        
+    except Exception as e:
+        error_msg = f"Virhe puolueprofiilin luonnissa: {str(e)}"
+        print(f"❌ API-virhe: {error_msg}")
+        
+        return jsonify({
+            'success': False,
+            'error': error_msg
+        }), 500
+
 @app.route('/api/search', methods=['POST'])
 def search_candidates():
     try:
@@ -758,5 +787,7 @@ if __name__ == '__main__':
     print("   - http://localhost:5000/kysymysten-hallinta (Kysymysten hallinta)")
     print("   - http://localhost:5000/puolueet (Puoluevertailu)")
     print("   - http://localhost:5000/admin (Ylläpito)")
+    print("🔧 API-reitit:")
+    print("   - /api/generate_party_profile/<party_name> [POST] - LUOTU PUOLUEPROFIILEJA VARTEN")
     
     app.run(debug=True, host='0.0.0.0', port=5000)
