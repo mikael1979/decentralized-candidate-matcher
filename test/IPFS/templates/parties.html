@@ -16,6 +16,41 @@
             </nav>
         </header>
 
+        <!-- UUSI: Ehdokkaan lisäämisen osio -->
+        <div class="add-candidate-section">
+            <h3>Lisää uusi ehdokas</h3>
+            <form id="add-candidate-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="candidate-name">Nimi: *</label>
+                        <input type="text" id="candidate-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="candidate-party">Puolue: *</label>
+                        <input type="text" id="candidate-party" name="party" required 
+                               list="party-suggestions" placeholder="Kirjoita uusi tai valitse olemassa oleva">
+                        <datalist id="party-suggestions">
+                            <!-- Täytetään JavaScriptillä -->
+                        </datalist>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="candidate-district">Vaali-alue: *</label>
+                        <input type="text" id="candidate-district" name="district" required>
+                    </div>
+                </div>
+                
+                <h4>Vastaukset kysymyksiin (-5 ... +5):</h4>
+                <div id="candidate-answers">
+                    <!-- Täytetään JavaScriptillä -->
+                </div>
+                
+                <button type="submit" class="btn">Lisää ehdokas</button>
+            </form>
+            <div id="candidate-result"></div>
+        </div>
+
         <div class="party-controls">
             <button id="compare-parties-btn" class="btn">Vertaa kaikkia puolueita</button>
             <button id="generate-profiles-btn" class="btn secondary">Luo puolueprofiilit</button>

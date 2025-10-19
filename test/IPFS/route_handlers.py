@@ -1,0 +1,382 @@
+import random
+from datetime import datetime
+
+class RouteHandlers:
+    def __init__(self, data_manager, debug=False):
+        self.data_manager = data_manager
+        self.debug = debug
+    
+    def calculate_match(self, user_answers, candidate):
+        """Laskee yhteensopivuuden käyttäjän ja ehdokkaan välillä"""
+        total_diff = 0
+        max_possible_diff = 0
+        answered_count = 0
+        
+        for answer in candidate.get('answers', []):
+            question_id = str(answer['question_id'])
+            if question_id in user_answers:
+                user_answer = user_answers[question_id]
+                candidate_answer = answer['answer']
+                
+                # Laske ero käyttäjän ja ehdokkaan vastauksen välillä
+                diff = abs(user_answer - candidate_answer)
+                total_diff += diff
+                
+                # Laske suurin mahdollinen ero tälle kysymykselle (-5 - +5 = 10)
+                max_possible_diff += 10
+                answered_count += 1
+        
+        if answered_count == 0:
+            return 0
+        
+        # Laske yhteensopivuusprosentti
+        match_percentage = 1 - (total_diff / max_possible_diff)
+        return match_percentage
+    
+    def get_parties(self):
+        """Hakee kaikki puolueet"""
+        candidates = self.data_manager.get_candidates()
+        parties = list(set(candidate.get('party', '') for candidate in candidates if candidate.get('party')))
+        
+        if self.debug:
+            print(f"🔍 Löydetty {len(parties)} puoluetta: {parties}")
+        
+        return parties
+    
+    def get_party_profile(self, party_name):
+        """Laskee puolueen profiilin ja konsensuksen"""
+        if self.debug:
+            print(f"🔍 Lasketaan profiilia puolueelle: {party_name}")
+        
+        candidates = self.data_manager.get_candidates()
+        party_candidates = [c for c in candidates if c.get('party') == party_name]
+        
+        if not party_candidates:
+            if self.debug:
+                print(f"❌ Puoluetta '{party_name}' ei löytynyt")
+            return {}, {}
+        
+        if self.debug:
+            print(f"✅ Löydetty {len(party_candidates)} ehdokasta puolueelle {party_name}")
+        
+        # Laske keskiarvovastaukset
+        answers_by_question = {}
+        for candidate in party_candidates:
+            for answer in candidate.get('answers', []):
+                qid = answer['question_id']
+                if qid not in answers_by_question:
+                    answers_by_question[qid] = []
+                answers_by_question[qid].append(answer['answer'])
+        
+        averaged_answers = {}
+        for qid, answers in answers_by_question.items():
+            averaged_answers[qid] = sum(answers) / len(answers)
+        
+        profile = {
+            'party_name': party_name,
+            'total_candidates': len(party_candidates),
+            'averaged_answers': averaged_answers,
+            'answer_count': len(averaged_answers)
+        }
+        
+        # Laske puolueen sisäinen konsensus
+        consensus = self._calculate_party_consensus(party_candidates)
+        
+        if self.debug:
+            print(f"📊 Puolueprofiili luotu: {len(averaged_answers)} keskiarvovastausta, konsensus: {consensus.get('overall_consensus', 0):.1f}%")
+        
+        return profile, consensus
+    
+    def _calculate_party_consensus(self, party_candidates):
+        """Laskee puolueen sisäisen konsensuksen"""
+        if len(party_candidates) < 2:
+            return {
+                'overall_consensus': 100.0,
+                'candidate_count': len(party_candidates),
+                'note': 'Vain yksi ehdokas, täysi konsensus'
+            }
+        
+        total_consensus = 0
+        consensus_count = 0
+        
+        # Vertaile kaikkia ehdokaspareja keskenään
+        for i, cand1 in enumerate(party_candidates):
+            for j, cand2 in enumerate(party_candidates):
+                if i >= j:  # Vältä duplikaatit ja vertailu itseen
+                    continue
+                
+                common_answers = 0
+                total_diff = 0
+                
+                # Vertaile vastauksia
+                for ans1 in cand1.get('answers', []):
+                    for ans2 in cand2.get('answers', []):
+                        if ans1['question_id'] == ans2['question_id']:
+                            common_answers += 1
+                            total_diff += abs(ans1['answer'] - ans2['answer'])
+                
+                if common_answers > 0:
+                    # Laske konsensus: 0-100 asteikko, jossa 100 = täysin samat vastaukset
+                    avg_diff = total_diff / common_answers
+                    consensus = max(0, 100 - (avg_diff * 10))  # 10 pisteen ero = 0% konsensus
+                    total_consensus += consensus
+                    consensus_count += 1
+        
+        overall_consensus = total_consensus / consensus_count if consensus_count > 0 else 100.0
+        
+        return {
+            'overall_consensus': overall_consensus,
+            'candidate_count': len(party_candidates),
+            'comparison_pairs': consensus_count,
+            'consensus_level': self._get_consensus_level(overall_consensus)
+        }
+    
+    def _get_consensus_level(self, consensus_percentage):
+        """Palauttaa konsensuksen tason kuvauksen"""
+        if consensus_percentage >= 90:
+            return "Erittäin korkea"
+        elif consensus_percentage >= 75:
+            return "Korkea"
+        elif consensus_percentage >= 60:
+            return "Kohtalainen"
+        elif consensus_percentage >= 40:
+            return "Matala"
+        else:
+            return "Erittäin matala"
+    
+    def search_questions(self, query="", tags=None, category=None):
+        """Hakee kysymyksiä hakusanan, tagien ja kategorian perusteella"""
+        questions = self.data_manager.get_questions()
+        results = []
+        
+        if self.debug:
+            print(f"🔍 Haetaan kysymyksiä: query='{query}', tags={tags}, category={category}")
+        
+        for question in questions:
+            # Hae kysymysteksti
+            question_text = question.get('question', {})
+            if isinstance(question_text, dict):
+                question_text = question_text.get('fi', '')
+            
+            # Tarkista vastaavuudet
+            matches_query = not query or query.lower() in question_text.lower()
+            matches_category = not category or question.get('category', {}).get('fi') == category
+            matches_tags = not tags or any(tag in question.get('tags', []) for tag in tags)
+            
+            if matches_query and matches_category and matches_tags:
+                # Laske relevanssipistemäärä
+                relevance_score = self._calculate_relevance(question, query, tags, category)
+                
+                results.append({
+                    'question': question,
+                    'relevance_score': relevance_score,
+                    'match_details': {
+                        'query_match': matches_query,
+                        'category_match': matches_category,
+                        'tags_match': matches_tags
+                    }
+                })
+        
+        # Järjestä relevanssin mukaan
+        results.sort(key=lambda x: x['relevance_score'], reverse=True)
+        
+        if self.debug:
+            print(f"✅ Löydetty {len(results)} kysymystä haulle")
+        
+        return results
+    
+    def _calculate_relevance(self, question, query, tags, category):
+        """Laskee kysymyksen relevanssipistemäärän"""
+        score = 0.0
+        
+        # Query match
+        if query:
+            question_text = question.get('question', {})
+            if isinstance(question_text, dict):
+                question_text = question_text.get('fi', '')
+            
+            if query.lower() in question_text.lower():
+                score += 0.5
+            if query.lower() in str(question.get('tags', [])).lower():
+                score += 0.3
+        
+        # Category match
+        if category and question.get('category', {}).get('fi') == category:
+            score += 0.3
+        
+        # Tags match
+        if tags:
+            matching_tags = set(tags) & set(question.get('tags', []))
+            if matching_tags:
+                score += len(matching_tags) * 0.1
+        
+        # Normalisoi 0-1 välille
+        return min(1.0, score)
+    
+    def get_question_categories(self):
+        """Hakee kaikki kysymyskategoriat"""
+        questions = self.data_manager.get_questions()
+        categories = list(set(q.get('category', {}).get('fi', '') for q in questions if q.get('category')))
+        
+        if self.debug:
+            print(f"📂 Löydetty {len(categories)} kategoriaa: {categories}")
+        
+        return categories
+    
+    def generate_party_comparison(self, user_answers, party_name):
+        """Luo yksityiskohtaisen vertailun käyttäjän ja puolueen välillä"""
+        profile, consensus = self.get_party_profile(party_name)
+        
+        if not profile:
+            return None
+        
+        comparison_details = []
+        total_similarity = 0
+        compared_questions = 0
+        
+        for qid, party_avg_answer in profile.get('averaged_answers', {}).items():
+            if str(qid) in user_answers:
+                user_answer = user_answers[str(qid)]
+                difference = abs(user_answer - party_avg_answer)
+                similarity = max(0, 100 - (difference * 10))  # 0-100 asteikko
+                
+                comparison_details.append({
+                    'question_id': qid,
+                    'user_answer': user_answer,
+                    'party_avg_answer': round(party_avg_answer, 1),
+                    'difference': round(difference, 1),
+                    'similarity': round(similarity, 1),
+                    'similarity_level': self._get_similarity_level(similarity)
+                })
+                
+                total_similarity += similarity
+                compared_questions += 1
+        
+        overall_similarity = total_similarity / compared_questions if compared_questions > 0 else 0
+        
+        return {
+            'party_name': party_name,
+            'overall_similarity': round(overall_similarity, 1),
+            'compared_questions': compared_questions,
+            'party_consensus': consensus.get('overall_consensus', 0),
+            'candidate_count': profile.get('total_candidates', 0),
+            'comparison_details': comparison_details,
+            'summary': self._generate_comparison_summary(overall_similarity, consensus.get('overall_consensus', 0))
+        }
+    
+    def _get_similarity_level(self, similarity):
+        """Palauttaa samankaltaisuustason kuvauksen"""
+        if similarity >= 90:
+            return "Erittäin korkea"
+        elif similarity >= 75:
+            return "Korkea"
+        elif similarity >= 60:
+            return "Kohtalainen"
+        elif similarity >= 40:
+            return "Matala"
+        else:
+            return "Erittäin matala"
+    
+    def _generate_comparison_summary(self, similarity, consensus):
+        """Luo yhteenvedon vertailusta"""
+        if similarity >= 80:
+            base = "Sinun ja puolueen näkemykset ovat hyvin samankaltaisia."
+        elif similarity >= 60:
+            base = "Sinun ja puolueen näkemykset ovat melko samankaltaisia."
+        elif similarity >= 40:
+            base = "Sinun ja puolueen näkemyksissä on jonkin verran eroja."
+        else:
+            base = "Sinun ja puolueen näkemyksissä on suuria eroja."
+        
+        if consensus >= 80:
+            base += " Puolueen ehdokkaat ovat hyvin yhtenäisiä."
+        elif consensus >= 60:
+            base += " Puolueen ehdokkaat ovat melko yhtenäisiä."
+        else:
+            base += " Puolueen ehdokkailla on erilaisia näkemyksiä."
+        
+        return base
+    
+    def validate_question_submission(self, question_data):
+        """Validoi käyttäjän lähettämän kysymyksen"""
+        errors = []
+        
+        # Tarkista kysymysteksti
+        fi_text = question_data.get('question', {}).get('fi', '').strip()
+        if not fi_text:
+            errors.append('Kysymys suomeksi on pakollinen')
+        elif len(fi_text) < 10:
+            errors.append('Kysymyksen tulee olla vähintään 10 merkkiä pitkä')
+        elif len(fi_text) > 500:
+            errors.append('Kysymys saa olla enintään 500 merkkiä pitkä')
+        
+        # Tarkista kategoria
+        category = question_data.get('category', '').strip()
+        if not category:
+            errors.append('Kategoria on pakollinen')
+        
+        # Tarkista tagit
+        tags = question_data.get('tags', [])
+        if not tags:
+            errors.append('Vähintään yksi tagi on pakollinen')
+        elif len(tags) > 10:
+            errors.append('Kysymyksessä saa olla enintään 10 tagia')
+        
+        # Tarkista ettei ole duplikaatti
+        if not errors:
+            existing_questions = self.data_manager.get_questions()
+            for existing in existing_questions:
+                existing_text = existing.get('question', {})
+                if isinstance(existing_text, dict):
+                    existing_text = existing_text.get('fi', '')
+                
+                # Yksinkertainen samankaltaisuustarkistus
+                if fi_text.lower() in existing_text.lower() or existing_text.lower() in fi_text.lower():
+                    similarity = self._calculate_text_similarity(fi_text, existing_text)
+                    if similarity > 0.8:  # 80% samankaltaisuus
+                        errors.append(f'Samankaltainen kysymys on jo olemassa (samankaltaisuus: {similarity:.0f}%)')
+                        break
+        
+        return errors
+    
+    def _calculate_text_similarity(self, text1, text2):
+        """Laskee kahden tekstin välisen samankaltaisuuden (yksinkertaistettu)"""
+        words1 = set(text1.lower().split())
+        words2 = set(text2.lower().split())
+        
+        if not words1 or not words2:
+            return 0.0
+        
+        intersection = words1.intersection(words2)
+        union = words1.union(words2)
+        
+        return len(intersection) / len(union) if union else 0.0
+    
+    def get_system_stats(self):
+        """Palauttaa järjestelmän tilastot"""
+        questions = self.data_manager.get_questions()
+        candidates = self.data_manager.get_candidates()
+        parties = self.get_parties()
+        
+        # Laske vastausten määrä
+        total_answers = sum(len(c.get('answers', [])) for c in candidates)
+        
+        # Laske keskimääräinen vastausten määrä per ehdokas
+        avg_answers_per_candidate = total_answers / len(candidates) if candidates else 0
+        
+        # Laske kysymysten jakautuma kategorioittain
+        categories = {}
+        for question in questions:
+            category = question.get('category', {}).get('fi', 'Määrittelemätön')
+            categories[category] = categories.get(category, 0) + 1
+        
+        return {
+            'total_questions': len(questions),
+            'total_candidates': len(candidates),
+            'total_parties': len(parties),
+            'total_answers': total_answers,
+            'avg_answers_per_candidate': round(avg_answers_per_candidate, 1),
+            'categories': categories,
+            'questions_per_category': categories,
+            'system_health': 'good' if len(questions) > 0 and len(candidates) > 0 else 'needs_data'
+        }

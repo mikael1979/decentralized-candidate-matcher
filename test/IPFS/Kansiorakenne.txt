@@ -1,0 +1,22 @@
+vaalikone/
+├── web_app.py          # Pääsovellus (lyhennetty)
+├── data_manager.py     # Data hallinta
+├── route_handlers.py   # API-reittien käsittelijät
+├── mock_ipfs.py        # Mock IPFS-toteutus (jos tarvitaan)
+├── templates/          # HTML-mallit
+│   ├── index.html
+│   ├── vaalikone.html
+│   ├── question_management.html
+│   ├── parties.html
+│   └── admin.html
+├── static/             # Staattiset tiedostot
+│   ├── styles.css
+│   ├── script.js
+│   ├── vaalikone.js
+│   ├── question_management.js
+│   ├── parties.js
+│   └── admin.js
+└── data/               # Data-tiedostot (luodaan automaattisesti)
+    ├── questions.json
+    ├── candidates.json
+    └── newquestions.json

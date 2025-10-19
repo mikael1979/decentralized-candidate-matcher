@@ -1,0 +1,43 @@
+{
+  "system": "Decentralized Candidate Matcher",
+  "version": "0.0.1",
+  "election": {
+    "id": "test_election_2025",
+    "country": "FI",
+    "type": "municipal",
+    "name": {
+      "fi": "Testivaalit 2025",
+      "en": "Test Election 2025",
+      "sv": "Testval 2025"
+    },
+    "date": "2025-04-13",
+    "language": "fi"
+  },
+  "community_moderation": {
+    "enabled": true,
+    "thresholds": {
+      "auto_block_inappropriate": 0.7,
+      "auto_block_min_votes": 10,
+      "community_approval": 0.8
+    }
+  },
+  "admins": [
+    {
+      "admin_id": "admin_1",
+      "public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIadmin1example123456789",
+      "name": "Election Admin",
+      "role": "super_admin"
+    }
+  ],
+  "content": {
+    "last_updated": "2025-10-19T05:47:47.430950",
+    "questions_count": 3,
+    "candidates_count": 4,
+    "parties_count": 4
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "hash": "sha256:67bf91982f5b80cf8eda15945abd27e5dbc93b56b53ed7a41fb32aa4f2fcd93f",
+    "computed": "2025-10-19T05:47:47.431077"
+  }
+}

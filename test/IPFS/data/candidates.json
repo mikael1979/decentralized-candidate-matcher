@@ -1,4 +1,6 @@
 {
+  "election_id": "test_election_2024",
+  "language": "fi",
   "candidates": [
     {
       "id": 1,
@@ -35,6 +37,52 @@
           "confidence": 0.8
         }
       ]
+    },
+    {
+      "name": "testiehdokas3",
+      "party": "testipuolue2",
+      "district": "Suomi, Finland",
+      "answers": [
+        {
+          "question_id": 1,
+          "answer": 5,
+          "confidence": 1
+        },
+        {
+          "question_id": 2,
+          "answer": 5,
+          "confidence": 1
+        },
+        {
+          "question_id": 1,
+          "answer": 5,
+          "confidence": 1
+        }
+      ],
+      "id": 3
+    },
+    {
+      "name": "testiehdokas4",
+      "party": "testipuolue4",
+      "district": "Suomi, Finland",
+      "answers": [
+        {
+          "question_id": 1,
+          "answer": -5,
+          "confidence": 1
+        },
+        {
+          "question_id": 2,
+          "answer": -5,
+          "confidence": 1
+        },
+        {
+          "question_id": 1,
+          "answer": -5,
+          "confidence": 1
+        }
+      ],
+      "id": 4
     }
   ]
 }

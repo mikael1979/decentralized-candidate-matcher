@@ -40,6 +40,34 @@
                 <h3>IPFS Tila</h3>
                 <div id="ipfs-status"></div>
             </div>
+
+            <!-- UUSI: Avainten hallinta osio -->
+            <div class="admin-card">
+                <h3>🔑 Turvallisuus & Avainten Hallinta</h3>
+                
+                <div class="key-management">
+                    <div class="key-section">
+                        <h4>Luo uusi avainpari</h4>
+                        <button id="generate-keys-btn" class="btn">Luo avainpari</button>
+                        <div id="keys-result"></div>
+                    </div>
+                    
+                    <div class="key-section">
+                        <h4>Nykyinen julkinen avain</h4>
+                        <div id="current-public-key" class="key-display">
+                            <div class="no-data">Avainta ei ole asetettu</div>
+                        </div>
+                        <button id="copy-public-key-btn" class="btn small" style="display: none;">Kopioi julkinen avain</button>
+                    </div>
+                    
+                    <div class="key-section">
+                        <h4>Lataa yksityinen avain</h4>
+                        <input type="file" id="private-key-file" accept=".json,.txt" style="display: none;">
+                        <button id="load-private-key-btn" class="btn secondary">Lataa yksityinen avain</button>
+                        <div id="private-key-status"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="admin-stats">
