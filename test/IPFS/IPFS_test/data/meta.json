@@ -30,14 +30,14 @@
     }
   ],
   "content": {
-    "last_updated": "2025-10-19T05:47:47.430950",
+    "last_updated": "2025-10-20T11:12:28.370939",
     "questions_count": 3,
     "candidates_count": 4,
     "parties_count": 4
   },
   "integrity": {
     "algorithm": "sha256",
-    "hash": "sha256:67bf91982f5b80cf8eda15945abd27e5dbc93b56b53ed7a41fb32aa4f2fcd93f",
-    "computed": "2025-10-19T05:47:47.431077"
+    "hash": "sha256:09c8ca7ba9f76187448e1ac998a137684d8fc50bc042adf2cf4c2e3f4ae77a8c",
+    "computed": "2025-10-20T11:12:28.371010"
   }
 }
