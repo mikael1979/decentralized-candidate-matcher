@@ -1,9 +1,0 @@
-{
-  "system_id": "e4949184ce602a6f",
-  "created": "2025-10-21T03:58:47.446493",
-  "key_algorithm": "RSA-2048",
-  "password_salt": "6d355b258fa959ce43bd64422afb44bd",
-  "key_fingerprint": "e4949184ce602a6f78833f58698bd341083821ea79046fde0c203b859a6e7dc0",
-  "election_id": "election_2026-01-01_fi",
-  "admin_username": "admin"
-}
