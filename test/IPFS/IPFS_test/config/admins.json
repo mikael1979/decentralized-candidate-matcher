@@ -5,18 +5,18 @@
       "username": "admin",
       "name": "admin",
       "email": "",
-      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxV8fw46jbIdtt4BQnmfu\nQM9aOydwF/V6VYOxcC7xXZ2Jbfs7I7yn9Eg/gxQqTU4bi8JBdk1HiJJOu9UiO0Z3\nWRCrApIxZhHSa5i4u1fg8ReJ4Ni1vvRXsSw6QqA41Zvj1RGXs9jLHGgOIpGVoiEP\nD8jTCivrtJbyQyHltBjHvkyIbpy9ad9tVbBzXMDJ8fpUaEpNpKqmXTRYpZr/f39J\nQMhcyTltp09Tax9NFH72EmCEE/+3QpcP7KL8dYRZdFSpSh2LcBothyciqnenkhtH\nZvBEveDZqvHRu8isGrghQVqC07fdZXjMPNTIxUWsFwi+/Ece/q++Cq/lI9Jr8t1/\ntQIDAQAB\n-----END PUBLIC KEY-----\n",
-      "created_at": "2025-10-21T03:58:47.446727",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1h8vKd1Z0Geyqj9N7S1J\nYzqX8Mk6eGxUJqgiOG7rDFsBIjcKHx/uyl7XaB8EYCWEjziVZYJBbkMv8WEqn5wc\n5BPDKVq92a9MBnzj+Cz0FFhiKXCF2IM3VS7kAbjEaCYUh3pBiOMYOPc9GDY94lUO\nXhgJZAJCUJ8CG63MGwyhwxx+NI6WPNmqb97PnKtw60hKqlwMNhBr7K6Y6dgTCy7r\nk7l7jJ7RliXHO5LYpO7d6U+GEtsb6HvzYzm11S8+3UGhniKP0JJYFgSJd7ZANJpO\nNDahAphw1SPwN7mULzHsxUW3aVus64LGLRQhQX0nXMI7Y0/UEe4M7TVWqvLnJfzi\n9QIDAQAB\n-----END PUBLIC KEY-----\n",
+      "created_at": "2025-10-21T06:14:26.813853",
       "role": "super_admin"
     }
   ],
   "party_admins": {},
   "metadata": {
     "version": "1.0",
-    "created": "2025-10-21T03:58:47.446727",
-    "fingerprint": "a9001b90f0c6f58c7cb51524f6f7bc3663c13248ec6824d34e1c11161eb7041f",
-    "system_id": "e4949184ce602a6f",
+    "created": "2025-10-21T06:14:26.813853",
+    "fingerprint": "accfd6a97845ba4f2d12be3c14a899604dc90d92f32a3cc868066e18dce401d0",
+    "system_id": "5dc5e985a3de2145",
     "election_id": "election_2026-01-01_fi",
-    "signature": "JPs5DReIjiibV3kX09EvuS4uvK12ie30OHYM5kojz96rHLmnxdHqkZ2qT23hq9P3Ne8gKu5aQDa7QMz0ESRIIZbQFNcYrIQT7XROLkp8ooeATnnOljwwgyUEdg7nH7rhunDLkgiveitGAN2Az5bNKWYkw5RYcioNaOoWbsIZKlQHHbMUneI7dbBxWYjdNkueUrVDPHN9X3Y2opmIGdCEkip8ZGYbo5RSSST3kYqptZpxpDvDRvV8jzuYqPRJZsvNWKg8g3EqDYKP9w8keDJy4um8eueTaU4oXeH/mHyNh1/lhLYs3Y24By8BRNTL6MVdubWXHn0TBAjZYp8yfVN4Gg=="
+    "signature": "FLwvwX4bph+asGVE4Bol4VIOc72ClBo1Hpz9c4Ho0Y+A0CrmpR5LV9Z4PnoEcvTZY9PXG2t58l21V4LUYqbn+mHTIXOMdo71AUjrbi9ReIdiyu8pvYFk3A5xg4ozHomAdxIeXWY0h4D6rGaprGPznvgCOQy1deP6d8IZdM2vfqUlEyoAhxO1z5coGQGgpcLMHqVj5RWSmE3uNsSw3vTtA44qSLkO8YdBUtFvmihHDS1L/rTUkUbl9FPHOh/U+bf5jRCsVSm1UbfXhx3nhhcyDGcTGgZ9+s4upjHXrEdLawweAGipp0zNPbPZ0UVi6cvGhTt2ff+tc3daQYDbr7ZjqQ=="
   }
 }

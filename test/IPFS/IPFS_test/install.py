@@ -312,6 +312,21 @@ class InstallationManager:
                     "version": 1,
                     "blocked": False,
                     "signature": None
+                },
+                "metadata": {
+                    "elo_rating": 1500,
+                    "blocked": False,
+                    "blocked_reason": None,
+                    "created_at": current_time,
+                    "created_by": self.admin_data["admin_id"],
+                    "votes_for": 0,
+                    "votes_against": 0,
+                    "community_approved": True
+                },
+                "elo": {
+                    "base_rating": 1500,
+                    "deltas": [],
+                    "current_rating": 1500
                 }
             },
             {
@@ -337,6 +352,21 @@ class InstallationManager:
                     "version": 1,
                     "blocked": False,
                     "signature": None
+                },
+                "metadata": {
+                    "elo_rating": 1500,
+                    "blocked": False,
+                    "blocked_reason": None,
+                    "created_at": current_time,
+                    "created_by": self.admin_data["admin_id"],
+                    "votes_for": 0,
+                    "votes_against": 0,
+                    "community_approved": True
+                },
+                "elo": {
+                    "base_rating": 1500,
+                    "deltas": [],
+                    "current_rating": 1500
                 }
             }
         ]
@@ -587,6 +617,11 @@ class InstallationManager:
                         "votes_for": 0,
                         "votes_against": 0,
                         "community_approved": True
+                    },
+                    "elo": {
+                        "base_rating": 1500,
+                        "deltas": [],
+                        "current_rating": 1500
                     }
                 },
                 {
@@ -608,6 +643,11 @@ class InstallationManager:
                         "votes_for": 0,
                         "votes_against": 0,
                         "community_approved": True
+                    },
+                    "elo": {
+                        "base_rating": 1500,
+                        "deltas": [],
+                        "current_rating": 1500
                     }
                 }
             ]
@@ -747,6 +787,8 @@ class InstallationManager:
 
             # Comments (empty)
             comments_data = {
+                "election_id": self.election_data["id"],
+                "language": "fi",
                 "comments": [],
                 "metadata": {
                     "created": current_time,

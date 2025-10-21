@@ -1,10 +1,12 @@
 {
+  "election_id": "election_2026-01-01_fi",
+  "language": "fi",
   "comments": [],
   "metadata": {
-    "created": "2025-10-21T03:58:47.459444",
-    "system_id": "e4949184ce602a6f",
+    "created": "2025-10-21T06:14:26.828610",
+    "system_id": "5dc5e985a3de2145",
     "election_id": "election_2026-01-01_fi",
     "fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-    "signature": "rt8y9k4neLUM4AfLYx+roNIeK7fjkQTI840pxrdzqKtDSzpp8ftMaqVDIZF7RhLvbtt1S9B6SrA56dG7JE1JyEg3SBwx679JCmFtPc8OVv7n3NwSi2yeXjBe6IriO+QvnhHTqD6BG5f0t0rSApOhgh8h+3QGQ6AEIJbVoPsALMRLQIoeLB13YZay8Dxd+worRMLbntwR6POn0eVdVq9A+B/0jMQlP9qux5aCfCNZv0gmsQm4xEh+/nSi2TDmmZtBdA6Fb92cFAznDz8bRuGqkdrntUKaqCp7+cIoaRixZF/jkcrUhbqB7ky3GSiRx1vok9HYgq6jfbSCR3B7lsp7xg=="
+    "signature": "U4YN1C+LxrVcR4JzUrBg0J60FSZkCHwzmrUMwemk/GDA0A1Bg0oM+2hu1hRzgRY6Dwci/SCaWWBVImxAPzjiZtzBa1IQuXhIV9mu1Qup2Q59JR9AtsagzoS3FUcxe0xzJmfPBpJSYu1GIpxbHO+E7iHl3likDS/oRjf1Zr+XamMJfraTYfKVkwvV9A/xFPbADY1KP5iGrRsh1fwA8qB5hz3l+c4czKiucN7OVlZB83eP0Yb4ntQFlJADm+PyOJqXzk4Q72KZFw8XLL8jBoPkl8sQ6VpdQ5U0aUTqcL3/39uGIA+ANp6XteqzdP+aV9CAoDOFgFtl9d9qjSeTx4CZxw=="
   }
 }

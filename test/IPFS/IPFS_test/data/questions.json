@@ -27,11 +27,16 @@
         "elo_rating": 1500,
         "blocked": false,
         "blocked_reason": null,
-        "created_at": "2025-10-21T03:58:47.459444",
+        "created_at": "2025-10-21T06:14:26.828610",
         "created_by": "admin_admin",
         "votes_for": 0,
         "votes_against": 0,
         "community_approved": true
+      },
+      "elo": {
+        "base_rating": 1500,
+        "deltas": [],
+        "current_rating": 1500
       }
     },
     {
@@ -59,19 +64,24 @@
         "elo_rating": 1500,
         "blocked": false,
         "blocked_reason": null,
-        "created_at": "2025-10-21T03:58:47.459444",
+        "created_at": "2025-10-21T06:14:26.828610",
         "created_by": "admin_admin",
         "votes_for": 0,
         "votes_against": 0,
         "community_approved": true
+      },
+      "elo": {
+        "base_rating": 1500,
+        "deltas": [],
+        "current_rating": 1500
       }
     }
   ],
   "metadata": {
-    "created": "2025-10-21T03:58:47.459444",
-    "system_id": "e4949184ce602a6f",
+    "created": "2025-10-21T06:14:26.828610",
+    "system_id": "5dc5e985a3de2145",
     "election_id": "election_2026-01-01_fi",
-    "fingerprint": "f7e34673bec13cd45b2c5ae77a4130ce611d2c11cd046ff543a7b8310259b4ae",
-    "signature": "gkh8IVYiEfuM5+Rq8baxE3jBvuDm6xS3xU6thDorVc+uRwixUia9nb3Yq5u+BCr0hAZ5XGiClcoZYAxXYMCkoGxRbW5KWdKJLZzL//VCI+lt0WrMREc+UVi06UEIB8OzYK3OzPvBAri7VXQsG+Np7U36AXCVbVX4Pb71gtVHLm8JN13ZrdlfULX3eus+4fcZz8OPF6LrRO4szjHetuAC/15yUX4GLyo16YzRF3puPzcePBsmG/0yKeLqhhp3dZ6MVUHWz4DcbkIGYr4cXw7nqBPyds1X2N05Z1QWI2X+RWP6VQ9Pc5VX1DgQI7mbLqfoYwWuXSW32PuTBhntTGuP+g=="
+    "fingerprint": "29369dbedeab8c0e7ca9a630dbaa1c1aab4358c6af30137049263093162525ee",
+    "signature": "rN4QQYVnltFYFmyy27LTrWAn46DKFaUg+t+PBbnRY5KjB9KFebrBiZlT4ZNye7qLkNEL6KViEGoCSxCQct3Oc9Ha5WMs/UFnmoetBDt8yRbvQ9A2qMD+rSFXyaGUqlg/OO0mXmS8tD0e40nsSxMnDipl7s29Ef7YXdvAOT/mp44tEzEsQZu77qyYhacCThEf41GT3YA3bs9sa7k9dZcdMe582oIcxfjExXOu+LXWXSF9Zg0R5LVic4XJWbxzCFo/SNXug+JvVe5sjL5GvvPXP9G4ntWi0tvbhAYcNOMD7Bh+PJoKqJcGQ2V9RYCgLTqX8MH4QEu5AcuaoEf2XVlKRg=="
   }
 }

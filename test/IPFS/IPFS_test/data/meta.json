@@ -10,9 +10,9 @@
       "sv": "Annat"
     },
     "name": {
-      "fi": "testivaali",
-      "en": "testelection",
-      "sv": "ik"
+      "fi": "vaalit",
+      "en": "election",
+      "sv": "möö"
     },
     "date": "2026-01-01",
     "language": "fi",
@@ -29,7 +29,7 @@
   "admins": [
     {
       "admin_id": "admin_admin",
-      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxV8fw46jbIdtt4BQnmfu\nQM9aOydwF/V6VYOxcC7xXZ2Jbfs7I7yn9Eg/gxQqTU4bi8JBdk1HiJJOu9UiO0Z3\nWRCrApIxZhHSa5i4u1fg8ReJ4Ni1vvRXsSw6QqA41Zvj1RGXs9jLHGgOIpGVoiEP\nD8jTCivrtJbyQyHltBjHvkyIbpy9ad9tVbBzXMDJ8fpUaEpNpKqmXTRYpZr/f39J\nQMhcyTltp09Tax9NFH72EmCEE/+3QpcP7KL8dYRZdFSpSh2LcBothyciqnenkhtH\nZvBEveDZqvHRu8isGrghQVqC07fdZXjMPNTIxUWsFwi+/Ece/q++Cq/lI9Jr8t1/\ntQIDAQAB\n-----END PUBLIC KEY-----\n",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1h8vKd1Z0Geyqj9N7S1J\nYzqX8Mk6eGxUJqgiOG7rDFsBIjcKHx/uyl7XaB8EYCWEjziVZYJBbkMv8WEqn5wc\n5BPDKVq92a9MBnzj+Cz0FFhiKXCF2IM3VS7kAbjEaCYUh3pBiOMYOPc9GDY94lUO\nXhgJZAJCUJ8CG63MGwyhwxx+NI6WPNmqb97PnKtw60hKqlwMNhBr7K6Y6dgTCy7r\nk7l7jJ7RliXHO5LYpO7d6U+GEtsb6HvzYzm11S8+3UGhniKP0JJYFgSJd7ZANJpO\nNDahAphw1SPwN7mULzHsxUW3aVus64LGLRQhQX0nXMI7Y0/UEe4M7TVWqvLnJfzi\n9QIDAQAB\n-----END PUBLIC KEY-----\n",
       "name": "admin",
       "username": "admin",
       "email": "",
@@ -37,32 +37,32 @@
     }
   ],
   "key_management": {
-    "system_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxV8fw46jbIdtt4BQnmfu\nQM9aOydwF/V6VYOxcC7xXZ2Jbfs7I7yn9Eg/gxQqTU4bi8JBdk1HiJJOu9UiO0Z3\nWRCrApIxZhHSa5i4u1fg8ReJ4Ni1vvRXsSw6QqA41Zvj1RGXs9jLHGgOIpGVoiEP\nD8jTCivrtJbyQyHltBjHvkyIbpy9ad9tVbBzXMDJ8fpUaEpNpKqmXTRYpZr/f39J\nQMhcyTltp09Tax9NFH72EmCEE/+3QpcP7KL8dYRZdFSpSh2LcBothyciqnenkhtH\nZvBEveDZqvHRu8isGrghQVqC07fdZXjMPNTIxUWsFwi+/Ece/q++Cq/lI9Jr8t1/\ntQIDAQAB\n-----END PUBLIC KEY-----\n",
+    "system_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1h8vKd1Z0Geyqj9N7S1J\nYzqX8Mk6eGxUJqgiOG7rDFsBIjcKHx/uyl7XaB8EYCWEjziVZYJBbkMv8WEqn5wc\n5BPDKVq92a9MBnzj+Cz0FFhiKXCF2IM3VS7kAbjEaCYUh3pBiOMYOPc9GDY94lUO\nXhgJZAJCUJ8CG63MGwyhwxx+NI6WPNmqb97PnKtw60hKqlwMNhBr7K6Y6dgTCy7r\nk7l7jJ7RliXHO5LYpO7d6U+GEtsb6HvzYzm11S8+3UGhniKP0JJYFgSJd7ZANJpO\nNDahAphw1SPwN7mULzHsxUW3aVus64LGLRQhQX0nXMI7Y0/UEe4M7TVWqvLnJfzi\n9QIDAQAB\n-----END PUBLIC KEY-----\n",
     "key_algorithm": "RSA-2048",
     "parties_require_keys": true,
     "candidates_require_keys": false
   },
   "content": {
-    "last_updated": "2025-10-21T03:58:47.459444",
+    "last_updated": "2025-10-21T06:14:26.828610",
     "questions_count": 2,
     "candidates_count": 2,
     "parties_count": 2
   },
   "system_info": {
-    "system_id": "e4949184ce602a6f",
-    "installation_time": "2025-10-21T03:58:47.459444",
-    "key_fingerprint": "e4949184ce602a6f78833f58698bd341083821ea79046fde0c203b859a6e7dc0"
+    "system_id": "5dc5e985a3de2145",
+    "installation_time": "2025-10-21T06:14:26.828610",
+    "key_fingerprint": "5dc5e985a3de2145be13f0cc1fc4c3d3d008407f1840b97dd08e446bcee59011"
   },
   "integrity": {
     "algorithm": "sha256",
-    "hash": "sha256:af2f04e802b6694a50627aa7ef5c74fab064d9fe4ab51e6286c0e5e98a27dcbd",
-    "computed": "2025-10-21T03:58:47.459444"
+    "hash": "sha256:4064cc68cab0501057370fe79ce0f43196f00b6d0af9241a1bf497d52669a4f5",
+    "computed": "2025-10-21T06:14:26.828610"
   },
   "metadata": {
-    "created": "2025-10-21T03:58:47.459444",
-    "system_id": "e4949184ce602a6f",
+    "created": "2025-10-21T06:14:26.828610",
+    "system_id": "5dc5e985a3de2145",
     "election_id": "election_2026-01-01_fi",
-    "fingerprint": "22eb5b320c75aafd4788ff69ea91022e3d515634d62dba7c0ba32e53112c07c3",
-    "signature": "qR4UiLorRtMtu8ZxZji/McunIh/9Hoo5JZJIS9SoSCVmif9zMSVencv82NPnu3gTspSSNKXvT7eMig5Kmp8sbjVqsD08cDUOgr2yDCVavACVwR6+FJklcDENFhRvuABkHil3trcVdz6i8tNf2dVwUfh/kjl+SJLZoNhVydsJpZtopMAelZlQCRY4jzUZewSrhZmHPSj0g/Z+uog4qaINFLyCREqE8gfdIYgWO38GJ5JQvf1yWZUckvQsl+v+rEY8NOlQuF2OocEhg5ala6w0rmVekMgZBbEmnqLokH66qF11HPMKmkX/9c24cOOgmuBUjwRvEl1tdBGK51+XR/PgkQ=="
+    "fingerprint": "ce895f0c7e8489d68fcc26c866380f46a8c80e767e4f0ca3a96527221516df00",
+    "signature": "essuLcHdBJizLibUrXZ2GBR7AU58XS72T7IHqn9GkunkAkd48LrP5N1rspULDJ3TA9DPpL0btdVHwj2NR36YRy947FtezUnmv/QZLo6+6h2ejPjO/IUa5r1Qf8ng/CG9ismczyLk5O2w9FoAWIFHPfrU+ELuTwF32NQhOaRwq5LHwWzJqFVx+Aeij2edm6xCa8qDOfrRGm8QzfRCW2/S8DD8iTNIhwj6QUNZwvHmyVIRwRYd/bXyZaDuc/0s9nP/lUXqk3jBEMJQvoIG9tjuVdN6icH16iVqeEbMge4wTG1wqCCDunWrYYUT3aT8dnVHEjGa2hNWaGbtDv96J9t42Q=="
   }
 }

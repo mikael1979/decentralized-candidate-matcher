@@ -85,3 +85,4 @@ requirements.txt
 *requirements.txt
 venv
 deepseek_prompti.txt
+*test/IPFS/IPFS_test/keys*

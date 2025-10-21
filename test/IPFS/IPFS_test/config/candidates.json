@@ -18,7 +18,7 @@
             "sv": "Klimatförändringen är det största hotet, och en 50 % minskning är nödvändig."
           },
           "justification_metadata": {
-            "created_at": "2025-10-21T03:58:47.446727",
+            "created_at": "2025-10-21T06:14:26.813853",
             "version": 1,
             "blocked": false,
             "signature": null
@@ -34,7 +34,7 @@
             "sv": "Stadscyklar är en viktig del av hållbar mobilitet."
           },
           "justification_metadata": {
-            "created_at": "2025-10-21T03:58:47.446727",
+            "created_at": "2025-10-21T06:14:26.813853",
             "version": 1,
             "blocked": false,
             "signature": null
@@ -60,7 +60,7 @@
             "sv": "Målet är för ambitiöst med nuvarande teknik."
           },
           "justification_metadata": {
-            "created_at": "2025-10-21T03:58:47.446727",
+            "created_at": "2025-10-21T06:14:26.813853",
             "version": 1,
             "blocked": false,
             "signature": null
@@ -76,7 +76,7 @@
             "sv": "Stadscyklar förbättrar stadsbilden och folkhälsan."
           },
           "justification_metadata": {
-            "created_at": "2025-10-21T03:58:47.446727",
+            "created_at": "2025-10-21T06:14:26.813853",
             "version": 1,
             "blocked": false,
             "signature": null
@@ -91,15 +91,15 @@
   },
   "metadata": {
     "version": "1.0",
-    "created": "2025-10-21T03:58:47.446727",
-    "fingerprint": "bc1992c115f303b9dc06f55ba3dcd3930512000f4f889ff844393c90813dfbb0",
+    "created": "2025-10-21T06:14:26.813853",
+    "fingerprint": "3093ad285d4700b92715526bc90aa457231091817cca30cce1570ea869e48416",
     "candidate_count": 2,
     "parties": [
       "Test Puolue",
       "Toinen Puolue"
     ],
-    "system_id": "e4949184ce602a6f",
+    "system_id": "5dc5e985a3de2145",
     "election_id": "election_2026-01-01_fi",
-    "signature": "ewWp5Lf93Rf0mLgEPopOUBrE0O4LKBjtRWyk9uYlPbj1mJgKz3bsIe5gN9TuNzNFLBZ7BMG5uIwY82Nv0SiglWpthMZExTtdZnzZ6P5esbdjXEOBUQQuoXB77DO5bP+54VL3wNiQw+VlGN4FwpC798pSScA+Q3OBFXWuxeJoEIXhHAFQezMmTfCq5wIPPT/MLcUsW9iaCfipMxwfzjmpnFUV1gFJuuiw7/UxOo3qVYMSQQqCJUrhjq6cwz1RPwoAGpGhvQtx3kyNu22ZgzaQWLi1mpnfJLD7dJy5ZCFsITpyqTEp5P0I7NBmXgLXUTszJ7IC2V4C3gJLt5AfT+SSwg=="
+    "signature": "WGL+tdgKzoaq8T21aScIdQBQhTzuKKbqtAeQSZ/eYItgxcuJZeC8RHCn5aa/2GlCFNzZXN8m7UvIOFNE9p2qDTpVg/CuquM48xmpHfP8nZ2YKqrDvkVh/3IGsP6Hoj1WW4Zsxv1aLwRSgxdfsklvDDGrS0AYb7eJmX/a9I6Um65uUk90VIWVhY7Je4AJLMj8oJYClB0SwnCPN4phGOsgTKuzToVknGSm8xZxWHvBm41Cn2JYm5wupnUvkFxSEkbiyJexXKXTyXJA9hG+rGdfaUj3XU1GTZytJAhGgPux7ixtOYslNVn5cF3X2QixesFI8DGOXD4jSmU803Lp8UwANg=="
   }
 }

@@ -1,0 +1,13 @@
+{
+  "pending_questions": [
+    {
+      "question_id": 1,
+      "added_to_queue_at": "2025-10-21T05:45:59.499578",
+      "elo_rating": 1200,
+      "status": "pending"
+    }
+  ],
+  "last_sync": null,
+  "sync_interval_minutes": 10,
+  "max_questions_per_sync": 20
+}
