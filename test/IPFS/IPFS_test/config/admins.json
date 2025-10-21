@@ -1,0 +1,22 @@
+{
+  "super_admins": [
+    {
+      "admin_id": "admin_admin",
+      "username": "admin",
+      "name": "admin",
+      "email": "",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxV8fw46jbIdtt4BQnmfu\nQM9aOydwF/V6VYOxcC7xXZ2Jbfs7I7yn9Eg/gxQqTU4bi8JBdk1HiJJOu9UiO0Z3\nWRCrApIxZhHSa5i4u1fg8ReJ4Ni1vvRXsSw6QqA41Zvj1RGXs9jLHGgOIpGVoiEP\nD8jTCivrtJbyQyHltBjHvkyIbpy9ad9tVbBzXMDJ8fpUaEpNpKqmXTRYpZr/f39J\nQMhcyTltp09Tax9NFH72EmCEE/+3QpcP7KL8dYRZdFSpSh2LcBothyciqnenkhtH\nZvBEveDZqvHRu8isGrghQVqC07fdZXjMPNTIxUWsFwi+/Ece/q++Cq/lI9Jr8t1/\ntQIDAQAB\n-----END PUBLIC KEY-----\n",
+      "created_at": "2025-10-21T03:58:47.446727",
+      "role": "super_admin"
+    }
+  ],
+  "party_admins": {},
+  "metadata": {
+    "version": "1.0",
+    "created": "2025-10-21T03:58:47.446727",
+    "fingerprint": "a9001b90f0c6f58c7cb51524f6f7bc3663c13248ec6824d34e1c11161eb7041f",
+    "system_id": "e4949184ce602a6f",
+    "election_id": "election_2026-01-01_fi",
+    "signature": "JPs5DReIjiibV3kX09EvuS4uvK12ie30OHYM5kojz96rHLmnxdHqkZ2qT23hq9P3Ne8gKu5aQDa7QMz0ESRIIZbQFNcYrIQT7XROLkp8ooeATnnOljwwgyUEdg7nH7rhunDLkgiveitGAN2Az5bNKWYkw5RYcioNaOoWbsIZKlQHHbMUneI7dbBxWYjdNkueUrVDPHN9X3Y2opmIGdCEkip8ZGYbo5RSSST3kYqptZpxpDvDRvV8jzuYqPRJZsvNWKg8g3EqDYKP9w8keDJy4um8eueTaU4oXeH/mHyNh1/lhLYs3Y24By8BRNTL6MVdubWXHn0TBAjZYp8yfVN4Gg=="
+  }
+}

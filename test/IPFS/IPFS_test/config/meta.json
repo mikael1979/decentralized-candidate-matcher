@@ -1,0 +1,55 @@
+{
+  "default_meta": {
+    "system": "Decentralized Candidate Matcher",
+    "version": "0.0.1",
+    "election": {
+      "id": "election_2026-01-01_fi",
+      "country": "FI",
+      "type": {
+        "fi": "Muu",
+        "en": "Other",
+        "sv": "Annat"
+      },
+      "name": {
+        "fi": "testivaali",
+        "en": "testelection",
+        "sv": "ik"
+      },
+      "date": "2026-01-01",
+      "language": "fi",
+      "district": null
+    },
+    "community_moderation": {
+      "enabled": true,
+      "thresholds": {
+        "auto_block_inappropriate": 0.7,
+        "auto_block_min_votes": 10,
+        "community_approval": 0.8
+      }
+    },
+    "admins": [
+      {
+        "admin_id": "admin_admin",
+        "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxV8fw46jbIdtt4BQnmfu\nQM9aOydwF/V6VYOxcC7xXZ2Jbfs7I7yn9Eg/gxQqTU4bi8JBdk1HiJJOu9UiO0Z3\nWRCrApIxZhHSa5i4u1fg8ReJ4Ni1vvRXsSw6QqA41Zvj1RGXs9jLHGgOIpGVoiEP\nD8jTCivrtJbyQyHltBjHvkyIbpy9ad9tVbBzXMDJ8fpUaEpNpKqmXTRYpZr/f39J\nQMhcyTltp09Tax9NFH72EmCEE/+3QpcP7KL8dYRZdFSpSh2LcBothyciqnenkhtH\nZvBEveDZqvHRu8isGrghQVqC07fdZXjMPNTIxUWsFwi+/Ece/q++Cq/lI9Jr8t1/\ntQIDAQAB\n-----END PUBLIC KEY-----\n",
+        "name": "admin",
+        "username": "admin",
+        "email": "",
+        "role": "super_admin"
+      }
+    ],
+    "key_management": {
+      "system_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxV8fw46jbIdtt4BQnmfu\nQM9aOydwF/V6VYOxcC7xXZ2Jbfs7I7yn9Eg/gxQqTU4bi8JBdk1HiJJOu9UiO0Z3\nWRCrApIxZhHSa5i4u1fg8ReJ4Ni1vvRXsSw6QqA41Zvj1RGXs9jLHGgOIpGVoiEP\nD8jTCivrtJbyQyHltBjHvkyIbpy9ad9tVbBzXMDJ8fpUaEpNpKqmXTRYpZr/f39J\nQMhcyTltp09Tax9NFH72EmCEE/+3QpcP7KL8dYRZdFSpSh2LcBothyciqnenkhtH\nZvBEveDZqvHRu8isGrghQVqC07fdZXjMPNTIxUWsFwi+/Ece/q++Cq/lI9Jr8t1/\ntQIDAQAB\n-----END PUBLIC KEY-----\n",
+      "key_algorithm": "RSA-2048",
+      "parties_require_keys": true,
+      "candidates_require_keys": false
+    }
+  },
+  "metadata": {
+    "version": "1.0",
+    "created": "2025-10-21T03:58:47.446727",
+    "fingerprint": "502a1f544dbd817d214a5e63492fa787ae26e7638596a38293a711cc0b25a01c",
+    "system_id": "e4949184ce602a6f",
+    "admin_user": "admin",
+    "signature": "LwCIqjCGySrjM2giXUUa1Www6OqJncuSvqm0bxIRnK+1UKi2DEBLNTZi/x/RZ5+tw3EgsIBchMiJaHo5dMP35py7JzTxIVyy+Wm5sXf/ohG2tBUojNefFcBYhYtl9xaNOhtH11eYHDr9PJ89ZZf34JksKsX2iDpFxPh/waESn7oDf57Qx74pHCC6jyp2on+zmTn+nKEHjrJFng1mEdO72d27t7vL0eAnwrRyCcDs8Pp6oJMJIx64+mJ+bGrf8YBOdz3kGzKGN6soJygnTjTnW4HDkmDhps7IWE+YW3PL3rU4kDxNlQRANyfqs/vbjYaLoW5hJPYM4LX8AvRfmgPPCw=="
+  }
+}

@@ -1,5 +1,5 @@
-import random
-from datetime import datetime
+from utils import calculate_percentage_level, calculate_similarity, generate_next_id
+
 
 class RouteHandlers:
     def __init__(self, data_manager, debug=False):
@@ -128,21 +128,8 @@ class RouteHandlers:
             'overall_consensus': overall_consensus,
             'candidate_count': len(party_candidates),
             'comparison_pairs': consensus_count,
-            'consensus_level': self._get_consensus_level(overall_consensus)
+            'consensus_level': calculate_percentage_level(overall_consensus)
         }
-    
-    def _get_consensus_level(self, consensus_percentage):
-        """Palauttaa konsensuksen tason kuvauksen"""
-        if consensus_percentage >= 90:
-            return "Erittäin korkea"
-        elif consensus_percentage >= 75:
-            return "Korkea"
-        elif consensus_percentage >= 60:
-            return "Kohtalainen"
-        elif consensus_percentage >= 40:
-            return "Matala"
-        else:
-            return "Erittäin matala"
     
     def search_questions(self, query="", tags=None, category=None):
         """Hakee kysymyksiä hakusanan, tagien ja kategorian perusteella"""
@@ -246,7 +233,7 @@ class RouteHandlers:
                     'party_avg_answer': round(party_avg_answer, 1),
                     'difference': round(difference, 1),
                     'similarity': round(similarity, 1),
-                    'similarity_level': self._get_similarity_level(similarity)
+                    'similarity_level': calculate_percentage_level(similarity)
                 })
                 
                 total_similarity += similarity
@@ -263,19 +250,6 @@ class RouteHandlers:
             'comparison_details': comparison_details,
             'summary': self._generate_comparison_summary(overall_similarity, consensus.get('overall_consensus', 0))
         }
-    
-    def _get_similarity_level(self, similarity):
-        """Palauttaa samankaltaisuustason kuvauksen"""
-        if similarity >= 90:
-            return "Erittäin korkea"
-        elif similarity >= 75:
-            return "Korkea"
-        elif similarity >= 60:
-            return "Kohtalainen"
-        elif similarity >= 40:
-            return "Matala"
-        else:
-            return "Erittäin matala"
     
     def _generate_comparison_summary(self, similarity, consensus):
         """Luo yhteenvedon vertailusta"""
@@ -332,25 +306,12 @@ class RouteHandlers:
                 
                 # Yksinkertainen samankaltaisuustarkistus
                 if fi_text.lower() in existing_text.lower() or existing_text.lower() in fi_text.lower():
-                    similarity = self._calculate_text_similarity(fi_text, existing_text)
+                    similarity = calculate_similarity(fi_text, existing_text)
                     if similarity > 0.8:  # 80% samankaltaisuus
                         errors.append(f'Samankaltainen kysymys on jo olemassa (samankaltaisuus: {similarity:.0f}%)')
                         break
         
         return errors
-    
-    def _calculate_text_similarity(self, text1, text2):
-        """Laskee kahden tekstin välisen samankaltaisuuden (yksinkertaistettu)"""
-        words1 = set(text1.lower().split())
-        words2 = set(text2.lower().split())
-        
-        if not words1 or not words2:
-            return 0.0
-        
-        intersection = words1.intersection(words2)
-        union = words1.union(words2)
-        
-        return len(intersection) / len(union) if union else 0.0
     
     def get_system_stats(self):
         """Palauttaa järjestelmän tilastot"""

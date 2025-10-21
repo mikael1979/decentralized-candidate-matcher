@@ -1,22 +1,13 @@
 {
-  "election_id": "test_election_2024",
+  "election_id": "election_2026-01-01_fi",
   "language": "fi",
   "question_type": "user_submitted",
-  "questions": [
-    {
-      "question": {
-        "fi": "moi",
-        "en": "hello"
-      },
-      "category": "Muu",
-      "tags": [
-        "testi"
-      ],
-      "scale": {
-        "min": -5,
-        "max": 5
-      },
-      "id": 1
-    }
-  ]
+  "questions": [],
+  "metadata": {
+    "created": "2025-10-21T03:58:47.459444",
+    "system_id": "e4949184ce602a6f",
+    "election_id": "election_2026-01-01_fi",
+    "fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "signature": "EGis+CpUwqMBf9CVNMjBLpbKC6o6NWJARGLTTCWCDHm4hOjL+KhfYoKovXAGravR7zw+rzvb60H5dTdqFuOz8SaMZOfPxHwTaqxLYa8SHWk9Y7j4IkasZj4o2peE5wwCXQf4mKsNl1RIvMgNdEWVjdEjWrizz8eTyYOlRnPxUH040JA75PReMLs9uqBU+eMvFgfGzw2xsbo1Izr3brEu1gfprAPdCYPnUyVZwrroFe/NmyR0s1bUQQZa2YPrBi4sskESB5Y8c8EMvoRlrIaj+MecCGbfaGrLc/P0L7+PL0eH6DaXcVXd/qqDjEjCFQ5CHZY1fd3tZCZRRTnsJW5d0g=="
+  }
 }

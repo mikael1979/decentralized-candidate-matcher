@@ -1,0 +1,85 @@
+{
+  "default_questions": [
+    {
+      "id": 1,
+      "category": {
+        "fi": "Ympäristö",
+        "en": "Environment",
+        "sv": "Miljö"
+      },
+      "question": {
+        "fi": "Pitäisikö kaupungin vähentää hiilidioksidipäästöjä 50% vuoteen 2030 mennessä?",
+        "en": "Should the city reduce carbon dioxide emissions by 50% by 2030?",
+        "sv": "Bör staden minska koldioxidutsläppen med 50 % till 2030?"
+      },
+      "tags": [
+        "ympäristö",
+        "hiilidioksidi",
+        "ilmasto"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "justification": {
+        "fi": "Ilmastonmuutos vaatii kiireellisiä toimia kaupunkitasolla.",
+        "en": "Climate change requires urgent action at the municipal level.",
+        "sv": "Klimatförändringar kräver brådskande åtgärder på kommunal nivå."
+      },
+      "justification_metadata": {
+        "author_id": "admin_admin",
+        "author_type": "super_admin",
+        "created_at": "2025-10-21T03:58:47.446727",
+        "updated_at": "2025-10-21T03:58:47.446727",
+        "version": 1,
+        "blocked": false,
+        "signature": null
+      }
+    },
+    {
+      "id": 2,
+      "category": {
+        "fi": "Liikenne",
+        "en": "Transportation",
+        "sv": "Transport"
+      },
+      "question": {
+        "fi": "Pitäisikö kaupunkipyörien määrää lisätä kesäkaudella?",
+        "en": "Should the number of city bikes be increased during summer season?",
+        "sv": "Bör antalet stads cyklar ökas under sommarsäsongen?"
+      },
+      "tags": [
+        "liikenne",
+        "kaupunkipyörät",
+        "kesä"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "justification": {
+        "fi": "Kaupunkipyörät vähentävät liikenne ruuhkia ja saastumista.",
+        "en": "City bikes reduce traffic congestion and pollution.",
+        "sv": "Stadscyklar minskar trafikstockningar och föroreningar."
+      },
+      "justification_metadata": {
+        "author_id": "admin_admin",
+        "author_type": "super_admin",
+        "created_at": "2025-10-21T03:58:47.446727",
+        "updated_at": "2025-10-21T03:58:47.446727",
+        "version": 1,
+        "blocked": false,
+        "signature": null
+      }
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "created": "2025-10-21T03:58:47.446727",
+    "fingerprint": "2b679c01d110537777fa51b8398e4b450d5695e649fded96bcef433d63c0fb47",
+    "question_count": 2,
+    "system_id": "e4949184ce602a6f",
+    "election_id": "election_2026-01-01_fi",
+    "signature": "gcY/YTH768Qk8xQAqW2tTQL4nk2OHXjJyZmTBihXK8mNBjC5EwQGap69FITQc2GhkSyMDqMJ2l9Y/Y5oVax5EpAHJ0sSlwXJgdblqZEOFHxyuhjwgDyq7bc7g4I3voxUhSbuGejG7iX0Rcf/iP4qAe61Ry7SSLy8jJjPvJypzaEPIqQmlgOJM/YTW8Eke/yr4bgHAyn8JR3YDGfBOpBGVUYOl4eb0n+Vz7CzAgaRyE3QgxPu8IQHn25QKDiTrYQLWObvQE7pIhuVUh8ItU1GhyGAW8VWbzX5BpoqXBWtoNcmU7+7Uj/45yODea879+1BWIRHxYBiAdgX7NaUnKt+jw=="
+  }
+}

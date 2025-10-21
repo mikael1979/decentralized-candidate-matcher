@@ -1,78 +1,43 @@
 import json
 import os
-import hashlib
 from datetime import datetime
+from utils import ConfigLoader, calculate_hash, generate_next_id
+
 
 class DataManager:
     def __init__(self, debug=False):
         self.debug = debug
         self.data_dir = 'data'
+        self.config_loader = ConfigLoader()
         
     def ensure_directories(self):
         """Varmistaa että tarvittavat kansiot ovat olemassa"""
-        directories = ['data', 'templates', 'static']
+        directories = ['data', 'templates', 'static', 'config']
         for directory in directories:
             os.makedirs(directory, exist_ok=True)
             if self.debug:
                 print(f"📁 Kansio varmistettu: {directory}")
     
     def initialize_data_files(self):
-        """Alustaa data-tiedostot"""
+        """Alustaa data-tiedostot konfiguraatioista"""
         self.ensure_directories()
+        
+        # Lataa konfiguraatiot
+        questions_config = self.config_loader.load_config('questions.json')
+        candidates_config = self.config_loader.load_config('candidates.json')
+        meta_config = self.config_loader.load_config('meta.json')
         
         # Perustiedostot
         files = {
             'questions.json': {
                 "election_id": "test_election_2025",
                 "language": "fi",
-                "questions": [
-                    {
-                        "id": 1,
-                        "category": {"fi": "Ympäristö", "en": "Environment"},
-                        "question": {
-                            "fi": "Pitäisikö kaupungin vähentää hiilidioksidipäästöjä 50% vuoteen 2030 mennessä?",
-                            "en": "Should the city reduce carbon dioxide emissions by 50% by 2030?"
-                        },
-                        "tags": ["ympäristö", "hiilidioksidi", "ilmasto"],
-                        "scale": {"min": -5, "max": 5}
-                    },
-                    {
-                        "id": 2,
-                        "category": {"fi": "Liikenne", "en": "Transportation"},
-                        "question": {
-                            "fi": "Pitäisikö kaupunkipyörien määrää lisätä kesäkaudella?",
-                            "en": "Should the number of city bikes be increased during summer season?"
-                        },
-                        "tags": ["liikenne", "kaupunkipyörät", "kesä"],
-                        "scale": {"min": -5, "max": 5}
-                    }
-                ]
+                "questions": questions_config.get('default_questions', [])
             },
             'candidates.json': {
                 "election_id": "test_election_2025", 
                 "language": "fi",
-                "candidates": [
-                    {
-                        "id": 1,
-                        "name": "Matti Meikäläinen",
-                        "party": "Test Puolue", 
-                        "district": "Helsinki",
-                        "answers": [
-                            {"question_id": 1, "answer": 4, "confidence": 0.8},
-                            {"question_id": 2, "answer": 3, "confidence": 0.6}
-                        ]
-                    },
-                    {
-                        "id": 2,
-                        "name": "Liisa Esimerkki",
-                        "party": "Toinen Puolue",
-                        "district": "Espoo", 
-                        "answers": [
-                            {"question_id": 1, "answer": 2, "confidence": 0.5},
-                            {"question_id": 2, "answer": 5, "confidence": 0.8}
-                        ]
-                    }
-                ]
+                "candidates": candidates_config.get('default_candidates', [])
             },
             'newquestions.json': {
                 "election_id": "test_election_2025",
@@ -80,71 +45,43 @@ class DataManager:
                 "question_type": "user_submitted", 
                 "questions": []
             },
-            'meta.json': {
-                "system": "Decentralized Candidate Matcher",
-                "version": "0.0.1",
-                "election": {
-                    "id": "test_election_2025",
-                    "country": "FI",
-                    "type": "municipal",
-                    "name": {
-                        "fi": "Testivaalit 2025",
-                        "en": "Test Election 2025",
-                        "sv": "Testval 2025"
-                    },
-                    "date": "2025-04-13",
-                    "language": "fi"
-                },
-                "community_moderation": {
-                    "enabled": True,
-                    "thresholds": {
-                        "auto_block_inappropriate": 0.7,
-                        "auto_block_min_votes": 10,
-                        "community_approval": 0.8
-                    }
-                },
-                "admins": [
-                    {
-                        "admin_id": "admin_1",
-                        "public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIadmin1example123456789",
-                        "name": "Election Admin",
-                        "role": "super_admin"
-                    }
-                ],
-                "content": {
-                    "last_updated": datetime.now().isoformat(),
-                    "questions_count": 2,
-                    "candidates_count": 2,
-                    "parties_count": 2
-                },
-                "integrity": {
-                    "algorithm": "sha256",
-                    "hash": "",
-                    "computed": datetime.now().isoformat()
-                }
-            }
+            'meta.json': self._initialize_meta_data(meta_config.get('default_meta', {}))
         }
         
         for filename, default_data in files.items():
             filepath = os.path.join(self.data_dir, filename)
             if not os.path.exists(filepath):
-                # Laske hash ennen tallennusta
-                if filename == 'meta.json':
-                    default_data['integrity']['hash'] = self._calculate_hash(default_data)
                 self.write_json(filename, default_data, f"Alustettu {filename}")
             elif self.debug:
                 print(f"✅ Tiedosto on olemassa: {filename}")
     
-    def _calculate_hash(self, data):
-        """Laskee SHA256 hash datalle"""
-        # Poista integrity-kenttä ennen hashin laskemista
-        data_without_integrity = data.copy()
-        if 'integrity' in data_without_integrity:
-            del data_without_integrity['integrity']
+    def _initialize_meta_data(self, default_meta):
+        """Alustaa meta-tiedot"""
+        meta_data = default_meta.copy()
         
-        # Muunna JSONiksi ja laske hash
-        json_str = json.dumps(data_without_integrity, sort_keys=True, ensure_ascii=False)
-        return f"sha256:{hashlib.sha256(json_str.encode('utf-8')).hexdigest()}"
+        # Lisää dynaamiset kentät
+        meta_data.update({
+            "content": {
+                "last_updated": datetime.now().isoformat(),
+                "questions_count": len(self.config_loader.load_config('questions.json').get('default_questions', [])),
+                "candidates_count": len(self.config_loader.load_config('candidates.json').get('default_candidates', [])),
+                "parties_count": len(set(
+                    c.get('party', '') 
+                    for c in self.config_loader.load_config('candidates.json').get('default_candidates', [])
+                    if c.get('party')
+                ))
+            },
+            "integrity": {
+                "algorithm": "sha256",
+                "hash": "",
+                "computed": datetime.now().isoformat()
+            }
+        })
+        
+        # Laske hash
+        meta_data['integrity']['hash'] = calculate_hash(meta_data)
+        
+        return meta_data
     
     def read_json(self, filename):
         """Lukee JSON-tiedoston"""
@@ -195,7 +132,7 @@ class DataManager:
             # Päivitä integrity hash
             meta['integrity'] = {
                 'algorithm': 'sha256',
-                'hash': self._calculate_hash(meta),
+                'hash': calculate_hash(meta),
                 'computed': datetime.now().isoformat()
             }
             
@@ -215,7 +152,7 @@ class DataManager:
             # Päivitä integrity hash
             new_meta['integrity'] = {
                 'algorithm': 'sha256',
-                'hash': self._calculate_hash(new_meta),
+                'hash': calculate_hash(new_meta),
                 'computed': datetime.now().isoformat()
             }
             
@@ -243,18 +180,17 @@ class DataManager:
             data = self.read_json('newquestions.json') or {}
             questions = data.get('questions', [])
             
-            new_id = max([q.get('id', 0) for q in questions], default=0) + 1
-            question_data['id'] = new_id
+            question_data['id'] = generate_next_id(questions)
             questions.append(question_data)
             
             data['questions'] = questions
-            success = self.write_json('newquestions.json', data, f"Kysymys {new_id} lisätty")
+            success = self.write_json('newquestions.json', data, f"Kysymys {question_data['id']} lisätty")
             
             # Päivitä meta-tilastot
             if success:
                 self.get_meta()  # Tämä päivittää automaattisesti
             
-            return f"mock_cid_{new_id}" if success else None
+            return f"mock_cid_{question_data['id']}" if success else None
         except Exception as e:
             if self.debug:
                 print(f"❌ Kysymyksen lisäys epäonnistui: {e}")
@@ -266,8 +202,7 @@ class DataManager:
             data = self.read_json('candidates.json') or {}
             candidates = data.get('candidates', [])
             
-            new_id = max([c.get('id', 0) for c in candidates], default=0) + 1
-            candidate_data['id'] = new_id
+            candidate_data['id'] = generate_next_id(candidates)
             candidates.append(candidate_data)
             
             data['candidates'] = candidates
@@ -277,7 +212,7 @@ class DataManager:
             if success:
                 self.get_meta()  # Tämä päivittää automaattisesti
             
-            return new_id if success else None
+            return candidate_data['id'] if success else None
         except Exception as e:
             if self.debug:
                 print(f"❌ Ehdokkaan lisäys epäonnistui: {e}")

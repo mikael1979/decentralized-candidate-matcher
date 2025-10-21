@@ -1,36 +1,77 @@
 {
+  "election_id": "election_2026-01-01_fi",
+  "language": "fi",
   "questions": [
     {
       "id": 1,
       "category": {
         "fi": "Ympäristö",
-        "en": "Environment"
+        "en": "Environment",
+        "sv": "Miljö"
       },
       "question": {
         "fi": "Pitäisikö kaupungin vähentää hiilidioksidipäästöjä 50% vuoteen 2030 mennessä?",
-        "en": "Should the city reduce carbon dioxide emissions by 50% by 2030?"
+        "en": "Should the city reduce carbon dioxide emissions by 50% by 2030?",
+        "sv": "Bör staden minska koldioxidutsläppen med 50 % till 2030?"
       },
       "tags": [
         "ympäristö",
         "hiilidioksidi",
         "ilmasto"
-      ]
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1500,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-21T03:58:47.459444",
+        "created_by": "admin_admin",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": true
+      }
     },
     {
       "id": 2,
       "category": {
         "fi": "Liikenne",
-        "en": "Transportation"
+        "en": "Transportation",
+        "sv": "Transport"
       },
       "question": {
         "fi": "Pitäisikö kaupunkipyörien määrää lisätä kesäkaudella?",
-        "en": "Should the number of city bikes be increased during summer season?"
+        "en": "Should the number of city bikes be increased during summer season?",
+        "sv": "Bör antalet stads cyklar ökas under sommarsäsongen?"
       },
       "tags": [
         "liikenne",
         "kaupunkipyörät",
         "kesä"
-      ]
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1500,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-21T03:58:47.459444",
+        "created_by": "admin_admin",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": true
+      }
     }
-  ]
+  ],
+  "metadata": {
+    "created": "2025-10-21T03:58:47.459444",
+    "system_id": "e4949184ce602a6f",
+    "election_id": "election_2026-01-01_fi",
+    "fingerprint": "f7e34673bec13cd45b2c5ae77a4130ce611d2c11cd046ff543a7b8310259b4ae",
+    "signature": "gkh8IVYiEfuM5+Rq8baxE3jBvuDm6xS3xU6thDorVc+uRwixUia9nb3Yq5u+BCr0hAZ5XGiClcoZYAxXYMCkoGxRbW5KWdKJLZzL//VCI+lt0WrMREc+UVi06UEIB8OzYK3OzPvBAri7VXQsG+Np7U36AXCVbVX4Pb71gtVHLm8JN13ZrdlfULX3eus+4fcZz8OPF6LrRO4szjHetuAC/15yUX4GLyo16YzRF3puPzcePBsmG/0yKeLqhhp3dZ6MVUHWz4DcbkIGYr4cXw7nqBPyds1X2N05Z1QWI2X+RWP6VQ9Pc5VX1DgQI7mbLqfoYwWuXSW32PuTBhntTGuP+g=="
+  }
 }

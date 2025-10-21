@@ -2,16 +2,21 @@
   "system": "Decentralized Candidate Matcher",
   "version": "0.0.1",
   "election": {
-    "id": "test_election_2025",
+    "id": "election_2026-01-01_fi",
     "country": "FI",
-    "type": "municipal",
-    "name": {
-      "fi": "Testivaalit 2025",
-      "en": "Test Election 2025",
-      "sv": "Testval 2025"
+    "type": {
+      "fi": "Muu",
+      "en": "Other",
+      "sv": "Annat"
     },
-    "date": "2025-04-13",
-    "language": "fi"
+    "name": {
+      "fi": "testivaali",
+      "en": "testelection",
+      "sv": "ik"
+    },
+    "date": "2026-01-01",
+    "language": "fi",
+    "district": null
   },
   "community_moderation": {
     "enabled": true,
@@ -23,21 +28,41 @@
   },
   "admins": [
     {
-      "admin_id": "admin_1",
-      "public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIadmin1example123456789",
-      "name": "Election Admin",
+      "admin_id": "admin_admin",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxV8fw46jbIdtt4BQnmfu\nQM9aOydwF/V6VYOxcC7xXZ2Jbfs7I7yn9Eg/gxQqTU4bi8JBdk1HiJJOu9UiO0Z3\nWRCrApIxZhHSa5i4u1fg8ReJ4Ni1vvRXsSw6QqA41Zvj1RGXs9jLHGgOIpGVoiEP\nD8jTCivrtJbyQyHltBjHvkyIbpy9ad9tVbBzXMDJ8fpUaEpNpKqmXTRYpZr/f39J\nQMhcyTltp09Tax9NFH72EmCEE/+3QpcP7KL8dYRZdFSpSh2LcBothyciqnenkhtH\nZvBEveDZqvHRu8isGrghQVqC07fdZXjMPNTIxUWsFwi+/Ece/q++Cq/lI9Jr8t1/\ntQIDAQAB\n-----END PUBLIC KEY-----\n",
+      "name": "admin",
+      "username": "admin",
+      "email": "",
       "role": "super_admin"
     }
   ],
+  "key_management": {
+    "system_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxV8fw46jbIdtt4BQnmfu\nQM9aOydwF/V6VYOxcC7xXZ2Jbfs7I7yn9Eg/gxQqTU4bi8JBdk1HiJJOu9UiO0Z3\nWRCrApIxZhHSa5i4u1fg8ReJ4Ni1vvRXsSw6QqA41Zvj1RGXs9jLHGgOIpGVoiEP\nD8jTCivrtJbyQyHltBjHvkyIbpy9ad9tVbBzXMDJ8fpUaEpNpKqmXTRYpZr/f39J\nQMhcyTltp09Tax9NFH72EmCEE/+3QpcP7KL8dYRZdFSpSh2LcBothyciqnenkhtH\nZvBEveDZqvHRu8isGrghQVqC07fdZXjMPNTIxUWsFwi+/Ece/q++Cq/lI9Jr8t1/\ntQIDAQAB\n-----END PUBLIC KEY-----\n",
+    "key_algorithm": "RSA-2048",
+    "parties_require_keys": true,
+    "candidates_require_keys": false
+  },
   "content": {
-    "last_updated": "2025-10-20T11:12:28.370939",
-    "questions_count": 3,
-    "candidates_count": 4,
-    "parties_count": 4
+    "last_updated": "2025-10-21T03:58:47.459444",
+    "questions_count": 2,
+    "candidates_count": 2,
+    "parties_count": 2
+  },
+  "system_info": {
+    "system_id": "e4949184ce602a6f",
+    "installation_time": "2025-10-21T03:58:47.459444",
+    "key_fingerprint": "e4949184ce602a6f78833f58698bd341083821ea79046fde0c203b859a6e7dc0"
   },
   "integrity": {
     "algorithm": "sha256",
-    "hash": "sha256:09c8ca7ba9f76187448e1ac998a137684d8fc50bc042adf2cf4c2e3f4ae77a8c",
-    "computed": "2025-10-20T11:12:28.371010"
+    "hash": "sha256:af2f04e802b6694a50627aa7ef5c74fab064d9fe4ab51e6286c0e5e98a27dcbd",
+    "computed": "2025-10-21T03:58:47.459444"
+  },
+  "metadata": {
+    "created": "2025-10-21T03:58:47.459444",
+    "system_id": "e4949184ce602a6f",
+    "election_id": "election_2026-01-01_fi",
+    "fingerprint": "22eb5b320c75aafd4788ff69ea91022e3d515634d62dba7c0ba32e53112c07c3",
+    "signature": "qR4UiLorRtMtu8ZxZji/McunIh/9Hoo5JZJIS9SoSCVmif9zMSVencv82NPnu3gTspSSNKXvT7eMig5Kmp8sbjVqsD08cDUOgr2yDCVavACVwR6+FJklcDENFhRvuABkHil3trcVdz6i8tNf2dVwUfh/kjl+SJLZoNhVydsJpZtopMAelZlQCRY4jzUZewSrhZmHPSj0g/Z+uog4qaINFLyCREqE8gfdIYgWO38GJ5JQvf1yWZUckvQsl+v+rEY8NOlQuF2OocEhg5ala6w0rmVekMgZBbEmnqLokH66qF11HPMKmkX/9c24cOOgmuBUjwRvEl1tdBGK51+XR/PgkQ=="
   }
 }
