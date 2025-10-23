@@ -1,0 +1,863 @@
+{
+  "election_id": "election_2026-01-01_fi_satakunta",
+  "language": "fi",
+  "question_type": "user_submitted",
+  "questions": [
+    {
+      "question": {
+        "fi": "möö muu mää mii",
+        "en": "moo mii maam mee"
+      },
+      "category": "Muu",
+      "tags": [
+        "testi"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5,
+        "labels": {
+          "fi": {
+            "0": "Neutraali",
+            "5": "Täysin samaa mieltä",
+            "-5": "Täysin eri mieltä"
+          }
+        }
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T13:25:41.452001",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 1
+    },
+    {
+      "question": {
+        "fi": "<script>alert('xss')</script>"
+      },
+      "category": "Testi",
+      "tags": [
+        "<script>alert('xss')</script>"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:43:02.626647",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 2
+    },
+    {
+      "question": {
+        "fi": "'; DROP TABLE users; --"
+      },
+      "category": "Testi",
+      "tags": [
+        "'; DROP TABLE users; --"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:43:02.630697",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 3
+    },
+    {
+      "question": {
+        "fi": "../../etc/passwd"
+      },
+      "category": "Testi",
+      "tags": [
+        "../../etc/passwd"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:43:02.633525",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 4
+    },
+    {
+      "question": {
+        "fi": "{{7*7}}"
+      },
+      "category": "Testi",
+      "tags": [
+        "{{7*7}}"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:43:02.636566",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 5
+    },
+    {
+      "question": {
+        "fi": "<script>alert('xss')</script>"
+      },
+      "category": "Testi",
+      "tags": [
+        "<script>alert('xss')</script>"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:51:59.873910",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 6
+    },
+    {
+      "question": {
+        "fi": "'; DROP TABLE users; --"
+      },
+      "category": "Testi",
+      "tags": [
+        "'; DROP TABLE users; --"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:51:59.878252",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 7
+    },
+    {
+      "question": {
+        "fi": "../../etc/passwd"
+      },
+      "category": "Testi",
+      "tags": [
+        "../../etc/passwd"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:51:59.881762",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 8
+    },
+    {
+      "question": {
+        "fi": "{{7*7}}"
+      },
+      "category": "Testi",
+      "tags": [
+        "{{7*7}}"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:51:59.885904",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 9
+    },
+    {
+      "question": {
+        "fi": "<script>alert('xss')</script>"
+      },
+      "category": "Testi",
+      "tags": [
+        "<script>alert('xss')</script>"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:54:42.840146",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 10
+    },
+    {
+      "question": {
+        "fi": "'; DROP TABLE users; --"
+      },
+      "category": "Testi",
+      "tags": [
+        "'; DROP TABLE users; --"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:54:42.843768",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 11
+    },
+    {
+      "question": {
+        "fi": "../../etc/passwd"
+      },
+      "category": "Testi",
+      "tags": [
+        "../../etc/passwd"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:54:42.855250",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 12
+    },
+    {
+      "question": {
+        "fi": "{{7*7}}"
+      },
+      "category": "Testi",
+      "tags": [
+        "{{7*7}}"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:54:42.859141",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 13
+    },
+    {
+      "question": {
+        "fi": "<script>alert('xss')</script>"
+      },
+      "category": "Testi",
+      "tags": [
+        "<script>alert('xss')</script>"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:55:45.833588",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 14
+    },
+    {
+      "question": {
+        "fi": "'; DROP TABLE users; --"
+      },
+      "category": "Testi",
+      "tags": [
+        "'; DROP TABLE users; --"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:55:45.839378",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 15
+    },
+    {
+      "question": {
+        "fi": "../../etc/passwd"
+      },
+      "category": "Testi",
+      "tags": [
+        "../../etc/passwd"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:55:45.850669",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 16
+    },
+    {
+      "question": {
+        "fi": "{{7*7}}"
+      },
+      "category": "Testi",
+      "tags": [
+        "{{7*7}}"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:55:45.854021",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 17
+    },
+    {
+      "question": {
+        "fi": "<script>alert('xss')</script>"
+      },
+      "category": "Testi",
+      "tags": [
+        "<script>alert('xss')</script>"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:57:05.113069",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 18
+    },
+    {
+      "question": {
+        "fi": "'; DROP TABLE users; --"
+      },
+      "category": "Testi",
+      "tags": [
+        "'; DROP TABLE users; --"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:57:05.117535",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 19
+    },
+    {
+      "question": {
+        "fi": "../../etc/passwd"
+      },
+      "category": "Testi",
+      "tags": [
+        "../../etc/passwd"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:57:05.128626",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 20
+    },
+    {
+      "question": {
+        "fi": "{{7*7}}"
+      },
+      "category": "Testi",
+      "tags": [
+        "{{7*7}}"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T15:57:05.132745",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 21
+    },
+    {
+      "question": {
+        "fi": "<script>alert('xss')</script>"
+      },
+      "category": "Testi",
+      "tags": [
+        "<script>alert('xss')</script>"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T16:10:48.493790",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 22
+    },
+    {
+      "question": {
+        "fi": "'; DROP TABLE users; --"
+      },
+      "category": "Testi",
+      "tags": [
+        "'; DROP TABLE users; --"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T16:10:48.499505",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 23
+    },
+    {
+      "question": {
+        "fi": "../../etc/passwd"
+      },
+      "category": "Testi",
+      "tags": [
+        "../../etc/passwd"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T16:10:48.511619",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 24
+    },
+    {
+      "question": {
+        "fi": "{{7*7}}"
+      },
+      "category": "Testi",
+      "tags": [
+        "{{7*7}}"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T16:10:48.517628",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 25
+    },
+    {
+      "question": {
+        "fi": "<script>alert('xss')</script>"
+      },
+      "category": "Testi",
+      "tags": [
+        "<script>alert('xss')</script>"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T16:12:21.271924",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 26
+    },
+    {
+      "question": {
+        "fi": "'; DROP TABLE users; --"
+      },
+      "category": "Testi",
+      "tags": [
+        "'; DROP TABLE users; --"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T16:12:21.276121",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 27
+    },
+    {
+      "question": {
+        "fi": "../../etc/passwd"
+      },
+      "category": "Testi",
+      "tags": [
+        "../../etc/passwd"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T16:12:21.288174",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 28
+    },
+    {
+      "question": {
+        "fi": "{{7*7}}"
+      },
+      "category": "Testi",
+      "tags": [
+        "{{7*7}}"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T16:12:21.292835",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 29
+    }
+  ],
+  "metadata": {
+    "created": "2025-10-23T12:11:57.331032",
+    "system_id": "597b55fb20461480",
+    "election_id": "election_2026-01-01_fi_satakunta",
+    "fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "signature": "f1q6SNjb3Tw72roU2vCJ7h2srZ2icdr6R1juXY2k0VEheHLR8+xb32nDB/xft3UZhYIA1z41lnzLwgU26haFf3Y+hLsWgPLw4JYZ3TCDhhWXd/8m2Mh09Z4STMVQQn2sxMCWRHZfzDFF9OyB+WzqLJ1NbkGD2csdQBxK2irasDic04G1/qg2KekyfkTYpTSShZ4cl46uhFTzNJPXhSHi0RCVxcO1GZbLFZsRqWdhrutYotjqtIP9bcKqL08lKv67hTTReNi1NujvANh6IFeAxUu7qoknnFo08m2C4CdrynR7xyaiw2btDYy7Z5/BO5C+fVwwHzmXcmKgI9jAGO85gg=="
+  }
+}

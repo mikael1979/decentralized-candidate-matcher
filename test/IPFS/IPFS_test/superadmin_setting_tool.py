@@ -82,6 +82,68 @@ def get_content_list(data_dir: str, content_type: str, source: str = 'official')
         return [{'name': p} for p in sorted(parties)]
     return data.get(key, [])
 
+def create_tmp_file(data_dir: str, file_type: str) -> bool:
+    """Luo tmp-tiedoston tietystä tiedostotyypistä"""
+    file_map = {
+        'questions': 'questions.json',
+        'candidates': 'candidates.json', 
+        'newquestions': 'newquestions.json',
+        'all': None  # Erikoistapaus - käsitellään erikseen
+    }
+    
+    if file_type not in file_map:
+        print(f"❌ Tuntematon tiedostotyyppi: {file_type}")
+        return False
+    
+    # Käsittele 'all' erikseen
+    if file_type == 'all':
+        return create_all_tmp_files(data_dir)
+    
+    base_file = file_map[file_type]
+    tmp_file = base_file.replace('.json', '_tmp.json')
+    tmp_path = os.path.join(data_dir, tmp_file)
+    
+    # Tarkista onko tmp-tiedosto jo olemassa
+    if os.path.exists(tmp_path):
+        print(f"📁 Tmp-tiedosto on jo olemassa: {tmp_file}")
+        return True
+        
+    # Lataa virallinen tiedosto
+    official_path = os.path.join(data_dir, base_file)
+    if not os.path.exists(official_path):
+        print(f"❌ Virallista tiedostoa ei löydy: {base_file}")
+        return False
+        
+    print(f"📁 Luodaan: {base_file} → {tmp_file}")
+    data = load_json_file(data_dir, base_file)
+    if data is None:
+        print(f"❌ Virhe ladattaessa tiedostoa: {base_file}")
+        return False
+        
+    # Luo tmp-tiedosto
+    if save_json_file(data_dir, tmp_file, data):
+        print(f"✅ Luotiin tmp-tiedosto: {tmp_file}")
+        return True
+    else:
+        print(f"❌ Tmp-tiedoston luonti epäonnistui: {tmp_file}")
+        return False
+
+def create_all_tmp_files(data_dir: str) -> bool:
+    """Luo tmp-tiedostot kaikille data-tiedostoille"""
+    print("🔄 LUODAAN TMP-TIEDOSTOT KAIKILLE DATA-TIEDOSTOILLE")
+    print("-" * 50)
+    
+    file_types = ['questions', 'candidates', 'newquestions']
+    success_count = 0
+    total_count = len(file_types)
+    
+    for file_type in file_types:
+        if create_tmp_file(data_dir, file_type):
+            success_count += 1
+    
+    print(f"\n📊 YHTEENVETO: {success_count}/{total_count} tmp-tiedostoa luotu onnistuneesti")
+    return success_count == total_count
+
 def sync_tmp_to_official(data_dir: str, content_type: str) -> bool:
     """Synkronoi tmp → official"""
     file_map = {
@@ -134,7 +196,7 @@ def update_content_in_tmp(data_dir: str, update_data: Dict) -> bool:
             print(f"📁 Hakemistossa olevat tiedostot: {os.listdir(data_dir)}")
             return False
         print(f"📁 Luodaan tmp-tiedosto virallisesta: {base_file} → {tmp_file}")
-        data = load_json_file(data_dir, base_file)  # Korjattu: käytetään base_file eikä koko polkua
+        data = load_json_file(data_dir, base_file)
         if data is None:
             return False
         # Luo tmp-tiedosto
@@ -187,6 +249,97 @@ def update_content_in_tmp(data_dir: str, update_data: Dict) -> bool:
 
     return save_json_file(data_dir, tmp_file, data)
 
+def list_tmp_files(data_dir: str) -> None:
+    """Listaa kaikki tmp-tiedostot"""
+    print("📁 TMP-TIEDOSTOT DATA-HAKEMISTOSSA:")
+    print("-" * 40)
+    
+    files = os.listdir(data_dir)
+    tmp_files = [f for f in files if f.endswith('_tmp.json')]
+    
+    if not tmp_files:
+        print("❌ Ei tmp-tiedostoja löytynyt")
+        return
+    
+    for tmp_file in sorted(tmp_files):
+        filepath = os.path.join(data_dir, tmp_file)
+        file_size = os.path.getsize(filepath)
+        modified_time = datetime.fromtimestamp(os.path.getmtime(filepath))
+        
+        print(f"📄 {tmp_file}")
+        print(f"   📏 Koko: {file_size} tavua")
+        print(f"   ⏰ Muokattu: {modified_time.strftime('%Y-%m-%d %H:%M:%S')}")
+        
+        # Lataa data ja näytä perustiedot
+        data = load_json_file(data_dir, tmp_file)
+        if data:
+            if 'questions' in data:
+                count = len(data.get('questions', []))
+                print(f"   ❓ Kysymyksiä: {count} kpl")
+            elif 'candidates' in data:
+                count = len(data.get('candidates', []))
+                print(f"   👤 Ehdokkaita: {count} kpl")
+        print()
+
+def cleanup_tmp_file(data_dir: str, file_type: str) -> bool:
+    """Poistaa tmp-tiedoston tietystä tiedostotyypistä"""
+    file_map = {
+        'questions': 'questions_tmp.json',
+        'candidates': 'candidates_tmp.json', 
+        'newquestions': 'newquestions_tmp.json',
+        'all': None  # Erikoistapaus - käsitellään erikseen
+    }
+    
+    if file_type not in file_map:
+        print(f"❌ Tuntematon tiedostotyyppi: {file_type}")
+        return False
+    
+    # Käsittele 'all' erikseen
+    if file_type == 'all':
+        return cleanup_all_tmp_files(data_dir)
+    
+    tmp_file = file_map[file_type]
+    tmp_path = os.path.join(data_dir, tmp_file)
+    
+    if os.path.exists(tmp_path):
+        try:
+            os.remove(tmp_path)
+            print(f"✅ Poistettu: {tmp_file}")
+            return True
+        except Exception as e:
+            print(f"❌ Virhe poistaessa {tmp_file}: {e}")
+            return False
+    else:
+        print(f"📄 Ei löytynyt: {tmp_file}")
+        return True  # Palauta True koska tiedostoa ei ole = "siivottu"
+
+def cleanup_all_tmp_files(data_dir: str) -> bool:
+    """Poistaa kaikki tmp-tiedostot"""
+    print("🧹 POISTETAAN KAIKKI TMP-TIEDOSTOT")
+    print("-" * 40)
+    
+    files = os.listdir(data_dir)
+    tmp_files = [f for f in files if f.endswith('_tmp.json')]
+    
+    success_count = 0
+    total_count = len(tmp_files)
+    
+    for tmp_file in tmp_files:
+        tmp_path = os.path.join(data_dir, tmp_file)
+        try:
+            os.remove(tmp_path)
+            print(f"✅ Poistettu: {tmp_file}")
+            success_count += 1
+        except Exception as e:
+            print(f"❌ Virhe poistaessa {tmp_file}: {e}")
+    
+    if total_count == 0:
+        print("📄 Ei tmp-tiedostoja löytynyt")
+        return True
+    
+    print(f"\n📊 YHTEENVETO: {success_count}/{total_count} tmp-tiedostoa poistettu")
+    return success_count == total_count
+
 # === KOMENTORIVILIITTYMÄ ===
 
 def main():
@@ -210,6 +363,20 @@ def main():
 
     # JÄRJESTELMÄKETJUN TARKISTUS
     chain_parser = subparsers.add_parser('verify-chain', help='Tarkista system_chain.json')
+
+    # UUDET KOMENNOT - JOHDONMUKAISET --type PARAMETRILLA
+    # Tmp-tiedostojen luonti
+    create_parser = subparsers.add_parser('create-tmp-file', help='Luo tmp-tiedosto')
+    create_parser.add_argument('--type', choices=['questions', 'candidates', 'newquestions', 'all'], 
+                             required=True, help='Tiedostotyyppi')
+
+    # Tmp-tiedostojen listaus
+    list_tmp_parser = subparsers.add_parser('list-tmp-files', help='Listaa kaikki tmp-tiedostot')
+
+    # Tmp-tiedostojen siivous
+    cleanup_parser = subparsers.add_parser('cleanup-tmp-file', help='Poista tmp-tiedosto')
+    cleanup_parser.add_argument('--type', choices=['questions', 'candidates', 'newquestions', 'all'], 
+                              required=True, help='Tiedostotyyppi')
 
     args = parser.parse_args()
     if not args.command:
@@ -276,6 +443,23 @@ def main():
             sys.exit(1)
         else:
             print("✅ Järjestelmän eheys tarkistettu onnistuneesti")
+
+    elif args.command == 'create-tmp-file':
+        if create_tmp_file(data_dir, args.type):
+            print("✅ Tmp-tiedoston luonti onnistui")
+        else:
+            print("❌ Tmp-tiedoston luonti epäonnistui")
+            sys.exit(1)
+
+    elif args.command == 'list-tmp-files':
+        list_tmp_files(data_dir)
+
+    elif args.command == 'cleanup-tmp-file':
+        if cleanup_tmp_file(data_dir, args.type):
+            print("✅ Tmp-tiedoston siivous onnistui")
+        else:
+            print("❌ Tmp-tiedoston siivous epäonnistui")
+            sys.exit(1)
 
 if __name__ == '__main__':
     main()
