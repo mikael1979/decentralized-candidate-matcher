@@ -26,8 +26,7 @@
       "metadata": {
         "elo_rating": 1500,
         "blocked": false,
-        "blocked_reason": null,
-        "created_at": "2025-10-23T05:24:35.304970",
+        "created_at": "2025-10-23T12:11:57.331032",
         "created_by": "admin_admin",
         "votes_for": 0,
         "votes_against": 0,
@@ -63,8 +62,7 @@
       "metadata": {
         "elo_rating": 1500,
         "blocked": false,
-        "blocked_reason": null,
-        "created_at": "2025-10-23T05:24:35.304970",
+        "created_at": "2025-10-23T12:11:57.331032",
         "created_by": "admin_admin",
         "votes_for": 0,
         "votes_against": 0,
@@ -78,10 +76,10 @@
     }
   ],
   "metadata": {
-    "created": "2025-10-23T05:24:35.304970",
-    "system_id": "8accb157d590d100",
+    "created": "2025-10-23T12:11:57.331032",
+    "system_id": "597b55fb20461480",
     "election_id": "election_2026-01-01_fi_satakunta",
-    "fingerprint": "7ff9e7f5e8bbab6a114520fac9dfd86c92858157ffdaccf4540fdc8b8e33a09d",
-    "signature": "WMfATTeO/HBUotMTtgCpjwhCqxA5v6Y55m05mMg2DatgGVKH4tMM6KXcrgDKKldNkh+EdlbAFHDDlWuGc6Vu7ffIdcIcNJbLPj8wtc6Md6cf4fGOJ0UvJ3Hvow6VOcubhUmjEEih2h9ugvuHiyNpbqoEbdNE5T5koHjiQahTpig79qQhp5o0UP87ZtIwX70y3C1UkvrLSGSXaL2A1tXXrt3fbTCw9bS3P5idMj5Lk1OzdnrySrZXm7gvpwg1db1p5cJRY+tjsMkRYorqMXMoPv2B9PPf3OCIl9mTTIIFljhYxlghks8t4Wlq9EYlufD2LmOTbEzdu+4K9eVVMClS8w=="
+    "fingerprint": "87d52db25b7e97787cccc7dec995c7fae819283428e66bc2879738043e877435",
+    "signature": "O9AHX51mWg2VL1wevJrNgAoTQbw2l96u38boz+yQXgj973agSfHrmyI2vcKsgddJvEAevw2q5UfteN07LRU3QA8DYwfiUz2hRnKM5HN51+tziGBAEcbPTXLO6qz7GMHX+iGxQNMPyJAC/T09VnSY9o9LpJfH8nlmHwobwos3J/nFI6DcNht+NNgkf//f5OSZJeXpX1fESDIDQF4NxB3DBkPOzRUKZese8j/PQVwLQ8hec45AULn0T32lIS12kj2KjFQqdEFuBKNac+VvE5xLagngmGQh6MnItyDRUwWJywwXor/G176+yFIqoeJV2RCzk32Wm/aAzH/V3X+GuwczHQ=="
   }
 }

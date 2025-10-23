@@ -1,0 +1,28 @@
+{
+  "election": {
+    "id": "election_2026-01-01_fi_satakunta",
+    "country": "FI",
+    "type": {
+      "fi": "Muu",
+      "en": "Other",
+      "sv": "Annat"
+    },
+    "name": {
+      "fi": "testivaalit 2026",
+      "en": "testelection",
+      "sv": "lkfd"
+    },
+    "date": "2026-01-01",
+    "language": "fi",
+    "district": "satakunta"
+  },
+  "admin": {
+    "name": "admin",
+    "username": "admin",
+    "email": ""
+  },
+  "system": {
+    "name": "Decentralized Candidate Matcher",
+    "version": "0.0.6-alpha"
+  }
+}

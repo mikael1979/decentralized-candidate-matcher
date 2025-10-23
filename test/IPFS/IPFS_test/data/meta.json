@@ -1,6 +1,6 @@
 {
   "system": "Decentralized Candidate Matcher",
-  "version": "0.0.1",
+  "version": "0.0.6-alpha",
   "election": {
     "id": "election_2026-01-01_fi_satakunta",
     "country": "FI",
@@ -10,13 +10,13 @@
       "sv": "Annat"
     },
     "name": {
-      "fi": "testivaalit",
-      "en": "test_election",
-      "sv": "dkdkd"
+      "fi": "testivaalit 2026",
+      "en": "testelection",
+      "sv": "lkfd"
     },
     "date": "2026-01-01",
     "language": "fi",
-    "district": "Satakunta"
+    "district": "satakunta"
   },
   "community_moderation": {
     "enabled": true,
@@ -29,7 +29,7 @@
   "admins": [
     {
       "admin_id": "admin_admin",
-      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjBl1g1MAz+2bP99UmMqy\nQOrA0vU0K8QW/lD6EQHe2x5klMQ3nDCC4sIoghNtFSpQVKzTYv8nAynsBFOiFSWS\n23trBToNFTMO6oY/DkXYJTgr3W1A79Ckvt20Fq7BPLDkNiFiB20U9vf1EByPE+tw\nfATY150Er3Xp47diqAniQvd8ZwqmLIWp4kGbsbtos56INOcxSkuTRrDgTenHryL5\nOZhBPw+NQItAIfIq8xnu0HyV53ps83Z25Kd27FQCp6JGZizYJLeY/kbtkArzGhLE\nrCAam8GKbILmWWn2K04KrKH45jI1xaj8DsYgB23NHSUvrQHNmogeZTCRYlq9NoBD\nmwIDAQAB\n-----END PUBLIC KEY-----\n",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvgIDZrb8exQ8LX/56BjV\nA/G4JP11gMC0tjXHRXq65JBe/swC7y+qH6nwc5bDdBWiPRuNEVXzS2yerVXGUwho\nH8jcvurALCDRgiqJfWcK9zBS8SpMg+OSQeK0ll6F3Jsd+BI27my2WpgFU1827qlw\np8JNl3AOc53QOefoXNOsUOgVZJ+LuYdZsVABs2ENGlCcoD4VX+j7b/7rMhd1XG1o\nO2zB/yqpf8W7BQwP9padVmUw/QBMtmuEge1jOocBAf8bLkOYCUmBoiJZTokU4y0n\n/Rj59sCry3a3my9Dzgi5GP2dbK0cQm23e1dtkzW5axlf8qG1CMYla77avKbg3HFK\n7QIDAQAB\n-----END PUBLIC KEY-----\n",
       "name": "admin",
       "username": "admin",
       "email": "",
@@ -37,32 +37,32 @@
     }
   ],
   "key_management": {
-    "system_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjBl1g1MAz+2bP99UmMqy\nQOrA0vU0K8QW/lD6EQHe2x5klMQ3nDCC4sIoghNtFSpQVKzTYv8nAynsBFOiFSWS\n23trBToNFTMO6oY/DkXYJTgr3W1A79Ckvt20Fq7BPLDkNiFiB20U9vf1EByPE+tw\nfATY150Er3Xp47diqAniQvd8ZwqmLIWp4kGbsbtos56INOcxSkuTRrDgTenHryL5\nOZhBPw+NQItAIfIq8xnu0HyV53ps83Z25Kd27FQCp6JGZizYJLeY/kbtkArzGhLE\nrCAam8GKbILmWWn2K04KrKH45jI1xaj8DsYgB23NHSUvrQHNmogeZTCRYlq9NoBD\nmwIDAQAB\n-----END PUBLIC KEY-----\n",
+    "system_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvgIDZrb8exQ8LX/56BjV\nA/G4JP11gMC0tjXHRXq65JBe/swC7y+qH6nwc5bDdBWiPRuNEVXzS2yerVXGUwho\nH8jcvurALCDRgiqJfWcK9zBS8SpMg+OSQeK0ll6F3Jsd+BI27my2WpgFU1827qlw\np8JNl3AOc53QOefoXNOsUOgVZJ+LuYdZsVABs2ENGlCcoD4VX+j7b/7rMhd1XG1o\nO2zB/yqpf8W7BQwP9padVmUw/QBMtmuEge1jOocBAf8bLkOYCUmBoiJZTokU4y0n\n/Rj59sCry3a3my9Dzgi5GP2dbK0cQm23e1dtkzW5axlf8qG1CMYla77avKbg3HFK\n7QIDAQAB\n-----END PUBLIC KEY-----\n",
     "key_algorithm": "RSA-2048",
     "parties_require_keys": true,
     "candidates_require_keys": false
   },
   "content": {
-    "last_updated": "2025-10-23T07:07:34.191990",
+    "last_updated": "2025-10-23T12:11:57.331032",
     "questions_count": 2,
     "candidates_count": 2,
     "parties_count": 2
   },
   "system_info": {
-    "system_id": "8accb157d590d100",
-    "installation_time": "2025-10-23T05:24:35.304970",
-    "key_fingerprint": "8accb157d590d100f32897f7eb5fcdbec1a11ea59e8480fabbbc4587b1be532c"
+    "system_id": "597b55fb20461480",
+    "installation_time": "2025-10-23T12:11:57.331032",
+    "key_fingerprint": "597b55fb204614802d66e7a3548da51d953f4a07b1acca06e441c367881350b1"
   },
   "integrity": {
     "algorithm": "sha256",
-    "hash": "sha256:8436b5e8302e12c1775564b352972fffe2edd045072d4f4da01bb443dd884867",
-    "computed": "2025-10-23T07:07:34.192112"
+    "hash": "sha256:0df68deaac0d3675c097b12afa666f8a65075d35c21651b44b7b3de2252b0966",
+    "computed": "2025-10-23T12:11:57.331032"
   },
   "metadata": {
-    "created": "2025-10-23T05:24:35.304970",
-    "system_id": "8accb157d590d100",
+    "created": "2025-10-23T12:11:57.331032",
+    "system_id": "597b55fb20461480",
     "election_id": "election_2026-01-01_fi_satakunta",
-    "fingerprint": "a137955c4bf55f629f4c5fa189f913e0424755f7c81032884a22897cdce8c700",
-    "signature": "G475bW4bIveYZb6Lix79dMEmB1B2pEzvLu4tE8w6cNoM8ukvUGjpUTZJiE4wACQYpPp+/uP+X46g6EcR16VxBHObzrYBZ80XMzQYNkeQsk9vdytlIo4ZRCFOte1i0NfrbAo7S792mZfRkkmBiR+q26MeWK8mAioG12z0e7ShnieGxakWsWMGW0LjkZ0FleqWOuQiw2BhcFsgUYF3rd/WjxnJlb3fDI81MQYINtoxW9QiJr8YVbc3U31XWSzR6EMCyQxa8WvZwmP1IhZ5USqACP0tPxKHqdnZlbWoi2Op4oq8AELgkxCQsU7Jde0g3o2qdOHPlJPau6XKD8E/+SXYWQ=="
+    "fingerprint": "2c55a1a6899ed8125e9445323113f784310f2699da1a1d5baf2148e817265c3e",
+    "signature": "puUdqBbkM8IqWuBlZDh8eayJcrsPjzbofdEwdKi5lAQAGKBN2I28qzTl7W4S/h3+GsluSGsWEkUAQoQhFvFXbNlG4jvGu0VCkNCUOmUYC3YOP7EvkQE/1+eH5SQcf99hAEyZCsMeEdjqL5v+oa4sd7XPkIC0evs4val2BGd38mEabGV5d7KVmSr7V7uQC8q4MtgP7nhWY6US/wXdqTLIZRWCqtpPXIUl3iR7/1r3OAoQoYy9vRXfS8MmX4XZAH5uk7wKgoOlOH4nxssGSEPs8BaTC8q8bprET4xNIP2aq54KT1yu1sryFeT7zLR4jcEajxKbD5AbOZHtM47FghXfWA=="
   }
 }

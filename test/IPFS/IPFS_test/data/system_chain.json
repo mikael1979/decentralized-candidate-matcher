@@ -1,0 +1,23 @@
+{
+  "chain_id": "election_2026-01-01_fi_satakunta",
+  "created_at": "2025-10-23T12:11:57.326581",
+  "description": "Fingerprint-ketju kaikille järjestelmän tiedostoille",
+  "version": "0.0.6-alpha",
+  "blocks": [
+    {
+      "block_id": 0,
+      "timestamp": "2025-10-23T12:11:57.326581",
+      "description": "Alkutila asennuksen jälkeen",
+      "files": {},
+      "previous_hash": null,
+      "block_hash": "sha256:73ca5a0ad63ea20c089b186f86fd29a5d37239eca7b124d890b847908a6f8a3b"
+    }
+  ],
+  "current_state": {},
+  "metadata": {
+    "algorithm": "sha256",
+    "system_id": "597b55fb20461480",
+    "election_id": "election_2026-01-01_fi_satakunta",
+    "signature": "Yc4Y6YxyiSP76iSoeuw5boaFDH3bAgJXQVAjF/7Xs43g8sv/SDuEVT8K6EsqKZOcbe/k9srLSxMLMlZUtQbw8GrKt17IKUuUjUvRlthC2i2HAMBql6xkL/+heLjLkwxnlRWr1FqAbududOLJ9ywmJg5hANI14XmTVXoH5ns4u0Yo1FcouBc6agUu9WPdvG79xjuKzJi8VR0FBQd6yvg5O7KrZvqGfK/ea/DudsVrY9GhOS9JZBFt6AHVEIv3kvbWCN/W5eBNKiMLF2IWWvJrkwF7JOWblcH6XdQwyQ7CQlpSypA66Wznl7Y6in8malZrwe1AfLLecAYq8PfHUmVmlA=="
+  }
+}

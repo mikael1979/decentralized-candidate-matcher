@@ -22,15 +22,15 @@
         "max": 5
       },
       "justification": {
-        "fi": "Ilmastonmuutos vaatii kiireellisiä toimia kaupunkitasolla.",
-        "en": "Climate change requires urgent action at the municipal level.",
-        "sv": "Klimatförändringar kräver brådskande åtgärder på kommunal nivå."
+        "fi": "Ilmastonmuutos on kiireellisin uhka, ja 50 % vähennys on välttämätön tavoite.",
+        "en": "Climate change is the most urgent threat, and a 50% reduction is essential.",
+        "sv": "Klimatförändringen är det största hotet, och en 50 % minskning är nödvändig."
       },
       "justification_metadata": {
         "author_id": "admin_admin",
         "author_type": "super_admin",
-        "created_at": "2025-10-23T05:24:35.297280",
-        "updated_at": "2025-10-23T05:24:35.297280",
+        "created_at": "2025-10-23T12:11:57.328074",
+        "updated_at": "2025-10-23T12:11:57.328074",
         "version": 1,
         "blocked": false,
         "signature": null
@@ -38,8 +38,7 @@
       "metadata": {
         "elo_rating": 1500,
         "blocked": false,
-        "blocked_reason": null,
-        "created_at": "2025-10-23T05:24:35.297280",
+        "created_at": "2025-10-23T12:11:57.328074",
         "created_by": "admin_admin",
         "votes_for": 0,
         "votes_against": 0,
@@ -73,15 +72,15 @@
         "max": 5
       },
       "justification": {
-        "fi": "Kaupunkipyörät vähentävät liikenne ruuhkia ja saastumista.",
-        "en": "City bikes reduce traffic congestion and pollution.",
-        "sv": "Stadscyklar minskar trafikstockningar och föroreningar."
+        "fi": "Kaupunkipyörät parantavat kaupunkikuva ja terveyttä.",
+        "en": "City bikes improve urban aesthetics and public health.",
+        "sv": "Stadscyklar förbättrar stadsbilden och folkhälsan."
       },
       "justification_metadata": {
         "author_id": "admin_admin",
         "author_type": "super_admin",
-        "created_at": "2025-10-23T05:24:35.297280",
-        "updated_at": "2025-10-23T05:24:35.297280",
+        "created_at": "2025-10-23T12:11:57.328074",
+        "updated_at": "2025-10-23T12:11:57.328074",
         "version": 1,
         "blocked": false,
         "signature": null
@@ -89,8 +88,7 @@
       "metadata": {
         "elo_rating": 1500,
         "blocked": false,
-        "blocked_reason": null,
-        "created_at": "2025-10-23T05:24:35.297280",
+        "created_at": "2025-10-23T12:11:57.328074",
         "created_by": "admin_admin",
         "votes_for": 0,
         "votes_against": 0,
@@ -105,11 +103,11 @@
   ],
   "metadata": {
     "version": "1.0",
-    "created": "2025-10-23T05:24:35.297280",
-    "fingerprint": "b3f0d4dd2cb49ea0369b5f30d32ca6857b506243e52d55f83cb592f0a2e057b9",
+    "created": "2025-10-23T12:11:57.328074",
+    "fingerprint": "48d1efe64d441024a583b00c9d25dddc6edd4dc2bcaaa0384e5f751e677eb8b2",
     "question_count": 2,
-    "system_id": "8accb157d590d100",
+    "system_id": "597b55fb20461480",
     "election_id": "election_2026-01-01_fi_satakunta",
-    "signature": "CBbYk6ddynzLKy+TZbq1w09TgOM4B8oa16KhmiDqNa78OitgpNxWSMQmSroQBzk6c2xgbq88dm63enD/PvjqE/tIQIZ6IZ4hxG/Qx4UXo0ONiph7vmDeSUElW/AOR77IMYK6f1ahCYncMDZX314MV4GN7tS3D1GHbKy4e+ZgJQIpKSbQw0lbYB/IyG9ZB5Dys50QFc67JLlaSsrwbe0egpdhkb1z5qOJuQlYLEC66URyyRw8eLuepSWvRt7FTiL74MGeiB/HrBmXKchysOP1eV9dn9uWId/PhP+XmtPNuF5NgW937/4QqeynTAAEBcTSkStSZOPfpDXSVvv9IUVbgA=="
+    "signature": "qiJ/lkVDaMiop+HqiQaG79LJTSVi6v7uJq/toURdtr5llPJ0Uk6Cc0DK/qJ36mjGUfsIsSk6PQRvrIQyNLE3xfCWXnKP9UOuXNFZ+/O1iCeAmdRMpi+hZEhnmo9bwFEudwAffjJkVXBIDTjS9azMTfDztgwdwvNqwp5jSse3+Ig55dBz9PM3ZIRH3MHgu+UFFIrzk0lLZoo0SZ7R965kcFJRXgqzEAWb+vdZaSRWlXknkifIY3KFGDP2Iob5Vg73V4iLcIEpJTkOLfq7ljfUYiadQHv9NY+1G3lpv46vGPQhHdSwFa3PwZbp4fps6kEmXQx+Dg3YEbc3l46WD71wxA=="
   }
 }

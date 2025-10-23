@@ -4,7 +4,7 @@
       "id": 1,
       "name": "Matti Meikäläinen",
       "party": "Test Puolue",
-      "district": "Satakunta",
+      "district": "satakunta",
       "public_key": null,
       "party_signature": null,
       "answers": [
@@ -18,7 +18,7 @@
             "sv": "Klimatförändringen är det största hotet, och en 50 % minskning är nödvändig."
           },
           "justification_metadata": {
-            "created_at": "2025-10-23T05:24:35.297280",
+            "created_at": "2025-10-23T12:11:57.328074",
             "version": 1,
             "blocked": false,
             "signature": null
@@ -29,12 +29,12 @@
           "answer": 3,
           "confidence": 0.6,
           "justification": {
-            "fi": "Kaupunkipyörät ovat tärkeä osa kestävää liikkumista.",
-            "en": "City bikes are an important part of sustainable mobility.",
-            "sv": "Stadscyklar är en viktig del av hållbar mobilitet."
+            "fi": "Kaupunkipyörät parantavat kaupunkikuva ja terveyttä.",
+            "en": "City bikes improve urban aesthetics and public health.",
+            "sv": "Stadscyklar förbättrar stadsbilden och folkhälsan."
           },
           "justification_metadata": {
-            "created_at": "2025-10-23T05:24:35.297280",
+            "created_at": "2025-10-23T12:11:57.328074",
             "version": 1,
             "blocked": false,
             "signature": null
@@ -46,7 +46,7 @@
       "id": 2,
       "name": "Liisa Esimerkki",
       "party": "Toinen Puolue",
-      "district": "Satakunta",
+      "district": "satakunta",
       "public_key": null,
       "party_signature": null,
       "answers": [
@@ -55,12 +55,12 @@
           "answer": 2,
           "confidence": 0.5,
           "justification": {
-            "fi": "Tavoite on liian kunnianhimoinen nykyisellä teknologialla.",
-            "en": "The target is too ambitious with current technology.",
-            "sv": "Målet är för ambitiöst med nuvarande teknik."
+            "fi": "Ilmastonmuutos on kiireellisin uhka, ja 50 % vähennys on välttämätön tavoite.",
+            "en": "Climate change is the most urgent threat, and a 50% reduction is essential.",
+            "sv": "Klimatförändringen är det största hotet, och en 50 % minskning är nödvändig."
           },
           "justification_metadata": {
-            "created_at": "2025-10-23T05:24:35.297280",
+            "created_at": "2025-10-23T12:11:57.328074",
             "version": 1,
             "blocked": false,
             "signature": null
@@ -76,7 +76,7 @@
             "sv": "Stadscyklar förbättrar stadsbilden och folkhälsan."
           },
           "justification_metadata": {
-            "created_at": "2025-10-23T05:24:35.297280",
+            "created_at": "2025-10-23T12:11:57.328074",
             "version": 1,
             "blocked": false,
             "signature": null
@@ -86,20 +86,20 @@
     }
   ],
   "party_keys": {
-    "Test Puolue": null,
-    "Toinen Puolue": null
+    "Toinen Puolue": null,
+    "Test Puolue": null
   },
   "metadata": {
     "version": "1.0",
-    "created": "2025-10-23T05:24:35.297280",
-    "fingerprint": "82951b0220518689c358e4eca775cf5c01c11f3edcc9f6a221dc0425c8a30abb",
+    "created": "2025-10-23T12:11:57.328074",
+    "fingerprint": "8ec3d8883e617720bc62eebdce2f4931906dffc65cfd16dc8dc4c7d02fd698d2",
     "candidate_count": 2,
     "parties": [
-      "Test Puolue",
-      "Toinen Puolue"
+      "Toinen Puolue",
+      "Test Puolue"
     ],
-    "system_id": "8accb157d590d100",
+    "system_id": "597b55fb20461480",
     "election_id": "election_2026-01-01_fi_satakunta",
-    "signature": "USyOIP1p981iaTq2wkKuy/jl30l4WZ33gfgty7k6h2XUocQzeKQR/bGmSbSmREi5FAKpT0AckE6WBIsIrTCq8lCEJgjZHvULUb+9hHu4YWDX1xsvkmyn/k/gvgbYGXPUiC6RVAlEWLJGaFBI2SXgifkKAyicfQgcLIojijUZsQ6Per7MP/nbnY33988xyBLOVx/YXgX46YLOFn2e34pj3JjspVFUBid4GUWQkkRpLDyGFrQcdWic4gtovdVcM9czkheOhgJftq/qIAhgMvRGWOzANHA5MtWd48+uSQG78h2eZlbhVSjSw7SzPRBjjkG7GxdVETdYBDFcN4OuEALiNQ=="
+    "signature": "OmPDevZTSy9yygUSctfkIcoVQTxmAjUYzV2DhGVAIN/DC7gNXuNf98EGleVFnSSG2ZmOjel0+wnNkuwZ/9XehJPiWf3ZGbk8LYnEEHYmJtaO/ihq3xs1SbhkoSMZpl0SNYPxDlZViOZISjGCc9+Ue8Om8OlMIG8ONH+tQYsfdA30YhgVSqz/A5o3Y5Ki5zB/WNI2jPrjFzi0xhYZFgrRY8ku5hYM9pMryPFvyDIMmgCequ0SCeoucxwPphwdb3G3JWz8i4XiWKSqZZgYHwBfZjQj+x2+bqYa7FB6kM/amIJCrI3i6e2PUCqhmk9LLx8X7uzLODeg0/yxfKflRZZaVQ=="
   }
 }

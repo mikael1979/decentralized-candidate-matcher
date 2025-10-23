@@ -1,7 +1,7 @@
 {
   "default_meta": {
     "system": "Decentralized Candidate Matcher",
-    "version": "0.0.1",
+    "version": "0.0.6-alpha",
     "election": {
       "id": "election_2026-01-01_fi_satakunta",
       "country": "FI",
@@ -11,13 +11,13 @@
         "sv": "Annat"
       },
       "name": {
-        "fi": "testivaalit",
-        "en": "test_election",
-        "sv": "dkdkd"
+        "fi": "testivaalit 2026",
+        "en": "testelection",
+        "sv": "lkfd"
       },
       "date": "2026-01-01",
       "language": "fi",
-      "district": "Satakunta"
+      "district": "satakunta"
     },
     "community_moderation": {
       "enabled": true,
@@ -30,7 +30,7 @@
     "admins": [
       {
         "admin_id": "admin_admin",
-        "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjBl1g1MAz+2bP99UmMqy\nQOrA0vU0K8QW/lD6EQHe2x5klMQ3nDCC4sIoghNtFSpQVKzTYv8nAynsBFOiFSWS\n23trBToNFTMO6oY/DkXYJTgr3W1A79Ckvt20Fq7BPLDkNiFiB20U9vf1EByPE+tw\nfATY150Er3Xp47diqAniQvd8ZwqmLIWp4kGbsbtos56INOcxSkuTRrDgTenHryL5\nOZhBPw+NQItAIfIq8xnu0HyV53ps83Z25Kd27FQCp6JGZizYJLeY/kbtkArzGhLE\nrCAam8GKbILmWWn2K04KrKH45jI1xaj8DsYgB23NHSUvrQHNmogeZTCRYlq9NoBD\nmwIDAQAB\n-----END PUBLIC KEY-----\n",
+        "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvgIDZrb8exQ8LX/56BjV\nA/G4JP11gMC0tjXHRXq65JBe/swC7y+qH6nwc5bDdBWiPRuNEVXzS2yerVXGUwho\nH8jcvurALCDRgiqJfWcK9zBS8SpMg+OSQeK0ll6F3Jsd+BI27my2WpgFU1827qlw\np8JNl3AOc53QOefoXNOsUOgVZJ+LuYdZsVABs2ENGlCcoD4VX+j7b/7rMhd1XG1o\nO2zB/yqpf8W7BQwP9padVmUw/QBMtmuEge1jOocBAf8bLkOYCUmBoiJZTokU4y0n\n/Rj59sCry3a3my9Dzgi5GP2dbK0cQm23e1dtkzW5axlf8qG1CMYla77avKbg3HFK\n7QIDAQAB\n-----END PUBLIC KEY-----\n",
         "name": "admin",
         "username": "admin",
         "email": "",
@@ -38,7 +38,7 @@
       }
     ],
     "key_management": {
-      "system_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjBl1g1MAz+2bP99UmMqy\nQOrA0vU0K8QW/lD6EQHe2x5klMQ3nDCC4sIoghNtFSpQVKzTYv8nAynsBFOiFSWS\n23trBToNFTMO6oY/DkXYJTgr3W1A79Ckvt20Fq7BPLDkNiFiB20U9vf1EByPE+tw\nfATY150Er3Xp47diqAniQvd8ZwqmLIWp4kGbsbtos56INOcxSkuTRrDgTenHryL5\nOZhBPw+NQItAIfIq8xnu0HyV53ps83Z25Kd27FQCp6JGZizYJLeY/kbtkArzGhLE\nrCAam8GKbILmWWn2K04KrKH45jI1xaj8DsYgB23NHSUvrQHNmogeZTCRYlq9NoBD\nmwIDAQAB\n-----END PUBLIC KEY-----\n",
+      "system_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvgIDZrb8exQ8LX/56BjV\nA/G4JP11gMC0tjXHRXq65JBe/swC7y+qH6nwc5bDdBWiPRuNEVXzS2yerVXGUwho\nH8jcvurALCDRgiqJfWcK9zBS8SpMg+OSQeK0ll6F3Jsd+BI27my2WpgFU1827qlw\np8JNl3AOc53QOefoXNOsUOgVZJ+LuYdZsVABs2ENGlCcoD4VX+j7b/7rMhd1XG1o\nO2zB/yqpf8W7BQwP9padVmUw/QBMtmuEge1jOocBAf8bLkOYCUmBoiJZTokU4y0n\n/Rj59sCry3a3my9Dzgi5GP2dbK0cQm23e1dtkzW5axlf8qG1CMYla77avKbg3HFK\n7QIDAQAB\n-----END PUBLIC KEY-----\n",
       "key_algorithm": "RSA-2048",
       "parties_require_keys": true,
       "candidates_require_keys": false
@@ -46,10 +46,10 @@
   },
   "metadata": {
     "version": "1.0",
-    "created": "2025-10-23T05:24:35.297280",
-    "fingerprint": "497ff30e3b83b1f5cb0b98e42d5a01c9fce773cb64e64aaae733dcf7925709bb",
-    "system_id": "8accb157d590d100",
+    "created": "2025-10-23T12:11:57.328074",
+    "fingerprint": "86a7550ca461b311468551dd06d42706dd1ba08b50a1c4de09324fa41efa3f20",
+    "system_id": "597b55fb20461480",
     "admin_user": "admin",
-    "signature": "ciRSTVS9XhaTPfPY9Sred8YRyM4LQJ9eHuctq5UZAOFHVUoIOHEcx01CVhZFKFjcM4iV9/XRwNAKGl9XGqSuqndrL9oevrMGzS2lYBpNRLQCF1Plq2ub8eHWxtRLHoedSKYkWu6sxChEhlX1d2vfLqz1XyojyziaRFeTiBNA1dG8EsuQqkDw1BeaGpvI9F8/KMiEHIzxp/4qnsr+DJ0bD4Z82C+OV+cst0WYWJIc1s1tSYZGPFFhpG4Ts1OuK/N00XJ3b7WPWM3iYPKgUK5jcfGobYAKvG8wDs/pYQcNiCwqE+iV0kKACLwDOo3zZ7PXtRjOLjKY5W88Da971bE1RQ=="
+    "signature": "QmdP7v+w07ZgoIzkT849uc+nAsI8bX/eFj4eVzHBvNAqClrOMap9KZvn1jX8pmQZcTcP+53wHLVfwe26b2G7lW1QLAkS/5kDlP8PSM+R9PYthQPz1TMkROLjCeRnlL1jnhTd5W0AOKIDMulqgqqSawwXio2uGDpKUFXFY65aaw8GHXwfURfn40THGYEzLzogQCgRMcmvrR+ucExSkzBMNLwMQZMCHykbHzOQPHPH9PZrTPKI+Ft/grdA9NEhl2JlnY9rt/evzZhrjaOIBgH7TWTlIWM6Do/kdluvsEQYY0kiv4T/8EpwheT12BFG+lNXoPpZdTANQvxe4wkR2eQx+g=="
   }
 }
