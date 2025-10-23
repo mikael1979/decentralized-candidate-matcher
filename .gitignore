@@ -84,3 +84,5 @@ tiedostorakenne.txt
 venv
 deepseek_prompti.txt
 *test/IPFS/IPFS_test/keys*
+backend.txt 
+cookies.txt
