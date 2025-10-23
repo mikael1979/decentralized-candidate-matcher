@@ -149,10 +149,17 @@ def sync_tmp_to_official(data_dir: str, content_type: str) -> bool:
     file_map = {
         'questions': 'questions.json',
         'candidates': 'candidates.json',
-        'newquestions': 'newquestions.json'
+        'newquestions': 'newquestions.json',
+        'all': None  # Erikoistapaus - käsitellään erikseen
     }
+    
     if content_type not in file_map:
         return False
+    
+    # Käsittele 'all' erikseen
+    if content_type == 'all':
+        return sync_all_tmp_files(data_dir)
+    
     base_file = file_map[content_type]
     tmp_file = base_file.replace('.json', '_tmp.json')
     tmp_path = os.path.join(data_dir, tmp_file)
@@ -167,6 +174,22 @@ def sync_tmp_to_official(data_dir: str, content_type: str) -> bool:
         print(f"✅ Synkronoitu: {tmp_file} → {base_file}")
         return True
     return False
+
+def sync_all_tmp_files(data_dir: str) -> bool:
+    """Synkronoi kaikki tmp-tiedostot official-tiedostoihin"""
+    print("🔄 SYNKRONOIDAAN KAIKKI TMP-TIEDOSTOT")
+    print("-" * 40)
+    
+    file_types = ['questions', 'candidates', 'newquestions']
+    success_count = 0
+    total_count = len(file_types)
+    
+    for file_type in file_types:
+        if sync_tmp_to_official(data_dir, file_type):
+            success_count += 1
+    
+    print(f"\n📊 YHTEENVETO: {success_count}/{total_count} tiedostoa synkronoitu onnistuneesti")
+    return success_count == total_count
 
 def update_content_in_tmp(data_dir: str, update_data: Dict) -> bool:
     """Muokkaa sisältöä tmp-tiedostossa (luo tmp-tiedoston tarvittaessa)"""
@@ -340,6 +363,79 @@ def cleanup_all_tmp_files(data_dir: str) -> bool:
     print(f"\n📊 YHTEENVETO: {success_count}/{total_count} tmp-tiedostoa poistettu")
     return success_count == total_count
 
+def ipfs_sync(data_dir: str, sync_type: str) -> bool:
+    """Suorittaa IPFS-synkronoinnin"""
+    print("🌐 IPFS-SYNKRONOINTI")
+    print("-" * 30)
+    
+    try:
+        # Yritä importata IPFS-moduulit
+        try:
+            from data_manager import DataManager
+            from mock_ipfs import MockIPFS
+            from real_ipfs import RealIPFS
+        except ImportError as e:
+            print(f"❌ IPFS-moduulien importointi epäonnistui: {e}")
+            print("   Varmista että data_manager.py ja IPFS-moduulit ovat saatavilla")
+            return False
+        
+        # Alusta DataManager ja IPFS
+        data_manager = DataManager(debug=True)
+        
+        # Valitse IPFS-asiakas (tarkista --real-ipfs lippu)
+        use_real_ipfs = '--real-ipfs' in sys.argv
+        if use_real_ipfs:
+            ipfs_client = RealIPFS()
+            print("🌍 Käytetään oikeaa IPFS-solmua")
+        else:
+            ipfs_client = MockIPFS()
+            print("🧪 Käytetään mock-IPFS:ää")
+        
+        data_manager.set_ipfs_client(ipfs_client)
+        
+        if sync_type == 'push':
+            print("📤 Työnnetään data IPFS:ään...")
+            success = data_manager.process_ipfs_sync()
+            if success:
+                print("✅ Data työnnetty onnistuneesti IPFS:ään")
+                return True
+            else:
+                print("❌ IPFS-synkronointi epäonnistui tai ei tarvittu")
+                return False
+                
+        elif sync_type == 'pull':
+            print("📥 Haetaan data IPFS:stä...")
+            success = data_manager.fetch_questions_from_ipfs()
+            if success:
+                print("✅ Data haettu onnistuneesti IPFS:stä")
+                return True
+            else:
+                print("❌ IPFS-datan haku epäonnistui")
+                return False
+                
+        elif sync_type == 'status':
+            print("📊 IPFS-tilan tarkistus...")
+            queue = data_manager.read_json('ipfs_sync_queue.json') or {}
+            cache = data_manager.read_json('ipfs_questions_cache.json') or {}
+            
+            print(f"📋 Synkronointijono: {len(queue.get('pending_questions', []))} kysymystä")
+            print(f"💾 Välimuisti: {len(cache.get('questions', []))} kysymystä")
+            print(f"⏰ Viimeisin synkronointi: {queue.get('last_sync', 'Ei koskaan')}")
+            
+            # Testaa IPFS-yhteys
+            if hasattr(ipfs_client, 'connected'):
+                print(f"🔗 IPFS-yhteys: {'✅ On' if ipfs_client.connected else '❌ Ei'}")
+            
+            return True
+            
+        else:
+            print(f"❌ Tuntematon IPFS-synkronointityyppi: {sync_type}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ IPFS-synkronointi epäonnistui: {e}")
+        return False
+
 # === KOMENTORIVILIITTYMÄ ===
 
 def main():
@@ -353,7 +449,8 @@ def main():
 
     # SYNKRONOINTI
     sync_parser = subparsers.add_parser('sync', help='Synkronoi tmp → official')
-    sync_parser.add_argument('--type', choices=['questions', 'candidates', 'newquestions'], required=True, help='Sisällön tyyppi')
+    sync_parser.add_argument('--type', choices=['questions', 'candidates', 'newquestions', 'all'], 
+                           required=True, help='Sisällön tyyppi')
 
     # PÄIVITYS
     update_parser = subparsers.add_parser('update', help='Päivitä sisältöä tmp-tiedostossa')
@@ -364,19 +461,23 @@ def main():
     # JÄRJESTELMÄKETJUN TARKISTUS
     chain_parser = subparsers.add_parser('verify-chain', help='Tarkista system_chain.json')
 
-    # UUDET KOMENNOT - JOHDONMUKAISET --type PARAMETRILLA
-    # Tmp-tiedostojen luonti
+    # TMP-TIEDOSTOJEN HALLINTA
     create_parser = subparsers.add_parser('create-tmp-file', help='Luo tmp-tiedosto')
     create_parser.add_argument('--type', choices=['questions', 'candidates', 'newquestions', 'all'], 
                              required=True, help='Tiedostotyyppi')
 
-    # Tmp-tiedostojen listaus
     list_tmp_parser = subparsers.add_parser('list-tmp-files', help='Listaa kaikki tmp-tiedostot')
 
-    # Tmp-tiedostojen siivous
     cleanup_parser = subparsers.add_parser('cleanup-tmp-file', help='Poista tmp-tiedosto')
     cleanup_parser.add_argument('--type', choices=['questions', 'candidates', 'newquestions', 'all'], 
                               required=True, help='Tiedostotyyppi')
+
+    # IPFS-SYNKRONOINTI
+    ipfs_parser = subparsers.add_parser('ipfs-sync', help='IPFS-synkronointi')
+    ipfs_parser.add_argument('--type', choices=['push', 'pull', 'status'], required=True,
+                           help='push: työnnä data IPFS:ään, pull: hae data IPFS:stä, status: näytä tila')
+    ipfs_parser.add_argument('--real-ipfs', action='store_true', 
+                           help='Käytä oikeaa IPFS-solmua (oletus: mock-IPFS)')
 
     args = parser.parse_args()
     if not args.command:
@@ -459,6 +560,13 @@ def main():
             print("✅ Tmp-tiedoston siivous onnistui")
         else:
             print("❌ Tmp-tiedoston siivous epäonnistui")
+            sys.exit(1)
+
+    elif args.command == 'ipfs-sync':
+        if ipfs_sync(data_dir, args.type):
+            print("✅ IPFS-synkronointi onnistui")
+        else:
+            print("❌ IPFS-synkronointi epäonnistui")
             sys.exit(1)
 
 if __name__ == '__main__':
