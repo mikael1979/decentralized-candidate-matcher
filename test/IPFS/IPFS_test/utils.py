@@ -2,6 +2,7 @@ import json
 import os
 import hashlib
 from datetime import datetime
+import re
 
 def calculate_percentage_level(percentage):
     """Muuntaa prosenttiluvun sanalliseksi tasoksi"""
@@ -61,6 +62,142 @@ def calculate_hash(data):
     json_str = json.dumps(data_copy, sort_keys=True, ensure_ascii=False)
     return f"sha256:{hashlib.sha256(json_str.encode('utf-8')).hexdigest()}"
 
+def sanitize_input(text):
+    """Poistaa potentiaalisesti vaarallisia merkkejä syötteistä"""
+    if not isinstance(text, str):
+        return text
+    
+    # Poista HTML/JavaScript tagit
+    text = re.sub(r'<script.*?</script>', '', text, flags=re.IGNORECASE | re.DOTALL)
+    text = re.sub(r'<.*?>', '', text)  # Poista kaikki HTML tagit
+    
+    # Poista SQL-injection -tyyliset merkit
+    text = text.replace("'", "''")  # Escape single quotes
+    text = text.replace(";", "")    # Poista semikolonit
+    text = text.replace("--", "")   # Poista SQL kommentit
+    
+    # Poista directory traversal -merkit
+    text = text.replace("../", "")
+    text = text.replace("..\\", "")
+    
+    # Poista potentiaalisesti vaaralliset funktiokutsut
+    text = text.replace("eval(", "")
+    text = text.replace("exec(", "")
+    text = text.replace("system(", "")
+    
+    return text.strip()
+
+def sanitize_question_data(question_data):
+    """Sanitoi kysymysdatan"""
+    if isinstance(question_data, dict):
+        sanitized = {}
+        for key, value in question_data.items():
+            if key == 'question' and isinstance(value, dict):
+                # Sanitoi kaikki kieliversiot
+                sanitized[key] = {lang: sanitize_input(text) for lang, text in value.items()}
+            elif key == 'tags' and isinstance(value, list):
+                sanitized[key] = [sanitize_input(tag) for tag in value]
+            elif key == 'category' and isinstance(value, str):
+                sanitized[key] = sanitize_input(value)
+            elif key == 'category' and isinstance(value, dict):
+                # Sanitoi kategorian kieliversiot
+                sanitized[key] = {lang: sanitize_input(text) for lang, text in value.items()}
+            else:
+                sanitized[key] = value
+        return sanitized
+    return question_data
+
+def sanitize_candidate_data(candidate_data):
+    """Sanitoi ehdokasdatan"""
+    if isinstance(candidate_data, dict):
+        sanitized = candidate_data.copy()
+        
+        # Sanitoi perustiedot
+        if 'name' in sanitized:
+            sanitized['name'] = sanitize_input(sanitized['name'])
+        if 'party' in sanitized:
+            sanitized['party'] = sanitize_input(sanitized['party'])
+        if 'district' in sanitized:
+            sanitized['district'] = sanitize_input(sanitized['district'])
+        
+        # Sanitoi vastaukset
+        if 'answers' in sanitized and isinstance(sanitized['answers'], list):
+            for answer in sanitized['answers']:
+                if isinstance(answer, dict):
+                    if 'justification' in answer and isinstance(answer['justification'], dict):
+                        answer['justification'] = {
+                            lang: sanitize_input(text) 
+                            for lang, text in answer['justification'].items()
+                        }
+        
+        return sanitized
+    return candidate_data
+
+def validate_question_structure(question_data):
+    """Validoi kysymyksen rakenteen"""
+    errors = []
+    
+    # Tarkista pakolliset kentät
+    if not question_data.get('question'):
+        errors.append('Kysymys teksti puuttuu')
+    elif not isinstance(question_data['question'], dict):
+        errors.append('Kysymys kentän tulee olla objekti')
+    elif not question_data['question'].get('fi'):
+        errors.append('Kysymys suomeksi on pakollinen')
+    
+    if not question_data.get('category'):
+        errors.append('Kategoria puuttuu')
+    
+    # Tarkista kysymyksen pituus
+    fi_question = question_data.get('question', {}).get('fi', '')
+    if len(fi_question) < 10:
+        errors.append('Kysymyksen tulee olla vähintään 10 merkkiä pitkä')
+    elif len(fi_question) > 500:
+        errors.append('Kysymys saa olla enintään 500 merkkiä pitkä')
+    
+    # Tarkista tagit
+    tags = question_data.get('tags', [])
+    if not tags:
+        errors.append('Vähintään yksi tagi on pakollinen')
+    elif len(tags) > 10:
+        errors.append('Kysymyksessä saa olla enintään 10 tagia')
+    elif any(len(tag) > 50 for tag in tags):
+        errors.append('Tagien maksimipituus on 50 merkkiä')
+    
+    return errors
+
+def validate_candidate_structure(candidate_data):
+    """Validoi ehdokkaan rakenteen"""
+    errors = []
+    
+    # Tarkista pakolliset kentät
+    if not candidate_data.get('name'):
+        errors.append('Nimi on pakollinen')
+    elif len(candidate_data['name']) < 2:
+        errors.append('Nimen tulee olla vähintään 2 merkkiä pitkä')
+    
+    if not candidate_data.get('party'):
+        errors.append('Puolue on pakollinen')
+    
+    # Tarkista vastaukset
+    answers = candidate_data.get('answers', [])
+    for i, answer in enumerate(answers):
+        if not isinstance(answer, dict):
+            errors.append(f'Vastaus {i+1}: väärä muoto')
+            continue
+            
+        if 'question_id' not in answer:
+            errors.append(f'Vastaus {i+1}: question_id puuttuu')
+        
+        if 'answer' not in answer:
+            errors.append(f'Vastaus {i+1}: answer puuttuu')
+        elif not isinstance(answer['answer'], (int, float)):
+            errors.append(f'Vastaus {i+1}: answer ei ole numero')
+        elif not (-5 <= answer['answer'] <= 5):
+            errors.append(f'Vastaus {i+1}: answer tulee olla välillä -5 - 5')
+    
+    return errors
+
 class ConfigLoader:
     """Lataa konfiguraatiotiedostot"""
     def __init__(self, config_dir='config'):
@@ -102,3 +239,21 @@ def handle_api_errors(f):
                 'details': str(e) if False else None  # Älä paljasta virheitä tuotannossa
             }), 500
     return decorated_function
+
+def log_security_event(event_type, description, user_id=None, ip_address=None):
+    """Lokiturvallisuustapahtuma"""
+    log_entry = {
+        'timestamp': datetime.now().isoformat(),
+        'event_type': event_type,
+        'description': description,
+        'user_id': user_id,
+        'ip_address': ip_address
+    }
+    
+    # Yksinkertainen lokitus - tuotannossa käytä proper logging frameworkia
+    security_log_path = 'security.log'
+    try:
+        with open(security_log_path, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(log_entry, ensure_ascii=False) + '\n')
+    except Exception as e:
+        print(f"⚠️  Turvallisuuslokin kirjoitusvirhe: {e}")

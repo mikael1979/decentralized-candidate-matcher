@@ -1,4 +1,7 @@
 from utils import calculate_percentage_level, calculate_similarity, generate_next_id
+from utils import sanitize_question_data, sanitize_candidate_data
+from utils import validate_question_structure, validate_candidate_structure
+from utils import log_security_event
 import math
 
 class RouteHandlers:
@@ -226,28 +229,12 @@ class RouteHandlers:
 
     def validate_question_submission(self, question_data):
         """Validoi käyttäjän lähettämän kysymyksen"""
-        errors = []
-        # Tarkista kysymysteksti
-        fi_text = question_data.get('question', {}).get('fi', '').strip()
-        if not fi_text:
-            errors.append('Kysymys suomeksi on pakollinen')
-        elif len(fi_text) < 10:
-            errors.append('Kysymyksen tulee olla vähintään 10 merkkiä pitkä')
-        elif len(fi_text) > 500:
-            errors.append('Kysymys saa olla enintään 500 merkkiä pitkä')
-        # Tarkista kategoria
-        category = question_data.get('category', '').strip()
-        if not category:
-            errors.append('Kategoria on pakollinen')
-        # Tarkista tagit
-        tags = question_data.get('tags', [])
-        if not tags:
-            errors.append('Vähintään yksi tagi on pakollinen')
-        elif len(tags) > 10:
-            errors.append('Kysymyksessä saa olla enintään 10 tagia')
+        errors = validate_question_structure(question_data)
+        
         # Tarkista ettei ole duplikaatti
         if not errors:
             existing_questions = self.data_manager.get_questions()
+            fi_text = question_data.get('question', {}).get('fi', '')
             for existing in existing_questions:
                 existing_text = existing.get('question', {})
                 if isinstance(existing_text, dict):
@@ -258,6 +245,7 @@ class RouteHandlers:
                     if similarity > 0.8:  # 80% samankaltaisuus
                         errors.append(f'Samankaltainen kysymys on jo olemassa (samankaltaisuus: {similarity:.0f}%)')
                         break
+        
         return errors
 
     def get_system_stats(self):
@@ -379,3 +367,49 @@ class RouteHandlers:
         if hasattr(self.data_manager, 'apply_elo_delta'):
             return self.data_manager.apply_elo_delta(question_id, delta, user_id)
         return False
+
+    def submit_question(self, question_data):
+        """Lisää uuden kysymyksen (sanitoidaan ensin)"""
+        # Sanitoi data ennen käsittelyä
+        sanitized_data = sanitize_question_data(question_data)
+        
+        # Validoi rakenne
+        validation_errors = self.validate_question_submission(sanitized_data)
+        if validation_errors:
+            return {'success': False, 'errors': validation_errors}
+        
+        # Lisää kysymys
+        cid = self.data_manager.add_question(sanitized_data)
+        if cid:
+            # Loki turvallisuustapahtuma
+            log_security_event(
+                'QUESTION_SUBMITTED',
+                f'Kysymys lisätty: {sanitized_data.get("question", {}).get("fi", "")[:50]}...',
+                user_id='anonymous'
+            )
+            return {'success': True, 'cid': cid}
+        else:
+            return {'success': False, 'errors': ['Tallennus epäonnistui']}
+
+    def add_candidate(self, candidate_data):
+        """Lisää uuden ehdokkaan (sanitoidaan ensin)"""
+        # Sanitoi data ennen käsittelyä
+        sanitized_data = sanitize_candidate_data(candidate_data)
+        
+        # Validoi rakenne
+        validation_errors = validate_candidate_structure(sanitized_data)
+        if validation_errors:
+            return {'success': False, 'errors': validation_errors}
+        
+        # Lisää ehdokas
+        candidate_id = self.data_manager.add_candidate(sanitized_data)
+        if candidate_id:
+            # Loki turvallisuustapahtuma
+            log_security_event(
+                'CANDIDATE_ADDED',
+                f'Ehdokas lisätty: {sanitized_data.get("name", "Nimetön")}',
+                user_id='admin'
+            )
+            return {'success': True, 'candidate_id': candidate_id}
+        else:
+            return {'success': False, 'errors': ['Ehdokkaan lisäys epäonnistui']}
