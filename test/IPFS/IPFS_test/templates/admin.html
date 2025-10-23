@@ -16,63 +16,74 @@
             </nav>
         </header>
 
+        <!-- Demo-tila ilmoitus -->
+        <div class="demo-notice">
+            <strong>🔸 Demo-tila:</strong> Admin-sivu käyttää testidataa. Oikeat API-yhteydet puuttuvat.
+        </div>
+
         <div class="admin-grid">
             <div class="admin-card">
-                <h3>Järjestelmän Tila</h3>
-                <div id="system-status"></div>
+                <h3>📊 Järjestelmän Tila</h3>
+                <div id="system-status">
+                    <div class="loading">Ladataan...</div>
+                </div>
             </div>
             
             <div class="admin-card">
-                <h3>Data Hallinta</h3>
-                <button id="export-data-btn" class="btn">Vie kaikki data</button>
-                <button id="import-data-btn" class="btn secondary">Tuo data</button>
-                <button id="clear-cache-btn" class="btn warning">Tyhjennä välimuisti</button>
+                <h3>💾 Data Hallinta</h3>
+                <div class="button-group">
+                    <button id="export-data-btn" class="btn">Vie data (demo)</button>
+                    <button id="import-data-btn" class="btn secondary">Tuo data</button>
+                    <button id="clear-cache-btn" class="btn warning">Tyhjennä välimuisti</button>
+                </div>
             </div>
             
             <div class="admin-card">
-                <h3>Kysymysten Moderaatio</h3>
+                <h3>⚖️ Kysymysten Moderaatio</h3>
                 <div id="moderation-queue">
                     <div class="loading">Ladataan...</div>
                 </div>
             </div>
             
             <div class="admin-card">
-                <h3>IPFS Tila</h3>
-                <div id="ipfs-status"></div>
-            </div>
-
-            <!-- UUSI: Avainten hallinta osio -->
-            <div class="admin-card">
-                <h3>🔑 Turvallisuus & Avainten Hallinta</h3>
-                
-                <div class="key-management">
-                    <div class="key-section">
-                        <h4>Luo uusi avainpari</h4>
-                        <button id="generate-keys-btn" class="btn">Luo avainpari</button>
-                        <div id="keys-result"></div>
-                    </div>
-                    
-                    <div class="key-section">
-                        <h4>Nykyinen julkinen avain</h4>
-                        <div id="current-public-key" class="key-display">
-                            <div class="no-data">Avainta ei ole asetettu</div>
-                        </div>
-                        <button id="copy-public-key-btn" class="btn small" style="display: none;">Kopioi julkinen avain</button>
-                    </div>
-                    
-                    <div class="key-section">
-                        <h4>Lataa yksityinen avain</h4>
-                        <input type="file" id="private-key-file" accept=".json,.txt" style="display: none;">
-                        <button id="load-private-key-btn" class="btn secondary">Lataa yksityinen avain</button>
-                        <div id="private-key-status"></div>
-                    </div>
+                <h3>🌐 IPFS Tila</h3>
+                <div id="ipfs-status">
+                    <div class="loading">Ladataan...</div>
                 </div>
             </div>
         </div>
 
         <div class="admin-stats">
-            <h3>Käyttötilastot</h3>
-            <div class="stats-grid" id="admin-stats"></div>
+            <h3>📈 Käyttötilastot</h3>
+            <div class="stats-grid" id="admin-stats">
+                <div class="loading">Ladataan tilastoja...</div>
+            </div>
+        </div>
+
+        <div class="admin-card">
+            <h3>🔑 Turvallisuus & Avainten Hallinta</h3>
+            
+            <div class="key-management">
+                <div class="key-section">
+                    <h4>Luo uusi avainpari</h4>
+                    <button id="generate-keys-btn" class="btn">Luo avainpari (demo)</button>
+                    <div id="keys-result"></div>
+                </div>
+                
+                <div class="key-section">
+                    <h4>Nykyinen julkinen avain</h4>
+                    <div id="current-public-key" class="key-display">
+                        <div class="no-data">Avainta ei ole asetettu</div>
+                    </div>
+                    <button id="copy-public-key-btn" class="btn small" style="display: none;">Kopioi julkinen avain</button>
+                </div>
+                
+                <div class="key-section">
+                    <h4>Lataa yksityinen avain</h4>
+                    <button id="load-private-key-btn" class="btn secondary">Lataa yksityinen avain</button>
+                    <div id="private-key-status"></div>
+                </div>
+            </div>
         </div>
     </div>
 

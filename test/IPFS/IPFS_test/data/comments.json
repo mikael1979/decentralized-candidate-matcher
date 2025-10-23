@@ -1,12 +1,12 @@
 {
-  "election_id": "election_2026-01-01_fi",
+  "election_id": "election_2026-01-01_fi_satakunta",
   "language": "fi",
   "comments": [],
   "metadata": {
-    "created": "2025-10-21T06:14:26.828610",
-    "system_id": "5dc5e985a3de2145",
-    "election_id": "election_2026-01-01_fi",
+    "created": "2025-10-23T05:24:35.304970",
+    "system_id": "8accb157d590d100",
+    "election_id": "election_2026-01-01_fi_satakunta",
     "fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-    "signature": "U4YN1C+LxrVcR4JzUrBg0J60FSZkCHwzmrUMwemk/GDA0A1Bg0oM+2hu1hRzgRY6Dwci/SCaWWBVImxAPzjiZtzBa1IQuXhIV9mu1Qup2Q59JR9AtsagzoS3FUcxe0xzJmfPBpJSYu1GIpxbHO+E7iHl3likDS/oRjf1Zr+XamMJfraTYfKVkwvV9A/xFPbADY1KP5iGrRsh1fwA8qB5hz3l+c4czKiucN7OVlZB83eP0Yb4ntQFlJADm+PyOJqXzk4Q72KZFw8XLL8jBoPkl8sQ6VpdQ5U0aUTqcL3/39uGIA+ANp6XteqzdP+aV9CAoDOFgFtl9d9qjSeTx4CZxw=="
+    "signature": "dKMdpeKDhQozbtKfnLH82Gi6Il5/hF4as/rmabVl+IpL6gwr0PhgIb+JzK1yICb88Q20BpxkL9sBrxreozBRMSHmo7Et3/VM/dqHSrA+WM033otIBI4hqRcnKt8oQlmrcW4h0oOQw1DSkTI3xS4zD0mMQ3Dsng8cVvonQ5L1eB8Q+fJVvEQbWwOqjxX6wcUSv4jT7R/hoLYszcitJ/iSkF92UJGXgGnAHKy9IsQibaGBMW9iKnHfN5oR553zlr3iW9QZMvAE1DDi7viJOZ1a3Wq5044daIYB22WelL776dv9bQTI6ZfgL2zHON4nAD1Z2x3TvlMJNPLlWgVyf0BljA=="
   }
 }

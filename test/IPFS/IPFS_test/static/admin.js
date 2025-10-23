@@ -1,700 +1,223 @@
-// Ylläpidon tila
+// admin.js - Korjattu versio mock-datalla
+console.log('🚀 Admin-sivu latautuu...');
+
+// Mock-data testaamista varten
+const MOCK_DATA = {
+    systemStatus: {
+        version: '1.0.0',
+        active_users: 1,
+        uptime: 3600,
+        status: 'running'
+    },
+    moderationQueue: [
+        {
+            id: 1,
+            question: { fi: "Pitäisikö kaupungin rakentaa uusi uimahalli?" },
+            category: { fi: "Liikunta" },
+            tags: ["liikunta", "uimahalli", "rahoitus"],
+            created_by: "user123"
+        }
+    ],
+    ipfsStatus: {
+        connected: true,
+        peers: 3,
+        storage_used: 15728640, // 15 MB
+        storage_max: 104857600, // 100 MB
+        last_sync: new Date().toISOString()
+    },
+    adminStats: {
+        total_questions: 5,
+        total_candidates: 4,
+        total_parties: 3,
+        total_answers: 20,
+        avg_answers_per_candidate: 5,
+        last_updated: new Date().toISOString()
+    }
+};
+
+// Sovelluksen tila
 const state = {
     systemStatus: {},
     moderationQueue: [],
     ipfsStatus: {},
-    currentMeta: null
+    adminStats: {},
+    currentMeta: null,
+    syncStatus: 'not_started',
+    useMockData: true // Käytetään mock-dataa kunnes API:t on toteutettu
 };
 
 // DOM-elementit
-const systemStatusEl = document.getElementById('system-status');
-const moderationQueueEl = document.getElementById('moderation-queue');
-const ipfsStatusEl = document.getElementById('ipfs-status');
-const adminStatsEl = document.getElementById('admin-stats');
-const exportDataBtn = document.getElementById('export-data-btn');
-const importDataBtn = document.getElementById('import-data-btn');
-const clearCacheBtn = document.getElementById('clear-cache-btn');
-const metaFormContainer = document.getElementById('meta-form');
+let systemStatusEl, moderationQueueEl, ipfsStatusEl, adminStatsEl;
+let exportDataBtn, importDataBtn, clearCacheBtn;
+let generateKeysBtn, copyPublicKeyBtn, loadPrivateKeyBtn;
+let manualSyncBtn, checkPeersBtn, startSyncBtn, stopSyncBtn;
 
-// Meta-tiedon hallinta
-class MetaManager {
-    constructor() {
-        this.currentMeta = null;
-    }
-    
-    async loadMeta() {
-        try {
-            console.log('🔄 Ladataan meta-tietoja...');
-            const response = await fetch('/api/meta');
-            
-            if (!response.ok) {
-                throw new Error(`HTTP virhe! status: ${response.status}`);
-            }
-            
-            this.currentMeta = await response.json();
-            console.log('✅ Meta-tiedot ladattu:', this.currentMeta);
-            
-            this.displayMetaForm();
-            this.displaySystemStats();
-            
-        } catch (error) {
-            console.error('❌ Meta-tietojen lataus epäonnistui:', error);
-            this.showError('Meta-tietojen lataus epäonnistui: ' + error.message);
-        }
-    }
-    
-    displayMetaForm() {
-        if (!metaFormContainer || !this.currentMeta) return;
+// Alustus
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ DOM ladattu, alustetaan admin-sivua...');
+    initializeAdminPage();
+});
+
+async function initializeAdminPage() {
+    try {
+        // Etsi DOM-elementit
+        findDOMElements();
         
-        const election = this.currentMeta.election || {};
-        const name = election.name || {};
+        // Alusta välilehdet
+        initializeTabs();
         
-        metaFormContainer.innerHTML = `
-            <div class="admin-card">
-                <h3>🗳️ Muokkaa vaalitietoja</h3>
-                <form id="edit-meta-form" class="meta-form">
-                    <div class="form-group">
-                        <label for="election-name-fi">Vaalien nimi (suomeksi):</label>
-                        <input type="text" id="election-name-fi" value="${this.escapeHtml(name.fi || '')}" required>
-                        <small>Esimerkki: "Kunnallisvaalit 2025"</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="election-name-en">Vaalien nimi (englanniksi):</label>
-                        <input type="text" id="election-name-en" value="${this.escapeHtml(name.en || '')}">
-                        <small>Esimerkki: "Municipal Election 2025"</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="election-name-sv">Vaalien nimi (ruotsiksi):</label>
-                        <input type="text" id="election-name-sv" value="${this.escapeHtml(name.sv || '')}">
-                        <small>Esimerkki: "Kommunalval 2025"</small>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="election-date">Vaalin päivämäärä:</label>
-                            <input type="date" id="election-date" value="${election.date || ''}">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="election-type">Vaalityyppi:</label>
-                            <select id="election-type">
-                                <option value="municipal" ${election.type === 'municipal' ? 'selected' : ''}>Kunnallisvaalit</option>
-                                <option value="parliamentary" ${election.type === 'parliamentary' ? 'selected' : ''}>Eduskuntavaalit</option>
-                                <option value="european" ${election.type === 'european' ? 'selected' : ''}>Europarlamenttivaalit</option>
-                                <option value="presidential" ${election.type === 'presidential' ? 'selected' : ''}>Presidentinvaalit</option>
-                                <option value="test" ${election.type === 'test' ? 'selected' : ''}>Testivaalit</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="election-country">Maa:</label>
-                        <input type="text" id="election-country" value="${this.escapeHtml(election.country || 'FI')}" maxlength="2">
-                        <small>Kaksikirjaiminen maakoodi (esim. FI, SE, NO)</small>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="submit" class="btn">
-                            💾 Tallenna muutokset
-                        </button>
-                        <button type="button" id="reset-meta-btn" class="btn secondary">
-                            🔄 Palauta alkuperäiset
-                        </button>
-                    </div>
-                </form>
-                <div id="meta-result"></div>
-            </div>
-        `;
+        // Aseta tapahtumankäsittelijät
+        setupEventHandlers();
         
-        // Lisää lomakkeen käsittelijä
-        document.getElementById('edit-meta-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.updateMeta();
-        });
+        // Lataa alustavat tiedot
+        await loadInitialData();
         
-        // Lisää reset-painikkeen käsittelijä
-        document.getElementById('reset-meta-btn').addEventListener('click', () => {
-            this.resetMetaForm();
-        });
-    }
-    
-    async updateMeta() {
-        const resultDiv = document.getElementById('meta-result');
-        try {
-            console.log('🔄 Päivitetään meta-tietoja...');
-            
-            const updatedMeta = {
-                ...this.currentMeta,
-                election: {
-                    ...this.currentMeta.election,
-                    name: {
-                        fi: document.getElementById('election-name-fi').value.trim(),
-                        en: document.getElementById('election-name-en').value.trim(),
-                        sv: document.getElementById('election-name-sv').value.trim()
-                    },
-                    date: document.getElementById('election-date').value,
-                    type: document.getElementById('election-type').value,
-                    country: document.getElementById('election-country').value.toUpperCase()
-                }
-            };
-            
-            // Validointi
-            const validationError = this.validateMetaData(updatedMeta);
-            if (validationError) {
-                resultDiv.innerHTML = `<div class="error-message">❌ ${validationError}</div>`;
-                return;
-            }
-            
-            const response = await fetch('/api/update_meta', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updatedMeta)
-            });
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                resultDiv.innerHTML = `
-                    <div class="success-message">
-                        ✅ Vaalitiedot päivitetty onnistuneesti!
-                        <br><small>Sivu päivittyy automaattisesti...</small>
-                    </div>
-                `;
-                
-                // Päivitä sivu uusilla tiedoilla
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
-            } else {
-                resultDiv.innerHTML = `<div class="error-message">❌ Virhe: ${result.error}</div>`;
-            }
-            
-        } catch (error) {
-            console.error('❌ Meta-tietojen päivitys epäonnistui:', error);
-            resultDiv.innerHTML = `
-                <div class="error-message">
-                    ❌ Verkkovirhe: ${error.message}
-                </div>
-            `;
-        }
-    }
-    
-    validateMetaData(meta) {
-        const election = meta.election || {};
-        const name = election.name || {};
+        console.log('✅ Admin-sivu alustettu onnistuneesti');
         
-        if (!name.fi || name.fi.trim() === '') {
-            return 'Vaalien nimi suomeksi on pakollinen';
-        }
-        
-        if (!election.date) {
-            return 'Vaalin päivämäärä on pakollinen';
-        }
-        
-        if (!election.country || election.country.length !== 2) {
-            return 'Maa-kentässä tulee olla kaksikirjaiminen maakoodi';
-        }
-        
-        // Tarkista päivämäärän muoto
-        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-        if (!dateRegex.test(election.date)) {
-            return 'Päivämäärän tulee olla muodossa YYYY-MM-DD';
-        }
-        
-        return null;
-    }
-    
-    resetMetaForm() {
-        if (this.currentMeta) {
-            this.displayMetaForm();
-            document.getElementById('meta-result').innerHTML = `
-                <div class="info-message">ℹ️ Lomake palautettu alkuperäiseen tilaan</div>
-            `;
-        }
-    }
-    
-    displaySystemStats() {
-        if (!adminStatsEl || !this.currentMeta) return;
-        
-        const stats = this.currentMeta.content || {};
-        const integrity = this.currentMeta.integrity || {};
-        const election = this.currentMeta.election || {};
-        
-        // Laske ero vaalin päivämäärään
-        const electionDate = new Date(election.date);
-        const today = new Date();
-        const daysUntilElection = Math.ceil((electionDate - today) / (1000 * 60 * 60 * 24));
-        
-        let electionStatus = '';
-        if (daysUntilElection > 0) {
-            electionStatus = `${daysUntilElection} päivää vaaleihin`;
-        } else if (daysUntilElection === 0) {
-            electionStatus = 'Vaalipäivä tänään!';
-        } else {
-            electionStatus = 'Vaalit menneet';
-        }
-        
-        adminStatsEl.innerHTML = `
-            <div class="admin-card">
-                <h3>📊 Järjestelmätilastot</h3>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">⚙️</div>
-                        <div class="stat-content">
-                            <div class="stat-label">Versio</div>
-                            <div class="stat-number">${this.currentMeta.version}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">❓</div>
-                        <div class="stat-content">
-                            <div class="stat-label">Kysymyksiä</div>
-                            <div class="stat-number">${stats.questions_count || 0}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">👤</div>
-                        <div class="stat-content">
-                            <div class="stat-label">Ehdokkaita</div>
-                            <div class="stat-number">${stats.candidates_count || 0}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">🏛️</div>
-                        <div class="stat-content">
-                            <div class="stat-label">Puolueita</div>
-                            <div class="stat-number">${stats.parties_count || 0}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">🕒</div>
-                        <div class="stat-content">
-                            <div class="stat-label">Päivitetty</div>
-                            <div class="stat-date">${this.formatDateTime(stats.last_updated)}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">🔒</div>
-                        <div class="stat-content">
-                            <div class="stat-label">Integriteetti</div>
-                            <div class="stat-status ${integrity.hash ? 'valid' : 'invalid'}">
-                                ${integrity.hash ? '✅ Voimassa' : '❌ Ei voimassa'}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="election-info">
-                    <h4>🗳️ Vaalitiedot</h4>
-                    <div class="election-details">
-                        <strong>${election.name?.fi || 'Nimetön'}</strong><br>
-                        <small>
-                            Tyypi: ${this.getElectionTypeName(election.type)}<br>
-                            Päivämäärä: ${this.formatDate(election.date)}<br>
-                            Tila: <span class="election-status">${electionStatus}</span>
-                        </small>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-    
-    getElectionTypeName(type) {
-        const types = {
-            'municipal': 'Kunnallisvaalit',
-            'parliamentary': 'Eduskuntavaalit',
-            'european': 'Europarlamenttivaalit',
-            'presidential': 'Presidentinvaalit',
-            'test': 'Testivaalit'
-        };
-        return types[type] || type;
-    }
-    
-    formatDateTime(dateString) {
-        if (!dateString) return 'Ei saatavilla';
-        const date = new Date(dateString);
-        return date.toLocaleString('fi-FI');
-    }
-    
-    formatDate(dateString) {
-        if (!dateString) return 'Ei saatavilla';
-        const date = new Date(dateString);
-        return date.toLocaleDateString('fi-FI');
-    }
-    
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-    
-    showError(message) {
-        if (metaFormContainer) {
-            metaFormContainer.innerHTML = `
-                <div class="error-message">
-                    ❌ ${message}
-                    <br><button onclick="metaManager.loadMeta()" class="btn small">Yritä uudelleen</button>
-                </div>
-            `;
-        }
+    } catch (error) {
+        console.error('❌ Admin-sivun alustus epäonnistui:', error);
+        showError('Sivun alustus epäonnistui: ' + error.message);
     }
 }
 
-// IPFS Synkronointimanageri
-class IPFSSyncManager {
-    constructor() {
-        this.syncInterval = null;
-        this.isAutoSync = false;
-    }
+// Etsi DOM-elementit
+function findDOMElements() {
+    console.log('🔍 Etsitään DOM-elementtejä...');
     
-    // Manuaalinen synkronointi
-    async manualSync() {
-        try {
-            console.log('🔄 Käynnistetään manuaalinen synkronointi...');
-            const response = await fetch('/api/admin/sync', {
-                method: 'POST'
-            });
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                this.showSyncResult(result);
-                this.startSyncMonitoring();
-            } else {
-                this.showSyncError(result.error || 'Synkronointi epäonnistui');
-            }
-            
-        } catch (error) {
-            console.error('❌ Synkronoinnin virhe:', error);
-            this.showSyncError('Verkkovirhe synkronoinnissa: ' + error.message);
-        }
-    }
+    // Peruselementit
+    systemStatusEl = document.getElementById('system-status');
+    moderationQueueEl = document.getElementById('moderation-queue');
+    ipfsStatusEl = document.getElementById('ipfs-status');
+    adminStatsEl = document.getElementById('admin-stats');
     
-    // Aloita synkronoinnin seuranta
-    startSyncMonitoring() {
-        // Päivitä tila säännöllisesti
-        this.syncInterval = setInterval(() => {
-            this.updateSyncStatus();
-        }, 2000);
-        
-        // Lopeta seuranta 30 sekunnin jälkeen
-        setTimeout(() => {
-            this.stopSyncMonitoring();
-        }, 30000);
-    }
+    // Painikkeet
+    exportDataBtn = document.getElementById('export-data-btn');
+    importDataBtn = document.getElementById('import-data-btn');
+    clearCacheBtn = document.getElementById('clear-cache-btn');
+    generateKeysBtn = document.getElementById('generate-keys-btn');
+    copyPublicKeyBtn = document.getElementById('copy-public-key-btn');
+    loadPrivateKeyBtn = document.getElementById('load-private-key-btn');
+    manualSyncBtn = document.getElementById('manual-sync-btn');
+    checkPeersBtn = document.getElementById('check-peers-btn');
+    startSyncBtn = document.getElementById('start-sync-btn');
+    stopSyncBtn = document.getElementById('stop-sync-btn');
     
-    // Pysäytä synkronoinnin seuranta
-    stopSyncMonitoring() {
-        if (this.syncInterval) {
-            clearInterval(this.syncInterval);
-            this.syncInterval = null;
-        }
-    }
-    
-    // Päivitä synkronoinnin tila
-    async updateSyncStatus() {
-        try {
-            const response = await fetch('/api/admin/sync_status');
-            const status = await response.json();
-            
-            this.displaySyncStatus(status);
-            
-            // Jos synkronointi on valmis, lopeta seuranta
-            if (status.status === 'completed' || status.status === 'error') {
-                this.stopSyncMonitoring();
-            }
-            
-        } catch (error) {
-            console.error('❌ Virhe tilan päivityksessä:', error);
-        }
-    }
-    
-    // Näytä synkronoinnin tulos
-    showSyncResult(status) {
-        const syncResults = document.getElementById('sync-results');
-        if (!syncResults) return;
-        
-        syncResults.innerHTML = `
-            <div class="sync-result success">
-                <h4>✅ Synkronointi aloitettu</h4>
-                <div class="sync-progress">
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%"></div>
-                    </div>
-                    <div class="progress-text">Alustetaan...</div>
-                </div>
-            </div>
-        `;
-    }
-    
-    // Näytä synkronoinnin virhe
-    showSyncError(error) {
-        const syncResults = document.getElementById('sync-results');
-        if (!syncResults) return;
-        
-        syncResults.innerHTML = `
-            <div class="sync-result error">
-                <h4>❌ Synkronointi epäonnistui</h4>
-                <p>${error}</p>
-                <button onclick="ipfsSyncManager.manualSync()" class="btn small">Yritä uudelleen</button>
-            </div>
-        `;
-    }
-    
-    // Näytä synkronoinnin tila
-    displaySyncStatus(status) {
-        const syncResults = document.getElementById('sync-results');
-        if (!syncResults) return;
-        
-        let progress = 0;
-        let statusText = '';
-        
-        switch (status.status) {
-            case 'syncing':
-                progress = 30;
-                statusText = `Etsitään peeritä... (${status.peers_found || 0} löytyi)`;
-                break;
-            case 'completed':
-                progress = 100;
-                statusText = `Valmis! ${status.data_imported || 0} uutta dataa tuotu`;
-                break;
-            case 'error':
-                progress = 0;
-                statusText = `Virhe: ${status.error || 'Tuntematon virhe'}`;
-                break;
-            default:
-                progress = 0;
-                statusText = 'Odottamaan...';
-        }
-        
-        syncResults.innerHTML = `
-            <div class="sync-result ${status.status}">
-                <h4>${this.getStatusIcon(status.status)} Synkronointi: ${this.getStatusText(status.status)}</h4>
-                <div class="sync-progress">
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${progress}%"></div>
-                    </div>
-                    <div class="progress-text">${statusText}</div>
-                </div>
-                <div class="sync-details">
-                    <div class="sync-stat">
-                        <strong>Peeritä löytyi:</strong> ${status.peers_found || 0}
-                    </div>
-                    <div class="sync-stat">
-                        <strong>Dataa tuotu:</strong> ${status.data_imported || 0}
-                    </div>
-                    <div class="sync-stat">
-                        <strong>Viimeisin synkronointi:</strong> ${status.last_sync ? this.formatDateTime(status.last_sync) : 'Ei vielä'}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-    
-    getStatusIcon(status) {
-        const icons = {
-            'syncing': '🔄',
-            'completed': '✅',
-            'error': '❌',
-            'not_started': '⏸️'
-        };
-        return icons[status] || '❓';
-    }
-    
-    getStatusText(status) {
-        const texts = {
-            'syncing': 'Käynnissä',
-            'completed': 'Valmis',
-            'error': 'Virhe',
-            'not_started': 'Ei aloitettu'
-        };
-        return texts[status] || 'Tuntematon';
-    }
-    
-    formatDateTime(dateString) {
-        if (!dateString) return 'Ei saatavilla';
-        const date = new Date(dateString);
-        return date.toLocaleString('fi-FI');
-    }
+    console.log('✅ DOM-elementit löydetty');
 }
 
-// Avainten hallinta
-class KeyManager {
-    constructor() {
-        this.publicKey = localStorage.getItem('admin_public_key');
-        this.privateKey = null;
-        this.updateKeyDisplay();
-    }
-    
-    // Generoi uusi avainpari
-    async generateKeyPair() {
-        try {
-            console.log('🔑 Generoidaan uutta avainparia...');
-            
-            // Mock-toteutus - oikeassa järjestelmässä käytettäisiin Web Crypto API:a
-            const keyPair = this.mockGenerateKeyPair();
-            
-            // Tallenna julkinen avain
-            this.publicKey = keyPair.publicKey;
-            localStorage.setItem('admin_public_key', this.publicKey);
-            
-            // Näytä yksityinen avain (vain tällä kertaa!)
-            this.showPrivateKey(keyPair.privateKey);
-            
-            this.updateKeyDisplay();
-            
-            return keyPair;
-            
-        } catch (error) {
-            console.error('❌ Virhe avainparin generoinnissa:', error);
-            throw error;
-        }
-    }
-    
-    // Mock-avainparin generointi
-    mockGenerateKeyPair() {
-        const timestamp = Date.now();
-        return {
-            publicKey: `pub_${timestamp}_${Math.random().toString(36).substr(2, 9)}`,
-            privateKey: `priv_${timestamp}_${Math.random().toString(36).substr(2, 9)}`,
-            generatedAt: new Date().toISOString()
-        };
-    }
-    
-    // Näytä yksityinen avain (varoitus käyttäjälle)
-    showPrivateKey(privateKey) {
-        const keysResult = document.getElementById('keys-result');
-        if (!keysResult) return;
-        
-        keysResult.innerHTML = `
-            <div class="warning-message">
-                <h4>⚠️ TALLENNA YKSITYINEN AVAIN TURVALLISESTI!</h4>
-                <p>Yksityistä avainta ei voida palauttaa jos kadotat sen.</p>
-                <div class="private-key-display">
-                    <strong>Yksityinen avain:</strong>
-                    <code>${privateKey}</code>
-                </div>
-                <div class="key-actions">
-                    <button id="copy-private-key-btn" class="btn small warning">📋 Kopioi yksityinen avain</button>
-                    <button id="download-private-key-btn" class="btn small">💾 Lataa tiedostona</button>
-                </div>
-            </div>
-        `;
-        
-        // Kopioi yksityinen avain
-        document.getElementById('copy-private-key-btn').addEventListener('click', () => {
-            navigator.clipboard.writeText(privateKey).then(() => {
-                alert('✅ Yksityinen avain kopioitu leikepöydälle!');
-            }).catch(err => {
-                console.error('❌ Kopiointi epäonnistui:', err);
-                alert('❌ Kopiointi epäonnistui');
-            });
-        });
-        
-        // Lataa yksityinen avain tiedostona
-        document.getElementById('download-private-key-btn').addEventListener('click', () => {
-            this.downloadPrivateKey(privateKey);
-        });
-    }
-    
-    // Lataa yksityinen avain tiedostona
-    downloadPrivateKey(privateKey) {
-        const data = {
-            privateKey: privateKey,
-            generatedAt: new Date().toISOString(),
-            system: 'Hajautettu Vaalikone',
-            warning: 'SAVE THIS FILE SECURELY - PRIVATE KEY CANNOT BE RECOVERED'
-        };
-        
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `vaalikone_private_key_${Date.now()}.json`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-    }
-    
-    updateKeyDisplay() {
-        const keysDisplay = document.getElementById('keys-display');
-        if (!keysDisplay) return;
-        
-        if (this.publicKey) {
-            keysDisplay.innerHTML = `
-                <div class="key-info">
-                    <h4>🔑 Nykyinen julkinen avain</h4>
-                    <code class="public-key">${this.publicKey}</code>
-                    <p><small>Avain on tallennettu selaimen local storageen</small></p>
-                </div>
-            `;
-        } else {
-            keysDisplay.innerHTML = `
-                <div class="no-keys">
-                    <p>Ei avainta generoitu</p>
-                    <button onclick="keyManager.generateKeyPair()" class="btn">🔑 Generoi uusi avainpari</button>
-                </div>
-            `;
-        }
-    }
-}
-
-// Alusta managerit
-const metaManager = new MetaManager();
-const ipfsSyncManager = new IPFSSyncManager();
-const keyManager = new KeyManager();
-
-// Välilehtien käsittely
-function initTabs() {
+// Alusta välilehdet
+function initializeTabs() {
     const tabButtons = document.querySelectorAll('.tab-button');
-    const tabContents = document.querySelectorAll('.tab-content');
     
     tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const tabName = button.dataset.tab;
-            
-            // Poista aktiiviset luokat
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
-            
-            // Aseta uusi aktiivinen välilehti
-            button.classList.add('active');
-            document.getElementById(`${tabName}-tab`).classList.add('active');
-            
-            // Lataa välilehden sisältö tarvittaessa
-            if (tabName === 'meta') {
-                metaManager.loadMeta();
-            } else if (tabName === 'sync') {
-                ipfsSyncManager.updateSyncStatus();
-            }
+        button.addEventListener('click', (e) => {
+            const tabName = e.target.dataset.tab;
+            switchTab(tabName);
         });
     });
+    
+    console.log('✅ Välilehdet alustettu');
+}
+
+// Vaihda välilehteä
+function switchTab(tabName) {
+    console.log(`🔄 Vaihdetaan välilehteä: ${tabName}`);
+    
+    // Poista aktiiviset luokat
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // Aseta uusi aktiivinen välilehti
+    const activeButton = document.querySelector(`[data-tab="${tabName}"]`);
+    const activeContent = document.getElementById(`${tabName}-tab`);
+    
+    if (activeButton && activeContent) {
+        activeButton.classList.add('active');
+        activeContent.classList.add('active');
+    }
+}
+
+// Aseta tapahtumankäsittelijät
+function setupEventHandlers() {
+    console.log('🔧 Asetetaan tapahtumankäsittelijät...');
+    
+    // Data hallinta
+    if (exportDataBtn) {
+        exportDataBtn.addEventListener('click', handleExportData);
+    }
+    if (importDataBtn) {
+        importDataBtn.addEventListener('click', handleImportData);
+    }
+    if (clearCacheBtn) {
+        clearCacheBtn.addEventListener('click', handleClearCache);
+    }
+    
+    // Avainten hallinta
+    if (generateKeysBtn) {
+        generateKeysBtn.addEventListener('click', handleGenerateKeys);
+    }
+    if (copyPublicKeyBtn) {
+        copyPublicKeyBtn.addEventListener('click', handleCopyPublicKey);
+    }
+    if (loadPrivateKeyBtn) {
+        loadPrivateKeyBtn.addEventListener('click', handleLoadPrivateKey);
+    }
+    
+    console.log('✅ Tapahtumankäsittelijät asetettu');
+}
+
+// Lataa alustavat tiedot
+async function loadInitialData() {
+    console.log('📥 Ladataan alustavia tietoja...');
+    
+    try {
+        await loadSystemStatus();
+        await loadModerationQueue();
+        await loadIPFSStatus();
+        await loadAdminStats();
+        
+    } catch (error) {
+        console.error('❌ Alustavien tietojen lataus epäonnistui:', error);
+        // Jatketaan mock-datalla
+        useMockDataAsFallback();
+    }
 }
 
 // Lataa järjestelmän tila
 async function loadSystemStatus() {
     try {
+        showLoading(systemStatusEl, 'Ladataan järjestelmän tilaa...');
+        
+        if (state.useMockData) {
+            // Käytetään mock-dataa
+            await new Promise(resolve => setTimeout(resolve, 500)); // Simuloi latausaikaa
+            state.systemStatus = MOCK_DATA.systemStatus;
+            renderSystemStatus();
+            return;
+        }
+        
         const response = await fetch('/api/admin/status');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
         state.systemStatus = await response.json();
-        updateSystemStatusDisplay();
+        renderSystemStatus();
+        
     } catch (error) {
-        console.error('❌ Järjestelmätilan lataus epäonnistui:', error);
+        console.warn('Järjestelmätilan API ei saatavilla, käytetään mock-dataa:', error);
+        state.systemStatus = MOCK_DATA.systemStatus;
+        renderSystemStatus();
     }
 }
 
-// Päivitä järjestelmätilan näyttö
-function updateSystemStatusDisplay() {
+// Renderöi järjestelmän tila
+function renderSystemStatus() {
     if (!systemStatusEl) return;
+    
+    const status = state.systemStatus;
     
     systemStatusEl.innerHTML = `
         <div class="status-grid">
@@ -704,103 +227,464 @@ function updateSystemStatusDisplay() {
             </div>
             <div class="status-item">
                 <span class="status-label">Versio:</span>
-                <span class="status-value">${state.systemStatus.version || '0.0.1'}</span>
+                <span class="status-value">${status.version || '1.0.0'}</span>
             </div>
             <div class="status-item">
                 <span class="status-label">Käyttäjiä:</span>
-                <span class="status-value">${state.systemStatus.active_users || 0}</span>
+                <span class="status-value">${status.active_users || 0}</span>
             </div>
             <div class="status-item">
-                <span class="status-label">Viimeisin varmuuskopio:</span>
-                <span class="status-value">${formatDateTime(state.systemStatus.last_backup)}</span>
+                <span class="status-label">Käynnissä:</span>
+                <span class="status-value">${formatUptime(status.uptime)}</span>
+            </div>
+        </div>
+        <div class="status-footer">
+            <small>${state.useMockData ? '🔸 Demo-tila - Mock-data käytössä' : '✅ Yhdistetty palvelimeen'}</small>
+        </div>
+    `;
+}
+
+// Lataa moderaatiojono
+async function loadModerationQueue() {
+    try {
+        showLoading(moderationQueueEl, 'Ladataan moderaatiojonoa...');
+        
+        if (state.useMockData) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            state.moderationQueue = MOCK_DATA.moderationQueue;
+            renderModerationQueue();
+            return;
+        }
+        
+        const response = await fetch('/api/admin/moderation_queue');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        state.moderationQueue = await response.json();
+        renderModerationQueue();
+        
+    } catch (error) {
+        console.warn('Moderaatiojonon API ei saatavilla, käytetään mock-dataa:', error);
+        state.moderationQueue = MOCK_DATA.moderationQueue;
+        renderModerationQueue();
+    }
+}
+
+// Renderöi moderaatiojono
+function renderModerationQueue() {
+    if (!moderationQueueEl) return;
+    
+    if (!state.moderationQueue || state.moderationQueue.length === 0) {
+        moderationQueueEl.innerHTML = `
+            <div class="no-data">
+                <p>🎉 Ei odottavia kysymyksiä moderointiin!</p>
+                <p class="subtext">Kaikki kysymykset on käsitelty.</p>
+                ${state.useMockData ? '<small>🔸 Demo-tila</small>' : ''}
+            </div>
+        `;
+        return;
+    }
+    
+    moderationQueueEl.innerHTML = `
+        <div class="moderation-header">
+            <h4>Odottaa moderointia (${state.moderationQueue.length} kpl)</h4>
+            ${state.useMockData ? '<small>🔸 Demo-tila</small>' : ''}
+        </div>
+        <div class="moderation-list">
+            ${state.moderationQueue.map(item => `
+                <div class="moderation-item">
+                    <div class="moderation-question">
+                        <strong>${item.question?.fi || 'Kysymys'}</strong>
+                        <div class="question-meta">
+                            <span class="category">${item.category?.fi || 'Yleinen'}</span>
+                            <span class="tags">${(item.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}</span>
+                        </div>
+                        <small>Lähettäjä: ${item.created_by || 'tuntematon'}</small>
+                    </div>
+                    <div class="moderation-actions">
+                        <button class="btn small success" onclick="approveQuestion(${item.id})">
+                            ✅ Hyväksy
+                        </button>
+                        <button class="btn small warning" onclick="rejectQuestion(${item.id})">
+                            ❌ Hylkää
+                        </button>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+// Lataa IPFS-tila
+async function loadIPFSStatus() {
+    try {
+        showLoading(ipfsStatusEl, 'Ladataan IPFS-tilaa...');
+        
+        if (state.useMockData) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            state.ipfsStatus = MOCK_DATA.ipfsStatus;
+            renderIPFSStatus();
+            return;
+        }
+        
+        const response = await fetch('/api/admin/ipfs_status');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        state.ipfsStatus = await response.json();
+        renderIPFSStatus();
+        
+    } catch (error) {
+        console.warn('IPFS-tilan API ei saatavilla, käytetään mock-dataa:', error);
+        state.ipfsStatus = MOCK_DATA.ipfsStatus;
+        renderIPFSStatus();
+    }
+}
+
+// Renderöi IPFS-tila
+function renderIPFSStatus() {
+    if (!ipfsStatusEl) return;
+    
+    const status = state.ipfsStatus;
+    
+    ipfsStatusEl.innerHTML = `
+        <div class="status-grid">
+            <div class="status-item">
+                <span class="status-label">Yhteys:</span>
+                <span class="status-value ${status.connected ? 'success' : 'error'}">
+                    ${status.connected ? '✅ Yhdistetty' : '❌ Katkaistu'}
+                </span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Peerit:</span>
+                <span class="status-value">${status.peers || 0}</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Tallennustila:</span>
+                <span class="status-value">${formatBytes(status.storage_used)} / ${formatBytes(status.storage_max)}</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Viimeisin synkronointi:</span>
+                <span class="status-value">${formatDateTime(status.last_sync)}</span>
+            </div>
+        </div>
+        <div class="status-footer">
+            ${state.useMockData ? '<small>🔸 Demo-tila - Mock-data käytössä</small>' : ''}
+            <button class="btn small" onclick="loadIPFSStatus()">🔄 Päivitä</button>
+        </div>
+    `;
+}
+
+// Lataa admin-tilastot
+async function loadAdminStats() {
+    try {
+        showLoading(adminStatsEl, 'Ladataan tilastoja...');
+        
+        if (state.useMockData) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            state.adminStats = MOCK_DATA.adminStats;
+            renderAdminStats();
+            return;
+        }
+        
+        const response = await fetch('/api/admin/stats');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        state.adminStats = await response.json();
+        renderAdminStats();
+        
+    } catch (error) {
+        console.warn('Tilastojen API ei saatavilla, käytetään mock-dataa:', error);
+        state.adminStats = MOCK_DATA.adminStats;
+        renderAdminStats();
+    }
+}
+
+// Renderöi admin-tilastot
+function renderAdminStats() {
+    if (!adminStatsEl) return;
+    
+    const stats = state.adminStats;
+    
+    adminStatsEl.innerHTML = `
+        <div class="stat-card">
+            <div class="stat-icon">❓</div>
+            <div class="stat-content">
+                <div class="stat-number">${stats.total_questions || 0}</div>
+                <div class="stat-label">Kysymyksiä</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">👤</div>
+            <div class="stat-content">
+                <div class="stat-number">${stats.total_candidates || 0}</div>
+                <div class="stat-label">Ehdokkaita</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🏛️</div>
+            <div class="stat-content">
+                <div class="stat-number">${stats.total_parties || 0}</div>
+                <div class="stat-label">Puolueita</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">💬</div>
+            <div class="stat-content">
+                <div class="stat-number">${stats.total_answers || 0}</div>
+                <div class="stat-label">Vastauksia</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-content">
+                <div class="stat-number">${stats.avg_answers_per_candidate || 0}</div>
+                <div class="stat-label">Keskiarvo vastauksia</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🕒</div>
+            <div class="stat-content">
+                <div class="stat-date">${formatDateTime(stats.last_updated)}</div>
+                <div class="stat-label">Päivitetty</div>
             </div>
         </div>
     `;
 }
 
-// Apufunktio päivämäärän muotoiluun
-function formatDateTime(dateString) {
-    if (!dateString) return 'Ei saatavilla';
-    const date = new Date(dateString);
-    return date.toLocaleString('fi-FI');
-}
-
-// Alustus
-function init() {
-    console.log('🚀 Alustetaan admin-sivu...');
-    
-    // Alusta välilehdet
-    initTabs();
-    
-    // Lataa järjestelmän tila
-    loadSystemStatus();
-    
-    // Lataa meta-tiedot
-    metaManager.loadMeta();
-    
-    // Aseta tapahtumankäsittelijät painikkeille
-    if (exportDataBtn) {
-        exportDataBtn.addEventListener('click', exportData);
-    }
-    
-    if (importDataBtn) {
-        importDataBtn.addEventListener('click', importData);
-    }
-    
-    if (clearCacheBtn) {
-        clearCacheBtn.addEventListener('click', clearCache);
-    }
-    
-    console.log('✅ Admin-sivu alustettu');
-}
+// TAPAHTUMANKÄSITTELIJÄT
 
 // Data vienti
-async function exportData() {
+async function handleExportData() {
     try {
-        const response = await fetch('/api/admin/export_data');
-        const data = await response.json();
+        showInfo('📤 Viedään dataa...');
         
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        // Mock-toiminto - oikeassa toteutuksessa tämä kutsuisi API:a
+        const mockData = {
+            questions: state.adminStats.total_questions,
+            candidates: state.adminStats.total_candidates,
+            parties: state.adminStats.total_parties,
+            exported_at: new Date().toISOString()
+        };
+        
+        const blob = new Blob([JSON.stringify(mockData, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `vaalikone_export_${Date.now()}.json`;
+        link.download = `vaalikone_demo_export_${Date.now()}.json`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
         
-        alert('✅ Data vienti onnistui!');
+        showSuccess('✅ Demo-data vienti onnistui!');
+        
     } catch (error) {
         console.error('❌ Data vienti epäonnistui:', error);
-        alert('❌ Data vienti epäonnistui: ' + error.message);
+        showError('Data vienti epäonnistui: ' + error.message);
     }
 }
 
 // Data tuonti
-async function importData() {
-    alert('⚠️ Data tuonti ominaisuus on vielä kehitteillä');
-    // Toteutus puuttuu
+async function handleImportData() {
+    showInfo('📥 Data tuonti ominaisuus on vielä kehitteillä');
 }
 
 // Välimuistin tyhjennys
-async function clearCache() {
+async function handleClearCache() {
     try {
-        const response = await fetch('/api/admin/clear_cache', {
-            method: 'POST'
-        });
-        const result = await response.json();
+        showInfo('🗑️ Tyhjennetään välimuisti...');
         
-        if (result.success) {
-            alert('✅ Välimuisti tyhjennetty onnistuneesti!');
-        } else {
-            alert('❌ Välimuistin tyhjennys epäonnistui');
-        }
+        // Mock-toiminto
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        showSuccess('✅ Välimuisti tyhjennetty onnistuneesti! (demo)');
+        
     } catch (error) {
         console.error('❌ Välimuistin tyhjennys epäonnistui:', error);
-        alert('❌ Välimuistin tyhjennys epäonnistui: ' + error.message);
+        showError('Välimuistin tyhjennys epäonnistui: ' + error.message);
     }
 }
 
-// Käynnistä sovellus
-document.addEventListener('DOMContentLoaded', init);
+// Avainten hallinta
+async function handleGenerateKeys() {
+    try {
+        showInfo('🔑 Generoidaan avainparia...');
+        
+        // Mock-avainten generointi
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        const mockPublicKey = `mock_pub_key_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const mockPrivateKey = `mock_priv_key_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        document.getElementById('keys-result').innerHTML = `
+            <div class="success-message">
+                ✅ Avainpari luotu onnistuneesti! (demo)
+                <div class="key-preview">
+                    <strong>Julkinen avain:</strong>
+                    <code>${mockPublicKey}</code>
+                    <br>
+                    <strong>Yksityinen avain:</strong>
+                    <code>${mockPrivateKey}</code>
+                </div>
+                <small>🔸 Huomio: Nämä ovat demo-avaimia</small>
+            </div>
+        `;
+        
+        updatePublicKeyDisplay(mockPublicKey);
+        
+    } catch (error) {
+        console.error('❌ Avaimen luonti epäonnistui:', error);
+        showError('Avaimen luonti epäonnistui: ' + error.message);
+    }
+}
+
+// Päivitä julkinen avain näyttö
+function updatePublicKeyDisplay(publicKey) {
+    const publicKeyEl = document.getElementById('current-public-key');
+    const copyBtn = document.getElementById('copy-public-key-btn');
+    
+    if (publicKeyEl && copyBtn) {
+        publicKeyEl.innerHTML = `
+            <code>${publicKey}</code>
+            <small>🔸 Demo-avain</small>
+        `;
+        copyBtn.style.display = 'inline-block';
+    }
+}
+
+// Kopioi julkinen avain
+async function handleCopyPublicKey() {
+    const publicKeyEl = document.getElementById('current-public-key');
+    const publicKey = publicKeyEl.querySelector('code')?.textContent;
+    
+    if (!publicKey) {
+        showError('Ei julkista avainta saatavilla');
+        return;
+    }
+    
+    try {
+        await navigator.clipboard.writeText(publicKey);
+        showSuccess('✅ Julkinen avain kopioitu leikepöydälle!');
+    } catch (error) {
+        console.error('❌ Kopiointi epäonnistui:', error);
+        showError('Kopiointi epäonnistui');
+    }
+}
+
+// Lataa yksityinen avain
+function handleLoadPrivateKey() {
+    showInfo('🔐 Yksityisen avaimen lataus on vielä kehitteillä');
+}
+
+// MODERAATIO-TOIMINNOT
+async function approveQuestion(questionId) {
+    try {
+        showInfo(`✅ Hyväksytään kysymys ${questionId}...`);
+        
+        // Mock-toiminto
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        showSuccess(`✅ Kysymys ${questionId} hyväksytty! (demo)`);
+        
+        // Poista hyväksytty kysymys jonosta
+        state.moderationQueue = state.moderationQueue.filter(item => item.id !== questionId);
+        renderModerationQueue();
+        
+    } catch (error) {
+        console.error('Kysymyksen hyväksyminen epäonnistui:', error);
+        showError('Kysymyksen hyväksyminen epäonnistui: ' + error.message);
+    }
+}
+
+async function rejectQuestion(questionId) {
+    try {
+        showInfo(`❌ Hylätään kysymys ${questionId}...`);
+        
+        // Mock-toiminto
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        showSuccess(`✅ Kysymys ${questionId} hylätty! (demo)`);
+        
+        // Poista hylätty kysymys jonosta
+        state.moderationQueue = state.moderationQueue.filter(item => item.id !== questionId);
+        renderModerationQueue();
+        
+    } catch (error) {
+        console.error('Kysymyksen hylkääminen epäonnistui:', error);
+        showError('Kysymyksen hylkääminen epäonnistui: ' + error.message);
+    }
+}
+
+// APUFUNKTIOT
+
+function showLoading(element, message = 'Ladataan...') {
+    if (element) {
+        element.innerHTML = `
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>${message}</p>
+            </div>
+        `;
+    }
+}
+
+function showError(message) {
+    // Yksinkertainen error-ilmoitus
+    alert('❌ ' + message);
+}
+
+function showSuccess(message) {
+    // Yksinkertainen success-ilmoitus
+    alert('✅ ' + message);
+}
+
+function showInfo(message) {
+    // Yksinkertainen info-ilmoitus
+    console.log('ℹ️ ' + message);
+}
+
+function formatDateTime(dateString) {
+    if (!dateString) return 'Ei saatavilla';
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleString('fi-FI');
+    } catch {
+        return 'Virheellinen päivämäärä';
+    }
+}
+
+function formatUptime(seconds) {
+    if (!seconds) return '0 s';
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    return `${hours}h ${minutes}min`;
+}
+
+function formatBytes(bytes) {
+    if (!bytes) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function useMockDataAsFallback() {
+    console.log('🔄 Käytetään mock-dataa fallbackina...');
+    state.useMockData = true;
+    state.systemStatus = MOCK_DATA.systemStatus;
+    state.moderationQueue = MOCK_DATA.moderationQueue;
+    state.ipfsStatus = MOCK_DATA.ipfsStatus;
+    state.adminStats = MOCK_DATA.adminStats;
+    
+    renderSystemStatus();
+    renderModerationQueue();
+    renderIPFSStatus();
+    renderAdminStats();
+}
+
+// Julkiset funktiot (käytettävissä HTML:stä)
+window.approveQuestion = approveQuestion;
+window.rejectQuestion = rejectQuestion;
+window.loadSystemStatus = loadSystemStatus;
+window.loadModerationQueue = loadModerationQueue;
+window.loadIPFSStatus = loadIPFSStatus;
+window.loadAdminStats = loadAdminStats;

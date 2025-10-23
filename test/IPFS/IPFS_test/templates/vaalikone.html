@@ -16,51 +16,110 @@
             </nav>
         </header>
 
-        <!-- Sama sisältö kuin aiemmassa index.html:ssä -->
-        <div class="progress-container">
-            <div class="progress-bar" id="progress-bar"></div>
-            <div class="progress-text" id="progress-text">0/0 kysymykseen vastattu</div>
+        <!-- VÄLILEHDET - LISÄTTY -->
+        <div class="management-tabs">
+            <button class="tab-button active" data-tab="questions">❓ Kysymykset</button>
+            <button class="tab-button" data-tab="candidates">👥 Ehdokkaat</button>
+            <button class="tab-button" data-tab="parties">🏛️ Puoluevertailu</button>
         </div>
-        
-        <div class="controls">
-            <div class="filter-controls">
-                <label for="category-filter">Suodata kategorialla:</label>
-                <select id="category-filter">
-                    <option value="all">Kaikki kategoriat</option>
-                </select>
+
+        <!-- KYSYMYKSET-VÄLILEHTI -->
+        <div class="tab-content active" id="questions-tab">
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+                <div class="progress-text" id="progress-text">0/0 kysymykseen vastattu</div>
             </div>
             
-            <div class="sort-controls">
-                <label for="sort-by">Järjestä:</label>
-                <select id="sort-by">
-                    <option value="match">Yhteensopivuus</option>
-                    <option value="name">Nimi</option>
-                    <option value="party">Puolue</option>
-                </select>
-                <button id="compare-btn">Vertaa vastauksia</button>
-                <button id="details-btn">Näytä yksityiskohdat</button>
-            </div>
-        </div>
-        
-        <div class="main-content">
-            <section class="questions-section">
+            <div class="questions-section">
                 <h2>Kysymykset</h2>
                 <div class="questions-list" id="questions-container">
                     <div class="loading">Ladataan kysymyksiä...</div>
                 </div>
-            </section>
+            </div>
+        </div>
+
+        <!-- EHDOkKAAT-VÄLILEHTI -->
+        <div class="tab-content" id="candidates-tab">
+            <div class="controls">
+                <div class="sort-controls">
+                    <label for="sort-by">Järjestä:</label>
+                    <select id="sort-by">
+                        <option value="match">Yhteensopivuus</option>
+                        <option value="name">Nimi</option>
+                        <option value="party">Puolue</option>
+                    </select>
+                    <button id="compare-btn">Vertaa vastauksia</button>
+                    <button id="details-btn">Näytä yksityiskohdat</button>
+                </div>
+            </div>
             
-            <section class="candidates-section">
+            <div class="candidates-section">
                 <h2>Ehdokkaat</h2>
                 <div class="candidates-list" id="candidates-container">
                     <div class="loading">Ladataan ehdokkaita...</div>
                 </div>
-            </section>
+            </div>
+        </div>
+
+        <!-- PUOLUEVERTAILU-VÄLILEHTI - UUSI -->
+        <div class="tab-content" id="parties-tab">
+            <div class="party-comparison-header">
+                <h2>🏛️ Puoluevertailu</h2>
+                <p>Vertaa omaa kantasi puolueiden keskinäkemyksiin</p>
+            </div>
+            
+            <div class="party-controls">
+                <button id="compare-all-parties" class="btn">🔄 Vertaa kaikkia puolueita</button>
+                <button id="refresh-party-data" class="btn secondary">📊 Päivitä puoluetiedot</button>
+            </div>
+
+            <!-- EHDOKAAN LISÄYS OSA - SIIRRETTY PUOLUEVERTAILUSTA -->
+            <div class="add-candidate-section">
+                <h3>👤 Lisää uusi ehdokas</h3>
+                <form id="add-candidate-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="candidate-name">Nimi: *</label>
+                            <input type="text" id="candidate-name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="candidate-party">Puolue: *</label>
+                            <input type="text" id="candidate-party" name="party" required 
+                                   list="party-suggestions" placeholder="Kirjoita uusi tai valitse olemassa oleva">
+                            <datalist id="party-suggestions">
+                                <!-- Täytetään JavaScriptillä -->
+                            </datalist>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="candidate-district">Vaali-alue: *</label>
+                            <input type="text" id="candidate-district" name="district" required>
+                        </div>
+                    </div>
+                    
+                    <h4>Vastaukset kysymyksiin (-5 ... +5):</h4>
+                    <div id="candidate-answers">
+                        <!-- Täytetään JavaScriptillä -->
+                    </div>
+                    
+                    <button type="submit" class="btn">✅ Lisää ehdokas</button>
+                </form>
+                <div id="candidate-result"></div>
+            </div>
+            
+            <div class="parties-comparison-grid" id="parties-comparison-container">
+                <div class="loading">Ladataan puolueita...</div>
+            </div>
+            
+            <div class="party-detailed-comparison" id="party-detailed-comparison" style="display: none;">
+                <h3>📊 Yksityiskohtainen vertailu</h3>
+                <div id="party-comparison-results"></div>
+            </div>
         </div>
 
         <div class="export-controls">
-            <button id="export-btn">Vie tulokset</button>
-            <a href="/puolueet" class="btn secondary">Vertaa puolueita</a>
+            <button id="export-btn">💾 Vie tulokset</button>
         </div>
     </div>
 
