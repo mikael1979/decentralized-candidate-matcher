@@ -2,7 +2,45 @@
   "election_id": "election_2026-01-01_fi_satakunta",
   "language": "fi",
   "question_type": "user_submitted",
-  "questions": [],
+  "questions": [
+    {
+      "question": {
+        "fi": "möö muu mää mii",
+        "en": "moo mii maam mee"
+      },
+      "category": "Muu",
+      "tags": [
+        "testi"
+      ],
+      "scale": {
+        "min": -5,
+        "max": 5,
+        "labels": {
+          "fi": {
+            "0": "Neutraali",
+            "5": "Täysin samaa mieltä",
+            "-5": "Täysin eri mieltä"
+          }
+        }
+      },
+      "metadata": {
+        "elo_rating": 1200,
+        "blocked": false,
+        "blocked_reason": null,
+        "created_at": "2025-10-23T13:25:41.452001",
+        "created_by": "user",
+        "votes_for": 0,
+        "votes_against": 0,
+        "community_approved": false
+      },
+      "elo": {
+        "base_rating": 1200,
+        "deltas": [],
+        "current_rating": 1200
+      },
+      "id": 1
+    }
+  ],
   "metadata": {
     "created": "2025-10-23T12:11:57.331032",
     "system_id": "597b55fb20461480",

@@ -1,26 +1,24 @@
 {
-  "election_id": "election_2026-01-01_fi_satakunta",
-  "language": "fi",
   "candidates": [
     {
       "id": 1,
-      "name": "Matti Meikäläinen",
+      "name": "Päivitetty Nimi",
       "party": "Test Puolue",
-      "district": "satakunta",
+      "district": "Uusi Piirikunta",
       "public_key": null,
       "party_signature": null,
       "answers": [
         {
           "question_id": 1,
-          "answer": 4,
-          "confidence": 0.8,
+          "answer": 5,
+          "confidence": 1.0,
           "justification": {
-            "fi": "Ilmastonmuutos on kiireellisin uhka, ja 50 % vähennys on välttämätön tavoite.",
-            "en": "Climate change is the most urgent threat, and a 50% reduction is essential.",
-            "sv": "Klimatförändringen är det största hotet, och en 50 % minskning är nödvändig."
+            "fi": "Täysin samaa mieltä",
+            "en": "Fully agree",
+            "sv": "Helt enig"
           },
           "justification_metadata": {
-            "created_at": "2025-10-23T12:11:57.331032",
+            "created_at": "2025-10-23T13:54:01.028456",
             "version": 1,
             "blocked": false,
             "signature": null
@@ -28,15 +26,15 @@
         },
         {
           "question_id": 2,
-          "answer": 3,
-          "confidence": 0.6,
+          "answer": -3,
+          "confidence": 0.8,
           "justification": {
-            "fi": "Kaupunkipyörät parantavat kaupunkikuva ja terveyttä.",
-            "en": "City bikes improve urban aesthetics and public health.",
-            "sv": "Stadscyklar förbättrar stadsbilden och folkhälsan."
+            "fi": "",
+            "en": "",
+            "sv": ""
           },
           "justification_metadata": {
-            "created_at": "2025-10-23T12:11:57.331032",
+            "created_at": "2025-10-23T13:54:01.028468",
             "version": 1,
             "blocked": false,
             "signature": null
@@ -85,17 +83,48 @@
           }
         }
       ]
+    },
+    {
+      "name": "Päivitetty Ehdokas",
+      "district": "Satakunta",
+      "answers": [
+        {
+          "question_id": 1,
+          "answer": 4,
+          "confidence": 0.9,
+          "justification": {
+            "fi": "",
+            "en": "",
+            "sv": ""
+          },
+          "justification_metadata": {
+            "created_at": "2025-10-23T13:22:36.014018",
+            "version": 1,
+            "blocked": false,
+            "signature": null
+          }
+        },
+        {
+          "question_id": 2,
+          "answer": -2,
+          "confidence": 0.7,
+          "justification": {
+            "fi": "",
+            "en": "",
+            "sv": ""
+          },
+          "justification_metadata": {
+            "created_at": "2025-10-23T13:22:36.014029",
+            "version": 1,
+            "blocked": false,
+            "signature": null
+          }
+        }
+      ],
+      "party": "Test Puolue",
+      "id": 3,
+      "deleted": true,
+      "deleted_at": "2025-10-23T13:30:06.253066"
     }
-  ],
-  "party_keys": {
-    "Toinen Puolue": null,
-    "Test Puolue": null
-  },
-  "metadata": {
-    "created": "2025-10-23T12:11:57.331032",
-    "system_id": "597b55fb20461480",
-    "election_id": "election_2026-01-01_fi_satakunta",
-    "fingerprint": "5c1ef1caa9fc91eaa6706ab577eb8fb041dfb9bec340718a5d3c3811eb06e137",
-    "signature": "XGwN27a2ivW8Fgu6E0NSgAidpRiHbqlDVwFXBdL25stghU3AbWEPrbJVcCLAD8tH+0nMdOYvZLTZgSuetA23WPPPxm+xDAFNfapo7vt4sbWYq0MT6Hnxbmb3O7U+ct6Gp+dhlP10AxcNMrLS4VJbTF2H/tDi2V+3luYKOih7yrqhQVzlhe5STDKaUsmweWjd8tO51pKIrIDMHC/sNQLBZBnZuAg3z7wqK2PDGx2WWYe9yhysT1Vi1rrXr1nOpxgUSVoJY/LumyAfXzehFU9sB4wGahMZqA8dqJlVhPoG6d8R8cNqBnJIUpinduR7b8tHL2bdM8Cbs0hNlIvGqKg+1w=="
-  }
+  ]
 }

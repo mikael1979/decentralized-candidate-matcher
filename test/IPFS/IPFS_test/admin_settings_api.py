@@ -1,86 +1,27 @@
 # admin_settings_api.py
 
-import json
-import os
-import argparse
+from flask import request, jsonify
+from utils import handle_api_errors
 import re
 from datetime import datetime
-from typing import Dict, Any, Optional
-
-# ----------------------------
-# Ydinlogiikka (ei riipu Flaskista)
-# ----------------------------
-
-def load_meta(data_dir: str = 'data') -> Optional[Dict]:
-    filepath = os.path.join(data_dir, 'meta.json')
-    if not os.path.exists(filepath):
-        return None
-    with open(filepath, 'r', encoding='utf-8') as f:
-        return json.load(f)
-
-def calculate_hash(data: Dict) -> str:
-    from hashlib import sha256
-    data_str = json.dumps(data, sort_keys=True, separators=(',', ':'), ensure_ascii=False)
-    return sha256(data_str.encode()).hexdigest()
-
-def save_meta(meta: Dict, data_dir: str = 'data') -> bool:
-    try:
-        filepath = os.path.join(data_dir, 'meta.json')
-        tmp_path = filepath + '.tmp'
-
-        # Päivitä integrity
-        meta['integrity'] = {
-            'algorithm': 'sha256',
-            'hash': calculate_hash(meta),
-            'computed': datetime.now().isoformat()
-        }
-
-        # Kirjoita väliaikaistiedostoon
-        with open(tmp_path, 'w', encoding='utf-8') as f:
-            json.dump(meta, f, indent=2, ensure_ascii=False)
-        os.replace(tmp_path, filepath)
-        return True
-    except Exception:
-        if os.path.exists(tmp_path):
-            os.remove(tmp_path)
-        return False
-
-def update_settings_core(new_settings: Dict[str, Any], data_dir: str = 'data') -> bool:
-    current = load_meta(data_dir)
-    if not current:
-        return False
-
-    # Päivitä election
-    if 'election' in new_settings:
-        current['election'] = new_settings['election']
-
-    # Päivitä community_moderation
-    if 'community_moderation' in new_settings:
-        current['community_moderation'] = new_settings['community_moderation']
-
-    # Päivitä system name/version
-    if 'system' in new_settings:
-        sys = new_settings['system']
-        if 'name' in sys:
-            current['system'] = sys['name']
-        if 'version' in sys:
-            current['version'] = sys['version']
-
-    return save_meta(current, data_dir)
-
-# ----------------------------
-# Flask-integraatio
-# ----------------------------
 
 def init_admin_settings_api(app, data_manager, admin_login_required):
-    from flask import request, jsonify
-    from utils import handle_api_errors
+    """
+    Alustaa admin-asetus API:n:
+    - Vaalitiedot (nimi, päivämäärä, kieliversiot)
+    - Yhteisömoderaation kynnysarvot
+    - IPFS-synkronointistrategia
+    """
 
     @app.route('/api/admin/settings', methods=['GET'])
     @admin_login_required
     @handle_api_errors
-    def get_settings():
+    def admin_get_settings():
+        """Palauttaa nykyiset muokattavat asetukset"""
         meta = data_manager.get_meta()
+        if not meta:
+            return jsonify({'success': False, 'error': 'Meta-tietoja ei löydy'}), 500
+
         return jsonify({
             'election': meta.get('election', {}),
             'community_moderation': meta.get('community_moderation', {}),
@@ -93,109 +34,85 @@ def init_admin_settings_api(app, data_manager, admin_login_required):
     @app.route('/api/admin/settings', methods=['POST'])
     @admin_login_required
     @handle_api_errors
-    def update_settings():
+    def admin_update_settings():
+        """Päivittää järjestelmäasetukset"""
         new_data = request.json
         if not isinstance(new_data, dict):
-            return jsonify({'success': False, 'error': 'Invalid request'}), 400
+            return jsonify({'success': False, 'error': 'Virheellinen pyynnön rakenne'}), 400
 
-        # Validointi
+        # Hae nykyinen meta
+        current_meta = data_manager.get_meta()
+        if not current_meta:
+            return jsonify({'success': False, 'error': 'Meta-tietoja ei löydy'}), 500
+
         errors = []
 
+        # === 1. VAALITIEDOT ===
         if 'election' in new_data:
-            e = new_data['election']
-            if 'date' in e and not re.match(r'^\d{4}-\d{2}-\d{2}$', e['date']):
-                errors.append('election.date must be YYYY-MM-DD')
-            try:
-                if 'date' in e:
-                    datetime.strptime(e['date'], '%Y-%m-%d')
-            except ValueError:
-                errors.append('Invalid election date')
+            election = new_data['election']
+            # Päivämäärä
+            if 'date' in election:
+                date_str = election['date']
+                if not re.match(r'^\d{4}-\d{2}-\d{2}$', date_str):
+                    errors.append('election.date: Virheellinen muoto (YYYY-MM-DD)')
+                else:
+                    try:
+                        datetime.strptime(date_str, '%Y-%m-%d')
+                    except ValueError:
+                        errors.append('election.date: Virheellinen päivämäärä')
+            # Kieliversiot
+            for lang in ['fi', 'en', 'sv']:
+                if 'name' in election and lang in election['name']:
+                    name = election['name'][lang]
+                    if not isinstance(name, str) or len(name.strip()) == 0:
+                        errors.append(f'election.name.{lang}: Ei saa olla tyhjä')
 
+            if not errors:
+                current_meta['election'] = election
+
+        # === 2. YHTEISÖMODERAATIO ===
         if 'community_moderation' in new_data:
             cm = new_data['community_moderation']
-            th = cm.get('thresholds', {})
-            for k in ['auto_block_inappropriate', 'community_approval']:
-                if k in th and not (0.0 <= th[k] <= 1.0):
-                    errors.append(f'{k} must be between 0.0 and 1.0')
-            if 'auto_block_min_votes' in th:
-                v = th['auto_block_min_votes']
-                if not isinstance(v, int) or v < 1:
-                    errors.append('auto_block_min_votes must be a positive integer')
-            if 'ipfs_sync_mode' in cm and cm['ipfs_sync_mode'] not in ['elo_priority', 'fifo']:
-                errors.append('ipfs_sync_mode must be "elo_priority" or "fifo"')
+            thresholds = cm.get('thresholds', {})
+            # auto_block_inappropriate (0.0–1.0)
+            if 'auto_block_inappropriate' in thresholds:
+                val = thresholds['auto_block_inappropriate']
+                if not (isinstance(val, (int, float)) and 0.0 <= val <= 1.0):
+                    errors.append('community_moderation.thresholds.auto_block_inappropriate: Arvon tulee olla 0.0–1.0')
+            # community_approval (0.0–1.0)
+            if 'community_approval' in thresholds:
+                val = thresholds['community_approval']
+                if not (isinstance(val, (int, float)) and 0.0 <= val <= 1.0):
+                    errors.append('community_moderation.thresholds.community_approval: Arvon tulee olla 0.0–1.0')
+            # auto_block_min_votes (positiivinen kokonaisluku)
+            if 'auto_block_min_votes' in thresholds:
+                val = thresholds['auto_block_min_votes']
+                if not (isinstance(val, int) and val >= 1):
+                    errors.append('community_moderation.thresholds.auto_block_min_votes: Arvon tulee olla positiivinen kokonaisluku')
+            # IPFS-synkronointistrategia
+            if 'ipfs_sync_mode' in cm:
+                mode = cm['ipfs_sync_mode']
+                if mode not in ['elo_priority', 'fifo']:
+                    errors.append('community_moderation.ipfs_sync_mode: Sallitut arvot: "elo_priority", "fifo"')
 
+            if not errors:
+                current_meta['community_moderation'] = cm
+
+        # === 3. JÄRJESTELMÄN PERUSTIEDOT ===
+        if 'system' in new_data:
+            sys = new_data['system']
+            if 'name' in sys and isinstance(sys['name'], str):
+                current_meta['system'] = sys['name']
+            if 'version' in sys and isinstance(sys['version'], str):
+                current_meta['version'] = sys['version']
+
+        # Palauta virheet, jos niitä on
         if errors:
             return jsonify({'success': False, 'errors': errors}), 400
 
-        # Päivitä koko meta
-        current_meta = data_manager.get_meta()
-        if 'election' in new_data:
-            current_meta['election'] = new_data['election']
-        if 'community_moderation' in new_data:
-            current_meta['community_moderation'] = new_data['community_moderation']
-        if 'system' in new_data:
-            sys = new_data['system']
-            if 'name' in sys:
-                current_meta['system'] = sys['name']
-            if 'version' in sys:
-                current_meta['version'] = sys['version']
-
+        # Tallenna päivitetty meta
         success = data_manager.update_meta(current_meta)
-        return jsonify({'success': success})
-
-# ----------------------------
-# CLI-rajapinta
-# ----------------------------
-
-def main_cli():
-    parser = argparse.ArgumentParser(description='Vaalikoneen asetusmuokkaus')
-    parser.add_argument('--election-name-fi', help='Vaalien nimi suomeksi')
-    parser.add_argument('--election-date', help='Vaalipäivä (YYYY-MM-DD)')
-    parser.add_argument('--auto-block-threshold', type=float, help='Auto-block kynnys (0.0–1.0)')
-    parser.add_argument('--ipfs-sync-mode', choices=['elo_priority', 'fifo'], help='IPFS-synkronointistrategia')
-    parser.add_argument('--system-name', help='Järjestelmän nimi')
-    parser.add_argument('--system-version', help='Järjestelmän versio')
-    parser.add_argument('--data-dir', default='data', help='Data-hakemisto')
-
-    args = parser.parse_args()
-    new_settings = {}
-
-    if any([args.election_name_fi, args.election_date]):
-        meta = load_meta(args.data_dir)
-        if not meta:
-            print("❌ Ei löydy meta.json:ia")
-            return
-        new_settings['election'] = meta.get('election', {}).copy()
-        if args.election_name_fi:
-            new_settings['election']['name']['fi'] = args.election_name_fi
-        if args.election_date:
-            new_settings['election']['date'] = args.election_date
-
-    if args.auto_block_threshold is not None or args.ipfs_sync_mode:
-        meta = load_meta(args.data_dir)
-        if not meta:
-            print("❌ Ei löydy meta.json:ia")
-            return
-        new_settings['community_moderation'] = meta.get('community_moderation', {}).copy()
-        if args.auto_block_threshold is not None:
-            new_settings['community_moderation']['thresholds']['auto_block_inappropriate'] = args.auto_block_threshold
-        if args.ipfs_sync_mode:
-            new_settings['community_moderation']['ipfs_sync_mode'] = args.ipfs_sync_mode
-
-    if args.system_name or args.system_version:
-        new_settings['system'] = {}
-        if args.system_name:
-            new_settings['system']['name'] = args.system_name
-        if args.system_version:
-            new_settings['system']['version'] = args.system_version
-
-    if new_settings:
-        if update_settings_core(new_settings, args.data_dir):
-            print("✅ Asetukset päivitetty")
+        if success:
+            return jsonify({'success': True, 'message': 'Asetukset päivitetty onnistuneesti'})
         else:
-            print("❌ Päivitys epäonnistui")
-    else:
-        print("ℹ️  Käytä --help nähdäksesi vaihtoehdot")
-
-if __name__ == '__main__':
-    main_cli()
+            return jsonify({'success': False, 'error': 'Tallennus epäonnistui'}), 500

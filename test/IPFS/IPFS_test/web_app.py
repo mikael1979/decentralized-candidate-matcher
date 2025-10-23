@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from flask import Flask, render_template, request, jsonify, session
 import sys
 import os
@@ -7,7 +8,12 @@ from data_manager import DataManager
 from route_handlers import RouteHandlers
 from utils import handle_api_errors
 from admin_api import init_admin_api
-from datetime import datetime
+from party_management_api import init_party_management_api
+from candidate_management_api import init_candidate_management_api
+
+
+# === UUDET MODUULIT ===
+from admin_settings_api import init_admin_settings_api  # Asennettava erikseen
 
 # DEBUG-tila
 DEBUG = True
@@ -28,7 +34,7 @@ ipfs_client = IPFSClient()
 
 # Alusta komponentit
 data_manager = DataManager(debug=DEBUG)
-data_manager.set_ipfs_client(ipfs_client)  # Uusi metodi!
+data_manager.set_ipfs_client(ipfs_client)
 handlers = RouteHandlers(data_manager, debug=DEBUG)
 
 # Alusta data
@@ -36,16 +42,15 @@ data_manager.initialize_data_files()
 
 # Flask-sovellus
 app = Flask(__name__, static_folder='static', template_folder='templates')
-app.secret_key = 'vaalikone-secret-key-2025'  # Tämä pitäisi olla turvallisempi tuotannossa!
+app.secret_key = 'vaalikone-secret-key-2025'
 
 def admin_login_required(f):
-    """Dekoraattori, joka vaatii admin-kirjautumisen"""
     from functools import wraps
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not session.get('admin_authenticated'):
             return jsonify({
-                'success': False, 
+                'success': False,
                 'error': 'Admin-kirjautuminen vaaditaan',
                 'login_required': True
             }), 401
@@ -53,119 +58,96 @@ def admin_login_required(f):
     return decorated_function
 
 def verify_admin_password(password):
-    """Tarkistaa admin-salasanan system_info.json:sta"""
     try:
         with open('keys/system_info.json', 'r') as f:
             system_info = json.load(f)
-        
         stored_hash = system_info.get('password_hash')
         salt = system_info.get('password_salt')
-        
         if not stored_hash or not salt:
             return False
-            
-        # Laske annetun salasanan hash
         computed_hash = hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 100000).hex()
         return computed_hash == stored_hash
-        
     except Exception as e:
         print(f"❌ Salasanan tarkistusvirhe: {e}")
         return False
 
-# Admin-kirjautumisreitit
+# === ADMIN-KIRJAUTUMISREITIT ===
 @app.route('/api/admin/login', methods=['POST'])
 @handle_api_errors
 def admin_login():
-    """Kirjaa adminin sisään"""
     data = request.json
     password = data.get('password')
-    
     if not password:
-        return jsonify({
-            'success': False,
-            'error': 'Salasana vaaditaan'
-        }), 400
-    
+        return jsonify({'success': False, 'error': 'Salasana vaaditaan'}), 400
     if verify_admin_password(password):
         session['admin_authenticated'] = True
         session['admin_login_time'] = datetime.now().isoformat()
-        return jsonify({
-            'success': True,
-            'message': 'Kirjautuminen onnistui'
-        })
+        return jsonify({'success': True, 'message': 'Kirjautuminen onnistui'})
     else:
-        return jsonify({
-            'success': False,
-            'error': 'Väärä salasana'
-        }), 401
+        return jsonify({'success': False, 'error': 'Väärä salasana'}), 401
 
 @app.route('/api/admin/logout', methods=['POST'])
 @handle_api_errors
 def admin_logout():
-    """Kirjaa adminin ulos"""
     session.pop('admin_authenticated', None)
     session.pop('admin_login_time', None)
-    return jsonify({
-        'success': True,
-        'message': 'Uloskirjautuminen onnistui'
-    })
+    return jsonify({'success': True, 'message': 'Uloskirjautuminen onnistui'})
 
 @app.route('/api/admin/status')
 @handle_api_errors
 def admin_status():
-    """Palauttaa admin-kirjautumistilan"""
     return jsonify({
         'authenticated': session.get('admin_authenticated', False),
         'login_time': session.get('admin_login_time')
     })
 
-# Alusta Admin API ja välitä admin_login_required -dekoraattori
+# === INTEGROI ADMIN-MODUULIT ===
 init_admin_api(app, data_manager, handlers, admin_login_required)
+init_party_management_api(app, data_manager, admin_login_required)
+init_candidate_management_api(app, data_manager, admin_login_required)
 
+# === APUFUNKTIO META-TIEDOILLA ===
 def _render_template(template, **extra_context):
-    """Yhteinen template-renderöinti meta-tiedoilla"""
     meta = data_manager.get_meta()
     base_context = {
         'system_name': meta.get('system', 'Vaalikone'),
         'version': meta.get('version', '0.0.1'),
-        'election_name': meta.get('election', {}).get('name', {}).get('fi', 'Testivaalit'),
-        'election_date': meta.get('election', {}).get('date', '2025-04-13')
+        'election_name': meta.get('election', {}).get('name', {}).get('fi', 'Nimetön vaalit'),
+        'election_date': meta.get('election', {}).get('date', '2025-01-01')
     }
     base_context.update(extra_context)
     return render_template(template, **base_context)
 
-# Staattiset reitit
+# === SIVUREITIT ===
 @app.route('/')
-def index(): 
+def index():
     return _render_template('index.html')
 
 @app.route('/vaalikone')
-def vaalikone(): 
+def vaalikone():
     return _render_template('vaalikone.html')
 
-@app.route('/kysymysten-hallinta') 
-def question_management(): 
+@app.route('/kysymysten-hallinta')
+def question_management():
     return _render_template('question_management.html')
 
 @app.route('/puolueet')
-def parties(): 
+def parties():
     return _render_template('parties.html')
 
 @app.route('/admin')
-def admin(): 
+def admin():
     return _render_template('admin.html')
 
-# API-reitit
+# === API-REITIT ===
 @app.route('/api/meta')
 @handle_api_errors
 def api_meta():
-    """Palauttaa järjestelmän meta-tiedot"""
     return jsonify(data_manager.get_meta())
 
 @app.route('/api/system_info')
 @handle_api_errors
 def api_system_info():
-    """Palauttaa järjestelmätiedot frontendia varten"""
     meta = data_manager.get_meta()
     return jsonify({
         'system_name': meta.get('system', 'Vaalikone'),
@@ -179,24 +161,16 @@ def api_system_info():
 @admin_login_required
 @handle_api_errors
 def api_update_meta():
-    """Päivittää meta-tiedot (admin-only)"""
     new_meta = request.json
     success = data_manager.update_meta(new_meta)
     if success:
-        return jsonify({
-            'success': True,
-            'message': 'Meta-tiedot päivitetty onnistuneesti'
-        })
+        return jsonify({'success': True, 'message': 'Meta-tiedot päivitetty'})
     else:
-        return jsonify({
-            'success': False,
-            'error': 'Meta-tietojen päivitys epäonnistui'
-        }), 500
+        return jsonify({'success': False, 'error': 'Päivitys epäonnistui'}), 500
 
 @app.route('/api/questions')
 @handle_api_errors
 def api_questions():
-    """Palauttaa kaikki kysymykset (mukaan lukien IPFS-kysymykset)"""
     questions = data_manager.get_questions()
     for q in questions:
         q['id'] = str(q['id'])
@@ -205,21 +179,16 @@ def api_questions():
 @app.route('/api/candidates')
 @handle_api_errors
 def api_candidates():
-    """Palauttaa kaikki ehdokkaat"""
-    candidates = data_manager.get_candidates()
-    return jsonify(candidates)
+    return jsonify(data_manager.get_candidates())
 
 @app.route('/api/parties')
 @handle_api_errors
 def api_parties():
-    """Palauttaa kaikki puolueet"""
-    parties = handlers.get_parties()
-    return jsonify(parties)
+    return jsonify(handlers.get_parties())
 
 @app.route('/api/party/<party_name>')
 @handle_api_errors
 def api_party_profile(party_name):
-    """Palauttaa puolueen profiilin"""
     profile, consensus = handlers.get_party_profile(party_name)
     return jsonify({'profile': profile, 'consensus': consensus})
 
@@ -227,60 +196,31 @@ def api_party_profile(party_name):
 @admin_login_required
 @handle_api_errors
 def api_add_candidate():
-    """Lisää uuden ehdokkaan"""
     candidate_data = request.json
-    if not candidate_data.get('name'):
-        return jsonify({'success': False, 'error': 'Ehdokkaan nimi on pakollinen'}), 400
-    if not candidate_data.get('party'):
-        return jsonify({'success': False, 'error': 'Puolue on pakollinen'}), 400
+    if not candidate_data.get('name') or not candidate_data.get('party'):
+        return jsonify({'success': False, 'error': 'Nimi ja puolue pakollisia'}), 400
     candidate_id = data_manager.add_candidate(candidate_data)
     if candidate_id:
-        return jsonify({
-            'success': True,
-            'candidate_id': candidate_id,
-            'message': 'Ehdokas lisätty onnistuneesti'
-        })
+        return jsonify({'success': True, 'candidate_id': candidate_id})
     else:
-        return jsonify({
-            'success': False,
-            'error': 'Ehdokkaan tallentaminen epäonnistui'
-        }), 500
+        return jsonify({'success': False, 'error': 'Ehdokkaan lisäys epäonnistui'}), 500
 
 @app.route('/api/submit_question', methods=['POST'])
 @handle_api_errors
 def api_submit_question():
-    """Lähettää uuden kysymyksen"""
     question_data = request.json
     if not question_data.get('question', {}).get('fi'):
-        return jsonify({'success': False, 'errors': ['Kysymys suomeksi on pakollinen']}), 400
-    if not question_data.get('category'):
-        return jsonify({'success': False, 'errors': ['Kategoria on pakollinen']}), 400
-    
-    question_data.setdefault('scale', {
-        'min': -5,
-        'max': 5,
-        'labels': {
-            'fi': {'-5': 'Täysin eri mieltä', '0': 'Neutraali', '5': 'Täysin samaa mieltä'}
-        }
-    })
-    
+        return jsonify({'success': False, 'errors': ['Kysymys suomeksi pakollinen']}), 400
+    question_data.setdefault('scale', {'min': -5, 'max': 5})
     cid = data_manager.add_question(question_data)
     if cid:
-        return jsonify({
-            'success': True,
-            'cid': cid,
-            'message': 'Kysymys lähetetty onnistuneesti'
-        })
+        return jsonify({'success': True, 'cid': cid})
     else:
-        return jsonify({
-            'success': False,
-            'errors': ['Kysymyksen tallentaminen epäonnistui']
-        }), 500
+        return jsonify({'success': False, 'errors': ['Tallennus epäonnistui']}), 500
 
 @app.route('/api/search_questions')
 @handle_api_errors
 def api_search_questions():
-    """Hakee kysymyksiä hakusanalla"""
     query = request.args.get('q', '')
     results = handlers.search_questions(query)
     return jsonify({'success': True, 'results': results})
@@ -288,40 +228,24 @@ def api_search_questions():
 @app.route('/api/available_tags')
 @handle_api_errors
 def api_available_tags():
-    """Palauttaa saatavilla olevat tagit"""
     questions = data_manager.get_questions()
     tag_counts = {}
-    for question in questions:
-        for tag in question.get('tags', []):
+    for q in questions:
+        for tag in q.get('tags', []):
             tag_counts[tag] = tag_counts.get(tag, 0) + 1
     return jsonify({'success': True, 'tags': tag_counts})
-
-@app.route('/api/status')
-@handle_api_errors
-def api_status():
-    """Palauttaa järjestelmän tilan"""
-    meta = data_manager.get_meta()
-    return jsonify({
-        'success': True,
-        'system_status': 'running',
-        'meta': meta
-    })
 
 @app.route('/api/compare_parties', methods=['POST'])
 @handle_api_errors
 def api_compare_parties():
-    """Vertaa käyttäjän vastauksia puolueeseen"""
     data = request.json
     user_answers = data.get('user_answers', {})
     party_name = data.get('party_name')
     party_candidates = [c for c in data_manager.get_candidates() if c.get('party') == party_name]
     if not party_candidates:
         return jsonify({'success': False, 'error': 'Puoluetta ei löytynyt'}), 404
-    total_match = 0
-    for candidate in party_candidates:
-        match_score = handlers.calculate_match(user_answers, candidate)
-        total_match += match_score
-    avg_match = total_match / len(party_candidates) if party_candidates else 0
+    total_match = sum(handlers.calculate_match(user_answers, c) for c in party_candidates)
+    avg_match = total_match / len(party_candidates)
     return jsonify({
         'success': True,
         'match_percentage': avg_match * 100,
@@ -332,7 +256,6 @@ def api_compare_parties():
 @app.route('/api/compare_all_parties', methods=['POST'])
 @handle_api_errors
 def api_compare_all_parties():
-    """Vertaa käyttäjän vastauksia kaikkiin puolueisiin"""
     user_answers = request.json.get('user_answers', {})
     parties = handlers.get_parties()
     comparisons = []
@@ -349,7 +272,7 @@ def api_compare_all_parties():
     comparisons.sort(key=lambda x: x['match_percentage'], reverse=True)
     return jsonify(comparisons)
 
-# Virheenkäsittely
+# === VIRHEENKÄSITTELY ===
 @app.errorhandler(404)
 def not_found(error):
     return jsonify({'error': 'Sivua ei löytynyt'}), 404
@@ -358,8 +281,35 @@ def not_found(error):
 def internal_error(error):
     return jsonify({'error': 'Sisäinen palvelinvirhe'}), 500
 
+# === JOUKKOTUONTI CLI:LLÄ ===
+def bulk_import_from_cli():
+    if '--bulk-import-candidates' in sys.argv:
+        idx = sys.argv.index('--bulk-import-candidates')
+        if idx + 1 < len(sys.argv):
+            filepath = sys.argv[idx + 1]
+            if os.path.exists(filepath):
+                print(f"📤 Tuodaan ehdokkaita tiedostosta: {filepath}")
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    batch = json.load(f)
+                for candidate in batch.get('candidates', []):
+                    candidate_id = data_manager.add_candidate(candidate)
+                    if candidate_id:
+                        print(f"✅ Lisätty ehdokas: {candidate['name']} (ID: {candidate_id})")
+                    else:
+                        print(f"❌ Ehdokkaan lisäys epäonnistui: {candidate.get('name', 'Nimetön')}")
+
+# === KÄYNNISTYS ===
 if __name__ == '__main__':
+    from datetime import datetime
+
+    # Joukkotuonti ennen käynnistystä
+    bulk_import_from_cli()
+
     if DEBUG:
+        # Lue vaalin nimi meta-tiedoista
+        meta = data_manager.get_meta()
+        election_name = meta.get('election', {}).get('name', {}).get('fi', 'Nimetön vaalit')
+
         print("🚀 Hajautettu Vaalikone käynnistyy...")
         print("📊 Sovellus saatavilla: http://localhost:5000")
         print("🔧 DEBUG-tila: PÄÄLLÄ")
@@ -367,7 +317,7 @@ if __name__ == '__main__':
             print("🌍 IPFS-TILA: OIKEA IPFS")
         else:
             print("🧪 IPFS-TILA: MOCK-IPFS")
-        print("🗳️  Vaalit: Testivaalit 2025")
+        print(f"🗳️  Vaalit: {election_name}")
         print("🔐 Admin-suojaus: PÄÄLLÄ")
         print("📝 Sivut:")
         print("   - http://localhost:5000 (Etusivu)")
@@ -381,4 +331,5 @@ if __name__ == '__main__':
         print("   - /api/candidates - Kaikki ehdokkaat")
         print("   - /api/admin/* - Admin-toiminnot (suojatut)")
         print("   - /api/admin/login - Admin-kirjautuminen")
+
     app.run(debug=DEBUG, host='0.0.0.0', port=5000)
