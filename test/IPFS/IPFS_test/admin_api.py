@@ -2,10 +2,11 @@ from flask import request, jsonify
 from utils import handle_api_errors
 import json
 
-def init_admin_api(app, data_manager, handlers):
+def init_admin_api(app, data_manager, handlers, admin_login_required):
     """Alustaa admin API-reitit"""
     
     @app.route('/api/admin/questions')
+    @admin_login_required
     @handle_api_errors
     def admin_get_questions():
         """Hakee kaikki kysymykset (mukaan lukien blokatut)"""
@@ -15,6 +16,7 @@ def init_admin_api(app, data_manager, handlers):
         return jsonify(questions)
     
     @app.route('/api/admin/block_question', methods=['POST'])
+    @admin_login_required
     @handle_api_errors
     def admin_block_question():
         """Merkitsee kysymyksen blokatuksi"""
@@ -47,6 +49,7 @@ def init_admin_api(app, data_manager, handlers):
             }), 404
     
     @app.route('/api/admin/unblock_question', methods=['POST'])
+    @admin_login_required
     @handle_api_errors
     def admin_unblock_question():
         """Poistaa kysymyksen blokkaus"""
@@ -94,6 +97,7 @@ def init_admin_api(app, data_manager, handlers):
             }), 404
     
     @app.route('/api/admin/ipfs_sync_queue')
+    @admin_login_required
     @handle_api_errors
     def admin_get_ipfs_queue():
         """Hakee IPFS-synkronointijonon"""
@@ -106,6 +110,7 @@ def init_admin_api(app, data_manager, handlers):
         return jsonify(queue)
     
     @app.route('/api/admin/process_ipfs_sync', methods=['POST'])
+    @admin_login_required
     @handle_api_errors
     def admin_process_ipfs_sync():
         """Käsittelee IPFS-synkronoinnin manuaalisesti"""
@@ -122,6 +127,7 @@ def init_admin_api(app, data_manager, handlers):
             })
     
     @app.route('/api/admin/elo_update', methods=['POST'])
+    @admin_login_required
     @handle_api_errors
     def admin_elo_update():
         """Päivittää kysymyksen Elo-arvoa manuaalisesti"""
@@ -154,6 +160,7 @@ def init_admin_api(app, data_manager, handlers):
             }), 404
     
     @app.route('/api/admin/system_stats')
+    @admin_login_required
     @handle_api_errors
     def admin_system_stats():
         """Palauttaa järjestelmän tilastot"""
@@ -161,6 +168,7 @@ def init_admin_api(app, data_manager, handlers):
         return jsonify(stats)
     
     @app.route('/api/admin/fetch_ipfs_questions', methods=['POST'])
+    @admin_login_required
     @handle_api_errors
     def admin_fetch_ipfs_questions():
         """Hakee kysymykset IPFS:stä manuaalisesti"""
@@ -177,6 +185,7 @@ def init_admin_api(app, data_manager, handlers):
             })
     
     @app.route('/api/admin/questions/elo_ranking')
+    @admin_login_required
     @handle_api_errors
     def admin_elo_ranking():
         """Palauttaa kysymykset Elo-arvon mukaan järjestettynä"""
@@ -203,6 +212,7 @@ def init_admin_api(app, data_manager, handlers):
         return jsonify(questions)
     
     @app.route('/api/admin/questions/select_for_sync')
+    @admin_login_required
     @handle_api_errors
     def admin_select_for_sync():
         """Valitsee kysymykset IPFS-synkronointiin eri strategioilla"""

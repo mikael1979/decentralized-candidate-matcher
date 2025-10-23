@@ -1,25 +1,30 @@
-# 🗳️ Hajautettu Vaalikone - TESTIVERSIO
+# Hajautettu Vaalikone - Frontend Development Guide
 
-Hajautettu verkkopohjainen vaalikonejärjestelmä, joka suunniteltu tulevaa IPFS-käyttöönottoa varten.
+## Yleiskatsaus
 
-## 🌍 Saatavilla olevat kielet
-- [Suomi](README.fi.md) (nykyinen)
-- [Svenska](README.sv.md)
-- [English](README.md)
+Tämä on hajautettu vaalikonejärjestelmä, joka käyttää IPFS-teknologiaa kysymysten jakamiseen ja synkronointiin. Järjestelmä sisältää älykästä kysymysvalintaa Elo-luokitusjärjestelmän avulla.
 
-## 🚀 Ominaisuudet
-- **Maantieteellinen valinta** - Maa → Alue → Kunta -hierarkia
-- **Kolmitasoinen vaalijärjestelmä** - Eurooppa, valtio, kunta
-- **Testidata** - 10 testiehdokasta & 15 testikysymystä
-- **Reaaliaikainen yhteensopivuuslaskenta**
-- **Responsiivinen käyttöliittymä**
-- **LocalStorage-pohjainen datahallinta**
-- **IPFS-valmis arkkitehtuuri** - JavaScript
+## Tekniset Ominaisuudet
 
-## 🏗️ Arkkitehtuuri
-- **Vain frontend** - Ei palvelinriippuvuuksia
-- **Hajautettu suunnittelu** - Valmis IPFS-käyttöönottoon
-- **Paikallinen ensin** - Kaikki data tallennettu selaimessa
-- **Modulaarinen JavaScript** - Siisti, ylläpidettävä koodi
+### 🏗️ Arkkitehtuuri
+- **Backend**: Python + Flask
+- **Frontend**: HTML/CSS/JavaScript (voidaan integroida minkä tahansa frontend-frameworkin kanssa)
+- **Data Storage**: JSON-tiedostot + IPFS hajautetulle tallennukselle
+- **Authentication**: Salasana-pohjainen admin-järjestelmä
 
-[Lue lisää...](docs/guide/index.fi.md)
+### 🔗 API-yhteydet
+Kaikki frontend-toiminnot toteutetaan REST API:n kautta. Backend tarjoaa täydellisen API:n kaikkiin toimintoihin.
+
+## Frontend-kehitys
+
+### Vaatimukset
+- Moderni selain (ES6+ tuki)
+- HTTP-pyynnöt (fetch API tai axios)
+- JSON-datan käsittely
+
+### Asennus ja Käynnistys
+
+1. **Kloonaa projekti**:
+```bash
+git clone <repository-url>
+cd decentralized-candidate-matcher

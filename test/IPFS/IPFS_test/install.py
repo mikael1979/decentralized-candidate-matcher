@@ -143,7 +143,7 @@ class InstallationManager:
         return True
 
     def get_installation_password(self):
-        """Kysyy asennussalasanaa"""
+        """Kysyy asennussalasanaa interaktiivisesti"""
         print("\n🔐 ASENNUSSALASANA")
         print("-" * 30)
         print("Salasanaa käytetään:")
@@ -152,29 +152,23 @@ class InstallationManager:
         print("• Järjestelmän turvalliseen alustukseen")
         print()
         
-        if self.test_mode:
-            print("🧪 TESTITILA AKTIVOITU - käytetään testisalasanaa")
-            password = "12345678"
-        else:
-            while True:
-                password = getpass("Aseta asennussalasana: ")
-                if len(password) < 8:
-                    print("❌ Salasanan tulee olla vähintään 8 merkkiä pitkä")
-                    continue
-                confirm = getpass("Vahvista salasana: ")
-                if password != confirm:
-                    print("❌ Salasanat eivät täsmää")
-                    continue
-                break
+        while True:
+            password = getpass("Aseta asennussalasana: ")
+            if len(password) < 8:
+                print("❌ Salasanan tulee olla vähintään 8 merkkiä pitkä")
+                continue
+            confirm = getpass("Vahvista salasana: ")
+            if password != confirm:
+                print("❌ Salasanat eivät täsmää")
+                continue
+            break
         
         salt = secrets.token_hex(16)
-        self.installation_password = hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 100000).hex()
+        self.installation_password = password  # Tallenna alkuperäinen salasana avainten salaamista varten
+        self.password_hash = hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 100000).hex()
         self.password_salt = salt
         
-        if self.test_mode:
-            print("✅ Testisalasana asetettu onnistuneesti")
-        else:
-            print("✅ Salasana asetettu onnistuneesti")
+        print("✅ Salasana asetettu onnistuneesti")
         return True
 
     def generate_crypto_keys(self):
@@ -202,23 +196,32 @@ class InstallationManager:
         try:
             os.makedirs('keys', exist_ok=True)
             
+            # Salaa yksityinen avain asennussalasanalla
             private_pem = self.private_key.private_bytes(
                 encoding=serialization.Encoding.PEM,
                 format=serialization.PrivateFormat.PKCS8,
-                encryption_algorithm=serialization.BestAvailableEncryption(self.installation_password.encode())
+                encryption_algorithm=serialization.BestAvailableEncryption(
+                    self.installation_password.encode()
+                )
             )
             with open('keys/private_key.pem', 'wb') as f:
                 f.write(private_pem)
             
-            public_pem = self.public_key.public_bytes(encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo)
+            # Julkinen avain tallennetaan salaamattomana
+            public_pem = self.public_key.public_bytes(
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PublicFormat.SubjectPublicKeyInfo
+            )
             with open('keys/public_key.pem', 'wb') as f:
                 f.write(public_pem)
             
+            # Tallenna järjestelmätiedot
             system_info = {
                 "system_id": self.system_id,
                 "created": datetime.now().isoformat(),
                 "key_algorithm": "RSA-2048",
                 "password_salt": self.password_salt,
+                "password_hash": self.password_hash,
                 "key_fingerprint": hashlib.sha256(public_pem).hexdigest(),
                 "election_id": self.election_data["id"],
                 "admin_username": self.admin_data["username"]
@@ -228,6 +231,9 @@ class InstallationManager:
             
             print("✅ Avaimet tallennettu turvallisesti")
             print("📁 Hakemisto: keys/")
+            print("   - private_key.pem (salattu)")
+            print("   - public_key.pem")
+            print("   - system_info.json")
             return True
         except Exception as e:
             print(f"❌ Avainten tallentamisessa virhe: {e}")
@@ -244,6 +250,26 @@ class InstallationManager:
             return True
         except Exception as e:
             print(f"❌ Julkisen avaimen lataus epäonnistui: {e}")
+            return False
+
+    def load_private_key(self):
+        """Lataa yksityisen avaimen salasanalla"""
+        try:
+            if not hasattr(self, 'installation_password'):
+                print("🔐 Salasana tarvitaan yksityisen avaimen lataamiseen")
+                password = getpass("Syötä asennussalasana: ")
+                self.installation_password = password
+            
+            with open('keys/private_key.pem', 'rb') as f:
+                self.private_key = serialization.load_pem_private_key(
+                    f.read(),
+                    password=self.installation_password.encode(),
+                    backend=default_backend()
+                )
+            print("✅ Yksityinen avain ladattu onnistuneesti")
+            return True
+        except Exception as e:
+            print(f"❌ Yksityisen avaimen lataus epäonnistui: {e}")
             return False
 
     def create_directories(self):

@@ -43,7 +43,7 @@
     "candidates_require_keys": false
   },
   "content": {
-    "last_updated": "2025-10-21T06:14:26.828610",
+    "last_updated": "2025-10-23T04:28:38.654266",
     "questions_count": 2,
     "candidates_count": 2,
     "parties_count": 2
@@ -55,8 +55,8 @@
   },
   "integrity": {
     "algorithm": "sha256",
-    "hash": "sha256:4064cc68cab0501057370fe79ce0f43196f00b6d0af9241a1bf497d52669a4f5",
-    "computed": "2025-10-21T06:14:26.828610"
+    "hash": "sha256:6bc128547b7c54812473caf7d7f7bfc99e2eb369421cd4be0660160134aec630",
+    "computed": "2025-10-23T04:28:38.654388"
   },
   "metadata": {
     "created": "2025-10-21T06:14:26.828610",

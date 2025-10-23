@@ -1,5 +1,8 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session
 import sys
+import os
+import json
+import hashlib
 from data_manager import DataManager
 from route_handlers import RouteHandlers
 from utils import handle_api_errors
@@ -33,9 +36,91 @@ data_manager.initialize_data_files()
 
 # Flask-sovellus
 app = Flask(__name__, static_folder='static', template_folder='templates')
+app.secret_key = 'vaalikone-secret-key-2025'  # Tämä pitäisi olla turvallisempi tuotannossa!
 
-# Alusta Admin API
-init_admin_api(app, data_manager, handlers)
+def admin_login_required(f):
+    """Dekoraattori, joka vaatii admin-kirjautumisen"""
+    from functools import wraps
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('admin_authenticated'):
+            return jsonify({
+                'success': False, 
+                'error': 'Admin-kirjautuminen vaaditaan',
+                'login_required': True
+            }), 401
+        return f(*args, **kwargs)
+    return decorated_function
+
+def verify_admin_password(password):
+    """Tarkistaa admin-salasanan system_info.json:sta"""
+    try:
+        with open('keys/system_info.json', 'r') as f:
+            system_info = json.load(f)
+        
+        stored_hash = system_info.get('password_hash')
+        salt = system_info.get('password_salt')
+        
+        if not stored_hash or not salt:
+            return False
+            
+        # Laske annetun salasanan hash
+        computed_hash = hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 100000).hex()
+        return computed_hash == stored_hash
+        
+    except Exception as e:
+        print(f"❌ Salasanan tarkistusvirhe: {e}")
+        return False
+
+# Admin-kirjautumisreitit
+@app.route('/api/admin/login', methods=['POST'])
+@handle_api_errors
+def admin_login():
+    """Kirjaa adminin sisään"""
+    data = request.json
+    password = data.get('password')
+    
+    if not password:
+        return jsonify({
+            'success': False,
+            'error': 'Salasana vaaditaan'
+        }), 400
+    
+    if verify_admin_password(password):
+        session['admin_authenticated'] = True
+        session['admin_login_time'] = datetime.now().isoformat()
+        return jsonify({
+            'success': True,
+            'message': 'Kirjautuminen onnistui'
+        })
+    else:
+        return jsonify({
+            'success': False,
+            'error': 'Väärä salasana'
+        }), 401
+
+@app.route('/api/admin/logout', methods=['POST'])
+@handle_api_errors
+def admin_logout():
+    """Kirjaa adminin ulos"""
+    session.pop('admin_authenticated', None)
+    session.pop('admin_login_time', None)
+    return jsonify({
+        'success': True,
+        'message': 'Uloskirjautuminen onnistui'
+    })
+
+@app.route('/api/admin/status')
+@handle_api_errors
+def admin_status():
+    """Palauttaa admin-kirjautumistilan"""
+    return jsonify({
+        'authenticated': session.get('admin_authenticated', False),
+        'login_time': session.get('admin_login_time')
+    })
+
+# Alusta Admin API ja välitä admin_login_required -dekoraattori
+init_admin_api(app, data_manager, handlers, admin_login_required)
 
 def _render_template(template, **extra_context):
     """Yhteinen template-renderöinti meta-tiedoilla"""
@@ -91,6 +176,7 @@ def api_system_info():
     })
 
 @app.route('/api/update_meta', methods=['POST'])
+@admin_login_required
 @handle_api_errors
 def api_update_meta():
     """Päivittää meta-tiedot (admin-only)"""
@@ -138,6 +224,7 @@ def api_party_profile(party_name):
     return jsonify({'profile': profile, 'consensus': consensus})
 
 @app.route('/api/add_candidate', methods=['POST'])
+@admin_login_required
 @handle_api_errors
 def api_add_candidate():
     """Lisää uuden ehdokkaan"""
@@ -281,6 +368,7 @@ if __name__ == '__main__':
         else:
             print("🧪 IPFS-TILA: MOCK-IPFS")
         print("🗳️  Vaalit: Testivaalit 2025")
+        print("🔐 Admin-suojaus: PÄÄLLÄ")
         print("📝 Sivut:")
         print("   - http://localhost:5000 (Etusivu)")
         print("   - http://localhost:5000/vaalikone (Vaalikone)")
@@ -291,5 +379,6 @@ if __name__ == '__main__':
         print("   - /api/meta - Järjestelmän meta-tiedot")
         print("   - /api/questions - Kaikki kysymykset")
         print("   - /api/candidates - Kaikki ehdokkaat")
-        print("   - /api/admin/* - Admin-toiminnot")
+        print("   - /api/admin/* - Admin-toiminnot (suojatut)")
+        print("   - /api/admin/login - Admin-kirjautuminen")
     app.run(debug=DEBUG, host='0.0.0.0', port=5000)
