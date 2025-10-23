@@ -1,0 +1,1145 @@
+openapi: 3.0.0
+info:
+  title: Decentralized Candidate Matcher API
+  description: API for managing elections, questions, candidates, and parties in a decentralized candidate matching system. Supports admin operations and public access for election data.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000/api
+    description: Local development server
+  - url: https://api.dcm.example.com/api
+    description: Production server (replace with actual URL)
+components:
+  securitySchemes:
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: session
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Invalid request"
+      required: [success, error]
+    Question:
+      type: object
+      properties:
+        question_id:
+          type: string
+        question:
+          type: object
+          properties:
+            fi:
+              type: string
+              example: "Mitä mieltä olet ilmastopolitiikasta?"
+        category:
+          type: string
+          example: "Environment"
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["climate", "policy"]
+        scale:
+          type: object
+          properties:
+            min:
+              type: integer
+              example: -5
+            max:
+              type: integer
+              example: 5
+        elo_rating:
+          type: integer
+          example: 1500
+        blocked:
+          type: boolean
+          example: false
+        reason:
+          type: string
+          nullable: true
+          example: "Inappropriate content"
+      required: [question_id, question, category, scale]
+    Candidate:
+      type: object
+      properties:
+        candidate_id:
+          type: string
+        name:
+          type: string
+          example: "Matti Meikäläinen"
+        district:
+          type: string
+          example: "Helsinki"
+        party:
+          type: string
+          example: "Green Party"
+        answers:
+          type: array
+          items:
+            type: object
+            properties:
+              question_id:
+                type: string
+              answer:
+                type: integer
+                example: 3
+              confidence:
+                type: number
+                format: float
+                example: 0.8
+              justification:
+                type: string
+                example: "Support renewable energy."
+        deleted:
+          type: boolean
+          example: false
+      required: [candidate_id, name, district, party]
+    Party:
+      type: object
+      properties:
+        party_name:
+          type: string
+          example: "Green Party"
+        profile:
+          type: object
+          additionalProperties: true
+          example: { "description": "Eco-friendly policies" }
+        consensus:
+          type: object
+          additionalProperties:
+            type: integer
+          example: { "q1": 4, "q2": -2 }
+        candidates:
+          type: array
+          items:
+            $ref: '#/components/schemas/Candidate'
+      required: [party_name]
+    Settings:
+      type: object
+      properties:
+        election:
+          type: object
+          additionalProperties: true
+          example: { "name": "Municipal Election 2025", "date": "2025-06-01" }
+        community_moderation:
+          type: object
+          additionalProperties: true
+          example: { "enabled": true, "threshold": 0.7 }
+        system:
+          type: object
+          additionalProperties: true
+          example: { "ipfs_enabled": true }
+      required: [election, community_moderation, system]
+paths:
+  # Admin Authentication
+  /admin/login:
+    post:
+      summary: Authenticate admin
+      description: Logs in an admin user using a password. Returns a session cookie or JWT.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: "securepassword123"
+              required: [password]
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Login successful"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /admin/logout:
+    post:
+      summary: Admin logout
+      description: Terminates the admin session.
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful logout
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Logged out"
+  /admin/status:
+    get:
+      summary: Check admin status
+      description: Returns current admin authentication status and login time.
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Admin status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authenticated:
+                    type: boolean
+                    example: true
+                  login_time:
+                    type: string
+                    format: date-time
+                    example: "2025-10-23T16:53:00Z"
+  # Admin: Questions
+  /admin/questions:
+    get:
+      summary: Get all questions
+      description: Retrieves all questions, including blocked ones (admin only).
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of questions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Question'
+  /admin/block_question:
+    post:
+      summary: Block a question
+      description: Marks a question as blocked with an optional reason.
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                question_id:
+                  type: string
+                  example: "q1"
+                reason:
+                  type: string
+                  nullable: true
+                  example: "Inappropriate content"
+              required: [question_id]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Question blocked"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /admin/unblock_question:
+    post:
+      summary: Unblock a question
+      description: Removes block status from a question.
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                question_id:
+                  type: string
+                  example: "q1"
+              required: [question_id]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Question unblocked"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /admin/elo_update:
+    post:
+      summary: Update question Elo rating
+      description: Manually updates a question's Elo rating with a delta.
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                question_id:
+                  type: string
+                  example: "q1"
+                delta:
+                  type: integer
+                  example: 50
+                user_id:
+                  type: string
+                  nullable: true
+                  example: "user123"
+              required: [question_id, delta]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Elo updated"
+  /admin/questions/elo_ranking:
+    get:
+      summary: Get questions by Elo ranking
+      description: Retrieves questions sorted by Elo rating.
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Sorted questions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Question'
+  /admin/questions/select_for_sync:
+    get:
+      summary: Select questions for IPFS sync
+      description: Selects questions for synchronization based on strategy.
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      parameters:
+        - name: strategy
+          in: query
+          schema:
+            type: string
+            default: "balanced"
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Selected questions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  questions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Question'
+                  strategy:
+                    type: string
+                    example: "balanced"
+                  limit:
+                    type: integer
+                    example: 20
+  # Admin: IPFS Sync
+  /admin/ipfs_sync_queue:
+    get:
+      summary: Get IPFS sync queue
+      description: Retrieves the current IPFS synchronization queue.
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Sync queue
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                example: { "queue": [{ "cid": "Qm...", "status": "pending" }] }
+  /admin/process_ipfs_sync:
+    post:
+      summary: Process IPFS sync
+      description: Manually processes the IPFS synchronization queue.
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Sync processed"
+  /admin/fetch_ipfs_questions:
+    post:
+      summary: Fetch questions from IPFS
+      description: Retrieves questions from IPFS by CID.
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Questions fetched"
+  # Admin: Settings
+  /admin/settings:
+    get:
+      summary: Get system settings
+      description: Retrieves election, community moderation, and system settings.
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'
+    post:
+      summary: Update system settings
+      description: Updates election, community moderation, or system settings.
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Settings'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Settings updated"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  # Candidates
+  /candidate/{candidate_id}/profile:
+    get:
+      summary: Get candidate profile
+      description: Retrieves a candidate's profile by ID.
+      parameters:
+        - name: candidate_id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "c1"
+      responses:
+        '200':
+          description: Candidate profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  candidate:
+                    $ref: '#/components/schemas/Candidate'
+        '404':
+          description: Candidate not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /candidate/{candidate_id}/answers:
+    put:
+      summary: Update candidate answers
+      description: Updates a candidate's answers to questions.
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      parameters:
+        - name: candidate_id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "c1"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      question_id:
+                        type: string
+                        example: "q1"
+                      answer:
+                        type: integer
+                        minimum: -5
+                        maximum: 5
+                        example: 3
+                      confidence:
+                        type: number
+                        format: float
+                        minimum: 0
+                        maximum: 1
+                        example: 0.8
+                      justification:
+                        type: string
+                        example: "Support renewable energy"
+                    required: [question_id, answer, confidence]
+              required: [answers]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Answers updated"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /candidate/{candidate_id}/profile:
+    put:
+      summary: Update candidate profile
+      description: Updates a candidate's name or district.
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      parameters:
+        - name: candidate_id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "c1"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Matti Meikäläinen"
+                district:
+                  type: string
+                  example: "Helsinki"
+              required: [name, district]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Profile updated"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  # Parties
+  /party/{party_name}/candidates:
+    get:
+      summary: Get party candidates
+      description: Retrieves all candidates for a specific party.
+      parameters:
+        - name: party_name
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "Green Party"
+      responses:
+        '200':
+          description: Party candidates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  candidates:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Candidate'
+                  count:
+                    type: integer
+                    example: 10
+    post:
+      summary: Add candidate to party
+      description: Adds a new candidate to a party.
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      parameters:
+        - name: party_name
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "Green Party"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Matti Meikäläinen"
+                district:
+                  type: string
+                  example: "Helsinki"
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      question_id:
+                        type: string
+                        example: "q1"
+                      answer:
+                        type: integer
+                        example: 3
+                      confidence:
+                        type: number
+                        format: float
+                        example: 0.8
+                      justification:
+                        type: string
+                        example: "Support renewable energy"
+              required: [name, district]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  candidate_id:
+                    type: string
+                    example: "c1"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /party/{party_name}/candidate/{candidate_id}:
+    put:
+      summary: Update party candidate
+      description: Updates a candidate's details in a party.
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      parameters:
+        - name: party_name
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "Green Party"
+        - name: candidate_id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "c1"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Matti Meikäläinen"
+                district:
+                  type: string
+                  example: "Helsinki"
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      question_id:
+                        type: string
+                        example: "q1"
+                      answer:
+                        type: integer
+                        example: 3
+                      confidence:
+                        type: number
+                        format: float
+                        example: 0.8
+                      justification:
+                        type: string
+                        example: "Support renewable energy"
+              required: [name, district]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Candidate updated"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete party candidate
+      description: Soft deletes a candidate from a party.
+      security:
+        - sessionAuth: []
+        - bearerAuth: []
+      parameters:
+        - name: party_name
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "Green Party"
+        - name: candidate_id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "c1"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Candidate deleted"
+        '404':
+          description: Candidate not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  # Public Routes
+  /meta:
+    get:
+      summary: Get system metadata
+      description: Retrieves system metadata.
+      responses:
+        '200':
+          description: Metadata
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                example: { "system_name": "DCM", "version": "1.0.0" }
+  /system_info:
+    get:
+      summary: Get system information
+      description: Retrieves system info and statistics.
+      responses:
+        '200':
+          description: System info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  system_name:
+                    type: string
+                    example: "DCM"
+                  version:
+                    type: string
+                    example: "1.0.0"
+                  election:
+                    type: object
+                    additionalProperties: true
+                    example: { "name": "Municipal Election 2025" }
+                  stats:
+                    type: object
+                    additionalProperties: true
+                    example: { "question_count": 100, "candidate_count": 500 }
+  /questions:
+    get:
+      summary: Get all public questions
+      description: Retrieves all non-blocked questions for public use.
+      responses:
+        '200':
+          description: List of questions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Question'
+  /candidates:
+    get:
+      summary: Get all candidates
+      description: Retrieves all non-deleted candidates.
+      responses:
+        '200':
+          description: List of candidates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Candidate'
+  /parties:
+    get:
+      summary: Get all parties
+      description: Retrieves a list of all party names.
+      responses:
+        '200':
+          description: List of party names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                example: ["Green Party", "Blue Party"]
+  /party/{party_name}:
+    get:
+      summary: Get party profile
+      description: Retrieves a party's profile and consensus answers.
+      parameters:
+        - name: party_name
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "Green Party"
+      responses:
+        '200':
+          description: Party profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profile:
+                    type: object
+                    additionalProperties: true
+                    example: { "description": "Eco-friendly policies" }
+                  consensus:
+                    type: object
+                    additionalProperties:
+                      type: integer
+                    example: { "q1": 4, "q2": -2 }
+        '404':
+          description: Party not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /submit_question:
+    post:
+      summary: Submit a new question
+      description: Allows users to submit a new question for review.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                question:
+                  type: object
+                  properties:
+                    fi:
+                      type: string
+                      example: "Mitä mieltä olet ilmastopolitiikasta?"
+                  required: [fi]
+                category:
+                  type: string
+                  example: "Environment"
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  example: ["climate", "policy"]
+                scale:
+                  type: object
+                  properties:
+                    min:
+                      type: integer
+                      example: -5
+                    max:
+                      type: integer
+                      example: 5
+                  required: [min, max]
+              required: [question, category, scale]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  cid:
+                    type: string
+                    example: "Qm..."
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /search_questions:
+    get:
+      summary: Search questions
+      description: Searches questions by keyword.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "climate"
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Question'
+  /available_tags:
+    get:
+      summary: Get available tags
+      description: Retrieves all tags with their counts.
+      responses:
+        '200':
+          description: Tag counts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tags:
+                    type: object
+                    additionalProperties:
+                      type: integer
+                    example: { "climate": 10, "policy": 15 }
+  /compare_parties:
+    post:
+      summary: Compare user answers to a party
+      description: Compares user answers to a specific party's consensus.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_answers:
+                  type: object
+                  additionalProperties:
+                    type: integer
+                  example: { "q1": 3, "q2": -1 }
+                party_name:
+                  type: string
+                  example: "Green Party"
+              required: [user_answers, party_name]
+      responses:
+        '200':
+          description: Comparison result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  match_percentage:
+                    type: number
+                    format: float
+                    example: 85.5
+                  candidate_count:
+                    type: integer
+                    example: 10
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /compare_all_parties:
+    post:
+      summary: Compare user answers to all parties
+      description: Compares user answers to all parties' consensus answers.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_answers:
+                  type: object
+                  additionalProperties:
+                    type: integer
+                  example: { "q1": 3, "q2": -1 }
+              required: [user_answers]
+      responses:
+        '200':
+          description: Comparison results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    party:
+                      type: string
+                      example: "Green Party"
+                    match_percentage:
+                      type: number
+                      format: float
+                      example: 85.5
