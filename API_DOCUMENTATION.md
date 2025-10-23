@@ -1,5 +1,3 @@
-Kyllä, voin kääntää laajennetun Markdown-dokumentaation englanniksi. Alla on käännetty versio, joka säilyttää saman rakenteen, selkeyden ja kattavuuden kuin suomenkielinen versio. Tämä dokumentaatio sopii suoraan GitHubiin (esim. `API_DOCS_EN.md`) ja tukee frontend-kehittäjiä, jotka työskentelevät englanninkielisessä ympäristössä. Käännös on tehty huolellisesti, jotta termit ja tekniset yksityiskohdat ovat tarkkoja ja luonnollisia englanniksi.
-
 # Decentralized Candidate Matcher (DCM) API Documentation
 
 This documentation describes the RESTful API for the Decentralized Candidate Matcher (DCM) backend, which supports managing election data, moderating questions, handling candidate profiles, and comparing parties. The API is built with Flask and uses JSON format for requests and responses. It covers both admin and public endpoints, authentication mechanisms, and error handling.
