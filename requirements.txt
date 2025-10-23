@@ -1,0 +1,8 @@
+base58>=2.1.1
+pymultihash>=0.8.2
+aiohttp>=3.9.0
+asyncio>=3.4.3
+multiaddr>=0.0.9
+Flask>=2.3.0
+cryptography>=41.0.0
+requests>=2.31.0
