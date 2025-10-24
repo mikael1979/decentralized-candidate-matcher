@@ -1,6 +1,6 @@
 {
   "election": {
-    "id": "election_2026-01-01_fi_satakunta",
+    "id": "election_2028-10-10_fi",
     "country": "FI",
     "type": {
       "fi": "Muu",
@@ -8,13 +8,13 @@
       "sv": "Annat"
     },
     "name": {
-      "fi": "testivaalit 2026",
-      "en": "testelection",
-      "sv": "lkfd"
+      "fi": "testivaalit",
+      "en": "fdlk",
+      "sv": "kjd"
     },
-    "date": "2026-01-01",
+    "date": "2028-10-10",
     "language": "fi",
-    "district": "satakunta"
+    "district": null
   },
   "admin": {
     "name": "admin",

@@ -29,8 +29,8 @@
       "justification_metadata": {
         "author_id": "admin_admin",
         "author_type": "super_admin",
-        "created_at": "2025-10-23T12:11:57.328074",
-        "updated_at": "2025-10-23T12:11:57.328074",
+        "created_at": "2025-10-24T07:52:42.423205",
+        "updated_at": "2025-10-24T07:52:42.423205",
         "version": 1,
         "blocked": false,
         "signature": null
@@ -38,7 +38,7 @@
       "metadata": {
         "elo_rating": 1500,
         "blocked": false,
-        "created_at": "2025-10-23T12:11:57.328074",
+        "created_at": "2025-10-24T07:52:42.423205",
         "created_by": "admin_admin",
         "votes_for": 0,
         "votes_against": 0,
@@ -79,8 +79,8 @@
       "justification_metadata": {
         "author_id": "admin_admin",
         "author_type": "super_admin",
-        "created_at": "2025-10-23T12:11:57.328074",
-        "updated_at": "2025-10-23T12:11:57.328074",
+        "created_at": "2025-10-24T07:52:42.423205",
+        "updated_at": "2025-10-24T07:52:42.423205",
         "version": 1,
         "blocked": false,
         "signature": null
@@ -88,7 +88,7 @@
       "metadata": {
         "elo_rating": 1500,
         "blocked": false,
-        "created_at": "2025-10-23T12:11:57.328074",
+        "created_at": "2025-10-24T07:52:42.423205",
         "created_by": "admin_admin",
         "votes_for": 0,
         "votes_against": 0,
@@ -103,11 +103,11 @@
   ],
   "metadata": {
     "version": "1.0",
-    "created": "2025-10-23T12:11:57.328074",
-    "fingerprint": "48d1efe64d441024a583b00c9d25dddc6edd4dc2bcaaa0384e5f751e677eb8b2",
+    "created": "2025-10-24T07:52:42.423205",
+    "fingerprint": "3b2d6d5decaf52fa181b62a82db8a0509f8658f9f72e5828664cf47bc25bd8ab",
     "question_count": 2,
-    "system_id": "597b55fb20461480",
-    "election_id": "election_2026-01-01_fi_satakunta",
-    "signature": "qiJ/lkVDaMiop+HqiQaG79LJTSVi6v7uJq/toURdtr5llPJ0Uk6Cc0DK/qJ36mjGUfsIsSk6PQRvrIQyNLE3xfCWXnKP9UOuXNFZ+/O1iCeAmdRMpi+hZEhnmo9bwFEudwAffjJkVXBIDTjS9azMTfDztgwdwvNqwp5jSse3+Ig55dBz9PM3ZIRH3MHgu+UFFIrzk0lLZoo0SZ7R965kcFJRXgqzEAWb+vdZaSRWlXknkifIY3KFGDP2Iob5Vg73V4iLcIEpJTkOLfq7ljfUYiadQHv9NY+1G3lpv46vGPQhHdSwFa3PwZbp4fps6kEmXQx+Dg3YEbc3l46WD71wxA=="
+    "system_id": "eea875f60ef95d47",
+    "election_id": "election_2028-10-10_fi",
+    "signature": "XB1HPjQpapcFo0bRUctTren/G7/CWHQoAuANGYFVgkRZ++fmjZQUPqsj9dVeDKLoq3OJZFegplH5onjrzkCFd9LGFgC5Y1Fl+xGRPSU5sHW0RMgn/HSiNPwONVqvouzLH21A0Xc4sAuEzuIwal6FGJnJWB5Z2GZaZy47uZuxveHVF4RtI0yJdRMlUHWEJsAL+5rgc0kgD2IfcBxYQdQTlWjYmhydB7nV0/uymk1LnvMhK+9smT7T0wejJM4AMgysSIlhmzU+1J8WCoyyB21V0feleVmqzNx01yLogfAhE/lJKSPJGW+xdeLK85xQBux5DEvjHove1jSZa+D4zIB0vA=="
   }
 }

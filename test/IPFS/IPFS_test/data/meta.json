@@ -2,21 +2,15 @@
   "system": "Decentralized Candidate Matcher",
   "version": "0.0.6-alpha",
   "election": {
-    "id": "election_2026-01-01_fi_satakunta",
+    "id": "default_election",
     "country": "FI",
-    "type": {
-      "fi": "Muu",
-      "en": "Other",
-      "sv": "Annat"
-    },
     "name": {
-      "fi": "testivaalit 2026",
-      "en": "testelection",
-      "sv": "lkfd"
+      "fi": "Nimetön vaalit",
+      "en": "Unnamed Election",
+      "sv": "Namnlös val"
     },
-    "date": "2026-01-01",
-    "language": "fi",
-    "district": "satakunta"
+    "date": "2025-01-01",
+    "language": "fi"
   },
   "community_moderation": {
     "enabled": true,
@@ -24,45 +18,30 @@
       "auto_block_inappropriate": 0.7,
       "auto_block_min_votes": 10,
       "community_approval": 0.8
-    }
+    },
+    "ipfs_sync_mode": "elo_priority"
   },
-  "admins": [
-    {
-      "admin_id": "admin_admin",
-      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvgIDZrb8exQ8LX/56BjV\nA/G4JP11gMC0tjXHRXq65JBe/swC7y+qH6nwc5bDdBWiPRuNEVXzS2yerVXGUwho\nH8jcvurALCDRgiqJfWcK9zBS8SpMg+OSQeK0ll6F3Jsd+BI27my2WpgFU1827qlw\np8JNl3AOc53QOefoXNOsUOgVZJ+LuYdZsVABs2ENGlCcoD4VX+j7b/7rMhd1XG1o\nO2zB/yqpf8W7BQwP9padVmUw/QBMtmuEge1jOocBAf8bLkOYCUmBoiJZTokU4y0n\n/Rj59sCry3a3my9Dzgi5GP2dbK0cQm23e1dtkzW5axlf8qG1CMYla77avKbg3HFK\n7QIDAQAB\n-----END PUBLIC KEY-----\n",
-      "name": "admin",
-      "username": "admin",
-      "email": "",
-      "role": "super_admin"
-    }
-  ],
+  "admins": [],
   "key_management": {
-    "system_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvgIDZrb8exQ8LX/56BjV\nA/G4JP11gMC0tjXHRXq65JBe/swC7y+qH6nwc5bDdBWiPRuNEVXzS2yerVXGUwho\nH8jcvurALCDRgiqJfWcK9zBS8SpMg+OSQeK0ll6F3Jsd+BI27my2WpgFU1827qlw\np8JNl3AOc53QOefoXNOsUOgVZJ+LuYdZsVABs2ENGlCcoD4VX+j7b/7rMhd1XG1o\nO2zB/yqpf8W7BQwP9padVmUw/QBMtmuEge1jOocBAf8bLkOYCUmBoiJZTokU4y0n\n/Rj59sCry3a3my9Dzgi5GP2dbK0cQm23e1dtkzW5axlf8qG1CMYla77avKbg3HFK\n7QIDAQAB\n-----END PUBLIC KEY-----\n",
+    "system_public_key": "",
     "key_algorithm": "RSA-2048",
     "parties_require_keys": true,
     "candidates_require_keys": false
   },
   "content": {
-    "last_updated": "2025-10-23T16:31:16.454856",
-    "questions_count": 31,
-    "candidates_count": 3,
+    "last_updated": "2025-10-24T10:14:16.102653",
+    "questions_count": 44,
+    "candidates_count": 2,
     "parties_count": 2
   },
   "system_info": {
-    "system_id": "597b55fb20461480",
-    "installation_time": "2025-10-23T12:11:57.331032",
-    "key_fingerprint": "597b55fb204614802d66e7a3548da51d953f4a07b1acca06e441c367881350b1"
+    "system_id": "",
+    "installation_time": "2025-10-24T08:33:04.102811",
+    "key_fingerprint": ""
   },
   "integrity": {
     "algorithm": "sha256",
-    "hash": "sha256:b1bfb702627675dc23abc85895bccf06652b994431d3207dc9a9a304a2ce2848",
-    "computed": "2025-10-23T16:31:16.454924"
-  },
-  "metadata": {
-    "created": "2025-10-23T12:11:57.331032",
-    "system_id": "597b55fb20461480",
-    "election_id": "election_2026-01-01_fi_satakunta",
-    "fingerprint": "2c55a1a6899ed8125e9445323113f784310f2699da1a1d5baf2148e817265c3e",
-    "signature": "puUdqBbkM8IqWuBlZDh8eayJcrsPjzbofdEwdKi5lAQAGKBN2I28qzTl7W4S/h3+GsluSGsWEkUAQoQhFvFXbNlG4jvGu0VCkNCUOmUYC3YOP7EvkQE/1+eH5SQcf99hAEyZCsMeEdjqL5v+oa4sd7XPkIC0evs4val2BGd38mEabGV5d7KVmSr7V7uQC8q4MtgP7nhWY6US/wXdqTLIZRWCqtpPXIUl3iR7/1r3OAoQoYy9vRXfS8MmX4XZAH5uk7wKgoOlOH4nxssGSEPs8BaTC8q8bprET4xNIP2aq54KT1yu1sryFeT7zLR4jcEajxKbD5AbOZHtM47FghXfWA=="
+    "hash": "sha256:f2186c679b341892eb1ef1b1fd68f571cf657897e06a59873dc60acb19ace288",
+    "computed": "2025-10-24T10:14:16.102727"
   }
 }

@@ -1,23 +1,23 @@
 {
-  "chain_id": "election_2026-01-01_fi_satakunta",
-  "created_at": "2025-10-23T12:11:57.326581",
+  "chain_id": "election_2028-10-10_fi",
+  "created_at": "2025-10-24T07:52:42.420212",
   "description": "Fingerprint-ketju kaikille järjestelmän tiedostoille",
   "version": "0.0.6-alpha",
   "blocks": [
     {
       "block_id": 0,
-      "timestamp": "2025-10-23T12:11:57.326581",
+      "timestamp": "2025-10-24T07:52:42.420212",
       "description": "Alkutila asennuksen jälkeen",
       "files": {},
       "previous_hash": null,
-      "block_hash": "sha256:73ca5a0ad63ea20c089b186f86fd29a5d37239eca7b124d890b847908a6f8a3b"
+      "block_hash": "sha256:c59d7582a69e6b644c16c5e233315e33086ac5a02d0809c7628adf805a0e2c4b"
     }
   ],
   "current_state": {},
   "metadata": {
     "algorithm": "sha256",
-    "system_id": "597b55fb20461480",
-    "election_id": "election_2026-01-01_fi_satakunta",
-    "signature": "Yc4Y6YxyiSP76iSoeuw5boaFDH3bAgJXQVAjF/7Xs43g8sv/SDuEVT8K6EsqKZOcbe/k9srLSxMLMlZUtQbw8GrKt17IKUuUjUvRlthC2i2HAMBql6xkL/+heLjLkwxnlRWr1FqAbududOLJ9ywmJg5hANI14XmTVXoH5ns4u0Yo1FcouBc6agUu9WPdvG79xjuKzJi8VR0FBQd6yvg5O7KrZvqGfK/ea/DudsVrY9GhOS9JZBFt6AHVEIv3kvbWCN/W5eBNKiMLF2IWWvJrkwF7JOWblcH6XdQwyQ7CQlpSypA66Wznl7Y6in8malZrwe1AfLLecAYq8PfHUmVmlA=="
+    "system_id": "eea875f60ef95d47",
+    "election_id": "election_2028-10-10_fi",
+    "signature": "WGUdFvbe29o8B9Ll9gbT8IAYwpdPSY5LqjOB+bDJggcfucwy5wHhxMVKeHi/GOEecCdql26SXj3lY7/4+XfeIqmFXsJePEQ4D2V7r5P0DEuiD+jdQKsaiyKMP3mqKzJeRr39ji6gY/I4yA1lcWL+AaYlXfXmQFUzd6YQftgkC6KXCDg3I8nIaGCcUsfnUoTPFeAa58nU27lYQ8PmhTOlz7oRfgUaJc3Km7rlfW/BETXTr/XPNz9V302xzR+67Zg9nVaoVpi72DK5fsB0eUFbphfGFIwORhHdLm8LP/VPDJwbhZS4yMxcZWJuo6VJP5ytDjnrkRuR48KMHlZmOqo3/Q=="
   }
 }

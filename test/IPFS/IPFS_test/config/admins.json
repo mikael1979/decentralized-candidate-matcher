@@ -5,18 +5,18 @@
       "username": "admin",
       "name": "admin",
       "email": "",
-      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvgIDZrb8exQ8LX/56BjV\nA/G4JP11gMC0tjXHRXq65JBe/swC7y+qH6nwc5bDdBWiPRuNEVXzS2yerVXGUwho\nH8jcvurALCDRgiqJfWcK9zBS8SpMg+OSQeK0ll6F3Jsd+BI27my2WpgFU1827qlw\np8JNl3AOc53QOefoXNOsUOgVZJ+LuYdZsVABs2ENGlCcoD4VX+j7b/7rMhd1XG1o\nO2zB/yqpf8W7BQwP9padVmUw/QBMtmuEge1jOocBAf8bLkOYCUmBoiJZTokU4y0n\n/Rj59sCry3a3my9Dzgi5GP2dbK0cQm23e1dtkzW5axlf8qG1CMYla77avKbg3HFK\n7QIDAQAB\n-----END PUBLIC KEY-----\n",
-      "created_at": "2025-10-23T12:11:57.328074",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlxsz0Itj1Tv2nrvdm+Cx\ne+M0bM06Ya4HWsV5okhbzLm0MhVAa6o2Auha4DwPAmi6MzX5UAoyr2SehS1aRRO4\nmoQs5SMzCo7J1c5+g9xQYO6ycPAW8Oe2nXLrUdLG4pcPhBQoAgD6fD2qzo5gDIgR\nyy23XSaxClJXEZA47VeKcNgxCPT7IlLT1cFHb0V2O0sC7cmtWZsnMlcZi8aYdRAX\nyWRkbPZp/pz93FpfpOxm7p9qNxcSU0bwUz9Aco//yfKY008HL+Ruo+cclbALjzNl\njreaC4dRAtHjYq/4xKgUTjd9Nq6EofBV0oN4eBOOFAhkrtqUwYPsNyAOsnkpJ0lv\nHwIDAQAB\n-----END PUBLIC KEY-----\n",
+      "created_at": "2025-10-24T07:52:42.423205",
       "role": "super_admin"
     }
   ],
   "party_admins": {},
   "metadata": {
     "version": "1.0",
-    "created": "2025-10-23T12:11:57.328074",
-    "fingerprint": "4c34a409b42548f7246e6526e19089876f53db91568a31d4159a23e63250bc20",
-    "system_id": "597b55fb20461480",
-    "election_id": "election_2026-01-01_fi_satakunta",
-    "signature": "qYfRKnvduJ5xhHNla73B0XaCwQRr9F/mI9gY7sXCjBKHUmq+2V5OAVQZVUsMPPgpfVHIv7+YnRUBTs8aqXn0NoIiXf4EjJVFrQKuafhJSCwzkkEyHhVMaqCH2jISod1in+InNbFFa37qDWuMsoStkcgQcPXz9XTPfm/I2NIC/2lJxDicVy+Mo0EUHpqE2Vl+KeXLehqJvRqP1tH7a8vUBYE2Pd/hEXq2IYNcCB9wQNeUbiv2gAjLaejbjSfJoN4d3j/jfsyUkxnsl6B47k8e017FK6Gxl1pxYVzB1fJDdQuoCzdLfjh9Y3enX91PZudphe1oZGCMsRxsBQCO/kE0YQ=="
+    "created": "2025-10-24T07:52:42.423205",
+    "fingerprint": "245c3311e2f6dbff763e10c04185523820204ccd8d664bf9458d9ddcfaf716c5",
+    "system_id": "eea875f60ef95d47",
+    "election_id": "election_2028-10-10_fi",
+    "signature": "FA2bmRhUKuU+sxALBvp4gOPSGbGHODPIijwkMGWQMJ3Fn9tL3yPjlszGPskCyVcvFkaxNxVPOUNqfgMbvHVZhkL0Wq5AwW2JKl4497xUSA0AXw4gxsYhqY/jAkN9IVfu/C45ooPPkbiJAgHVwGb/bUN9O+YZfyRbgKzUKJU6MaIDVFIFDwi3u7TSCF+sbAifVcC9r4taD0/VYM4bSsOUHnhxfXSsa6rqYuJ/lUObzgVL8DmTrK+L06XWQ7t8MJBf9kC0zoezwC8ZZXW03HyCw72rpklCTLSjUSrA4vxJ461mElBFGVO1LAssQdtQd/uGkw7I/1h/WqO1wwNvqNjNwg=="
   }
 }

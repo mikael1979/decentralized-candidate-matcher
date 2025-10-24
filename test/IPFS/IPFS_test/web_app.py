@@ -4,16 +4,10 @@ import sys
 import os
 import json
 import hashlib
-from data_manager import DataManager
-from route_handlers import RouteHandlers
-from utils import handle_api_errors
-from admin_api import init_admin_api
-from party_management_api import init_party_management_api
-from candidate_management_api import init_candidate_management_api
+from datetime import datetime
 
-
-# === UUDET MODUULIT ===
-from admin_settings_api import init_admin_settings_api  # Asennettava erikseen
+# === UUSI: DATA SCHEMAS TUKEA VARTEN ===
+from data_schemas import ensure_data_file as _ensure_data_file
 
 # DEBUG-tila
 DEBUG = True
@@ -32,13 +26,17 @@ else:
 # Alusta IPFS-asiakas
 ipfs_client = IPFSClient()
 
-# Alusta komponentit
+# Alusta DataManager
+from data_manager import DataManager
 data_manager = DataManager(debug=DEBUG)
 data_manager.set_ipfs_client(ipfs_client)
-handlers = RouteHandlers(data_manager, debug=DEBUG)
 
-# Alusta data
-data_manager.initialize_data_files()
+# Varmista että perushakemistot on olemassa
+data_manager.ensure_directories()
+
+# Alusta RouteHandlers
+from route_handlers import RouteHandlers
+handlers = RouteHandlers(data_manager, debug=DEBUG)
 
 # Flask-sovellus
 app = Flask(__name__, static_folder='static', template_folder='templates')
@@ -73,7 +71,6 @@ def verify_admin_password(password):
 
 # === ADMIN-KIRJAUTUMISREITIT ===
 @app.route('/api/admin/login', methods=['POST'])
-@handle_api_errors
 def admin_login():
     data = request.json
     password = data.get('password')
@@ -87,14 +84,12 @@ def admin_login():
         return jsonify({'success': False, 'error': 'Väärä salasana'}), 401
 
 @app.route('/api/admin/logout', methods=['POST'])
-@handle_api_errors
 def admin_logout():
     session.pop('admin_authenticated', None)
     session.pop('admin_login_time', None)
     return jsonify({'success': True, 'message': 'Uloskirjautuminen onnistui'})
 
 @app.route('/api/admin/status')
-@handle_api_errors
 def admin_status():
     return jsonify({
         'authenticated': session.get('admin_authenticated', False),
@@ -102,7 +97,13 @@ def admin_status():
     })
 
 # === INTEGROI ADMIN-MODUULIT ===
+from admin_api import init_admin_api
+from admin_settings_api import init_admin_settings_api
+from party_management_api import init_party_management_api
+from candidate_management_api import init_candidate_management_api
+
 init_admin_api(app, data_manager, handlers, admin_login_required)
+init_admin_settings_api(app, data_manager, admin_login_required)
 init_party_management_api(app, data_manager, admin_login_required)
 init_candidate_management_api(app, data_manager, admin_login_required)
 
@@ -141,12 +142,10 @@ def admin():
 
 # === API-REITIT ===
 @app.route('/api/meta')
-@handle_api_errors
 def api_meta():
     return jsonify(data_manager.get_meta())
 
 @app.route('/api/system_info')
-@handle_api_errors
 def api_system_info():
     meta = data_manager.get_meta()
     return jsonify({
@@ -159,7 +158,6 @@ def api_system_info():
 
 @app.route('/api/update_meta', methods=['POST'])
 @admin_login_required
-@handle_api_errors
 def api_update_meta():
     new_meta = request.json
     success = data_manager.update_meta(new_meta)
@@ -169,32 +167,33 @@ def api_update_meta():
         return jsonify({'success': False, 'error': 'Päivitys epäonnistui'}), 500
 
 @app.route('/api/questions')
-@handle_api_errors
 def api_questions():
     questions = data_manager.get_questions()
     for q in questions:
         q['id'] = str(q['id'])
     return jsonify(questions)
 
+@app.route('/api/active_questions')
+def api_active_questions():
+    """Palauttaa korkeimman Elo-arvon kysymykset kevyesti frontendille"""
+    active = data_manager.ensure_data_file('active_questions.json')
+    return jsonify(active)
+
 @app.route('/api/candidates')
-@handle_api_errors
 def api_candidates():
     return jsonify(data_manager.get_candidates())
 
 @app.route('/api/parties')
-@handle_api_errors
 def api_parties():
     return jsonify(handlers.get_parties())
 
 @app.route('/api/party/<party_name>')
-@handle_api_errors
 def api_party_profile(party_name):
     profile, consensus = handlers.get_party_profile(party_name)
     return jsonify({'profile': profile, 'consensus': consensus})
 
 @app.route('/api/add_candidate', methods=['POST'])
 @admin_login_required
-@handle_api_errors
 def api_add_candidate():
     candidate_data = request.json
     if not candidate_data.get('name') or not candidate_data.get('party'):
@@ -206,7 +205,6 @@ def api_add_candidate():
         return jsonify({'success': False, 'error': 'Ehdokkaan lisäys epäonnistui'}), 500
 
 @app.route('/api/submit_question', methods=['POST'])
-@handle_api_errors
 def api_submit_question():
     question_data = request.json
     if not question_data.get('question', {}).get('fi'):
@@ -219,14 +217,12 @@ def api_submit_question():
         return jsonify({'success': False, 'errors': ['Tallennus epäonnistui']}), 500
 
 @app.route('/api/search_questions')
-@handle_api_errors
 def api_search_questions():
     query = request.args.get('q', '')
     results = handlers.search_questions(query)
     return jsonify({'success': True, 'results': results})
 
 @app.route('/api/available_tags')
-@handle_api_errors
 def api_available_tags():
     questions = data_manager.get_questions()
     tag_counts = {}
@@ -236,7 +232,6 @@ def api_available_tags():
     return jsonify({'success': True, 'tags': tag_counts})
 
 @app.route('/api/compare_parties', methods=['POST'])
-@handle_api_errors
 def api_compare_parties():
     data = request.json
     user_answers = data.get('user_answers', {})
@@ -254,7 +249,6 @@ def api_compare_parties():
     })
 
 @app.route('/api/compare_all_parties', methods=['POST'])
-@handle_api_errors
 def api_compare_all_parties():
     user_answers = request.json.get('user_answers', {})
     parties = handlers.get_parties()
@@ -300,16 +294,12 @@ def bulk_import_from_cli():
 
 # === KÄYNNISTYS ===
 if __name__ == '__main__':
-    from datetime import datetime
-
     # Joukkotuonti ennen käynnistystä
     bulk_import_from_cli()
 
     if DEBUG:
-        # Lue vaalin nimi meta-tiedoista
         meta = data_manager.get_meta()
         election_name = meta.get('election', {}).get('name', {}).get('fi', 'Nimetön vaalit')
-
         print("🚀 Hajautettu Vaalikone käynnistyy...")
         print("📊 Sovellus saatavilla: http://localhost:5000")
         print("🔧 DEBUG-tila: PÄÄLLÄ")
@@ -328,6 +318,7 @@ if __name__ == '__main__':
         print("🔧 API-reitit:")
         print("   - /api/meta - Järjestelmän meta-tiedot")
         print("   - /api/questions - Kaikki kysymykset")
+        print("   - /api/active_questions - Korkeimman Elo-arvon kysymykset")
         print("   - /api/candidates - Kaikki ehdokkaat")
         print("   - /api/admin/* - Admin-toiminnot (suojatut)")
         print("   - /api/admin/login - Admin-kirjautuminen")

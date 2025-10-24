@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Vaalikoneen asennus- ja alustusskripti v0.0.6-alpha
-Luo turvallisen pohjan järjestelmälle salausavaimilla, eheystarkistuksilla ja fingerprint-ketjulla.
+Luo turvallisen pohjan järjestelmälle salausavaimilla ja fingerprint-ketjulla.
 """
 import os
 import sys
@@ -18,7 +18,7 @@ from cryptography.hazmat.backends import default_backend
 
 # === VERSIO JA DEBUG-TILA ===
 VERSION = "0.0.6-alpha"
-DEBUG = True  # Oletuksena päällä kehitysvaiheessa
+DEBUG = True
 USE_PROD_MODE = '--prod' in sys.argv
 
 class InstallationManager:
@@ -44,7 +44,6 @@ class InstallationManager:
                     if data.get('version') != VERSION:
                         print(f"⚠️  Varoitus: {path} ei ole yhteensopiva versiolla {VERSION}")
                     return data
-        # Fallback: kovakoodattu (ei suositella tuotannossa)
         print("❌ install_data.json ei löydy – käytetään sisäistä dataa")
         return self._get_fallback_install_data()
 
@@ -125,13 +124,21 @@ class InstallationManager:
     def parse_args(self):
         if '--first-install' in sys.argv:
             return 'first'
-        elif '--config-install' in sys.argv:
-            return 'config'
         elif '--verify' in sys.argv:
             return 'verify'
+        elif '--config-install' in sys.argv:
+            return 'config'
         else:
-            print("Käyttö: python install.py --first-install | --config-install [--extra-questions TIEDOSTO] | --verify")
-            sys.exit(1)
+            # Oletustila: yritä lukea install_config.json
+            if os.path.exists('install_config.json'):
+                return 'config'
+            else:
+                print("❌ install_config.json ei löydy nykyisestä hakemistosta.")
+                print("\nKäytettävissä olevat vaihtoehdot:")
+                print("  • Luo asetustiedosto manuaalisesti ja aja uudelleen, TAI")
+                print("  • Aja ensiasennus: python install.py --first-install")
+                print("  • Määritä polku asetustiedostoon: python install.py --config=/polku.json")
+                sys.exit(1)
 
     def run(self):
         mode = self.parse_args()
@@ -156,7 +163,6 @@ class InstallationManager:
             self.create_install_config,
             self.create_system_chain,
             self.create_config_files,
-            self.initialize_data_files,
             self.verify_installation
         ]
         for step in steps:
@@ -167,11 +173,12 @@ class InstallationManager:
 
     def run_config_install(self):
         self.print_header()
-        print("⚙️  Ladataan asennusasetukset install_config.json:sta...")
-        if not os.path.exists('install_config.json'):
-            print("❌ install_config.json ei löydy!")
+        config_path = 'install_config.json'
+        print(f"⚙️  Ladataan asennusasetukset: {config_path}")
+        if not os.path.exists(config_path):
+            print(f"❌ Tiedostoa ei löydy: {config_path}")
             return False
-        with open('install_config.json', 'r', encoding='utf-8') as f:
+        with open(config_path, 'r', encoding='utf-8') as f:
             self.install_config = json.load(f)
         self.election_data = self.install_config['election']
         self.admin_data = {
@@ -184,7 +191,6 @@ class InstallationManager:
         self.election_data['id'] = f"election_{self.election_data['date']}_{self.election_data['country'].lower()}"
         if self.election_data.get('district'):
             self.election_data['id'] += f"_{self.election_data['district'].lower().replace(' ', '_')}"
-
         steps = [
             self.validate_environment,
             self.create_directories,
@@ -192,7 +198,6 @@ class InstallationManager:
             self.save_crypto_keys,
             self.create_system_chain,
             self.create_config_files_with_extra,
-            self.initialize_data_files,
             self.verify_installation
         ]
         for step in steps:
@@ -670,189 +675,6 @@ class InstallationManager:
             print(f"✅ Lisätty {len(extra_questions)} extra-kysymystä")
         return True
 
-    def initialize_data_files(self):
-        current_time = datetime.now().isoformat()
-        district = self.election_data.get("district", "Helsinki")
-        questions = []
-        just = self.install_data.get('justifications', {})
-        for i, q in enumerate(self.install_data['default_questions'], 1):
-            questions.append({
-                "id": i,
-                "category": q["category"],
-                "question": q["question"],
-                "tags": q["tags"],
-                "scale": q["scale"],
-                "metadata": {
-                    "elo_rating": 1500,
-                    "blocked": False,
-                    "created_at": current_time,
-                    "created_by": self.admin_data["admin_id"],
-                    "votes_for": 0,
-                    "votes_against": 0,
-                    "community_approved": True
-                },
-                "elo": {"base_rating": 1500, "deltas": [], "current_rating": 1500}
-            })
-        candidates = []
-        for i, c in enumerate(self.install_data['default_candidates'], 1):
-            answers = []
-            for ans in c['answers']:
-                q_id = ans['question_id']
-                answers.append({
-                    "question_id": q_id,
-                    "answer": ans['answer'],
-                    "confidence": ans['confidence'],
-                    "justification": {
-                        "fi": just['fi'].get(f"q{q_id}_{'pos' if ans['answer'] > 0 else 'neg'}", ""),
-                        "en": just['en'].get(f"q{q_id}_{'pos' if ans['answer'] > 0 else 'neg'}", ""),
-                        "sv": just['sv'].get(f"q{q_id}_{'pos' if ans['answer'] > 0 else 'neg'}", "")
-                    },
-                    "justification_metadata": {
-                        "created_at": current_time,
-                        "version": 1,
-                        "blocked": False,
-                        "signature": None
-                    }
-                })
-            candidates.append({
-                "id": i,
-                "name": c["name"],
-                "party": c["party"],
-                "district": district,
-                "public_key": None,
-                "party_signature": None,
-                "answers": answers
-            })
-        parties = list({c["party"] for c in candidates})
-        q_clean = questions
-        q_fingerprint = hashlib.sha256(json.dumps(q_clean, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
-        q_signature = self.sign_clean_data(q_clean)
-        questions_data = {
-            "election_id": self.election_data["id"],
-            "language": "fi",
-            "questions": q_clean,
-            "metadata": {
-                "created": current_time,
-                "system_id": self.system_id,
-                "election_id": self.election_data["id"],
-                "fingerprint": q_fingerprint,
-                "signature": q_signature
-            }
-        }
-        c_clean = candidates
-        c_fingerprint = hashlib.sha256(json.dumps(c_clean, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
-        c_signature = self.sign_clean_data(c_clean)
-        candidates_data = {
-            "election_id": self.election_data["id"],
-            "language": "fi",
-            "candidates": c_clean,
-            "party_keys": {p: None for p in parties},
-            "metadata": {
-                "created": current_time,
-                "system_id": self.system_id,
-                "election_id": self.election_data["id"],
-                "fingerprint": c_fingerprint,
-                "signature": c_signature
-            }
-        }
-        new_questions_data = {
-            "election_id": self.election_data["id"],
-            "language": "fi",
-            "question_type": "user_submitted",
-            "questions": [],
-            "metadata": {
-                "created": current_time,
-                "system_id": self.system_id,
-                "election_id": self.election_data["id"],
-                "fingerprint": hashlib.sha256(b"[]").hexdigest(),
-                "signature": self.sign_clean_data([])
-            }
-        }
-        comments_data = {
-            "election_id": self.election_data["id"],
-            "language": "fi",
-            "comments": [],
-            "metadata": {
-                "created": current_time,
-                "system_id": self.system_id,
-                "election_id": self.election_data["id"],
-                "fingerprint": hashlib.sha256(b"[]").hexdigest(),
-                "signature": self.sign_clean_data([])
-            }
-        }
-        public_pem = self.public_key.public_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PublicFormat.SubjectPublicKeyInfo
-        ).decode('utf-8')
-        base_meta = {
-            "system": "Decentralized Candidate Matcher",
-            "version": VERSION,
-            "election": self.election_data,
-            "community_moderation": {
-                "enabled": True,
-                "thresholds": {
-                    "auto_block_inappropriate": 0.7,
-                    "auto_block_min_votes": 10,
-                    "community_approval": 0.8
-                }
-            },
-            "admins": [{
-                "admin_id": self.admin_data["admin_id"],
-                "public_key": public_pem,
-                "name": self.admin_data["name"],
-                "username": self.admin_data["username"],
-                "email": self.admin_data.get("email"),
-                "role": self.admin_data["role"]
-            }],
-            "key_management": {
-                "system_public_key": public_pem,
-                "key_algorithm": "RSA-2048",
-                "parties_require_keys": True,
-                "candidates_require_keys": False
-            },
-            "content": {
-                "last_updated": current_time,
-                "questions_count": len(questions),
-                "candidates_count": len(candidates),
-                "parties_count": len(parties)
-            },
-            "system_info": {
-                "system_id": self.system_id,
-                "installation_time": current_time,
-                "key_fingerprint": hashlib.sha256(public_pem.encode()).hexdigest()
-            }
-        }
-        integrity_hash = f"sha256:{hashlib.sha256(json.dumps(base_meta, sort_keys=True, ensure_ascii=False).encode()).hexdigest()}"
-        m_fingerprint = hashlib.sha256(json.dumps(base_meta, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
-        m_signature = self.sign_clean_data(base_meta)
-        meta_data = {
-            **base_meta,
-            "integrity": {
-                "algorithm": "sha256",
-                "hash": integrity_hash,
-                "computed": current_time
-            },
-            "metadata": {
-                "created": current_time,
-                "system_id": self.system_id,
-                "election_id": self.election_data["id"],
-                "fingerprint": m_fingerprint,
-                "signature": m_signature
-            }
-        }
-        data_files = {
-            'data/questions.json': questions_data,
-            'data/candidates.json': candidates_data,
-            'data/newquestions.json': new_questions_data,
-            'data/comments.json': comments_data,
-            'data/meta.json': meta_data
-        }
-        for filepath, data in data_files.items():
-            with open(filepath, 'w', encoding='utf-8') as f:
-                json.dump(data, f, indent=2, ensure_ascii=False)
-            print(f"✅ Data-tiedosto alustettu: {filepath}")
-        return True
-
     def verify_installation(self):
         print("\n🔍 ASENNUKSEN TARKISTUS")
         print("-" * 30)
@@ -860,7 +682,6 @@ class InstallationManager:
             ("Hakemistorakenne", self.check_directories()),
             ("Salausavaimet", self.check_keys()),
             ("Konfiguraatiotiedostot", self.check_config_files()),
-            ("Data-tiedostot", self.check_data_files()),
         ]
         if not self.debug:
             checks.append(("Allekirjoitukset", self.verify_signatures()))
@@ -883,9 +704,6 @@ class InstallationManager:
 
     def check_config_files(self):
         return all(os.path.exists(f) for f in ['config/questions.json', 'config/candidates.json', 'config/meta.json', 'config/admins.json'])
-
-    def check_data_files(self):
-        return all(os.path.exists(f'data/{f}') for f in ['questions.json', 'candidates.json', 'newquestions.json', 'comments.json', 'meta.json'])
 
     def verify_signatures(self):
         return True  # Yksinkertaistettu tässä versiossa

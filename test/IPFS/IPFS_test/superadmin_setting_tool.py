@@ -82,13 +82,14 @@ def get_content_list(data_dir: str, content_type: str, source: str = 'official')
         return [{'name': p} for p in sorted(parties)]
     return data.get(key, [])
 
+# superadmin_setting_tool.py - KORJATTU LUONTI-FUNKTIO
 def create_tmp_file(data_dir: str, file_type: str) -> bool:
-    """Luo tmp-tiedoston tietystä tiedostotyypistä"""
+    """Luo tmp-tiedoston tietystä tiedostotyypistä - KORJATTU VERSIO"""
     file_map = {
         'questions': 'questions.json',
         'candidates': 'candidates.json', 
         'newquestions': 'newquestions.json',
-        'all': None  # Erikoistapaus - käsitellään erikseen
+        'all': None
     }
     
     if file_type not in file_map:
@@ -101,6 +102,13 @@ def create_tmp_file(data_dir: str, file_type: str) -> bool:
     
     base_file = file_map[file_type]
     tmp_file = base_file.replace('.json', '_tmp.json')
+    
+    # Tarkista että data-hakemisto on olemassa
+    if not os.path.exists(data_dir):
+        print(f"❌ Data-hakemistoa ei löydy: {data_dir}")
+        return False
+        
+    official_path = os.path.join(data_dir, base_file)
     tmp_path = os.path.join(data_dir, tmp_file)
     
     # Tarkista onko tmp-tiedosto jo olemassa
@@ -108,24 +116,28 @@ def create_tmp_file(data_dir: str, file_type: str) -> bool:
         print(f"📁 Tmp-tiedosto on jo olemassa: {tmp_file}")
         return True
         
-    # Lataa virallinen tiedosto
-    official_path = os.path.join(data_dir, base_file)
+    # Tarkista onko virallista tiedostoa
     if not os.path.exists(official_path):
         print(f"❌ Virallista tiedostoa ei löydy: {base_file}")
+        print(f"📁 Data-hakemiston sisältö: {os.listdir(data_dir)}")
         return False
         
     print(f"📁 Luodaan: {base_file} → {tmp_file}")
-    data = load_json_file(data_dir, base_file)
-    if data is None:
-        print(f"❌ Virhe ladattaessa tiedostoa: {base_file}")
-        return False
+    
+    try:
+        # Lue virallinen tiedosto
+        with open(official_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
         
-    # Luo tmp-tiedosto
-    if save_json_file(data_dir, tmp_file, data):
+        # Kirjoita tmp-tiedosto
+        with open(tmp_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        
         print(f"✅ Luotiin tmp-tiedosto: {tmp_file}")
         return True
-    else:
-        print(f"❌ Tmp-tiedoston luonti epäonnistui: {tmp_file}")
+        
+    except Exception as e:
+        print(f"❌ Tmp-tiedoston luonti epäonnistui: {e}")
         return False
 
 def create_all_tmp_files(data_dir: str) -> bool:
