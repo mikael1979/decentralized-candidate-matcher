@@ -1,19 +1,47 @@
 {
   "chain_id": "election_2026-10-10_fi_satakunta",
   "created_at": "2025-10-25T14:50:03.688998",
-  "description": "Fingerprint-ketju kaikille järjestelmän tiedostoille",
+  "description": "Fingerprint-ketju kaikille j\u00e4rjestelm\u00e4n tiedostoille",
   "version": "0.0.6-alpha",
   "blocks": [
     {
       "block_id": 0,
       "timestamp": "2025-10-25T14:50:03.688998",
-      "description": "Alkutila asennuksen jälkeen",
+      "description": "Alkutila asennuksen j\u00e4lkeen",
       "files": {},
       "previous_hash": null,
       "block_hash": "sha256:61d1cdd8d203e5032579fc12ebd49c7d543549f76d23ea0adb5f9cd3d59a736c"
+    },
+    {
+      "block_id": 1,
+      "timestamp": "2025-10-25T15:03:46.452822",
+      "description": "JSON Editor: muokattu 1 tiedostoa",
+      "files": {
+        "meta.json": "0ac818670a92b0ed46a1d4042e241fbfbdaf7a1ab507c345b7a792712eace960"
+      },
+      "ipfs_cids": {
+        "meta.json": "Qmf2384323e3def3679923c05c91b38a3323907599"
+      },
+      "previous_hash": "sha256:61d1cdd8d203e5032579fc12ebd49c7d543549f76d23ea0adb5f9cd3d59a736c",
+      "block_hash": "sha256:aa12bc3c94f2ded56057790c2cacfd1a40a87bdc31f4aa95b82dc1003050e8e0"
+    },
+    {
+      "block_id": 2,
+      "timestamp": "2025-10-25T15:03:46.453341",
+      "description": "JSON Editor: muokattu 1 tiedostoa",
+      "files": {
+        "meta.json": "0ac818670a92b0ed46a1d4042e241fbfbdaf7a1ab507c345b7a792712eace960"
+      },
+      "ipfs_cids": {
+        "meta.json": "Qmf2384323e3def3679923c05c91b38a3323907599"
+      },
+      "previous_hash": "sha256:aa12bc3c94f2ded56057790c2cacfd1a40a87bdc31f4aa95b82dc1003050e8e0",
+      "block_hash": "sha256:e43becf9276cb5212b7927ebbdac6c591768fd5cd42384e999931251fc9fc624"
     }
   ],
-  "current_state": {},
+  "current_state": {
+    "meta.json": "0ac818670a92b0ed46a1d4042e241fbfbdaf7a1ab507c345b7a792712eace960"
+  },
   "metadata": {
     "algorithm": "sha256",
     "system_id": "8bea9437defb9087",

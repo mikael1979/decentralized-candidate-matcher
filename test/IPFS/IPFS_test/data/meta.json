@@ -17,7 +17,7 @@
     "date": "2026-10-10",
     "language": "fi",
     "district": "satakunta",
-    "content_edit_deadline": "2026-07-01T00:00:00",
+    "content_edit_deadline": "2024-01-01T00:00:00",
     "grace_period_hours": 24
   },
   "community_moderation": {
@@ -46,8 +46,8 @@
     "candidates_require_keys": false
   },
   "content": {
-    "last_updated": "2025-10-25T14:51:50.454255",
-    "questions_count": 0,
+    "last_updated": "2025-10-25T15:05:01.564124",
+    "questions_count": 1,
     "candidates_count": 0,
     "parties_count": 0
   },
@@ -58,7 +58,12 @@
   },
   "integrity": {
     "algorithm": "sha256",
-    "hash": "sha256:93e67d264014975f80ab988378885da39dfea1d785c0682ecb1627e3999caf28",
-    "computed": "2025-10-25T14:51:50.454378"
+    "hash": "sha256:7d0af8816cb54ea0ba4b0c6396138f08e9e32df2e4a1744cf2a699dfe4cbc553",
+    "computed": "2025-10-25T15:05:01.564201"
+  },
+  "metadata": {
+    "ipfs_cid": "Qmf2384323e3def3679923c05c91b38a3323907599",
+    "ipfs_added": "2025-10-25T15:03:46.446419",
+    "ipfs_description": "Automaattinen tallennus: 1 muutosta"
   }
 }

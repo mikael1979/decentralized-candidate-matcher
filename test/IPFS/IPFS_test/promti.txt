@@ -155,6 +155,7 @@ class InstallationManager:
         steps = [
             self.validate_environment,
             self.get_election_info,
+            self.get_time_lock_info,  # LISÄTTY: Aikalukitus
             self.get_admin_info,
             self.get_installation_password,
             self.create_directories,
@@ -180,6 +181,8 @@ class InstallationManager:
             return False
         with open(config_path, 'r', encoding='utf-8') as f:
             self.install_config = json.load(f)
+        
+        # 1. Lue perusvaalitiedot ENSIN
         self.election_data = self.install_config['election']
         self.admin_data = {
             "name": self.install_config['admin']['name'],
@@ -191,6 +194,41 @@ class InstallationManager:
         self.election_data['id'] = f"election_{self.election_data['date']}_{self.election_data['country'].lower()}"
         if self.election_data.get('district'):
             self.election_data['id'] += f"_{self.election_data['district'].lower().replace(' ', '_')}"
+        
+        # 2. KYSY AIKALUKITUS TIEDOT - TÄMÄ PUUTTUI!
+        if 'content_edit_deadline' not in self.election_data:
+            print("\n🕒 KYSYMYSTEN MUOKKAUSIKKUNA")
+            print("-" * 30)
+            print("Milloin kysymysten, ehdokkaiden ja puolueiden muokkaus suljetaan?")
+            print("Anna päivämäärä ja kellonaika muodossa YYYY-MM-DD HH:MM (esim. 2025-08-01 23:59)")
+            
+            while True:
+                edit_deadline_str = input("Muokkausikkunan päättymisaika: ").strip()
+                if not edit_deadline_str:
+                    print("ℹ️  Ei muokkausrajaa asetettu – muokkaus pysyy auki.")
+                    self.election_data['content_edit_deadline'] = None
+                    self.election_data['grace_period_hours'] = 0
+                    break
+                try:
+                    # Tarkista muoto
+                    deadline_dt = datetime.strptime(edit_deadline_str, '%Y-%m-%d %H:%M')
+                    self.election_data['content_edit_deadline'] = deadline_dt.isoformat()
+                    # Kysy armonaika
+                    grace_input = input("Armonaika virheenkorjauksille (tuntia, oletus 24): ").strip()
+                    grace_hours = int(grace_input) if grace_input.isdigit() else 24
+                    if grace_hours < 0:
+                        grace_hours = 24
+                    self.election_data['grace_period_hours'] = grace_hours
+                    print(f"✅ Muokkaus sulkeutuu: {deadline_dt.strftime('%Y-%m-%d %H:%M')}")
+                    print(f"✅ Armonaika: {grace_hours} tuntia")
+                    break
+                except ValueError:
+                    print("❌ Virheellinen muoto. Käytä: YYYY-MM-DD HH:MM")
+        
+        # 3. Kysy salasana
+        if not self.get_installation_password():
+            return False
+        
         steps = [
             self.validate_environment,
             self.create_directories,
@@ -268,6 +306,38 @@ class InstallationManager:
             "district": district if district else None
         }
         print(f"✅ Vaalitiedot tallennettu (ID: {election_id})")
+        return True
+
+    def get_time_lock_info(self):
+        """Kysy aikalukitusasetukset käyttäjältä"""
+        print("\n🕒 KYSYMYSTEN MUOKKAUSIKKUNA")
+        print("-" * 30)
+        print("Milloin kysymysten, ehdokkaiden ja puolueiden muokkaus suljetaan?")
+        print("Anna päivämäärä ja kellonaika muodossa YYYY-MM-DD HH:MM (esim. 2025-08-01 23:59)")
+
+        while True:
+            edit_deadline_str = input("Muokkausikkunan päättymisaika: ").strip()
+            if not edit_deadline_str:
+                print("ℹ️  Ei muokkausrajaa asetettu – muokkaus pysyy auki.")
+                self.election_data['content_edit_deadline'] = None
+                self.election_data['grace_period_hours'] = 0
+                break
+            try:
+                # Tarkista muoto
+                deadline_dt = datetime.strptime(edit_deadline_str, '%Y-%m-%d %H:%M')
+                self.election_data['content_edit_deadline'] = deadline_dt.isoformat()
+                # Kysy armonaika
+                grace_input = input("Armonaika virheenkorjauksille (tuntia, oletus 24): ").strip()
+                grace_hours = int(grace_input) if grace_input.isdigit() else 24
+                if grace_hours < 0:
+                    grace_hours = 24
+                self.election_data['grace_period_hours'] = grace_hours
+                print(f"✅ Muokkaus sulkeutuu: {deadline_dt.strftime('%Y-%m-%d %H:%M')}")
+                print(f"✅ Armonaika: {grace_hours} tuntia")
+                break
+            except ValueError:
+                print("❌ Virheellinen muoto. Käytä: YYYY-MM-DD HH:MM")
+
         return True
 
     def get_admin_info(self):
@@ -469,12 +539,82 @@ class InstallationManager:
         print("✅ system_chain.json luotu")
         return True
 
+    def create_data_meta_json(self):
+        """Luo data/meta.json suoraan oikeilla aikalukitustiedoilla"""
+        current_time = datetime.now().isoformat()
+        public_pem = self.public_key.public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo
+        ).decode('utf-8')
+        
+        data_meta = {
+            "system": "Decentralized Candidate Matcher",
+            "version": VERSION,
+            "election": self.election_data,  # SISÄLTÄÄ content_edit_deadline
+            "community_moderation": {
+                "enabled": True,
+                "thresholds": {
+                    "auto_block_inappropriate": 0.7,
+                    "auto_block_min_votes": 10,
+                    "community_approval": 0.8
+                },
+                "ipfs_sync_mode": "elo_priority"
+            },
+            "admins": [{
+                "admin_id": self.admin_data["admin_id"],
+                "public_key": public_pem,
+                "name": self.admin_data["name"],
+                "username": self.admin_data["username"],
+                "email": self.admin_data.get("email"),
+                "role": self.admin_data["role"]
+            }],
+            "key_management": {
+                "system_public_key": public_pem,
+                "key_algorithm": "RSA-2048",
+                "parties_require_keys": True,
+                "candidates_require_keys": False
+            },
+            "content": {
+                "last_updated": current_time,
+                "questions_count": len(self.install_data['default_questions']),
+                "candidates_count": len(self.install_data['default_candidates']),
+                "parties_count": len(list({c["party"] for c in self.install_data['default_candidates']}))
+            },
+            "system_info": {
+                "system_id": self.system_id,
+                "installation_time": current_time,
+                "key_fingerprint": hashlib.sha256(public_pem.encode()).hexdigest()
+            },
+            "integrity": {
+                "algorithm": "sha256",
+                "hash": "",  # Lasketaan myöhemmin
+                "computed": current_time
+            }
+        }
+        
+        # Laske integrity-hash
+        integrity_data = data_meta.copy()
+        integrity_data['integrity'] = {"algorithm": "sha256", "hash": "", "computed": current_time}
+        data_meta['integrity']['hash'] = f"sha256:{hashlib.sha256(json.dumps(integrity_data, sort_keys=True, separators=(',', ':')).encode()).hexdigest()}"
+        
+        # Tallenna data/meta.json
+        os.makedirs('data', exist_ok=True)
+        with open('data/meta.json', 'w', encoding='utf-8') as f:
+            json.dump(data_meta, f, indent=2, ensure_ascii=False)
+        print("✅ Tiedosto luotu: data/meta.json")
+        return True
+
     def create_config_files(self):
         current_time = datetime.now().isoformat()
         public_pem = self.public_key.public_bytes(
             encoding=serialization.Encoding.PEM,
             format=serialization.PublicFormat.SubjectPublicKeyInfo
         ).decode('utf-8')
+        
+        # LISÄTTY: Luo data/meta.json ENSIN
+        self.create_data_meta_json()
+        
+        # Loput vanha koodi config-tiedostoille...
         questions = []
         just = self.install_data.get('justifications', {})
         for i, q in enumerate(self.install_data['default_questions'], 1):
@@ -598,14 +738,15 @@ class InstallationManager:
         meta_clean = {
             "system": "Decentralized Candidate Matcher",
             "version": VERSION,
-            "election": self.election_data,
+            "election": self.election_data,  # SAMA content_edit_deadline TÄÄLLÄ
             "community_moderation": {
                 "enabled": True,
                 "thresholds": {
                     "auto_block_inappropriate": 0.7,
                     "auto_block_min_votes": 10,
                     "community_approval": 0.8
-                }
+                },
+                "ipfs_sync_mode": "elo_priority"
             },
             "admins": [{
                 "admin_id": self.admin_data["admin_id"],
@@ -649,6 +790,9 @@ class InstallationManager:
         return True
 
     def create_config_files_with_extra(self):
+        # LISÄTTY: Luo data/meta.json ENSIN
+        self.create_data_meta_json()
+        
         success = self.create_config_files()
         if not success:
             return False
@@ -703,7 +847,7 @@ class InstallationManager:
         return all(os.path.exists(f'keys/{f}') for f in ['private_key.pem', 'public_key.pem', 'system_info.json'])
 
     def check_config_files(self):
-        return all(os.path.exists(f) for f in ['config/questions.json', 'config/candidates.json', 'config/meta.json', 'config/admins.json'])
+        return all(os.path.exists(f) for f in ['config/questions.json', 'config/candidates.json', 'config/meta.json', 'config/admins.json', 'data/meta.json'])  # LISÄTTY: data/meta.json
 
     def verify_signatures(self):
         return True  # Yksinkertaistettu tässä versiossa
@@ -715,6 +859,12 @@ class InstallationManager:
         print(f"\n📋 JÄRJESTELMÄN TIEDOT:")
         print(f"   • Vaalit: {self.election_data['name']['fi']}")
         print(f"   • Päivämäärä: {self.election_data['date']}")
+        if self.election_data.get('content_edit_deadline'):
+            deadline = datetime.fromisoformat(self.election_data['content_edit_deadline'])
+            print(f"   • Muokkaus sulkeutuu: {deadline.strftime('%Y-%m-%d %H:%M')}")
+            print(f"   • Armonaika: {self.election_data.get('grace_period_hours', 0)} tuntia")
+        else:
+            print(f"   • Muokkausikkuna: Avoin")
         print(f"   • System ID: {self.system_id}")
         print(f"   • Admin: {self.admin_data['name']} ({self.admin_data['username']})")
         print(f"   • Asennettu: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -732,48 +882,3 @@ def main():
 
 if __name__ == '__main__':
     main()
---- a/install.py
-+++ b/install.py
-@@ -228,6 +228,42 @@ class InstallationManager:
-         print(f"✅ Vaalitiedot tallennettu (ID: {election_id})")
-         return True
- 
-+    def get_time_lock_info(self):
-+        """Kysy aikalukitusasetukset käyttäjältä"""
-+        print("\n🕒 KYSYMYSTEN MUOKKAUSIKKUNA")
-+        print("-" * 30)
-+        print("Milloin kysymysten, ehdokkaiden ja puolueiden muokkaus suljetaan?")
-+        print("Anna päivämäärä ja kellonaika muodossa YYYY-MM-DD HH:MM (esim. 2028-09-10 23:59)")
-+
-+        while True:
-+            edit_deadline_str = input("Muokkausikkunan päättymisaika: ").strip()
-+            if not edit_deadline_str:
-+                print("ℹ️  Ei muokkausrajaa asetettu – muokkaus pysyy auki.")
-+                self.election_data['content_edit_deadline'] = None
-+                self.election_data['grace_period_hours'] = 0
-+                break
-+            try:
-+                # Tarkista muoto
-+                deadline_dt = datetime.strptime(edit_deadline_str, '%Y-%m-%d %H:%M')
-+                self.election_data['content_edit_deadline'] = deadline_dt.isoformat()
-+                # Kysy armonaika
-+                grace_input = input("Armonaika virheenkorjauksille (tuntia, oletus 24): ").strip()
-+                grace_hours = int(grace_input) if grace_input.isdigit() else 24
-+                if grace_hours < 0:
-+                    grace_hours = 24
-+                self.election_data['grace_period_hours'] = grace_hours
-+                break
-+            except ValueError:
-+                print("❌ Virheellinen muoto. Käytä: YYYY-MM-DD HH:MM")
-+
-     def get_admin_info(self):
-         print("\n👤 JÄRJESTELMÄN ADMIN-TIEDOT")
-         print("-" * 30)
-@@ -301,6 +337,7 @@ class InstallationManager:
-         steps = [
-             self.validate_environment,
-             self.get_election_info,
-+            self.get_time_lock_info,
-             self.get_admin_info,
-             self.get_installation_password,
-             self.create_directories,
