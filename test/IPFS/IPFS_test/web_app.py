@@ -1,18 +1,28 @@
-#!/usr/bin/env python3
-from flask import Flask, render_template, request, jsonify, session
+# web_app.py - KORVAA KOKO TIEDOSTO TÄLLÄ:
+
+import signal
 import sys
 import os
+from flask import Flask, render_template, request, jsonify, session
 import json
 import hashlib
 from datetime import datetime
 
-# === UUSI: DATA SCHEMAS TUKEA VARTEN ===
-from data_schemas import ensure_data_file as _ensure_data_file
+# Graceful shutdown handler
+def signal_handler(sig, frame):
+    print('\n\n🔴 Säästävästi sammutetaan Vaalikone...')
+    if hasattr(app, 'ipfs_client'):
+        print('🔌 Suljetaan IPFS-yhteys...')
+    print('💾 Tallennetaan tila...')
+    print('👋 Näkemiin!')
+    sys.exit(0)
+
+# Rekisteröi signal handlerit
+signal.signal(signal.SIGINT, signal_handler)  # Ctrl-C
+signal.signal(signal.SIGTERM, signal_handler) # Kubernetes/container shutdown
 
 # DEBUG-tila
 DEBUG = True
-
-# Tarkista --real-ipfs -lippu
 USE_REAL_IPFS = '--real-ipfs' in sys.argv
 
 # Valitse IPFS-asiakas
@@ -275,8 +285,11 @@ def not_found(error):
 def internal_error(error):
     return jsonify({'error': 'Sisäinen palvelinvirhe'}), 500
 
-# === JOUKKOTUONTI CLI:LLÄ ===
-def bulk_import_from_cli():
+# === KÄYNNISTYS ===
+if __name__ == '__main__':
+    print("💡 Vinkki: Käytä Ctrl-C sulkeaksesi sovelluksen säästävästi")
+    
+    # Joukkotuonti ennen käynnistystä
     if '--bulk-import-candidates' in sys.argv:
         idx = sys.argv.index('--bulk-import-candidates')
         if idx + 1 < len(sys.argv):
@@ -291,36 +304,5 @@ def bulk_import_from_cli():
                         print(f"✅ Lisätty ehdokas: {candidate['name']} (ID: {candidate_id})")
                     else:
                         print(f"❌ Ehdokkaan lisäys epäonnistui: {candidate.get('name', 'Nimetön')}")
-
-# === KÄYNNISTYS ===
-if __name__ == '__main__':
-    # Joukkotuonti ennen käynnistystä
-    bulk_import_from_cli()
-
-    if DEBUG:
-        meta = data_manager.get_meta()
-        election_name = meta.get('election', {}).get('name', {}).get('fi', 'Nimetön vaalit')
-        print("🚀 Hajautettu Vaalikone käynnistyy...")
-        print("📊 Sovellus saatavilla: http://localhost:5000")
-        print("🔧 DEBUG-tila: PÄÄLLÄ")
-        if USE_REAL_IPFS:
-            print("🌍 IPFS-TILA: OIKEA IPFS")
-        else:
-            print("🧪 IPFS-TILA: MOCK-IPFS")
-        print(f"🗳️  Vaalit: {election_name}")
-        print("🔐 Admin-suojaus: PÄÄLLÄ")
-        print("📝 Sivut:")
-        print("   - http://localhost:5000 (Etusivu)")
-        print("   - http://localhost:5000/vaalikone (Vaalikone)")
-        print("   - http://localhost:5000/kysymysten-hallinta (Kysymysten hallinta)")
-        print("   - http://localhost:5000/puolueet (Puoluevertailu)")
-        print("   - http://localhost:5000/admin (Ylläpito)")
-        print("🔧 API-reitit:")
-        print("   - /api/meta - Järjestelmän meta-tiedot")
-        print("   - /api/questions - Kaikki kysymykset")
-        print("   - /api/active_questions - Korkeimman Elo-arvon kysymykset")
-        print("   - /api/candidates - Kaikki ehdokkaat")
-        print("   - /api/admin/* - Admin-toiminnot (suojatut)")
-        print("   - /api/admin/login - Admin-kirjautuminen")
 
     app.run(debug=DEBUG, host='0.0.0.0', port=5000)
