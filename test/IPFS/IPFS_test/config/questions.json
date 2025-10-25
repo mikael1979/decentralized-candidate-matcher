@@ -29,8 +29,8 @@
       "justification_metadata": {
         "author_id": "admin_admin",
         "author_type": "super_admin",
-        "created_at": "2025-10-24T07:52:42.423205",
-        "updated_at": "2025-10-24T07:52:42.423205",
+        "created_at": "2025-10-25T14:50:03.694795",
+        "updated_at": "2025-10-25T14:50:03.694795",
         "version": 1,
         "blocked": false,
         "signature": null
@@ -38,7 +38,7 @@
       "metadata": {
         "elo_rating": 1500,
         "blocked": false,
-        "created_at": "2025-10-24T07:52:42.423205",
+        "created_at": "2025-10-25T14:50:03.694795",
         "created_by": "admin_admin",
         "votes_for": 0,
         "votes_against": 0,
@@ -79,8 +79,8 @@
       "justification_metadata": {
         "author_id": "admin_admin",
         "author_type": "super_admin",
-        "created_at": "2025-10-24T07:52:42.423205",
-        "updated_at": "2025-10-24T07:52:42.423205",
+        "created_at": "2025-10-25T14:50:03.694795",
+        "updated_at": "2025-10-25T14:50:03.694795",
         "version": 1,
         "blocked": false,
         "signature": null
@@ -88,7 +88,7 @@
       "metadata": {
         "elo_rating": 1500,
         "blocked": false,
-        "created_at": "2025-10-24T07:52:42.423205",
+        "created_at": "2025-10-25T14:50:03.694795",
         "created_by": "admin_admin",
         "votes_for": 0,
         "votes_against": 0,
@@ -103,11 +103,11 @@
   ],
   "metadata": {
     "version": "1.0",
-    "created": "2025-10-24T07:52:42.423205",
-    "fingerprint": "3b2d6d5decaf52fa181b62a82db8a0509f8658f9f72e5828664cf47bc25bd8ab",
+    "created": "2025-10-25T14:50:03.694795",
+    "fingerprint": "4ab1d59226bc15caa69f640951c28515f9ef132d2eb0d0b9deac6201639a3cbb",
     "question_count": 2,
-    "system_id": "eea875f60ef95d47",
-    "election_id": "election_2028-10-10_fi",
-    "signature": "XB1HPjQpapcFo0bRUctTren/G7/CWHQoAuANGYFVgkRZ++fmjZQUPqsj9dVeDKLoq3OJZFegplH5onjrzkCFd9LGFgC5Y1Fl+xGRPSU5sHW0RMgn/HSiNPwONVqvouzLH21A0Xc4sAuEzuIwal6FGJnJWB5Z2GZaZy47uZuxveHVF4RtI0yJdRMlUHWEJsAL+5rgc0kgD2IfcBxYQdQTlWjYmhydB7nV0/uymk1LnvMhK+9smT7T0wejJM4AMgysSIlhmzU+1J8WCoyyB21V0feleVmqzNx01yLogfAhE/lJKSPJGW+xdeLK85xQBux5DEvjHove1jSZa+D4zIB0vA=="
+    "system_id": "8bea9437defb9087",
+    "election_id": "election_2026-10-10_fi_satakunta",
+    "signature": "AOb+G7Dj886c8zBQYsOX64gKVZxcqILqlJmUu9SaaC6c0AQbwS0SbOK7B+zI33BOVUH2ZVtUN9Hp0AwJ/rkz1wnDAOlIEjHxj3tJA97TYjGxcx3GGG2OR+IpfvmlKlSZfX+gIWxqQDEADThELSsUg/WxqIxRZ7RG7vVW9kd79v3tfaZABbn52VSIvf1enToFM5IkeHa+wY5xObilIbRxU1lXAM9Bk17hftgeOEiMZET+EFnGdOCHHXdF6Pi9zqrkTjve2e5A+McdBb0M+A/Ov+loZamR9b/sWMd60uDj5RKpRASXXyMsPSIMZaXqMUB8yCr2k3EBzdWRnj79D48JRA=="
   }
 }

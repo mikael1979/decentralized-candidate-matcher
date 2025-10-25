@@ -1,0 +1,12 @@
+# Tarkista, onko virtuaaliympäristö aktiivinen
+which python  # Pitäisi näyttää .../venv/bin/python
+pip --version # Pitäisi näyttää .../venv/bin/pip
+
+# Poistu virtuaaliympäristöstä
+deactivate
+
+# Poista virtuaaliympäristö kokonaan
+rm -rf venv
+
+# Aktivoi uudelleen (kun palaat projektiin)
+source venv/bin/activate

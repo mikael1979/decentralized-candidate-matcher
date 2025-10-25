@@ -5,18 +5,18 @@
       "username": "admin",
       "name": "admin",
       "email": "",
-      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlxsz0Itj1Tv2nrvdm+Cx\ne+M0bM06Ya4HWsV5okhbzLm0MhVAa6o2Auha4DwPAmi6MzX5UAoyr2SehS1aRRO4\nmoQs5SMzCo7J1c5+g9xQYO6ycPAW8Oe2nXLrUdLG4pcPhBQoAgD6fD2qzo5gDIgR\nyy23XSaxClJXEZA47VeKcNgxCPT7IlLT1cFHb0V2O0sC7cmtWZsnMlcZi8aYdRAX\nyWRkbPZp/pz93FpfpOxm7p9qNxcSU0bwUz9Aco//yfKY008HL+Ruo+cclbALjzNl\njreaC4dRAtHjYq/4xKgUTjd9Nq6EofBV0oN4eBOOFAhkrtqUwYPsNyAOsnkpJ0lv\nHwIDAQAB\n-----END PUBLIC KEY-----\n",
-      "created_at": "2025-10-24T07:52:42.423205",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq3V0kse3Q2BIeSAsVBR0\nlrP/72IeWi9HV+IV9cR/a5xbpoLZk/p3vx+Bt+0x+ypsqfOMqc4BxhvkCX1KMftU\nqp2lMo01ZduxOli1JUKWqJotj6D7QIGviPoonsdRaDPH6EZfABP8uRxUSx6QzyRK\nNhcPq9xF5KijbceDvACtUwpDM14vsYUUCZVEoxTuQtDkKVOQB19JCF4dYeAMM+Ka\nkTtv4RASNkx79FMSI2efNYLpqKcGZDdirhGhcoytN1o+n5Ph//2nSp8BkOif3+g1\nTpII4y9eAkABakdGSvLSDIq2K0sjzS3/HTMDiRELmiYFxBoESrZgjVCNd0TjJU+m\nGwIDAQAB\n-----END PUBLIC KEY-----\n",
+      "created_at": "2025-10-25T14:50:03.694795",
       "role": "super_admin"
     }
   ],
   "party_admins": {},
   "metadata": {
     "version": "1.0",
-    "created": "2025-10-24T07:52:42.423205",
-    "fingerprint": "245c3311e2f6dbff763e10c04185523820204ccd8d664bf9458d9ddcfaf716c5",
-    "system_id": "eea875f60ef95d47",
-    "election_id": "election_2028-10-10_fi",
-    "signature": "FA2bmRhUKuU+sxALBvp4gOPSGbGHODPIijwkMGWQMJ3Fn9tL3yPjlszGPskCyVcvFkaxNxVPOUNqfgMbvHVZhkL0Wq5AwW2JKl4497xUSA0AXw4gxsYhqY/jAkN9IVfu/C45ooPPkbiJAgHVwGb/bUN9O+YZfyRbgKzUKJU6MaIDVFIFDwi3u7TSCF+sbAifVcC9r4taD0/VYM4bSsOUHnhxfXSsa6rqYuJ/lUObzgVL8DmTrK+L06XWQ7t8MJBf9kC0zoezwC8ZZXW03HyCw72rpklCTLSjUSrA4vxJ461mElBFGVO1LAssQdtQd/uGkw7I/1h/WqO1wwNvqNjNwg=="
+    "created": "2025-10-25T14:50:03.694795",
+    "fingerprint": "9cd5004a2b2673b09e0a157590590d712c7eea4eb0ce50ed8cce30a35b08aee9",
+    "system_id": "8bea9437defb9087",
+    "election_id": "election_2026-10-10_fi_satakunta",
+    "signature": "PybS7ByWhgxh0NuhrGur0Bm2ojEaXS9i4FYARuES1QNpRPVIE05l6zsRljJINcIPZF7hzHQcmSltYeI89e6gsSLTijprTQcVMJ5ON7DnWFPzw8atUdyiE2/mzFKvbI+9CG2rlq9gc+YsaLLssBWu4ZMYKVfxvesPUAEzXu9oG0/G3+Zfmnq5QbwZki+PG3iJX0LlqWuaa0ojQoCGNMppm1Tg2Ul70q6mqwjEDSQTsl61D2TLTLm6eyiLLkwXOzywRyBDvmYseiIcVlUzuMvEeV6Mk5qL9jH5hAWAzLD1qqdGzUn2gaMsROT4XURREzsvXck1geP6xqyZCtvroUsFig=="
   }
 }

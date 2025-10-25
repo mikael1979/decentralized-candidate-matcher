@@ -2,15 +2,23 @@
   "system": "Decentralized Candidate Matcher",
   "version": "0.0.6-alpha",
   "election": {
-    "id": "default_election",
+    "id": "election_2026-10-10_fi_satakunta",
     "country": "FI",
-    "name": {
-      "fi": "Nimetön vaalit",
-      "en": "Unnamed Election",
-      "sv": "Namnlös val"
+    "type": {
+      "fi": "Muu",
+      "en": "Other",
+      "sv": "Annat"
     },
-    "date": "2025-01-01",
-    "language": "fi"
+    "name": {
+      "fi": "testivaalit2026",
+      "en": "sdjk",
+      "sv": "sdjk"
+    },
+    "date": "2026-10-10",
+    "language": "fi",
+    "district": "satakunta",
+    "content_edit_deadline": "2026-07-01T00:00:00",
+    "grace_period_hours": 24
   },
   "community_moderation": {
     "enabled": true,
@@ -21,27 +29,36 @@
     },
     "ipfs_sync_mode": "elo_priority"
   },
-  "admins": [],
+  "admins": [
+    {
+      "admin_id": "admin_admin",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq3V0kse3Q2BIeSAsVBR0\nlrP/72IeWi9HV+IV9cR/a5xbpoLZk/p3vx+Bt+0x+ypsqfOMqc4BxhvkCX1KMftU\nqp2lMo01ZduxOli1JUKWqJotj6D7QIGviPoonsdRaDPH6EZfABP8uRxUSx6QzyRK\nNhcPq9xF5KijbceDvACtUwpDM14vsYUUCZVEoxTuQtDkKVOQB19JCF4dYeAMM+Ka\nkTtv4RASNkx79FMSI2efNYLpqKcGZDdirhGhcoytN1o+n5Ph//2nSp8BkOif3+g1\nTpII4y9eAkABakdGSvLSDIq2K0sjzS3/HTMDiRELmiYFxBoESrZgjVCNd0TjJU+m\nGwIDAQAB\n-----END PUBLIC KEY-----\n",
+      "name": "admin",
+      "username": "admin",
+      "email": "",
+      "role": "super_admin"
+    }
+  ],
   "key_management": {
-    "system_public_key": "",
+    "system_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq3V0kse3Q2BIeSAsVBR0\nlrP/72IeWi9HV+IV9cR/a5xbpoLZk/p3vx+Bt+0x+ypsqfOMqc4BxhvkCX1KMftU\nqp2lMo01ZduxOli1JUKWqJotj6D7QIGviPoonsdRaDPH6EZfABP8uRxUSx6QzyRK\nNhcPq9xF5KijbceDvACtUwpDM14vsYUUCZVEoxTuQtDkKVOQB19JCF4dYeAMM+Ka\nkTtv4RASNkx79FMSI2efNYLpqKcGZDdirhGhcoytN1o+n5Ph//2nSp8BkOif3+g1\nTpII4y9eAkABakdGSvLSDIq2K0sjzS3/HTMDiRELmiYFxBoESrZgjVCNd0TjJU+m\nGwIDAQAB\n-----END PUBLIC KEY-----\n",
     "key_algorithm": "RSA-2048",
     "parties_require_keys": true,
     "candidates_require_keys": false
   },
   "content": {
-    "last_updated": "2025-10-24T10:14:16.102653",
-    "questions_count": 44,
-    "candidates_count": 2,
-    "parties_count": 2
+    "last_updated": "2025-10-25T14:51:50.454255",
+    "questions_count": 0,
+    "candidates_count": 0,
+    "parties_count": 0
   },
   "system_info": {
-    "system_id": "",
-    "installation_time": "2025-10-24T08:33:04.102811",
-    "key_fingerprint": ""
+    "system_id": "8bea9437defb9087",
+    "installation_time": "2025-10-25T14:50:03.695003",
+    "key_fingerprint": "8bea9437defb90874413d744eec244740683048377eaf69b6fa4110fc3d98476"
   },
   "integrity": {
     "algorithm": "sha256",
-    "hash": "sha256:f2186c679b341892eb1ef1b1fd68f571cf657897e06a59873dc60acb19ace288",
-    "computed": "2025-10-24T10:14:16.102727"
+    "hash": "sha256:93e67d264014975f80ab988378885da39dfea1d785c0682ecb1627e3999caf28",
+    "computed": "2025-10-25T14:51:50.454378"
   }
 }

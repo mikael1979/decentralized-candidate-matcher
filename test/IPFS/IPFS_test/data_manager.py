@@ -1,26 +1,26 @@
 import json
 import os
-from datetime import datetime
+import hashlib
+import base64
+from datetime import datetime, timedelta
 from utils import ConfigLoader, calculate_hash, generate_next_id
-
-# === SCHEMA-TUKI ===
 from data_schemas import SCHEMA_MAP
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import padding
 
 class DataManager:
     def __init__(self, debug=False):
         self.debug = debug
         self.data_dir = 'data'
         self.config_loader = ConfigLoader()
-        self.ipfs_client = None  # Uusi attribuutti
+        self.ipfs_client = None
 
     def set_ipfs_client(self, ipfs_client):
-        """Aseta IPFS-asiakas (kutsutaan web_app.py:stä)"""
         self.ipfs_client = ipfs_client
         if self.debug:
             print("✅ IPFS-asiakas asetettu DataManagerille")
 
     def ensure_directories(self):
-        """Varmistaa että tarvittavat kansiot ovat olemassa"""
         directories = ['data', 'templates', 'static', 'config']
         for directory in directories:
             os.makedirs(directory, exist_ok=True)
@@ -28,7 +28,6 @@ class DataManager:
                 print(f"📁 Kansio varmistettu: {directory}")
 
     def _read_json_safe(self, filepath):
-        """Lue JSON-tiedosto turvallisesti ilman rekursiota"""
         try:
             with open(filepath, 'r', encoding='utf-8') as f:
                 return json.load(f)
@@ -37,20 +36,48 @@ class DataManager:
                 print(f"❌ Virhe lukemisessa {filepath}: {e}")
             return None
 
+    def _get_installation_password(self):
+        """Hakee asennussalasanan system_info.json:sta"""
+        with open('keys/system_info.json', 'r') as f:
+            info = json.load(f)
+        return info['password_hash']  # Huom: tämä ei ole salasana, vaan sen hash
+
+    def _load_private_key(self):
+        """Lataa salausavaimen (ei salasanasuojattu tässä versiossa)"""
+        with open('keys/private_key.pem', 'rb') as f:
+            return serialization.load_pem_private_key(
+                f.read(),
+                password=None
+            )
+
+    def is_content_editing_allowed(self, content_type: str = "all") -> bool:
+        """Tarkistaa, onko sisällön muokkaus sallittu vaalilukituksen perusteella"""
+        meta = self.get_meta()
+        deadline_str = meta.get("election", {}).get("content_edit_deadline")
+        if not deadline_str:
+            return True
+        try:
+            if deadline_str.endswith('Z'):
+                deadline = datetime.fromisoformat(deadline_str.replace('Z', '+00:00'))
+            else:
+                deadline = datetime.fromisoformat(deadline_str)
+            grace_hours = meta.get("election", {}).get("grace_period_hours", 24)
+            grace_end = deadline + timedelta(hours=grace_hours)
+            now = datetime.now(deadline.tzinfo if deadline.tzinfo else None)
+            return now < grace_end
+        except Exception as e:
+            if self.debug:
+                print(f"⚠️  Deadline-tarkistusvirhe: {e}")
+            return True
+
     def ensure_data_file(self, filename):
-        """
-        Lataa tiedosto, tai luo se skeeman perusteella, jos sitä ei ole.
-        Palauttaa tiedoston sisällön (dict).
-        """
         filepath = os.path.join(self.data_dir, filename)
         if os.path.exists(filepath):
             return self._read_json_safe(filepath)
 
-        # Tiedostoa ei ole → luo oletusrakenne
         if filename not in SCHEMA_MAP:
             raise ValueError(f"Tuntematon tiedosto ilman skeemaa: {filename}")
 
-        # Hae election_id ja system_id ilman rekursiota
         election_id = "default_election"
         system_id = ""
         meta_path = os.path.join(self.data_dir, 'meta.json')
@@ -61,9 +88,8 @@ class DataManager:
                     election_id = existing_meta.get("election", {}).get("id", election_id)
                     system_id = existing_meta.get("system_info", {}).get("system_id", system_id)
             except Exception:
-                pass  # Käytä oletusarvoja
+                pass
 
-        # Kutsu skeemafunktiota
         schema_func = SCHEMA_MAP[filename]
         kwargs = {}
         if 'election_id' in schema_func.__code__.co_varnames:
@@ -72,7 +98,6 @@ class DataManager:
             kwargs['system_id'] = system_id
 
         if filename == 'meta.json':
-            # Luo minimi-meta-rakenne ilman rekursiota
             default_meta = {
                 "system": "Decentralized Candidate Matcher",
                 "version": "0.0.6-alpha",
@@ -119,7 +144,6 @@ class DataManager:
         return data
 
     def _initialize_meta_data(self, default_meta):
-        """Alustaa meta-tiedot (käytetään vain ensimmäisellä kerralla)"""
         meta_data = default_meta.copy()
         meta_data.update({
             "integrity": {
@@ -128,32 +152,26 @@ class DataManager:
                 "computed": datetime.now().isoformat()
             }
         })
-        # Laske hash
         meta_data['integrity']['hash'] = calculate_hash(meta_data)
         return meta_data
 
     def read_json(self, filename):
-        """Lukee JSON-tiedoston (alias vanhaa koodia varten)"""
         return self.ensure_data_file(filename)
 
     def write_json(self, filename, data, operation=""):
-        """Kirjoittaa JSON-tiedoston turvallisesti väliaikaistiedoston kautta"""
         try:
             filepath = os.path.join(self.data_dir, filename)
             tmp_filepath = filepath + '.tmp'
-            # 1. Kirjoita ensin väliaikaistiedostoon
             with open(tmp_filepath, 'w', encoding='utf-8') as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
-                f.flush()  # Flush ennen fsync
-                os.fsync(f.fileno())  # Varmista, että tiedot menevät levylle
-            # 2. Atomisen vaihdon tekeminen
+                f.flush()
+                os.fsync(f.fileno())
             os.replace(tmp_filepath, filepath)
             if self.debug:
                 desc = f" - {operation}" if operation else ""
                 print(f"💾 Kirjoitettu turvallisesti: {filename}{desc}")
             return True
         except Exception as e:
-            # 3. Siivoa mahdollinen jäännös
             tmp_path = os.path.join(self.data_dir, filename + '.tmp')
             if os.path.exists(tmp_path):
                 try:
@@ -165,9 +183,7 @@ class DataManager:
             return False
 
     def get_meta(self):
-        """Hakee meta-tiedot ja päivittää tilastot"""
-        meta = self.ensure_data_file('meta.json')  # Ei enää rekursiota
-        # Päivitä dynaamiset tilastot
+        meta = self.ensure_data_file('meta.json')
         questions = self.get_questions(include_ipfs=False)
         candidates = self.get_candidates()
         parties = list(set(c.get('party', '') for c in candidates if c.get('party')))
@@ -186,7 +202,6 @@ class DataManager:
         return meta
 
     def update_meta(self, new_meta):
-        """Päivittää meta-tiedot"""
         try:
             current_meta = self.get_meta()
             if current_meta:
@@ -204,18 +219,14 @@ class DataManager:
             return False
 
     def calculate_current_elo(self, base_rating, deltas):
-        """Laskee nykyisen Elo-arvon deltojen perusteella"""
         return base_rating + sum(d.get('delta', 0) for d in deltas)
 
     def get_questions(self, include_blocked=False, include_ipfs=True):
-        """Hakee kaikki kysymykset"""
         all_questions = []
-        # Paikalliset kysymykset
         official = self.ensure_data_file('questions.json')
         user = self.ensure_data_file('newquestions.json')
         all_questions.extend(official.get('questions', []))
         all_questions.extend(user.get('questions', []))
-        # IPFS-kysymykset
         if include_ipfs:
             ipfs_cache = self.ensure_data_file('ipfs_questions_cache.json')
             ipfs_questions = ipfs_cache.get('questions', [])
@@ -231,21 +242,21 @@ class DataManager:
         return [q for q in all_questions if not q.get('metadata', {}).get('blocked', False)]
 
     def get_candidates(self):
-        """Hakee kaikki ehdokkaat"""
         data = self.ensure_data_file('candidates.json')
         return data.get('candidates', [])
 
     def get_admins(self):
-        """Hakee admin-tiedot"""
         return self.config_loader.load_config('admins.json') or {}
 
     def get_comments(self):
-        """Hakee kommentit"""
         data = self.ensure_data_file('comments.json')
         return data.get('comments', [])
 
     def add_question(self, question_data):
-        """Lisää uuden kysymyksen"""
+        if not self.is_content_editing_allowed():
+            if self.debug:
+                print("🔒 Kysymysten lisäys estetty – aikalukitus aktiivinen")
+            return None
         try:
             question_data.setdefault('metadata', {
                 'elo_rating': 1200,
@@ -278,7 +289,10 @@ class DataManager:
             return None
 
     def add_candidate(self, candidate_data):
-        """Lisää uuden ehdokkaan"""
+        if not self.is_content_editing_allowed():
+            if self.debug:
+                print("🔒 Ehdokkaiden lisäys estetty – aikalukitus aktiivinen")
+            return None
         try:
             for ans in candidate_data.get('answers', []):
                 ans.setdefault('justification', {'fi': '', 'en': '', 'sv': ''})
@@ -303,7 +317,10 @@ class DataManager:
             return None
 
     def block_question(self, question_id, reason=None):
-        """Merkitsee kysymyksen blokatuksi"""
+        if not self.is_content_editing_allowed():
+            if self.debug:
+                print("🔒 Kysymysten muokkaus estetty – aikalukitus aktiivinen")
+            return False
         official = self.ensure_data_file('questions.json')
         user = self.ensure_data_file('newquestions.json')
         found = False
@@ -327,7 +344,6 @@ class DataManager:
         return found
 
     def queue_for_ipfs_sync(self, question_id):
-        """Lisää kysymys IPFS-synkronointijonoon"""
         queue = self.ensure_data_file('ipfs_sync_queue.json')
         all_questions = self.get_questions(include_blocked=True, include_ipfs=False)
         question = next((q for q in all_questions if q.get('id') == question_id), None)
@@ -342,7 +358,6 @@ class DataManager:
         return self.write_json('ipfs_sync_queue.json', queue, "Kysymys lisätty synkronointijonoon")
 
     def process_ipfs_sync(self):
-        """Käsittelee IPFS-synkronoinnin jonosta"""
         queue = self.ensure_data_file('ipfs_sync_queue.json')
         if not queue.get('pending_questions'):
             return False
@@ -386,7 +401,6 @@ class DataManager:
         return False
 
     def fetch_questions_from_ipfs(self):
-        """Lataa kysymykset IPFS:stä ja tallentaa välimuistiin"""
         if not self.ipfs_client:
             return False
         try:
@@ -406,7 +420,10 @@ class DataManager:
             return False
 
     def apply_elo_delta(self, question_id, delta, user_id):
-        """Lisää Elo-muutos"""
+        if not self.is_content_editing_allowed():
+            if self.debug:
+                print("🔒 Elo-päivitys estetty – aikalukitus aktiivinen")
+            return False
         all_questions = self.get_questions(include_blocked=True, include_ipfs=True)
         question = next((q for q in all_questions if q.get('id') == question_id), None)
         if not question:
@@ -421,7 +438,6 @@ class DataManager:
             question['elo']['base_rating'],
             question['elo']['deltas']
         )
-        # Päivitä oikea tiedosto
         official = self.ensure_data_file('questions.json')
         user = self.ensure_data_file('newquestions.json')
         updated = False
@@ -441,3 +457,116 @@ class DataManager:
         if updated:
             self.queue_for_ipfs_sync(question_id)
         return updated
+
+    def update_system_chain_ipfs(self, modified_files: list, ipfs_cids: dict = None):
+        if ipfs_cids is None:
+            ipfs_cids = {}
+
+        chain_path = os.path.join(self.data_dir, 'system_chain.json')
+        if os.path.exists(chain_path):
+            with open(chain_path, 'r', encoding='utf-8') as f:
+                chain = json.load(f)
+        else:
+            chain = {
+                "chain_id": "default_election",
+                "created_at": datetime.now().isoformat(),
+                "description": "Fingerprint-ketju kaikille järjestelmän tiedostoille",
+                "version": "0.0.6-alpha",
+                "blocks": [],
+                "current_state": {},
+                "ipfs_cids": {},
+                "metadata": {
+                    "algorithm": "sha256",
+                    "system_id": "",
+                    "election_id": "default_election"
+                }
+            }
+
+        for filepath in modified_files:
+            filename = os.path.basename(filepath)
+            full_path = os.path.join(self.data_dir, filename)
+            if os.path.exists(full_path):
+                with open(full_path, 'rb') as f:
+                    chain['current_state'][filename] = hashlib.sha256(f.read()).hexdigest()
+
+        current_cids = chain.get('ipfs_cids', {})
+        current_cids.update(ipfs_cids)
+        chain['ipfs_cids'] = current_cids
+
+        last_block = chain['blocks'][-1] if chain['blocks'] else None
+        new_block = {
+            "block_id": len(chain['blocks']),
+            "timestamp": datetime.now().isoformat(),
+            "description": f"IPFS-päivitys: {', '.join(modified_files)}",
+            "files": chain['current_state'].copy(),
+            "ipfs_cids": current_cids.copy(),
+            "previous_hash": last_block['block_hash'] if last_block else None
+        }
+
+        block_data = {k: v for k, v in new_block.items() if k != 'block_hash'}
+        block_hash = hashlib.sha256(json.dumps(block_data, sort_keys=True).encode()).hexdigest()
+        new_block['block_hash'] = f"sha256:{block_hash}"
+
+        try:
+            private_key = self._load_private_key()
+            signature = private_key.sign(
+                json.dumps(block_data, sort_keys=True).encode(),
+                padding.PSS(mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH),
+                hashes.SHA256()
+            )
+            new_block['signature'] = base64.b64encode(signature).decode()
+        except Exception as e:
+            if self.debug:
+                print(f"⚠️  Allekirjoitus epäonnistui: {e}")
+            new_block['signature'] = None
+
+        chain['blocks'].append(new_block)
+
+        try:
+            clean_chain = {k: v for k, v in chain.items() if k != 'metadata'}
+            chain_signature = private_key.sign(
+                json.dumps(clean_chain, sort_keys=True).encode(),
+                padding.PSS(mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH),
+                hashes.SHA256()
+            )
+            chain['metadata']['signature'] = base64.b64encode(chain_signature).decode()
+        except Exception as e:
+            if self.debug:
+                print(f"⚠️  Ketjun allekirjoitus epäonnistui: {e}")
+            chain['metadata']['signature'] = None
+
+        success = self.write_json('system_chain.json', chain, "IPFS-system chain päivitetty")
+        if success:
+            cid_str = ', '.join(f"{k}:{v}" for k, v in ipfs_cids.items()) if ipfs_cids else "ei CID:iä"
+            with open("security_audit.log", "a", encoding="utf-8") as log:
+                log.write(f"{datetime.now().isoformat()} | ACTION=chain_update | FILES={', '.join(modified_files)} | CIDS={cid_str}\n")
+        return success
+
+    def lock_election_content(self):
+        if not self.ipfs_client:
+            raise RuntimeError("IPFS-asiakas vaaditaan")
+
+        questions = self.ensure_data_file('questions.json')
+        candidates = self.ensure_data_file('candidates.json')
+        meta = self.get_meta()
+
+        snapshot = {
+            "election_id": meta["election"]["id"],
+            "locked_at": datetime.now().isoformat(),
+            "questions": questions.get("questions", []),
+            "candidates": candidates.get("candidates", []),
+            "meta_hash": meta["integrity"]["hash"]
+        }
+
+        result = self.ipfs_client.add_json(snapshot)
+        cid = result["Hash"]
+
+        self.update_system_chain_ipfs(
+            modified_files=['election_snapshot.json'],
+            ipfs_cids={'election_snapshot.json': cid}
+        )
+
+        with open("security_audit.log", "a", encoding="utf-8") as log:
+            log.write(f"{datetime.now().isoformat()} | ACTION=election_lock | CID={cid}\n")
+
+        return cid

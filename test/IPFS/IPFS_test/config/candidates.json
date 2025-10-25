@@ -4,7 +4,7 @@
       "id": 1,
       "name": "Matti Meikäläinen",
       "party": "Test Puolue",
-      "district": null,
+      "district": "satakunta",
       "public_key": null,
       "party_signature": null,
       "answers": [
@@ -18,7 +18,7 @@
             "sv": "Klimatförändringen är det största hotet, och en 50 % minskning är nödvändig."
           },
           "justification_metadata": {
-            "created_at": "2025-10-24T07:52:42.423205",
+            "created_at": "2025-10-25T14:50:03.694795",
             "version": 1,
             "blocked": false,
             "signature": null
@@ -34,7 +34,7 @@
             "sv": "Stadscyklar förbättrar stadsbilden och folkhälsan."
           },
           "justification_metadata": {
-            "created_at": "2025-10-24T07:52:42.423205",
+            "created_at": "2025-10-25T14:50:03.694795",
             "version": 1,
             "blocked": false,
             "signature": null
@@ -46,7 +46,7 @@
       "id": 2,
       "name": "Liisa Esimerkki",
       "party": "Toinen Puolue",
-      "district": null,
+      "district": "satakunta",
       "public_key": null,
       "party_signature": null,
       "answers": [
@@ -60,7 +60,7 @@
             "sv": "Klimatförändringen är det största hotet, och en 50 % minskning är nödvändig."
           },
           "justification_metadata": {
-            "created_at": "2025-10-24T07:52:42.423205",
+            "created_at": "2025-10-25T14:50:03.694795",
             "version": 1,
             "blocked": false,
             "signature": null
@@ -76,7 +76,7 @@
             "sv": "Stadscyklar förbättrar stadsbilden och folkhälsan."
           },
           "justification_metadata": {
-            "created_at": "2025-10-24T07:52:42.423205",
+            "created_at": "2025-10-25T14:50:03.694795",
             "version": 1,
             "blocked": false,
             "signature": null
@@ -86,20 +86,20 @@
     }
   ],
   "party_keys": {
-    "Toinen Puolue": null,
-    "Test Puolue": null
+    "Test Puolue": null,
+    "Toinen Puolue": null
   },
   "metadata": {
     "version": "1.0",
-    "created": "2025-10-24T07:52:42.423205",
-    "fingerprint": "bbdcf3372e04ea92b955ab416ba5db430c863d5518c84b2a3a34df906d70a998",
+    "created": "2025-10-25T14:50:03.694795",
+    "fingerprint": "81864425676d11a65449db5e22d2e9e7c1e8a652289884638413aa3b96a01a0c",
     "candidate_count": 2,
     "parties": [
-      "Toinen Puolue",
-      "Test Puolue"
+      "Test Puolue",
+      "Toinen Puolue"
     ],
-    "system_id": "eea875f60ef95d47",
-    "election_id": "election_2028-10-10_fi",
-    "signature": "i5eVkmhWt9c0bO9nha0HNLHazLjHzoYlrAX36piF3jxA/7X5xYbmGgo9q+1LVOANIvB3Y8/+YMoRoic3i91n51zyaAo+qCodrwbmbLyKk41ia8tklFTCPudgzoduBTYMf7CuaDubN+aA2y0xLWDwuuCQhCGJHt/lexav+oIVEG4Z62PDXms/8dV2S5IPGQTuBTq/PexfPNdOj0JztW/Hb7f8YTzBj0FJzh2LCkqukDQk8L9pZHrCp5+gf65c7G6+BusAxeHR0gpr5JiggV4gYb5UxTBWe1YKUwBaavHLpHA906UP7iXYEfrDi+Tz5IRFlCrEohFd92/4VELXupsFJQ=="
+    "system_id": "8bea9437defb9087",
+    "election_id": "election_2026-10-10_fi_satakunta",
+    "signature": "ia8VOoPRGHYVt6ncFbsS2WX5eQQsvi9qRC5CjD4op9GpYFBq8Lu0BlpW0jO6ThuxebpTt4F450j8YffWoyIu68dfI9bycDE0FhJocnzE1kWNtt6bli2SG3KJTCVfnLjE1FBHO5ha3H1MHdrzF220Sslbvl2A6NZRZF23PYMOoaX/q2QVLt8VWlZHH0Euf7R5GWCv0euBOFYd7bTD8b0FH6WxFKRgcn+6Kca1cQ7iOMk/NrL3IgMXjMmDv3If1G5MQRQgBnP6vTmkTzV6TgusFmNUBzozDiGfdnFszZVZnfo71zfa8PC5D1UOymg1wDLtyP+/U4KnmXP9M9mumVlmYQ=="
   }
 }

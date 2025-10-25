@@ -1,40 +1,13 @@
 {
-  "candidates": [
-    {
-      "id": 1,
-      "name": "SECURITY TEST EHDOKAS",
-      "party": "Testi Puolue",
-      "district": "Testipiiri",
-      "answers": [
-        {
-          "question_id": 1,
-          "answer": 3,
-          "confidence": 0.8,
-          "justification": {
-            "fi": "Testiperustelu",
-            "en": "Test justification",
-            "sv": "Test motivering"
-          }
-        }
-      ]
-    },
-    {
-      "id": 2,
-      "name": "Toinen Ehdokas",
-      "party": "Toinen Puolue",
-      "district": "Testipiiri",
-      "answers": [
-        {
-          "question_id": 1,
-          "answer": -2,
-          "confidence": 0.6,
-          "justification": {
-            "fi": "Toinen perustelu",
-            "en": "Another justification",
-            "sv": "Annan motivering"
-          }
-        }
-      ]
-    }
-  ]
+  "election_id": "election_2026-10-10_fi_satakunta",
+  "language": "fi",
+  "candidates": [],
+  "party_keys": {},
+  "metadata": {
+    "created": "2025-10-25T14:51:50.175822",
+    "system_id": "8bea9437defb9087",
+    "election_id": "election_2026-10-10_fi_satakunta",
+    "fingerprint": "",
+    "signature": null
+  }
 }

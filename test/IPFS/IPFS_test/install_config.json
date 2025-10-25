@@ -1,6 +1,6 @@
 {
   "election": {
-    "id": "election_2028-10-10_fi",
+    "id": "election_2026-10-10_fi_satakunta",
     "country": "FI",
     "type": {
       "fi": "Muu",
@@ -8,13 +8,15 @@
       "sv": "Annat"
     },
     "name": {
-      "fi": "testivaalit",
-      "en": "fdlk",
-      "sv": "kjd"
+      "fi": "testivaalit2026",
+      "en": "sdjk",
+      "sv": "sdjk"
     },
-    "date": "2028-10-10",
+    "date": "2026-10-10",
     "language": "fi",
-    "district": null
+    "district": "satakunta",
+    "content_edit_deadline": "2026-07-01T00:00:00",
+    "grace_period_hours": 24
   },
   "admin": {
     "name": "admin",
