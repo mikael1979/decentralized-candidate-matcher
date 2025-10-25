@@ -1,113 +1,46 @@
-{
-  "default_questions": [
-    {
-      "id": 1,
-      "category": {
-        "fi": "Ympäristö",
-        "en": "Environment",
-        "sv": "Miljö"
-      },
-      "question": {
-        "fi": "Pitäisikö kaupungin vähentää hiilidioksidipäästöjä 50% vuoteen 2030 mennessä?",
-        "en": "Should the city reduce carbon dioxide emissions by 50% by 2030?",
-        "sv": "Bör staden minska koldioxidutsläppen med 50 % till 2030?"
-      },
-      "tags": [
-        "ympäristö",
-        "hiilidioksidi",
-        "ilmasto"
-      ],
-      "scale": {
-        "min": -5,
-        "max": 5
-      },
-      "justification": {
-        "fi": "Ilmastonmuutos on kiireellisin uhka, ja 50 % vähennys on välttämätön tavoite.",
-        "en": "Climate change is the most urgent threat, and a 50% reduction is essential.",
-        "sv": "Klimatförändringen är det största hotet, och en 50 % minskning är nödvändig."
-      },
-      "justification_metadata": {
-        "author_id": "admin_admin",
-        "author_type": "super_admin",
-        "created_at": "2025-10-25T14:50:03.694795",
-        "updated_at": "2025-10-25T14:50:03.694795",
-        "version": 1,
-        "blocked": false,
-        "signature": null
-      },
-      "metadata": {
-        "elo_rating": 1500,
-        "blocked": false,
-        "created_at": "2025-10-25T14:50:03.694795",
-        "created_by": "admin_admin",
-        "votes_for": 0,
-        "votes_against": 0,
-        "community_approved": true
-      },
-      "elo": {
-        "base_rating": 1500,
-        "deltas": [],
-        "current_rating": 1500
-      }
+[
+  {
+    "id": 1,
+    "category": {
+      "fi": "Ympäristö",
+      "en": "Environment",
+      "sv": "Miljö"
     },
-    {
-      "id": 2,
-      "category": {
-        "fi": "Liikenne",
-        "en": "Transportation",
-        "sv": "Transport"
-      },
-      "question": {
-        "fi": "Pitäisikö kaupunkipyörien määrää lisätä kesäkaudella?",
-        "en": "Should the number of city bikes be increased during summer season?",
-        "sv": "Bör antalet stads cyklar ökas under sommarsäsongen?"
-      },
-      "tags": [
-        "liikenne",
-        "kaupunkipyörät",
-        "kesä"
-      ],
-      "scale": {
-        "min": -5,
-        "max": 5
-      },
-      "justification": {
-        "fi": "Kaupunkipyörät parantavat kaupunkikuva ja terveyttä.",
-        "en": "City bikes improve urban aesthetics and public health.",
-        "sv": "Stadscyklar förbättrar stadsbilden och folkhälsan."
-      },
-      "justification_metadata": {
-        "author_id": "admin_admin",
-        "author_type": "super_admin",
-        "created_at": "2025-10-25T14:50:03.694795",
-        "updated_at": "2025-10-25T14:50:03.694795",
-        "version": 1,
-        "blocked": false,
-        "signature": null
-      },
-      "metadata": {
-        "elo_rating": 1500,
-        "blocked": false,
-        "created_at": "2025-10-25T14:50:03.694795",
-        "created_by": "admin_admin",
-        "votes_for": 0,
-        "votes_against": 0,
-        "community_approved": true
-      },
-      "elo": {
-        "base_rating": 1500,
-        "deltas": [],
-        "current_rating": 1500
-      }
+    "question": {
+      "fi": "Pitäisikö kaupungin vähentää hiilidioksidipäästöjä 50% vuoteen 2030 mennessä?",
+      "en": "Should the city reduce carbon dioxide emissions by 50% by 2030?",
+      "sv": "Bör staden minska koldioxidutsläppen med 50 % till 2030?"
+    },
+    "tags": [
+      "ympäristö",
+      "hiilidioksidi",
+      "ilmasto"
+    ],
+    "scale": {
+      "min": -5,
+      "max": 5
     }
-  ],
-  "metadata": {
-    "version": "1.0",
-    "created": "2025-10-25T14:50:03.694795",
-    "fingerprint": "4ab1d59226bc15caa69f640951c28515f9ef132d2eb0d0b9deac6201639a3cbb",
-    "question_count": 2,
-    "system_id": "8bea9437defb9087",
-    "election_id": "election_2026-10-10_fi_satakunta",
-    "signature": "AOb+G7Dj886c8zBQYsOX64gKVZxcqILqlJmUu9SaaC6c0AQbwS0SbOK7B+zI33BOVUH2ZVtUN9Hp0AwJ/rkz1wnDAOlIEjHxj3tJA97TYjGxcx3GGG2OR+IpfvmlKlSZfX+gIWxqQDEADThELSsUg/WxqIxRZ7RG7vVW9kd79v3tfaZABbn52VSIvf1enToFM5IkeHa+wY5xObilIbRxU1lXAM9Bk17hftgeOEiMZET+EFnGdOCHHXdF6Pi9zqrkTjve2e5A+McdBb0M+A/Ov+loZamR9b/sWMd60uDj5RKpRASXXyMsPSIMZaXqMUB8yCr2k3EBzdWRnj79D48JRA=="
+  },
+  {
+    "id": 2,
+    "category": {
+      "fi": "Liikenne",
+      "en": "Transportation",
+      "sv": "Transport"
+    },
+    "question": {
+      "fi": "Pitäisikö kaupunkipyörien määrää lisätä kesäkaudella?",
+      "en": "Should the number of city bikes be increased during summer season?",
+      "sv": "Bör antalet stads cyklar ökas under sommarsäsongen?"
+    },
+    "tags": [
+      "liikenne",
+      "kaupunkipyörät",
+      "kesä"
+    ],
+    "scale": {
+      "min": -5,
+      "max": 5
+    }
   }
-}
+]

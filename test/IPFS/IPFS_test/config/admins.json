@@ -1,22 +1,9 @@
-{
-  "super_admins": [
-    {
-      "admin_id": "admin_admin",
-      "username": "admin",
-      "name": "admin",
-      "email": "",
-      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq3V0kse3Q2BIeSAsVBR0\nlrP/72IeWi9HV+IV9cR/a5xbpoLZk/p3vx+Bt+0x+ypsqfOMqc4BxhvkCX1KMftU\nqp2lMo01ZduxOli1JUKWqJotj6D7QIGviPoonsdRaDPH6EZfABP8uRxUSx6QzyRK\nNhcPq9xF5KijbceDvACtUwpDM14vsYUUCZVEoxTuQtDkKVOQB19JCF4dYeAMM+Ka\nkTtv4RASNkx79FMSI2efNYLpqKcGZDdirhGhcoytN1o+n5Ph//2nSp8BkOif3+g1\nTpII4y9eAkABakdGSvLSDIq2K0sjzS3/HTMDiRELmiYFxBoESrZgjVCNd0TjJU+m\nGwIDAQAB\n-----END PUBLIC KEY-----\n",
-      "created_at": "2025-10-25T14:50:03.694795",
-      "role": "super_admin"
-    }
-  ],
-  "party_admins": {},
-  "metadata": {
-    "version": "1.0",
-    "created": "2025-10-25T14:50:03.694795",
-    "fingerprint": "9cd5004a2b2673b09e0a157590590d712c7eea4eb0ce50ed8cce30a35b08aee9",
-    "system_id": "8bea9437defb9087",
-    "election_id": "election_2026-10-10_fi_satakunta",
-    "signature": "PybS7ByWhgxh0NuhrGur0Bm2ojEaXS9i4FYARuES1QNpRPVIE05l6zsRljJINcIPZF7hzHQcmSltYeI89e6gsSLTijprTQcVMJ5ON7DnWFPzw8atUdyiE2/mzFKvbI+9CG2rlq9gc+YsaLLssBWu4ZMYKVfxvesPUAEzXu9oG0/G3+Zfmnq5QbwZki+PG3iJX0LlqWuaa0ojQoCGNMppm1Tg2Ul70q6mqwjEDSQTsl61D2TLTLm6eyiLLkwXOzywRyBDvmYseiIcVlUzuMvEeV6Mk5qL9jH5hAWAzLD1qqdGzUn2gaMsROT4XURREzsvXck1geP6xqyZCtvroUsFig=="
+[
+  {
+    "name": "Testi Admin",
+    "username": "admin",
+    "email": "admin@example.com",
+    "role": "super_admin",
+    "admin_id": "admin_admin"
   }
-}
+]

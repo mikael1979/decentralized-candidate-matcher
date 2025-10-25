@@ -1,12 +1,12 @@
 {
-  "election_id": "election_2026-10-10_fi_satakunta",
+  "election_id": "kunnallisvaalit-2025",
   "language": "fi",
   "candidates": [],
   "party_keys": {},
   "metadata": {
-    "created": "2025-10-25T14:51:50.175822",
-    "system_id": "8bea9437defb9087",
-    "election_id": "election_2026-10-10_fi_satakunta",
+    "created": "2025-10-25T19:42:04.864386",
+    "system_id": "50721d9e02a3b3fe",
+    "election_id": "kunnallisvaalit-2025",
     "fingerprint": "",
     "signature": null
   }

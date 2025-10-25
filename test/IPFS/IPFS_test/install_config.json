@@ -1,30 +1,22 @@
 {
-  "election": {
-    "id": "election_2026-10-10_fi_satakunta",
-    "country": "FI",
-    "type": {
-      "fi": "Muu",
-      "en": "Other",
-      "sv": "Annat"
-    },
+  "election_data": {
+    "id": "kunnallisvaalit-2025",
     "name": {
-      "fi": "testivaalit2026",
-      "en": "sdjk",
-      "sv": "sdjk"
+      "fi": "Kunnallisvaalit 2025",
+      "en": "Municipal Elections 2025",
+      "sv": "Kommunala val 2025"
     },
-    "date": "2026-10-10",
-    "language": "fi",
-    "district": "satakunta",
-    "content_edit_deadline": "2026-07-01T00:00:00",
+    "date": "2025-04-13",
+    "type": "municipal",
+    "timelock_enabled": true,
+    "edit_deadline": "2025-03-01T23:59:00",
     "grace_period_hours": 24
   },
-  "admin": {
-    "name": "admin",
+  "admin_data": {
+    "name": "Testi Admin",
     "username": "admin",
-    "email": ""
-  },
-  "system": {
-    "name": "Decentralized Candidate Matcher",
-    "version": "0.0.6-alpha"
+    "email": "admin@example.com",
+    "role": "super_admin",
+    "admin_id": "admin_admin"
   }
 }

@@ -1,69 +1,39 @@
 {
-  "system": "Decentralized Candidate Matcher",
-  "version": "0.0.6-alpha",
   "election": {
-    "id": "election_2026-10-10_fi_satakunta",
-    "country": "FI",
-    "type": {
-      "fi": "Muu",
-      "en": "Other",
-      "sv": "Annat"
-    },
+    "id": "kunnallisvaalit-2025",
     "name": {
-      "fi": "testivaalit2026",
-      "en": "sdjk",
-      "sv": "sdjk"
+      "fi": "Kunnallisvaalit 2025",
+      "en": "Municipal Elections 2025",
+      "sv": "Kommunala val 2025"
     },
-    "date": "2026-10-10",
-    "language": "fi",
-    "district": "satakunta",
-    "content_edit_deadline": "2024-01-01T00:00:00",
+    "date": "2025-04-13",
+    "type": "municipal",
+    "timelock_enabled": true,
+    "edit_deadline": "2025-03-01T23:59:00",
     "grace_period_hours": 24
   },
-  "community_moderation": {
-    "enabled": true,
-    "thresholds": {
-      "auto_block_inappropriate": 0.7,
-      "auto_block_min_votes": 10,
-      "community_approval": 0.8
-    },
-    "ipfs_sync_mode": "elo_priority"
+  "system_info": {
+    "system_id": "50721d9e02a3b3fe",
+    "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn7DpnrzgmETSHDLpf0Bj\nWQn5oJN5+4bUSHF27kVXNW1ePDZ3EHrRI6paFHACt0PTwmLP5DV5LyXK33QZiyQT\nYvx06cVNJ3PxCFvmC8mDC2VMAgN7dHkO3zTleAUKqT4Ozw8PSruDlKeUHFN3d6NZ\n0hNKwPD37I+QUXLBNtLUS0fBJgtPE3a7AGGlsS+Pob1fnAzUslxWzRz++ywzVv5R\nOZSWvbV2v+d9GIrivS4kJKOYiXWsgo9PosRr2i6PKosxCWFdnCxnwJ//8WNbMY5y\n8K0TLXLWYO3ikNse0Nir0+nA89vyxV+DTj62aXOd8Oszb/DTLkM8u4WXgb3Lf1G6\nkwIDAQAB\n-----END PUBLIC KEY-----\n",
+    "created": "2025-10-25T19:24:19.179395"
   },
-  "admins": [
-    {
-      "admin_id": "admin_admin",
-      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq3V0kse3Q2BIeSAsVBR0\nlrP/72IeWi9HV+IV9cR/a5xbpoLZk/p3vx+Bt+0x+ypsqfOMqc4BxhvkCX1KMftU\nqp2lMo01ZduxOli1JUKWqJotj6D7QIGviPoonsdRaDPH6EZfABP8uRxUSx6QzyRK\nNhcPq9xF5KijbceDvACtUwpDM14vsYUUCZVEoxTuQtDkKVOQB19JCF4dYeAMM+Ka\nkTtv4RASNkx79FMSI2efNYLpqKcGZDdirhGhcoytN1o+n5Ph//2nSp8BkOif3+g1\nTpII4y9eAkABakdGSvLSDIq2K0sjzS3/HTMDiRELmiYFxBoESrZgjVCNd0TjJU+m\nGwIDAQAB\n-----END PUBLIC KEY-----\n",
-      "name": "admin",
-      "username": "admin",
-      "email": "",
-      "role": "super_admin"
-    }
-  ],
-  "key_management": {
-    "system_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq3V0kse3Q2BIeSAsVBR0\nlrP/72IeWi9HV+IV9cR/a5xbpoLZk/p3vx+Bt+0x+ypsqfOMqc4BxhvkCX1KMftU\nqp2lMo01ZduxOli1JUKWqJotj6D7QIGviPoonsdRaDPH6EZfABP8uRxUSx6QzyRK\nNhcPq9xF5KijbceDvACtUwpDM14vsYUUCZVEoxTuQtDkKVOQB19JCF4dYeAMM+Ka\nkTtv4RASNkx79FMSI2efNYLpqKcGZDdirhGhcoytN1o+n5Ph//2nSp8BkOif3+g1\nTpII4y9eAkABakdGSvLSDIq2K0sjzS3/HTMDiRELmiYFxBoESrZgjVCNd0TjJU+m\nGwIDAQAB\n-----END PUBLIC KEY-----\n",
-    "key_algorithm": "RSA-2048",
-    "parties_require_keys": true,
-    "candidates_require_keys": false
+  "admin": {
+    "name": "Testi Admin",
+    "username": "admin",
+    "email": "admin@example.com",
+    "role": "super_admin",
+    "admin_id": "admin_admin"
   },
+  "version": "0.0.6-alpha",
   "content": {
-    "last_updated": "2025-10-25T17:50:10.991774",
-    "questions_count": 1,
+    "last_updated": "2025-10-25T19:59:37.757925",
+    "questions_count": 0,
     "candidates_count": 0,
     "parties_count": 0
   },
-  "system_info": {
-    "system_id": "8bea9437defb9087",
-    "installation_time": "2025-10-25T14:50:03.695003",
-    "key_fingerprint": "8bea9437defb90874413d744eec244740683048377eaf69b6fa4110fc3d98476"
-  },
   "integrity": {
     "algorithm": "sha256",
-    "hash": "sha256:4c304e46791444ac79bf05cd68faf4c792cb6fb59a5ba06dfaacbe137bec8ab7",
-    "computed": "2025-10-25T17:50:10.991887"
-  },
-  "metadata": {
-    "ipfs_cid": "Qmf2384323e3def3679923c05c91b38a3323907599",
-    "ipfs_added": "2025-10-25T15:03:46.446419",
-    "ipfs_description": "Automaattinen tallennus: 1 muutosta"
+    "hash": "sha256:0dd5599e75ad15437301ee9faf4dff4113d021231d609805473caccbfd17863d",
+    "computed": "2025-10-25T19:59:37.758031"
   }
 }
