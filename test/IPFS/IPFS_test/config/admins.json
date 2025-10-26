@@ -1,8 +1,8 @@
 [
   {
-    "name": "Testi Admin",
+    "name": "admin",
     "username": "admin",
-    "email": "admin@example.com",
+    "email": "",
     "role": "super_admin",
     "admin_id": "admin_admin"
   }

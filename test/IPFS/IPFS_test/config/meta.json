@@ -1,26 +1,31 @@
 {
   "election": {
-    "id": "kunnallisvaalit-2025",
+    "id": "testivaalit2027",
     "name": {
-      "fi": "Kunnallisvaalit 2025",
-      "en": "Municipal Elections 2025",
-      "sv": "Kommunala val 2025"
+      "fi": "testivaalit2027",
+      "en": "dslk",
+      "sv": "slk"
     },
-    "date": "2025-04-13",
+    "date": "2027-10-10",
     "type": "municipal",
+    "description": {
+      "fi": "testivaalit2027 - Kunnallisvaalit",
+      "en": "dslk - Municipal elections",
+      "sv": "slk - Kommunala val"
+    },
     "timelock_enabled": true,
-    "edit_deadline": "2025-03-01T23:59:00",
-    "grace_period_hours": 24
+    "edit_deadline": "2027-07-01",
+    "grace_period_hours": 48
   },
   "system_info": {
-    "system_id": "50721d9e02a3b3fe",
-    "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn7DpnrzgmETSHDLpf0Bj\nWQn5oJN5+4bUSHF27kVXNW1ePDZ3EHrRI6paFHACt0PTwmLP5DV5LyXK33QZiyQT\nYvx06cVNJ3PxCFvmC8mDC2VMAgN7dHkO3zTleAUKqT4Ozw8PSruDlKeUHFN3d6NZ\n0hNKwPD37I+QUXLBNtLUS0fBJgtPE3a7AGGlsS+Pob1fnAzUslxWzRz++ywzVv5R\nOZSWvbV2v+d9GIrivS4kJKOYiXWsgo9PosRr2i6PKosxCWFdnCxnwJ//8WNbMY5y\n8K0TLXLWYO3ikNse0Nir0+nA89vyxV+DTj62aXOd8Oszb/DTLkM8u4WXgb3Lf1G6\nkwIDAQAB\n-----END PUBLIC KEY-----\n",
-    "created": "2025-10-25T19:24:19.179395"
+    "system_id": "c7d4aea2987561a3",
+    "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv2KoJsbivr25PEn2UxoZ\n9SY11dRc1G8WSHPjIkIX9aLjTCdh56rLhsJWfwymh2vczgtwH07Y7f7ymVKf9HHg\nT3KOWhMJInDxbP58xfNUzjVHZc/af3BIEoQjwNv9s1j7tcVPkuiIrAzjuBo5xFqb\nylyw5obYutrjiHUKI99A1XcFpyNilWJTtOmrTYp18wX7Vkga+RuAo88+/YG9J07S\nPWHpWXWjnweuzhgx8Pw25bxK3RxZvDo8TQV71+GDY6tyIfUYzexyhvSmeLbRnMTv\ndsETsUMW9WXko5xyuiz5d7imwqUq2qXGxcPl/a6/4zd1Sb3QEhdURBuJ094g7G2D\nyQIDAQAB\n-----END PUBLIC KEY-----\n",
+    "created": "2025-10-26T10:23:42.925900"
   },
   "admin": {
-    "name": "Testi Admin",
+    "name": "admin",
     "username": "admin",
-    "email": "admin@example.com",
+    "email": "",
     "role": "super_admin",
     "admin_id": "admin_admin"
   },

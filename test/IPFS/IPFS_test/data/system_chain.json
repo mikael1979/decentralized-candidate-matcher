@@ -1,29 +1,30 @@
 {
-  "chain_id": "kunnallisvaalit-2025",
-  "created_at": "2025-10-25T19:24:19.180264",
+  "chain_id": "testivaalit2027",
+  "created_at": "2025-10-26T10:23:42.926397",
   "description": "Fingerprint-ketju kaikille järjestelmän tiedostoille",
   "version": "0.0.6-alpha",
   "blocks": [
     {
       "block_id": 0,
-      "timestamp": "2025-10-25T19:24:19.180264",
+      "timestamp": "2025-10-26T10:23:42.926374",
       "description": "Alkutila asennuksen jälkeen",
       "files": {
-        "meta.json": "88ab40f9f47b7c86d13f6666d6717e3ba3e05b32bf32f060f28ec0283d45be1e",
-        "admins.json": "ac1bf6bfb50fe6067b1d69e481e9bdbe103ae2a87af58063e9c1d42a500057bd"
+        "questions.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "candidates.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "meta.json": "a1ec82be2da5412f10c599522e5ee38d860309443102be2d2fc9aaf06ede1967"
       },
       "previous_hash": null,
-      "block_hash": "sha256:ee45692941bd04aa5c57e26f46a8af2b9ee17a08a2a909aea816690f65457317"
+      "block_hash": "sha256:55d63258473c1cf6309e55aff8cc9423a8f20168283facbbde3232f0a6ae5cc1"
     }
   ],
   "current_state": {
-    "meta.json": "88ab40f9f47b7c86d13f6666d6717e3ba3e05b32bf32f060f28ec0283d45be1e",
-    "admins.json": "ac1bf6bfb50fe6067b1d69e481e9bdbe103ae2a87af58063e9c1d42a500057bd"
+    "questions.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "candidates.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "meta.json": "a1ec82be2da5412f10c599522e5ee38d860309443102be2d2fc9aaf06ede1967"
   },
   "metadata": {
     "algorithm": "sha256",
-    "system_id": "50721d9e02a3b3fe",
-    "election_id": "kunnallisvaalit-2025",
-    "signature": "DcjN4m+e8qPAhakdqDxv7LhiOtUWCRDFZELecrRYUy5Q/DwZl/c053l2oUWmWC+fvE+p2/farHc6Irkj2O7f1OpECT5vnUEh762doSffhXQliMyLp/KR44KXlo2izYxbmjZPuxIxy8Gbka7feYY6Sx00JPPJnG0WxvolV5FWUHwjPqUvfR0TYmyzGOkXSW4D9UV0mDl4f0V5L7yYwSzODXVMrrr9QPM6+CqTnxeM1s5t8nXlsrKr2g8CQY6V7ozT1Rp5enVCr7Z18FSXNeB9weS0enlBJny6bpx4x0f5DMsVBSIadn9PXL9Am8rFWGibEyyE8UaPfqRaFiW9DLW2UQ=="
+    "system_id": "c7d4aea2987561a3",
+    "election_id": "testivaalit2027"
   }
 }
