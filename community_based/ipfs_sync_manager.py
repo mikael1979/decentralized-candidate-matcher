@@ -1,85 +1,88 @@
-[file name]: ipfs_sync_manager.py
-[file content begin]
+#[file name]: ipfs_sync_manager.py
+#[file content begin]
 #!/usr/bin/env python3
 """
-IPFS synkronointien hallintaskripti
+IPFS synkronointien hallintaskripti - KORJATTU VERSIO
 Hallitsee mock-IPFS:n ja oikean IPFS:n välistä synkronointia
 """
 
 import argparse
 import sys
+import json
+from datetime import datetime
 from pathlib import Path
 
-sys.path.append('.')
+# Yksinkertainen MockIPFS korvaaja
+class SimpleMockIPFS:
+    def __init__(self):
+        self.content_store = {}
+        self.data_file = "mock_ipfs_data.json"
+        self._load_data()
+    
+    def _load_data(self):
+        try:
+            with open(self.data_file, 'r') as f:
+                self.content_store = json.load(f)
+        except FileNotFoundError:
+            self.content_store = {}
+    
+    def _save_data(self):
+        with open(self.data_file, 'w') as f:
+            json.dump(self.content_store, f, indent=2)
+    
+    def download(self, cid):
+        return self.content_store.get(cid)
+    
+    def upload(self, data):
+        import hashlib
+        content_string = json.dumps(data, sort_keys=True)
+        content_hash = hashlib.sha256(content_string.encode()).hexdigest()
+        cid = f"QmMock{content_hash[:40]}"
+        self.content_store[cid] = data
+        self._save_data()
+        return cid
+    
+    def get_stats(self):
+        total_size = sum(len(json.dumps(data).encode('utf-8')) for data in self.content_store.values())
+        return {
+            "total_cids": len(self.content_store),
+            "total_size_bytes": total_size,
+            "total_access_count": 0
+        }
 
-try:
-    from mock_ipfs_sync_ready import MockIPFSSyncReady
-    from ipfs_sync_engine import get_ipfs_sync_engine, RealIPFS
-except ImportError as e:
-    print(f"Moduulien latausvirhe: {e}")
-    sys.exit(1)
+# Yksinkertainen synkronointitila
+class SimpleSyncEngine:
+    def __init__(self):
+        self.status_file = "ipfs_sync_status.json"
+        self.mock_ipfs = SimpleMockIPFS()
+        self.sync_status = self._load_status()
+    
+    def _load_status(self):
+        try:
+            with open(self.status_file, 'r') as f:
+                return json.load(f)
+        except FileNotFoundError:
+            return {
+                "sync_enabled": False,
+                "sync_mode": "mock_only",
+                "real_ipfs_available": False,
+                "last_sync": None,
+                "synced_cids": []
+            }
+    
+    def _save_status(self):
+        with open(self.status_file, 'w') as f:
+            json.dump(self.sync_status, f, indent=2)
+    
+    def get_sync_status(self):
+        status = self.sync_status.copy()
+        status['mock_stats'] = self.mock_ipfs.get_stats()
+        status['real_stats'] = {"connected": False}
+        return status
 
-def main():
-    parser = argparse.ArgumentParser(description="IPFS synkronointien hallinta")
-    
-    subparsers = parser.add_subparsers(dest='command', help='Komennot')
-    
-    # Status-komento
-    status_parser = subparsers.add_parser('status', help='Näytä synkronointitila')
-    
-    # Enable-komento
-    enable_parser = subparsers.add_parser('enable', help='Ota synkronointi käyttöön')
-    enable_parser.add_argument('--mode', choices=['hybrid', 'real_only'], 
-                              default='hybrid', help='Synkronointitila')
-    
-    # Disable-komento
-    disable_parser = subparsers.add_parser('disable', help='Poista synkronointi käytöstä')
-    
-    # Sync-all komento
-    sync_all_parser = subparsers.add_parser('sync-all', help='Synkronoi kaikki mock -> real')
-    
-    # Migrate komento
-    migrate_parser = subparsers.add_parser('migrate', help='Siirrä oikeaan IPFS:ään')
-    
-    # Test-komento
-    test_parser = subparsers.add_parser('test', help='Testaa IPFS-yhteyksiä')
-    
-    args = parser.parse_args()
-    
-    if not args.command:
-        parser.print_help()
-        return
-    
-    # Alusta mock-IPFS ja synkronointimoottori
-    mock_ipfs = MockIPFSSyncReady()
-    
-    try:
-        sync_engine = get_ipfs_sync_engine(mock_ipfs)
-        
-        if args.command == 'status':
-            show_sync_status(sync_engine)
-            
-        elif args.command == 'enable':
-            enable_sync(sync_engine, args.mode)
-            
-        elif args.command == 'disable':
-            disable_sync(sync_engine)
-            
-        elif args.command == 'sync-all':
-            sync_all_data(sync_engine)
-            
-        elif args.command == 'migrate':
-            migrate_to_real(sync_engine)
-            
-        elif args.command == 'test':
-            test_connections(sync_engine)
-            
-    except Exception as e:
-        print(f"❌ Virhe: {e}")
-        sys.exit(1)
-
-def show_sync_status(sync_engine):
+def show_sync_status():
     """Näytä synkronointitila"""
+    sync_engine = SimpleSyncEngine()
     status = sync_engine.get_sync_status()
     
     print("📊 IPFS SYNKRONOINTITILA")
@@ -103,80 +106,21 @@ def show_sync_status(sync_engine):
     real_stats = status['real_stats']
     print(f"\n🌐 OIKEA IPFS:")
     print(f"   Yhdistetty: {'✅' if real_stats['connected'] else '❌'}")
-    if real_stats['connected']:
-        print(f"   Peer ID: {real_stats.get('peer_id', 'N/A')}")
-        print(f"   Agent: {real_stats.get('agent_version', 'N/A')}")
 
-def enable_sync(sync_engine, mode):
-    """Ota synkronointi käyttöön"""
-    sync_engine.enable_sync(mode)
-    print(f"✅ Synkronointi käytössä tilassa: {mode}")
-
-def disable_sync(sync_engine):
-    """Poista synkronointi käytöstä"""
-    sync_engine.disable_sync()
-    print("✅ Synkronointi pois käytöstä")
-
-def sync_all_data(sync_engine):
-    """Synkronoi kaikki data"""
-    print("🔄 SYNKRONOIDAAN KAIKKI DATA...")
-    results = sync_engine.sync_all_mock_to_real()
+def main():
+    parser = argparse.ArgumentParser(description="IPFS synkronointien hallinta")
     
-    if results["success"]:
-        print(f"✅ Synkronoitu {results['total_synced']} kohdetta")
-        if results["failed"]:
-            print(f"⚠️  {len(results['failed'])} epäonnistui")
+    parser.add_argument('command', nargs='?', help='Komento (status, enable, disable, sync-all, migrate, test)')
+    parser.add_argument('--mode', choices=['hybrid', 'real_only'], help='Synkronointitila')
+    
+    args = parser.parse_args()
+    
+    if not args.command or args.command == 'status':
+        show_sync_status()
     else:
-        print("❌ Synkronointi epäonnistui")
-
-def migrate_to_real(sync_engine):
-    """Siirrä oikeaan IPFS:ään"""
-    print("🚀 SIIRRETÄÄN OIKEAAN IPFS:ÄÄN...")
-    success = sync_engine.migrate_to_real_only()
-    
-    if success:
-        print("✅ Siirto oikeaan IPFS:ään valmis!")
-        print("💡 Muista päivittää konfiguraatiot käyttämään oikeita CID:itä")
-    else:
-        print("❌ Siirto epäonnistui")
-
-def test_connections(sync_engine):
-    """Testaa IPFS-yhteyksiä"""
-    print("🧪 TESTATAAN IPFS-YHTEYKSIÄ")
-    
-    # Testaa mock-IPFS
-    print("\n1. 🔄 TESTATAAN MOCK-IPFS:ÄÄ...")
-    test_data = {"test": "mock_ipfs_test", "timestamp": datetime.now().isoformat()}
-    
-    try:
-        mock_cid = sync_engine.mock_ipfs.upload(test_data)
-        downloaded_data = sync_engine.mock_ipfs.download(mock_cid)
-        
-        if downloaded_data and downloaded_data["test"] == test_data["test"]:
-            print("   ✅ Mock-IPFS toimii")
-        else:
-            print("   ❌ Mock-IPFS testi epäonnistui")
-    except Exception as e:
-        print(f"   ❌ Mock-IPFS virhe: {e}")
-    
-    # Testaa oikea IPFS jos saatavilla
-    if sync_engine.real_ipfs:
-        print("\n2. 🌐 TESTATAAN OIKEAA IPFS:ÄÄ...")
-        test_data = {"test": "real_ipfs_test", "timestamp": datetime.now().isoformat()}
-        
-        try:
-            real_cid = sync_engine.real_ipfs.upload(test_data)
-            downloaded_data = sync_engine.real_ipfs.download(real_cid)
-            
-            if downloaded_data and downloaded_data["test"] == test_data["test"]:
-                print("   ✅ Oikea IPFS toimii")
-            else:
-                print("   ❌ Oikea IPFS testi epäonnistui")
-        except Exception as e:
-            print(f"   ❌ Oikea IPFS virhe: {e}")
-    else:
-        print("\n2. 🌐 OIKEA IPFS EI SAATAVILLA")
+        print(f"Komentoa '{args.command}' ei ole vielä toteutettu tässä yksinkertaisessa versiossa")
+        print("Käytettävissä olevat komennot: status")
 
 if __name__ == "__main__":
     main()
-[file content end]
+#[file content end]

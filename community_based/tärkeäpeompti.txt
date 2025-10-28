@@ -13,3 +13,220 @@ Selitän tässä nyt vielä mitä olin itse ajatellut, jos onnistun selittämä�
         "meta.json": 
 
 jossa kysymykset lisätään new_questions.json, niin että tiedosta luodaan väliaikainen tmp_new_questions.json, johon lähetetyt kysymykset tallennetaan. Tästä kysymykset synkronoidaan -> questions.json ja questions.json synkronoidaan <--> ipfs_questions.json synkronoidaan <--> ipfs-verkko
+
+# Vaalikonejärjestelmä - Tekninen Kuvaus
+
+## 🎯 Järjestelmän Ydinkonsepti
+
+**Hajautettu, yhteisöohjattu vaalikone joka käyttää ELO-luokitusjärjestelmää kysymysten priorisointiin ja automoderaatioon.**
+
+## 🏗️ Arkkitehtuuri
+
+### Tiedostopohjainen Data Pipeline
+```
+Base Templates → Runtime Instances → IPFS Synkronointi
+    ↓               ↓                     ↓
+*.base.json     *.json (käyttö)      IPFS Verkko
+```
+
+### Modulaariset Komponentit
+1. **Metadata Manager** - Koneiden identiteetit & allekirjoitukset
+2. **Installation Engine** - Vaalien asennus & konfiguraatio
+3. **Question Pipeline** - Kysymysten elinkaari
+4. **IPFS Sync Engine** - Hajautettu datajako
+5. **Candidate Manager** - Ehdokkaat & vastaukset
+
+## 🔄 Kysymysten Elinkaari
+
+```
+Uusi Kysymys
+    ↓
+tmp_new_questions.json (väliaikainen)
+    ↓  
+new_questions.json (odotusaika)
+    ↓
+questions.json (pääkanta)
+    ↓
+ipfs_questions.json (paikallinen IPFS-mirror)
+    ↓
+IPFS Verkko (hajautettu jakelu)
+```
+
+## 🎲 ELO-Luokitusmekanismi
+
+### Kaksitasoinen Rating-järjestelmä
+```python
+current_rating = 1000 + comparison_delta + vote_delta
+```
+
+**comparison_delta** (-900 max):
+- Perinteinen ELO pareittaisissa vertailuissa
+- Laadullinen feedback
+- Lasketaan: `k_factor * (actual - expected)`
+
+**vote_delta** (-1000 max):
+- Yksinkertainen ±1 per ääni
+- Määrällinen suosio
+- Suora demokratia
+
+### Automaattinen Moderaatio
+```python
+if (current_rating <= 0 and 
+    comparison_delta < 0 and 
+    vote_delta < 0):
+    BLOCK_QUESTION
+```
+**Estää:** 
+- Pelkät bot-vertailut (max -900)
+- Pelkät bot-äänet (vaatii myös negatiivisen comparison_delta:n)
+- Vaatii yhteisön konsensuksen molemmilla mekanismeilla
+
+## 🌐 IPFS Integraatio
+
+### Synkronointitilat
+1. **Mock-only** - Testaus (nykyinen)
+2. **Hybrid** - Molemmat (siirtymä)
+3. **Real-only** - Tuotanto
+
+### Data Flow
+```
+Paikallinen Kone → Mock-IPFS → Real-IPFS
+      ↓                ↓           ↓
+  JSON-tiedot     Testidata   Hajautettu
+                                verkko
+```
+
+## 💻 Koneiden Hallinta
+
+### Master-Työasema -malli
+- **Master-kone**: Ensimmäinen asennus, luo vaalirekisterin
+- **Työasemat**: Liittyvät olemassa olevaan vaaliin
+- **Yksilölliset machine_id:t** - Estää konfliktit
+- **Vaalikohtaiset allekirjoitukset** - Varmistaa integriteetin
+
+## 📊 Data Model
+
+### Kysymysrakenne
+```json
+{
+  "local_id": "uuid",
+  "ipfs_cid": "Qm...",
+  "source": "local|ipfs_imported",
+  "content": {
+    "category": {"fi", "en", "sv"},
+    "question": {"fi", "en", "sv"},
+    "tags": [],
+    "scale": {"min": -5, "max": 5}
+  },
+  "elo_rating": {
+    "base_rating": 1000,
+    "comparison_delta": 0,
+    "vote_delta": 0,
+    "current_rating": 1000
+  }
+}
+```
+
+### Ehdokasrakenne
+```json
+{
+  "candidate_id": "uuid",
+  "answers": [
+    {
+      "question_id": "uuid",
+      "answer_value": -5 to 5,
+      "explanation": {"fi", "en", "sv"},
+      "confidence": 1-5
+    }
+  ]
+}
+```
+
+## 🔐 Tietoturva & Eheys
+
+### System Chain - Muutoshistoria
+- Kaikki muutokset lokitetaan `system_chain.json`:ään
+- Hash-pohjainen eheystarkistus
+- Palautumismekanismi vikatilanteisiin
+
+### Konfliktien Hallinta
+1. **Timestamp-pohjainen** - Uudempi voittaa
+2. **Manual intervention** - Admin-päätös
+3. **Community voting** - Yhteisöratkaisu
+
+## 🚀 Käyttöönotto
+
+### Asennusprosessi
+```bash
+# 1. Luo konfiguraatio
+python create_install_config.py
+
+# 2. Asenna master-kone
+python install.py --config-file=config.json --election-id=vaali_2024 --first-install
+
+# 3. Lisää työasemia
+python install.py --config-file=config.json --election-id=vaali_2024
+
+# 4. Hallinnoi kysymyksiä
+python manage_questions.py --add --category "Aihe" --question "Kysymys?"
+```
+
+### Testaus & Kehitys
+```bash
+# Mock-IPFS testaus
+python ipfs_sync_manager.py status
+python simple_sync.py --sync
+
+# Data-eheyden tarkistus
+python install.py --verify --election-id=vaali_2024
+```
+
+## 🎯 Yksilölliset Ominaisuudet
+
+### 1. **Älykäs Moderaatio**
+- ELO-pohjainen autoblokkaus
+- Estää manipulation molemmilta tahoilta
+- Yhteisön konsensus vaadittu
+
+### 2. **Hajautettu Arkkitehtuuri**
+- Ei single point of failure
+- IPFS varmistaa datan saatavuuden
+- Monen koneen tuki samalle vaalille
+
+### 3. **Kaksikielinen Käyttöliittymä**
+- Suora komentorivityökalu
+- Graafinen käyttöliittymä (tuleva)
+- Monikielisyys sisäänrakennettuna
+
+### 4. **Laajennettavuus**
+- Modulaarinen rakenne
+- Helppo lisätä uusia vaalityyppejä
+- Plugin-arkkitehtuuri (tuleva)
+
+## 🔮 Tulevat Kehityssuunnat
+
+### Lyhytaikaiset
+- [ ] Graafinen käyttöliittymä
+- [ ] Ehdokkaiden hallintatyökalu
+- [ ] Reaaliaikainen synkronointi
+- [ ] Konfliktien hallintatyökalu
+
+### Pitkäaikaiset
+- [ ] Mobile-sovellus
+- [ ] AI-pohjainen kysymysten generointi
+- [ ] Blockchain-integrointi
+- [ ] Kansainvälinen skaalaus
+
+## 💡 Ydinajatus
+
+**"Demokratia koodiksi - yhteisö luo, äänestää ja moderoi kysymyksiä hajautetusti, kun ELO-luokitus varmistaa laadun ja estää väärinkäytöt."**
+
+Tämä järjestelmä yhdistää:
+- **Yhteisödemokratian** (äänestys & vertailu)
+- **Teknisen robustiuden** (hajautus & eheys)
+- **Käytettävyyden** (yksinkertaiset työkalut)
+- **Laajennettavuuden** (modulaarisuus)
+
+---
+
+**Käynnistä uusi keskustelu aiheesta:** "Miten parantaisit tätä arkkitehtuuria?" tai "Mitä ominaisuuksia näet tärkeimpinä vaalikoneelle?"

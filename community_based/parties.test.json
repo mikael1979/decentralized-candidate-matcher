@@ -1,0 +1,61 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "created": "2024-01-15T10:00:00Z",
+    "description": {
+      "fi": "Kreikkalaisten jumalien puolueet - testidata",
+      "en": "Greek gods political parties - test data",
+      "sv": "Grekiska gudars politiska partier - testdata"
+    }
+  },
+  "parties": [
+    {
+      "party_id": "olympos_party",
+      "name": {
+        "fi": "Olympoksen Hallituspuolue",
+        "en": "Olympus Governing Party", 
+        "sv": "Olympens Styrande Parti"
+      },
+      "description": {
+        "fi": "Perinteitä kunnioittava vakiintunut valtajärjestelmä",
+        "en": "Traditional established power system respecting customs",
+        "sv": "Traditionellt etablerat maktystem som respekterar sedvänjor"
+      },
+      "ideology": "conservative_traditional",
+      "founded": "-1000-01-01",
+      "leader": "Zeus"
+    },
+    {
+      "party_id": "sea_reformists", 
+      "name": {
+        "fi": "Meren Uudistajat",
+        "en": "Sea Reformists",
+        "sv": "Havets Reformister"
+      },
+      "description": {
+        "fi": "Edistysmielinen puolue joka ajaa muutosta ja uusia aaltoja",
+        "en": "Progressive party advocating for change and new waves",
+        "sv": "Progressivt parti som förespråkar förändring och nya vågor"
+      },
+      "ideology": "progressive_reform",
+      "founded": "-0800-01-01", 
+      "leader": "Poseidon"
+    },
+    {
+      "party_id": "underworld_union",
+      "name": {
+        "fi": "Alamaailman Liitto",
+        "en": "Underworld Union", 
+        "sv": "Underjordens Förbund"
+      },
+      "description": {
+        "fi": "Sosiaalisesti oikeudenmukainen puolue joka huolehtii kaikista",
+        "en": "Socially just party that takes care of everyone",
+        "sv": "Socialt rättvist parti som tar hand om alla"
+      },
+      "ideology": "social_justice",
+      "founded": "-0700-01-01",
+      "leader": "Hades"
+    }
+  ]
+}

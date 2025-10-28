@@ -1,5 +1,4 @@
-[file name]: metadata_manager.py
-[file content begin]
+
 """
 Metadata hallintamoduuli vaalijärjestelmälle
 Käsittelee järjestelmän metadataa, kone-ID:t ja allekirjoitukset
@@ -206,4 +205,4 @@ def get_metadata_manager(runtime_dir: str = "runtime") -> MetadataManager:
     if _metadata_manager is None:
         _metadata_manager = MetadataManager(runtime_dir)
     return _metadata_manager
-[file content end]
+

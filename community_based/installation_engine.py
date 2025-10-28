@@ -1,8 +1,6 @@
-[file name]: installation_engine.py
-[file content begin]
 """
-Asennusmoottori vaalijärjestelmälle
-Käsittelee asennuslogiikan modulaarisesti
+Asennusmoottori vaalijärjestelmälle - KORJATTU VERSIO
+Käsittelee asennuslogiikan modulaarisesti sekä IPFS:n että paikalliset tiedostot
 """
 
 import json
@@ -25,17 +23,91 @@ class InstallationEngine:
         """Asettaa IPFS-asiakkaan"""
         self.ipfs_client = ipfs_client
     
-    def load_elections_config(self, config_cid: str) -> Dict[str, Any]:
-        """Lataa vaalikonfiguraation IPFS:stä"""
+    def load_elections_config(self, config_source: str) -> Dict[str, Any]:
+        """Lataa vaalikonfiguraation joko IPFS:stä tai paikallisesta tiedostosta"""
+        
+        # Tarkista onko lähde paikallinen tiedosto
+        if config_source.endswith('.json') and Path(config_source).exists():
+            print(f"📁 Ladataan paikallisesta tiedostosta: {config_source}")
+            return self._load_from_local_file(config_source)
+        
+        # Tarkista onko lähde IPFS CID
+        elif config_source.startswith('Qm') and self.ipfs_client:
+            print(f"🌐 Ladataan IPFS:stä CID:llä: {config_source}")
+            return self._load_from_ipfs(config_source)
+        
+        else:
+            raise ValueError(f"Tuntematon konfiguraatiolähde: {config_source}")
+    
+    def _load_from_local_file(self, file_path: str) -> Dict[str, Any]:
+        """Lataa konfiguraatio paikallisesta tiedostosta"""
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                
+            # Tarkista tiedoston rakenne
+            if 'elections' in data:
+                # elections_list.json rakenne
+                return data
+            elif 'election_data' in data:
+                # install_config.base.json rakenne - muunna elections_list muotoon
+                return self._convert_install_config_to_elections_list(data)
+            else:
+                raise ValueError("Tuntematon konfiguraatiotiedoston rakenne")
+                
+        except Exception as e:
+            raise ValueError(f"Virhe ladattaessa tiedostoa {file_path}: {e}")
+    
+    def _load_from_ipfs(self, cid: str) -> Dict[str, Any]:
+        """Lataa konfiguraatio IPFS:stä"""
         if not self.ipfs_client:
             raise ValueError("IPFS-asiakas puuttuu")
         
-        elections_data = self.ipfs_client.download(config_cid)
+        elections_data = self.ipfs_client.download(cid)
         
         if not elections_data:
-            raise ValueError(f"Vaalikonfiguraatiota ei löydy CID:llä: {config_cid}")
+            raise ValueError(f"Vaalikonfiguraatiota ei löydy CID:llä: {cid}")
         
         return elections_data
+    
+    def _convert_install_config_to_elections_list(self, install_config: Dict[str, Any]) -> Dict[str, Any]:
+        """Muuntaa install_config.base.json muotoon elections_list.json"""
+        election_data = install_config['election_data']
+        
+        return {
+            "metadata": {
+                "version": "1.0.0",
+                "created": datetime.now().isoformat(),
+                "source": "converted_from_install_config"
+            },
+            "elections": [
+                {
+                    "election_id": election_data["id"],
+                    "name": election_data["name"],
+                    "description": election_data["name"],  # Käytä nimea kuvauksena
+                    "dates": [
+                        {
+                            "phase": 1,
+                            "date": election_data["date"],
+                            "description": {
+                                "fi": "Vaalipäivä",
+                                "en": "Election day",
+                                "sv": "Valdag"
+                            }
+                        }
+                    ],
+                    "type": election_data["type"],
+                    "timelock_enabled": election_data["timelock_enabled"],
+                    "edit_deadline": election_data["edit_deadline"],
+                    "grace_period_hours": election_data["grace_period_hours"],
+                    "community_managed": election_data["community_managed"],
+                    "phases": 1,
+                    "districts": election_data.get("districts", ["koko_maa"]),
+                    "status": "upcoming",
+                    "config_cid": election_data.get("ipfs_cid", "")
+                }
+            ]
+        }
     
     def list_available_elections(self, elections_data: Dict[str, Any]) -> None:
         """Listaa saatavilla olevat vaalit"""
@@ -69,7 +141,7 @@ class InstallationEngine:
         if not election:
             raise ValueError(f"Vaalia '{election_id}' ei löydy")
         
-        print(f"🚀 ASENNETAAN VAILLI: {election['name']['fi']}")
+        print(f"🚀 ASENNETAAN VAALI: {election['name']['fi']}")
         
         # 1. Alusta metadata
         metadata = self.metadata_manager.initialize_system_metadata(election_id, first_install)
@@ -178,8 +250,29 @@ class InstallationEngine:
                     "created": datetime.now().isoformat()
                 },
                 "candidates": []
+            },
+            "new_questions.json": {
+                "metadata": {
+                    "election_id": election["election_id"],
+                    "created": datetime.now().isoformat()
+                },
+                "questions": []
+            },
+            "active_questions.json": {
+                "metadata": {
+                    "election_id": election["election_id"],
+                    "created": datetime.now().isoformat()
+                },
+                "questions": []
+            },
+            "ipfs_questions.json": {
+                "metadata": {
+                    "election_id": election["election_id"],
+                    "created": datetime.now().isoformat(),
+                    "last_sync": None
+                },
+                "questions": []
             }
-            # Muut runtime-tiedostot...
         }
         
         for filename, content in runtime_files.items():
@@ -223,7 +316,18 @@ class InstallationEngine:
                     "machine_id": machine_info["machine_id"],
                     "first_install": machine_info["first_install"]
                 }
-            ]
+            ],
+            "current_state": {
+                "election_id": election["election_id"],
+                "installation_time": datetime.now().isoformat(),
+                "files_created": [
+                    "install_config.base.json",
+                    "questions.json", 
+                    "candidates.json",
+                    "system_chain.json",
+                    "installation_meta.json"
+                ]
+            }
         }
         
         with open(self.runtime_dir / "system_chain.json", "w", encoding="utf-8") as f:
@@ -236,15 +340,23 @@ class InstallationEngine:
             "questions.json",
             "candidates.json", 
             "system_chain.json",
-            "system_metadata.json",
-            "installation_meta.json"
+            "installation_meta.json",
+            "new_questions.json",
+            "active_questions.json",
+            "ipfs_questions.json"
         ]
         
         for file_path in required_files:
             if not (self.runtime_dir / file_path).exists():
+                print(f"❌ Puuttuu: {file_path}")
                 return False
         
         # Tarkista että metadata on oikealle vaalille
         machine_info = self.metadata_manager.get_machine_info()
-        return machine_info["election_id"] == election_id
-[file content end]
+        if machine_info["election_id"] != election_id:
+            print(f"❌ Väärä vaali: {machine_info['election_id']} != {election_id}")
+            return False
+        
+        print("✅ Asennus tarkistettu onnistuneesti")
+        return True
+

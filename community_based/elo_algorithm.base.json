@@ -1,0 +1,48 @@
+{
+  "rating_system": {
+    "base_rating": 1000,
+    "k_factor_comparison": 32,
+    "k_factor_votes": 1
+  },
+  "comparison_calculation": {
+    "actual_score_cases": {
+      "question_a_wins": 1.0,
+      "question_b_wins": 0.0,
+      "tie": 0.5
+    }
+  },
+  "vote_calculation": {
+    "upvote_impact": 1,
+    "downvote_impact": -1,
+    "confidence_multiplier": {
+      "1": 0.5,
+      "2": 0.75,
+      "3": 1.0,
+      "4": 1.25,
+      "5": 1.5
+    },
+    "daily_vote_cap": 10
+  },
+  "protection_mechanisms": {
+    "new_question_protection_hours": 24,
+    "min_comparisons_before_rating": 5,
+    "trust_score_multiplier": {
+      "new_user": 0.5,
+      "regular_user": 1.0,
+      "trusted_user": 1.2,
+      "validator": 1.5
+    }
+  },
+  "rate_limiting": {
+    "max_rating_change_per_hour": 100,
+    "max_rating_change_per_day": 500,
+    "velocity_limit_multiplier": 3.0
+  },
+  "blocking_conditions": {
+    "auto_block_enabled": true,
+    "block_requires_both_negative": true,
+    "min_absolute_votes": 100,
+    "max_absolute_votes": 1000,
+    "block_threshold_rating": 0
+  }
+}

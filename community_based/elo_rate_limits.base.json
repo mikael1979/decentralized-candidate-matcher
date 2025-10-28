@@ -1,0 +1,80 @@
+{
+  "elo_rate_limits": {
+    "version": "0.2.0",
+    "description": {
+      "fi": "ELO-luokituksen 7 päivän estojakso manipulaation estämiseksi",
+      "en": "ELO rating 7-day blocking period to prevent manipulation", 
+      "sv": "ELO-betyg 7-dagars blockering för att förhindra manipulation"
+    },
+    
+    "blocking_periods": {
+      "weekly_block_days": 7,
+      "temporary_block_hours": 24,
+      "permanent_block_threshold": 3,
+      "grace_period_first_offense_hours": 12
+    },
+    
+    "violation_triggers": {
+      "hourly_limit_violations": {
+        "soft_limit_warning": 3,
+        "temporary_block": 5,
+        "weekly_block": 8
+      },
+      "daily_limit_violations": {
+        "soft_limit_warning": 2,
+        "temporary_block": 3, 
+        "weekly_block": 5
+      },
+      "velocity_violations": {
+        "temporary_block": 3,
+        "weekly_block": 5
+      },
+      "coordination_detection": {
+        "same_ip_multiple_accounts": 2,
+        "voting_patterns_similarity": 0.9,
+        "time_based_coordination": true
+      }
+    },
+    
+    "block_severity": {
+      "temporary_24h": {
+        "max_rating_change_per_hour": 10,
+        "max_comparisons_per_hour": 5,
+        "can_participate_in_voting": true,
+        "notification_required": true
+      },
+      "weekly_7d": {
+        "max_rating_change_per_hour": 0,
+        "max_comparisons_per_hour": 0,
+        "can_participate_in_voting": false,
+        "read_only_access": true,
+        "appeal_possible_after_days": 3
+      },
+      "permanent": {
+        "complete_block": true,
+        "ip_ban": true,
+        "account_deletion": true
+      }
+    },
+    
+    "detection_algorithms": {
+      "bot_pattern_detection": {
+        "request_frequency_analysis": true,
+        "mouse_movement_tracking": true,
+        "time_between_actions_analysis": true,
+        "geolocation_verification": true
+      },
+      "coordination_detection": {
+        "cluster_analysis_voting_patterns": true,
+        "ip_address_correlation": true,
+        "time_synchronization_detection": true,
+        "content_similarity_analysis": true
+      },
+      "reputation_scoring": {
+        "trust_score_calculation": true,
+        "behavior_pattern_analysis": true,
+        "historical_compliance_tracking": true
+      }
+    }
+  }
+}
