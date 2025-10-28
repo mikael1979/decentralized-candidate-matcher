@@ -1,0 +1,42 @@
+[file name]: system_chain.test.json
+[file content begin]
+{
+  "chain_id": "testivaalit",
+  "created_at": "2024-01-15T10:00:00Z",
+  "description": "Fingerprint-ketju kaikille järjestelmän tiedostoille",
+  "version": "0.1.0-test",
+  "blocks": [
+    {
+      "block_id": 0,
+      "timestamp": "2024-01-15T10:00:00Z",
+      "description": "Alkutila asennuksen jälkeen",
+      "files": {
+        "questions.json": "hash_questions_001",
+        "new_questions.json": "hash_new_questions_001",
+        "active_questions.json": "hash_active_questions_001",
+        "ipfs_questions.json": "hash_ipfs_questions_001",
+        "parties.json": "hash_parties_001",
+        "party_profiles.json": "hash_party_profiles_001",
+        "candidates.json": "hash_candidates_001",
+        "candidate_profiles.json": "hash_candidate_profiles_001",
+        "meta.json": "hash_meta_001"
+      },
+      "previous_hash": null,
+      "block_hash": "block_hash_001"
+    }
+  ],
+  "current_state": {
+    "questions_hash": "hash_questions_001",
+    "elo_base_rating": 1000,
+    "active_comparisons": 0,
+    "total_votes": 0,
+    "system_version": "0.1.0-test"
+  },
+  "metadata": {
+    "algorithm": "sha256",
+    "system_id": "sys_test_001",
+    "election_id": "testivaalit_2024",
+    "elo_model": "dual_delta"
+  }
+}
+[file content end]

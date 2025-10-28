@@ -1,0 +1,15 @@
+Selitän tässä nyt vielä mitä olin itse ajatellut, jos onnistun selittämään. 
+1. base versioista olisi kloonattu käyttöversiot json-tiedostoille, eli base tiedosto on taustamalli josta rakenne luodaan ja sitten luotua rakennetta käytetään ohjelmassa. 
+2. lista alunperin suunnittelemista tiedostoista
+"files": {
+        "questions.json": ",
+        "new_questions.json",
+        "active_questions.json":,
+        "ipfs_questions.json":,
+        "parties.json":,
+        "party_profiles.json"
+        "candidates.json": ,
+        "candidate_profiles.json":,
+        "meta.json": 
+
+jossa kysymykset lisätään new_questions.json, niin että tiedosta luodaan väliaikainen tmp_new_questions.json, johon lähetetyt kysymykset tallennetaan. Tästä kysymykset synkronoidaan -> questions.json ja questions.json synkronoidaan <--> ipfs_questions.json synkronoidaan <--> ipfs-verkko

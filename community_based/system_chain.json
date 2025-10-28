@@ -1,0 +1,42 @@
+{
+  "chain_id": "testivaalit",
+  "created_at": "",
+  "description": "Fingerprint-ketju kaikille järjestelmän tiedostoille",
+  "version": "0.0.1-alpha",
+  "blocks": [
+    {
+      "block_id": 0,
+      "timestamp": "",
+      "description": "Alkutila asennuksen jälkeen",
+      "files": {
+        "questions.json": ",
+        "new_questions.json",
+        "active_questions.json":,
+        "ipfs_questions.json":,
+        "parties.json":,
+        "party_profiles.json"
+        "candidates.json": ,
+        "candidate_profiles.json":,
+        "meta.json": 
+      },
+      "previous_hash": null,
+      "block_hash": ""
+    }
+  ],
+  "current_state": {
+    "questions.json": ",
+    "new_questions.json",
+    "active_questions.json":,
+    "ipfs_questions.json":,
+    "parties.json":,
+    "party_profiles.json"
+    "candidates.json": ,
+    "candidate_profiles.json":,
+    "meta.json": 
+  },
+  "metadata": {
+    "algorithm": "sha256",
+    "system_id": "",
+    "election_id": "testivaalit"
+  }
+}

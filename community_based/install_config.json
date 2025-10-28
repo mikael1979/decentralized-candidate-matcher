@@ -1,0 +1,23 @@
+{
+  "election_data": {
+    "id": "testivaalit",
+    "ipfs_cid": "",
+    "name": {
+      "fi": "",
+      "en": "",
+      "sv": ""
+    },
+    "date": "",
+    "type": "",
+    "timelock_enabled": true,
+    "edit_deadline": "",
+    "grace_period_hours": 24
+  },
+  "admin_data": {
+    "name": "",
+    "username": "",
+    "email": "",
+    "role": "",
+    "admin_id": ""
+  }
+}

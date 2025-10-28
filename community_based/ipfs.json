@@ -1,0 +1,61 @@
+[file name]: ipfs.json
+[file content begin]
+{
+  "ipfs_nodes": [
+    {
+      "node_id": "{{NODE_1_ID}}",
+      "address": "{{NODE_1_ADDRESS}}",
+      "peer_id": "{{NODE_1_PEER_ID}}",
+      "role": "{{NODE_1_ROLE}}",
+      "location": "{{NODE_1_LOCATION}}",
+      "storage_capacity_gb": {{NODE_1_STORAGE_GB}},
+      "status": "{{NODE_1_STATUS}}",
+      "last_health_check": "{{NODE_1_LAST_CHECK}}"
+    }
+  ],
+  "network_config": {
+    "bootstrap_nodes": [
+      "{{BOOTSTRAP_NODE_1}}",
+      "{{BOOTSTRAP_NODE_2}}",
+      "{{BOOTSTRAP_NODE_3}}"
+    ],
+    "swarm_port": {{SWARM_PORT}},
+    "api_port": {{API_PORT}},
+    "gateway_port": {{GATEWAY_PORT}},
+    "enable_relay": {{ENABLE_RELAY}},
+    "enable_nat": {{ENABLE_NAT}}
+  },
+  "content_registry": {
+    "election_data_cid": "{{ELECTION_DATA_CID}}",
+    "questions_cid": "{{QUESTIONS_CID}}",
+    "candidates_cid": "{{CANDIDATES_CID}}",
+    "results_cid": "{{RESULTS_CID}}",
+    "governance_cid": "{{GOVERNANCE_CID}}",
+    "last_updated": "{{LAST_UPDATED_TIMESTAMP}}"
+  },
+  "replication_strategy": {
+    "min_replicas": {{MIN_REPLICAS}},
+    "target_replicas": {{TARGET_REPLICAS}},
+    "max_replicas": {{MAX_REPLICAS}},
+    "geo_distribution": {{GEO_DISTRIBUTION_ENABLED}},
+    "priority_content": [
+      "election_data",
+      "questions",
+      "candidates",
+      "results"
+    ]
+  },
+  "monitoring": {
+    "health_checks": {
+      "interval_minutes": {{HEALTH_CHECK_INTERVAL}},
+      "timeout_seconds": {{HEALTH_CHECK_TIMEOUT}},
+      "alert_threshold": {{ALERT_THRESHOLD}}
+    },
+    "metrics": {
+      "bandwidth_usage": {{BANDWIDTH_MONITORING}},
+      "storage_usage": {{STORAGE_MONITORING}},
+      "uptime_tracking": {{UPTIME_TRACKING}}
+    }
+  }
+}
+[file content end]

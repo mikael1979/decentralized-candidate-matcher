@@ -1,0 +1,28 @@
+{
+  "election": {
+    "id": "kunnallisvaalit-2025",
+    "name": {
+      "fi": "Kunnallisvaalit 2025",
+      "en": "Municipal Elections 2025",
+      "sv": "Kommunala val 2025"
+    },
+    "date": "2025-04-13",
+    "type": "municipal",
+    "timelock_enabled": true,
+    "edit_deadline": "2025-03-01T23:59:00",
+    "grace_period_hours": 24
+  },
+  "system_info": {
+    "system_id": "6428620acd974f0a",
+    "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoHc63wMv+nRAVEGKvRHF\ny8gTaw6BcVp/kS2ar//x57STcnZzJyuI1XUX0UYjDrcHoSj00zQGKYSaCetFxRw/\ntQXybS4bDk2OFsWSzlAK5IY2WVJ9kCq7y8PrpieNiReii+yN+EYLFz6joLi8HOxT\ni1Gd68UItLfMVRS++eljjE2Vf8Lyr66WIaHY3PXHgFT+EXW8biLtMT0ivozaVuYN\nqaZyKj7vBxHjiBX2H75q3zOzDs8Br+u9Owx/qkYERiM8L56xpqCxc3S7nO1SRNS+\naL8iMkWTcjywFq0KMaSNOwndd1NlgETm8qv6nEr8bup/lTYxfjMkIlMhzc6U6cGQ\nPQIDAQAB\n-----END PUBLIC KEY-----\n",
+    "created": "2025-10-26T10:32:12.252037"
+  },
+  "admin": {
+    "name": "Testi Admin",
+    "username": "admin",
+    "email": "admin@example.com",
+    "role": "super_admin",
+    "admin_id": "admin_admin"
+  },
+  "version": "0.0.6-alpha"
+}

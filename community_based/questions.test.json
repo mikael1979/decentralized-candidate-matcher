@@ -1,0 +1,61 @@
+[file name]: questions.test.json
+[file content begin]
+{
+  "questions": [
+    {
+      "id": 1,
+      "category": {
+        "fi": "Ympäristö",
+        "en": "Environment",
+        "sv": "Miljö"
+      },
+      "question": {
+        "fi": "Pitäisikö kaupungin investoida enemmän pyöräteihin?",
+        "en": "Should the city invest more in bicycle paths?",
+        "sv": "Bör staden investera mer i cykelvägar?"
+      },
+      "tags": ["transport", "environment", "infrastructure"],
+      "scale": {
+        "min": -5,
+        "max": 5
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": 0,
+        "vote_delta": 0,
+        "current_rating": 1000,
+        "blocked": false,
+        "block_reason": "",
+        "delta_limits": {
+          "comparison_min": -800,
+          "comparison_max": 1000,
+          "vote_min": -100,
+          "vote_max": 1000,
+          "community_size": 500,
+          "block_percentage_required": 2.0
+        },
+        "total_comparisons": 0,
+        "total_votes": 0,
+        "up_votes": 0,
+        "down_votes": 0,
+        "status": "active",
+        "created_at": "2024-01-15T10:00:00Z",
+        "last_updated": "2024-01-15T10:00:00Z"
+      }
+    }
+  ],
+  "elo_parameters": {
+    "base_rating": 1000,
+    "k_factor_comparison": 32,
+    "k_factor_votes": 1,
+    "block_threshold": 0,
+    "block_requires_both": true,
+    "community_block_percentage": 2.0,
+    "min_absolute_votes": 100,
+    "max_absolute_votes": 1000,
+    "rating_formula": "base_rating + comparison_delta + vote_delta",
+    "auto_block_enabled": true,
+    "version": "conservative_v1"
+  }
+}
+[file content end]

@@ -1,30 +1,30 @@
 {
-  "chain_id": "testivaalit2027",
-  "created_at": "2025-10-26T10:23:42.926397",
+  "chain_id": "kunnallisvaalit-2025",
+  "created_at": "2025-10-26T10:32:12.253136",
   "description": "Fingerprint-ketju kaikille järjestelmän tiedostoille",
   "version": "0.0.6-alpha",
   "blocks": [
     {
       "block_id": 0,
-      "timestamp": "2025-10-26T10:23:42.926374",
+      "timestamp": "2025-10-26T10:32:12.253075",
       "description": "Alkutila asennuksen jälkeen",
       "files": {
         "questions.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "candidates.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "meta.json": "a1ec82be2da5412f10c599522e5ee38d860309443102be2d2fc9aaf06ede1967"
+        "meta.json": "75dbf8d5d954aa3cd9a8d027c8ec476c8631624490cc37f6845e7eecadd8c02f"
       },
       "previous_hash": null,
-      "block_hash": "sha256:55d63258473c1cf6309e55aff8cc9423a8f20168283facbbde3232f0a6ae5cc1"
+      "block_hash": "sha256:a703e0add0538ddb7e2747d306bcdd5332a17c7fde763c6b6dd26648c620a0e9"
     }
   ],
   "current_state": {
     "questions.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "candidates.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "meta.json": "a1ec82be2da5412f10c599522e5ee38d860309443102be2d2fc9aaf06ede1967"
+    "meta.json": "75dbf8d5d954aa3cd9a8d027c8ec476c8631624490cc37f6845e7eecadd8c02f"
   },
   "metadata": {
     "algorithm": "sha256",
-    "system_id": "c7d4aea2987561a3",
-    "election_id": "testivaalit2027"
+    "system_id": "6428620acd974f0a",
+    "election_id": "kunnallisvaalit-2025"
   }
 }

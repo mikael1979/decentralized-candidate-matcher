@@ -1,0 +1,65 @@
+{
+  "version": "0.0.1-alpha",
+  "default_questions": [
+    {
+      "id": 1,
+      "category": {""},
+      "question": {
+        "fi": "",
+        "en": "",
+        "sv": ""
+      },
+      "tags": [""],
+      "scale": {"min": -5, "max": 5}
+    },
+    {
+      "id": 2,
+      "category": {""},
+      "question": {
+        "fi": "",
+        "en": "",
+        "sv": ""
+      },
+      "tags": [""],
+      "scale": {"min": -5, "max": 5}
+    }
+  ],
+  "default_candidates": [
+    {
+      "name": "",
+      "party": "",
+      "answers": [
+        {"question_id": 1, "answer": , "confidence": },
+        {"question_id": 2, "answer": , "confidence": }
+      ]
+    },
+    {
+      "name": "",
+      "party": "",
+      "answers": [
+        {"question_id": 1, "answer": 2, "confidence": },
+        {"question_id": 2, "answer": 5, "confidence": }
+      ]
+    }
+  ],
+  "justifications": {
+    "fi": {
+      "q1_pos": "",
+      "q1_neg": "",
+      "q2_pos": "",
+      "q2_neg": ""
+    },
+    "en": {
+      "q1_pos": "",
+      "q1_neg": "",
+      "q2_pos": "",
+      "q2_neg": ""
+    },
+    "sv": {
+      "q1_pos": "",
+      "q1_neg": "",
+      "q2_pos": "",
+      "q2_neg": ""
+    }
+  }
+}

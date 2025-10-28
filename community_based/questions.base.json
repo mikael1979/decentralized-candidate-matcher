@@ -1,0 +1,83 @@
+[file name]: questions.base.json
+[file content begin]
+{
+  "metadata": {
+    "version": "{{VERSION}}",
+    "local_system_id": "{{LOCAL_SYSTEM_ID}}",
+    "created": "{{CREATED_TIMESTAMP}}",
+    "last_updated": "{{LAST_UPDATED_TIMESTAMP}}",
+    "last_sync": "{{LAST_SYNC_TIMESTAMP}}",
+    "sync_status": {
+      "local_modified": true,
+      "ipfs_synced": false,
+      "pending_new_questions": {{PENDING_COUNT}}
+    }
+  },
+  "questions": [
+    {
+      "local_id": "{{LOCAL_UUID}}",
+      "ipfs_cid": null,
+      "source": "local",
+      "global_version": 1,
+      "timestamps": {
+        "created_local": "2024-01-15T10:30:45.123Z",
+        "modified_local": "2024-01-15T10:30:45.123Z",
+        "synced_to_ipfs": null,
+        "imported_from_ipfs": null
+      },
+      "content": {
+        "category": {
+          "fi": "{{Q1_CATEGORY_FI}}",
+          "en": "{{Q1_CATEGORY_EN}}",
+          "sv": "{{Q1_CATEGORY_SV}}"
+        },
+        "question": {
+          "fi": "{{Q1_QUESTION_FI}}",
+          "en": "{{Q1_QUESTION_EN}}",
+          "sv": "{{Q1_QUESTION_SV}}"
+        },
+        "tags": ["{{Q1_TAG1}}", "{{Q1_TAG2}}"],
+        "scale": {"min": -5, "max": 5}
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": 0,
+        "vote_delta": 0,
+        "current_rating": 1000
+      }
+    },
+    {
+      "local_id": "{{LOCAL_UUID}}",
+      "ipfs_cid": "QmIPFSCid123456789",
+      "source": "ipfs",
+      "global_version": 1,
+      "timestamps": {
+        "created_local": "2024-01-15T10:30:45.123Z",
+        "modified_local": "2024-01-15T10:30:45.123Z",
+        "synced_to_ipfs": "2024-01-15T09:15:30.456Z",
+        "imported_from_ipfs": "2024-01-15T10:30:45.123Z"
+      },
+      "content": {
+        "category": {
+          "fi": "IPFS-kysymys",
+          "en": "IPFS Question",
+          "sv": "IPFS Fråga"
+        },
+        "question": {
+          "fi": "Tämä kysymys on tuotu IPFS:stä?",
+          "en": "This question was imported from IPFS?",
+          "sv": "Den här frågan importerades från IPFS?"
+        },
+        "tags": ["ipfs", "imported"],
+        "scale": {"min": -5, "max": 5}
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": 25,
+        "vote_delta": 3,
+        "current_rating": 1028
+      }
+    }
+  ]
+}
+[file content end]

@@ -1,0 +1,38 @@
+{
+  "election": {
+    "id": "{{ELECTION_ID}}",
+    "name": {
+      "fi": "{{ELECTION_NAME_FI}}",
+      "en": "{{ELECTION_NAME_EN}}",
+      "sv": "{{ELECTION_NAME_SV}}"
+    },
+    "date": "{{ELECTION_DATE}}",
+    "type": "{{ELECTION_TYPE}}",
+    "timelock_enabled": {{ELECTION_TIMELOCK_ENABLED}},
+    "edit_deadline": "{{ELECTION_EDIT_DEADLINE}}",
+    "grace_period_hours": {{ELECTION_GRACE_PERIOD_HOURS}},
+    "governance_model": "community_driven"
+  },
+  "system_info": {
+    "system_id": "{{SYSTEM_ID}}",
+    "public_key": "{{SYSTEM_PUBLIC_KEY}}",
+    "created": "{{SYSTEM_CREATED_TIMESTAMP}}",
+    "governance_contract": "{{GOVERNANCE_CONTRACT_ADDRESS}}"
+  },
+  "community_governance": {
+    "validators": [
+      {
+        "address": "{{VALIDATOR_1_ADDRESS}}",
+        "role": "technical",
+        "elected_date": "{{VALIDATOR_1_ELECTED}}",
+        "term_end": "{{VALIDATOR_1_TERM_END}}"
+      }
+    ],
+    "current_proposals": [],
+    "voting_parameters": {
+      "quorum": {{COMMUNITY_QUORUM}},
+      "approval_threshold": {{COMMUNITY_APPROVAL_THRESHOLD}}
+    }
+  },
+  "version": "{{SYSTEM_VERSION}}"
+}

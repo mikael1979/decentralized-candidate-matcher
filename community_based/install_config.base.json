@@ -1,0 +1,26 @@
+{
+  "election_data": {
+    "id": "{{ELECTION_ID}}",
+    "ipfs_cid": "{{ELECTION_IPFS_CID}}",
+    "name": {
+      "fi": "{{ELECTION_NAME_FI}}",
+      "en": "{{ELECTION_NAME_EN}}",
+      "sv": "{{ELECTION_NAME_SV}}"
+    },
+    "date": "{{ELECTION_DATE}}",
+    "type": "{{ELECTION_TYPE}}",
+    "timelock_enabled": {{ELECTION_TIMELOCK_ENABLED}},
+    "edit_deadline": "{{ELECTION_EDIT_DEADLINE}}",
+    "grace_period_hours": {{ELECTION_GRACE_PERIOD_HOURS}},
+    "community_managed": true
+  },
+  "community_governance": {
+    "multisig_wallet": "{{MULTISIG_WALLET}}",
+    "proposal_system": "{{PROPOSAL_SYSTEM_URL}}",
+    "voting_contract": "{{VOTING_CONTRACT}}",
+    "emergency_council": {
+      "members": {{EMERGENCY_COUNCIL_COUNT}},
+      "activation_threshold": {{EMERGENCY_THRESHOLD}}
+    }
+  }
+}

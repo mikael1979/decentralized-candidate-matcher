@@ -1,0 +1,40 @@
+{
+  "community": {
+    "name": "{{COMMUNITY_NAME}}",
+    "description": {
+      "fi": "{{COMMUNITY_DESC_FI}}",
+      "en": "{{COMMUNITY_DESC_EN}}",
+      "sv": "{{COMMUNITY_DESC_SV}}"
+    },
+    "membership": {
+      "type": "{{MEMBERSHIP_TYPE}}",
+      "onboarding_process": "{{ONBOARDING_PROCESS}}",
+      "reputation_system": {{REPUTATION_SYSTEM_ENABLED}},
+      "contribution_rewards": {{CONTRIBUTION_REWARDS}}
+    },
+    "communication": {
+      "forum_url": "{{FORUM_URL}}",
+      "chat_url": "{{CHAT_URL}}",
+      "notification_channel": "{{NOTIFICATION_CHANNEL}}"
+    }
+  },
+  "decision_making": {
+    "proposal_types": [
+      {
+        "type": "config_change",
+        "threshold": {{CONFIG_CHANGE_THRESHOLD}},
+        "voting_period": {{CONFIG_VOTING_DAYS}}
+      },
+      {
+        "type": "budget_allocation", 
+        "threshold": {{BUDGET_THRESHOLD}},
+        "voting_period": {{BUDGET_VOTING_DAYS}}
+      },
+      {
+        "type": "validator_election",
+        "threshold": {{ELECTION_THRESHOLD}},
+        "voting_period": {{ELECTION_VOTING_DAYS}}
+      }
+    ]
+  }
+}
