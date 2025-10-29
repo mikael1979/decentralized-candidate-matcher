@@ -1,0 +1,2565 @@
+# complete_elo_calculator.py
+from datetime import datetime, timedelta
+from datetime import timezone  # Lisää tämä
+import math
+import json
+from typing import Dict, List, Optional, Tuple
+from enum import Enum
+
+class VoteType(Enum):
+    UPVOTE = "upvote"
+    DOWNVOTE = "downvote"
+
+class ComparisonResult(Enum):
+    A_WINS = "a_wins"
+    B_WINS = "b_wins"
+    TIE = "tie"
+
+class UserTrustLevel(Enum):
+    NEW_USER = "new_user"
+    REGULAR_USER = "regular_user" 
+    TRUSTED_USER = "trusted_user"
+    VALIDATOR = "validator"
+
+class CompleteELOCalculator:
+    """Täydellinen ELO-laskenta vertailuille ja äänestyksille"""
+    
+    def __init__(self, config_file: str = "elo_algorithm.base.json"):
+        self.config = self._load_config(config_file)
+        self.rating_history = {}  # {question_id: List[RatingChange]}
+        
+    def _load_config(self, config_file: str) -> Dict:
+        """Lataa ELO-konfiguraatio"""
+        try:
+            with open(config_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except FileNotFoundError:
+            return self._get_default_config()
+    
+    def _get_default_config(self) -> Dict:
+        """Oletuskonfiguraatio"""
+        return {
+        "rating_system": {
+            "base_rating": 1000,
+            "k_factor_comparison": 32,
+            "k_factor_votes": 1
+        },
+        "comparison_calculation": {
+            "actual_score_cases": {
+                "question_a_wins": 1.0,
+                "question_b_wins": 0.0,
+                "tie": 0.5
+            }
+        },
+        "vote_calculation": {
+            "upvote_impact": 1,
+            "downvote_impact": -1,
+            "confidence_multiplier": {
+                "1": 0.5,
+                "2": 0.75,
+                "3": 1.0,
+                "4": 1.25,
+                "5": 1.5
+            },
+            "daily_vote_cap": 10
+        },
+        "protection_mechanisms": {
+            "new_question_protection_hours": 24,
+            "min_comparisons_before_rating": 5,
+            "trust_score_multiplier": {
+                "new_user": 0.5,
+                "regular_user": 1.0,
+                "trusted_user": 1.2,
+                "validator": 1.5
+            }
+        },
+        "rate_limiting": {
+            "max_rating_change_per_hour": 100,
+            "max_rating_change_per_day": 500,
+            "velocity_limit_multiplier": 3.0
+        },
+        "blocking_conditions": {
+            "auto_block_enabled": True,
+            "block_requires_both_negative": True,
+            "min_absolute_votes": 100,
+            "max_absolute_votes": 1000,
+            "block_threshold_rating": 0
+        }
+    }
+    
+    def _parse_datetime(self, datetime_str: str) -> datetime:
+        """Jäsennä datetime merkkijonosta, käsittele sekä offset-aware että naive"""
+        try:
+            # Yritä parsia offset-aware datetime (sisältää Z tai offsetin)
+            if datetime_str.endswith('Z'):
+                return datetime.fromisoformat(datetime_str.replace('Z', '+00:00'))
+            else:
+                dt = datetime.fromisoformat(datetime_str)
+                # Jos datetime on offset-naive, oletetaan että se on UTC
+                if dt.tzinfo is None:
+                    return dt.replace(tzinfo=timezone.utc)
+                return dt
+        except ValueError:
+            # Fallback: oleta että on UTC jos parsing epäonnistuu
+            return datetime.now(timezone.utc)
+    
+    def _get_question_age(self, question: Dict) -> timedelta:
+        """Laske kysymyksen ikä UTC-ajassa"""
+        try:
+            created_str = question["timestamps"]["created_local"]
+            created_time = self._parse_datetime(created_str)
+            current_time = datetime.now(timezone.utc)
+            
+            return current_time - created_time
+        except (KeyError, ValueError):
+            # Fallback: oleta että kysymys on uusi
+            return timedelta(0)
+    
+    def _get_current_utc(self) -> datetime:
+        """Palauta nykyinen UTC-aika"""
+        return datetime.now(timezone.utc)
+    
+    def process_comparison(self, question_a: Dict, question_b: Dict, 
+                         result: ComparisonResult, user_trust: UserTrustLevel) -> Dict:
+        """
+        Käsittele kysymysvertailu ja laske rating-muutokset
+        """
+        # 1. Tarkista suojausmekanismit
+        protection_check = self._check_protection_mechanisms(question_a, question_b)
+        if not protection_check["allowed"]:
+            return {
+                "success": False,
+                "error": "Comparison blocked by protection mechanisms",
+                "details": protection_check
+            }
+        
+        # 2. Laske ELO-muutokset
+        rating_a = question_a["elo_rating"]["current_rating"]
+        rating_b = question_b["elo_rating"]["current_rating"]
+        
+        # Laske odotetut tulokset
+        expected_a = self._calculate_expected_score(rating_a, rating_b)
+        expected_b = self._calculate_expected_score(rating_b, rating_a)
+        
+        # Määritä todelliset tulokset
+        actual_a, actual_b = self._get_actual_scores(result)
+        
+        # Laske rating-muutokset
+        k_factor_a = self._get_k_factor(question_a, user_trust, "comparison")
+        k_factor_b = self._get_k_factor(question_b, user_trust, "comparison")
+        
+        change_a = k_factor_a * (actual_a - expected_a)
+        change_b = k_factor_b * (actual_b - expected_b)
+        
+        # 3. Tarkista rate limits
+        limit_check_a = self._check_rate_limits(question_a["local_id"], change_a)
+        limit_check_b = self._check_rate_limits(question_b["local_id"], change_b)
+        
+        # Sovella rate limiteja
+        if not limit_check_a["allowed"]:
+            change_a = self._apply_rate_limits(change_a, limit_check_a)
+        
+        if not limit_check_b["allowed"]:
+            change_b = self._apply_rate_limits(change_b, limit_check_b)
+        
+        # 4. Päivitä ratingit
+        new_rating_a = rating_a + change_a
+        new_rating_b = rating_b + change_b
+        
+        # 5. Tallenna muutokset
+        self._record_rating_change(question_a["local_id"], change_a, "comparison", result.value)
+        self._record_rating_change(question_b["local_id"], change_b, "comparison", result.value)
+        
+        return {
+            "success": True,
+            "changes": {
+                "question_a": {
+                    "old_rating": rating_a,
+                    "new_rating": new_rating_a,
+                    "change": change_a,
+                    "expected_score": expected_a,
+                    "actual_score": actual_a
+                },
+                "question_b": {
+                    "old_rating": rating_b,
+                    "new_rating": new_rating_b,
+                    "change": change_b,
+                    "expected_score": expected_b,
+                    "actual_score": actual_b
+                }
+            },
+            "rate_limits": {
+                "question_a": limit_check_a,
+                "question_b": limit_check_b
+            },
+            "protection_check": protection_check,
+            "timestamp": self._get_current_utc().isoformat()
+        }
+    
+    def process_vote(self, question: Dict, vote_type: VoteType, 
+                   confidence: int, user_trust: UserTrustLevel) -> Dict:
+        """
+        Käsittele yksittäinen ääni (upvote/downvote)
+        """
+        # 1. Tarkista äänestysrajoitukset
+        vote_check = self._check_vote_limits(question["local_id"])
+        if not vote_check["allowed"]:
+            return {
+                "success": False,
+                "error": "Vote limit exceeded",
+                "details": vote_check
+            }
+        
+        # 2. Laske äänen vaikutus
+        vote_config = self.config.get("vote_calculation", {})
+        base_impact = vote_config.get("upvote_impact", 1) if vote_type == VoteType.UPVOTE else vote_config.get("downvote_impact", -1)
+        
+        confidence_multipliers = vote_config.get("confidence_multiplier", {"3": 1.0})
+        confidence_multiplier = confidence_multipliers.get(str(confidence), 1.0)
+        
+        trust_multipliers = self.config["protection_mechanisms"]["trust_score_multiplier"]
+        trust_multiplier = trust_multipliers.get(user_trust.value, 1.0)
+        
+        vote_impact = base_impact * confidence_multiplier * trust_multiplier
+        
+        # 3. Tarkista rate limits
+        limit_check = self._check_rate_limits(question["local_id"], vote_impact)
+        if not limit_check["allowed"]:
+            vote_impact = self._apply_rate_limits(vote_impact, limit_check)
+        
+        # 4. Päivitä rating
+        old_rating = question["elo_rating"]["current_rating"]
+        new_rating = old_rating + vote_impact
+        
+        # 5. Tallenna muutos
+        self._record_rating_change(question["local_id"], vote_impact, "vote", vote_type.value)
+        
+        return {
+            "success": True,
+            "change": {
+                "old_rating": old_rating,
+                "new_rating": new_rating,
+                "change": vote_impact,
+                "vote_type": vote_type.value,
+                "confidence": confidence
+            },
+            "rate_limits": limit_check,
+            "vote_limits": vote_check,
+            "timestamp": self._get_current_utc().isoformat()
+        }
+    
+    def _calculate_expected_score(self, rating_a: float, rating_b: float) -> float:
+        """Laske odotettu tulos ELO-kaavalla"""
+        return 1 / (1 + 10 ** ((rating_b - rating_a) / 400))
+    
+    def _get_actual_scores(self, result: ComparisonResult) -> Tuple[float, float]:
+        """Määritä todelliset tulospisteet"""
+        cases = self.config["comparison_calculation"]["actual_score_cases"]
+        
+        if result == ComparisonResult.A_WINS:
+            return cases["question_a_wins"], cases["question_b_wins"]
+        elif result == ComparisonResult.B_WINS:
+            return cases["question_b_wins"], cases["question_a_wins"]
+        else:  # TIE
+            return cases["tie"], cases["tie"]
+    
+    def _get_k_factor(self, question: Dict, user_trust: UserTrustLevel, calculation_type: str) -> float:
+        """Laske K-factor kysymyksen ja käyttäjän perusteella"""
+        base_k = self.config["rating_system"][f"k_factor_{calculation_type}"]
+        trust_multipliers = self.config["protection_mechanisms"]["trust_score_multiplier"]
+        trust_multiplier = trust_multipliers.get(user_trust.value, 1.0)
+        
+        # Vähennä K-factoria uusille kysymyksille
+        question_age = self._get_question_age(question)
+        age_multiplier = self._get_age_multiplier(question_age)
+        
+        return base_k * trust_multiplier * age_multiplier
+    
+    def _get_age_multiplier(self, age: timedelta) -> float:
+        """Laske ikäkerroin K-factorille"""
+        protection_hours = self.config["protection_mechanisms"]["new_question_protection_hours"]
+        
+        if age < timedelta(hours=protection_hours):
+            # Lineaarinen kasvu suojausjakson aikana
+            progress = age.total_seconds() / (protection_hours * 3600)
+            return 0.5 + (0.5 * progress)  # 0.5 → 1.0
+        else:
+            return 1.0
+    
+    def _check_protection_mechanisms(self, question_a: Dict, question_b: Dict) -> Dict:
+        """Tarkista suojausmekanismit"""
+        checks = []
+        
+        # Tarkista kysymyksen A suojaus
+        age_a = self._get_question_age(question_a)
+        if age_a < timedelta(hours=self.config["protection_mechanisms"]["new_question_protection_hours"]):
+            checks.append(f"Question A is under protection ({age_a})")
+        
+        # Tarkista kysymyksen B suojaus  
+        age_b = self._get_question_age(question_b)
+        if age_b < timedelta(hours=self.config["protection_mechanisms"]["new_question_protection_hours"]):
+            checks.append(f"Question B is under protection ({age_b})")
+        
+        # Tarkista minimivertailut
+        comparisons_a = question_a["elo_rating"].get("total_comparisons", 0)
+        comparisons_b = question_b["elo_rating"].get("total_comparisons", 0)
+        min_comparisons = self.config["protection_mechanisms"]["min_comparisons_before_rating"]
+        
+        if comparisons_a < min_comparisons:
+            checks.append(f"Question A needs more comparisons ({comparisons_a}/{min_comparisons})")
+        if comparisons_b < min_comparisons:
+            checks.append(f"Question B needs more comparisons ({comparisons_b}/{min_comparisons})")
+        
+        return {
+            "allowed": len(checks) == 0,
+            "checks": checks,
+            "details": {
+                "question_a_age": str(age_a),
+                "question_b_age": str(age_b),
+                "question_a_comparisons": comparisons_a,
+                "question_b_comparisons": comparisons_b
+            }
+        }
+    
+    def _check_rate_limits(self, question_id: str, proposed_change: float) -> Dict:
+        """Tarkista rating-muutoksen nopeusrajat"""
+        if question_id not in self.rating_history:
+            return {"allowed": True, "reason": "No history"}
+        
+        current_time = self._get_current_utc()
+        history = self.rating_history[question_id]
+        
+        # Tarkista tunnin raja
+        one_hour_ago = current_time - timedelta(hours=1)
+        hourly_changes = [h for h in history if h["timestamp"] > one_hour_ago]
+        hourly_total = sum(abs(h["change"]) for h in hourly_changes)
+        
+        hourly_limit = self.config["rate_limiting"]["max_rating_change_per_hour"]
+        if hourly_total + abs(proposed_change) > hourly_limit:
+            return {
+                "allowed": False,
+                "reason": "Hourly limit exceeded",
+                "current_usage": hourly_total,
+                "limit": hourly_limit,
+                "remaining": hourly_limit - hourly_total
+            }
+        
+        # Tarkista päivän raja
+        one_day_ago = current_time - timedelta(days=1)
+        daily_changes = [h for h in history if h["timestamp"] > one_day_ago]
+        daily_total = sum(abs(h["change"]) for h in daily_changes)
+        
+        daily_limit = self.config["rate_limiting"]["max_rating_change_per_day"]
+        if daily_total + abs(proposed_change) > daily_limit:
+            return {
+                "allowed": False,
+                "reason": "Daily limit exceeded", 
+                "current_usage": daily_total,
+                "limit": daily_limit,
+                "remaining": daily_limit - daily_total
+            }
+        
+        # Tarkista muutosnopeus (velocity)
+        if len(hourly_changes) >= 2:
+            recent_changes = hourly_changes[-5:]  # Viimeiset 5 muutosta
+            avg_change = sum(abs(h["change"]) for h in recent_changes) / len(recent_changes)
+            max_deviation = avg_change * self.config["rate_limiting"]["velocity_limit_multiplier"]
+            
+            if abs(proposed_change) > max_deviation:
+                return {
+                    "allowed": False,
+                    "reason": "Velocity limit exceeded",
+                    "average_change": avg_change,
+                    "proposed_change": abs(proposed_change),
+                    "max_allowed": max_deviation
+                }
+        
+        return {"allowed": True, "reason": "Within limits"}
+    
+    def _apply_rate_limits(self, change: float, limit_check: Dict) -> float:
+        """Sovella rate limiteja muutokseen"""
+        if "remaining" in limit_check:
+            # Rajota muutos jäljellä olevaan määrään
+            max_change = limit_check["remaining"]
+            return max_change if change > 0 else -max_change
+        elif "max_allowed" in limit_check:
+            # Rajota muutosnopeus
+            max_change = limit_check["max_allowed"]
+            return max_change if change > 0 else -max_change
+        else:
+            # Puolita muutos
+            return change / 2
+    
+    def _check_vote_limits(self, question_id: str) -> Dict:
+        """Tarkista äänestysrajat"""
+        if question_id not in self.rating_history:
+            return {"allowed": True, "reason": "No vote history"}
+        
+        current_time = self._get_current_utc()
+        history = self.rating_history[question_id]
+        
+        # Tarkista päivän äänestysraja
+        today_start = current_time.replace(hour=0, minute=0, second=0, microsecond=0)
+        todays_votes = [h for h in history if h["timestamp"] > today_start and h["type"] == "vote"]
+        
+        daily_vote_cap = self.config["vote_calculation"]["daily_vote_cap"]
+        if len(todays_votes) >= daily_vote_cap:
+            return {
+                "allowed": False,
+                "reason": "Daily vote cap exceeded",
+                "votes_today": len(todays_votes),
+                "cap": daily_vote_cap
+            }
+        
+        return {"allowed": True, "reason": "Within vote limits"}
+    
+    def _record_rating_change(self, question_id: str, change: float, 
+                            change_type: str, details: str):
+        """Tallenna rating-muutos historiaan"""
+        if question_id not in self.rating_history:
+            self.rating_history[question_id] = []
+        
+        self.rating_history[question_id].append({
+            "timestamp": self._get_current_utc(),
+            "change": change,
+            "type": change_type,
+            "details": details,
+            "absolute_change": abs(change)
+        })
+        
+        # Pidä historia kohtuullisen koolle
+        if len(self.rating_history[question_id]) > 1000:  # Max 1000 muutosta
+            self.rating_history[question_id] = self.rating_history[question_id][-500:]
+    
+    def check_auto_block_conditions(self, question: Dict) -> Dict:
+        """Tarkista automaattisen eston ehdot"""
+        rating = question["elo_rating"]["current_rating"]
+        comparison_delta = question["elo_rating"].get("comparison_delta", 0)
+        vote_delta = question["elo_rating"].get("vote_delta", 0)
+        
+        block_conditions = self.config["blocking_conditions"]
+        
+        conditions_met = []
+        
+        # Tarkista rating-raja
+        if rating <= block_conditions["block_threshold_rating"]:
+            conditions_met.append("Rating below threshold")
+        
+        # Tarkista että molemmat deltat ovat negatiivisia (jos vaaditaan)
+        if block_conditions["block_requires_both_negative"]:
+            if comparison_delta < 0 and vote_delta < 0:
+                conditions_met.append("Both deltas negative")
+        else:
+            if comparison_delta < 0 or vote_delta < 0:
+                conditions_met.append("At least one delta negative")
+        
+        # Tarkista äänimäärärajat
+        total_votes = question["elo_rating"].get("total_votes", 0)
+        if (total_votes >= block_conditions["min_absolute_votes"] and 
+            total_votes <= block_conditions["max_absolute_votes"]):
+            conditions_met.append("Within vote count range")
+        
+        should_block = (
+            len(conditions_met) >= 2 and  # Vähintään 2 ehtoa
+            block_conditions["auto_block_enabled"]
+        )
+        
+        return {
+            "should_block": should_block,
+            "conditions_met": conditions_met,
+            "current_state": {
+                "rating": rating,
+                "comparison_delta": comparison_delta,
+                "vote_delta": vote_delta,
+                "total_votes": total_votes
+            }
+        }
+#!/usr/bin/env python3
+#[file name]: create_install_config.py
+#[file content begin]
+
+"""
+Vaalijärjestelmän konfiguraatiotiedostojen luontityökalu
+Kysyy käyttäjältä tarvittavat tiedot ja luo asennustiedostot
+"""
+
+import json
+import uuid
+from datetime import datetime
+from pathlib import Path
+import sys
+
+def get_input(prompt, default=None, required=True):
+    """Kysyy käyttäjältä syötettä"""
+    if default:
+        prompt = f"{prompt} [{default}]: "
+    else:
+        prompt = f"{prompt}: "
+    
+    while True:
+        value = input(prompt).strip()
+        if not value and default:
+            return default
+        elif not value and required:
+            print("❌ Tämä kenttä on pakollinen!")
+        elif value:
+            return value
+
+def get_multilingual_input(field_name, languages=['fi', 'en', 'sv']):
+    """Kysyy monikielistä tekstiä"""
+    result = {}
+    print(f"\n📝 Syötä {field_name} seuraavilla kielillä:")
+    
+    for lang in languages:
+        lang_name = {
+            'fi': 'suomeksi',
+            'en': 'englanniksi', 
+            'sv': 'ruotsiksi'
+        }.get(lang, lang)
+        
+        result[lang] = get_input(f"  {lang_name}", required=True)
+    
+    return result
+
+def get_date_input(prompt):
+    """Kysyy päivämäärää varmistaen oikean muodon"""
+    while True:
+        date_str = get_input(prompt, required=True)
+        try:
+            # Tarkista että päivämäärä on oikeassa muodossa
+            datetime.strptime(date_str, '%Y-%m-%d')
+            return date_str
+        except ValueError:
+            print("❌ Virheellinen päivämäärämuoto! Käytä muotoa: YYYY-MM-DD")
+
+def get_boolean_input(prompt, default=True):
+    """Kysyy kyllä/ei -valintaa"""
+    default_text = "Y" if default else "N"
+    prompt = f"{prompt} (Y/N) [{default_text}]: "
+    
+    while True:
+        value = input(prompt).strip().upper()
+        if not value:
+            return default
+        elif value in ['Y', 'YES', 'K', 'KYLLÄ']:
+            return True
+        elif value in ['N', 'NO', 'E', 'EI']:
+            return False
+        else:
+            print("❌ Syötä Y (kyllä) tai N (ei)")
+
+def get_phases():
+    """Kysyy vaalin vaiheet/päivät"""
+    phases = []
+    phase_count = int(get_input("Kuinka monta vaihetta/vaalipäivää vaalissa on", "1"))
+    
+    for i in range(phase_count):
+        print(f"\n📅 Vaihe {i+1}:")
+        phase = {
+            "phase": i + 1,
+            "date": get_date_input("  Vaalipäivä (YYYY-MM-DD)"),
+            "description": get_multilingual_input("vaiheen kuvaus")
+        }
+        phases.append(phase)
+    
+    return phases
+
+def create_election_config():
+    """Luo vaalikonfiguraation käyttäjän syötteiden perusteella"""
+    
+    print("🎯 VAALIN PERUSTIEDOT")
+    print("=" * 50)
+    
+    election_id = get_input("Vaalin yksilöllinen ID (esim. president_2024)")
+    election_name = get_multilingual_input("vaalin nimi")
+    election_description = get_multilingual_input("vaalin kuvaus")
+    
+    print("\n📊 VAALIN TYYPPI JA AJANKOHTA")
+    election_type = get_input("Vaalityyppi", "presidential")
+    phases = get_phases()
+    
+    print("\n⚙️  JÄRJESTELMÄASETUKSET")
+    timelock_enabled = get_boolean_input("Käytetäänkö timelockia tuloksille", True)
+    edit_deadline = get_date_input("Muokkausdeadline (YYYY-MM-DD)")
+    grace_period = int(get_input("Grace period tunteina", "48"))
+    community_managed = get_boolean_input("Yhteisöhallinnointi käytössä", True)
+    
+    print("\n🌍 VAIKUTUSALUE")
+    districts_input = get_input("Vaalipiirit (pilkulla eroteltuna, 'koko_maa' koko maan vaaleissa)", "koko_maa")
+    districts = [d.strip() for d in districts_input.split(',')]
+    
+    # Luo vaalikonfiguraatio
+    election_config = {
+        "election_id": election_id,
+        "name": election_name,
+        "description": election_description,
+        "dates": phases,
+        "type": election_type,
+        "phases": len(phases),
+        "timelock_enabled": timelock_enabled,
+        "edit_deadline": edit_deadline,
+        "grace_period_hours": grace_period,
+        "community_managed": community_managed,
+        "districts": districts,
+        "candidate_count": None,  # Täytetään myöhemmin
+        "status": "upcoming",
+        "config_cid": f"QmConfig{uuid.uuid4().hex[:16]}",  # Mock-CID
+        "created": datetime.now().isoformat()
+    }
+    
+    return election_config
+
+def create_install_config(election_config):
+    """Luo install_config.base.json tiedoston"""
+    
+    install_config = {
+        "election_data": {
+            "id": election_config["election_id"],
+            "ipfs_cid": election_config["config_cid"],
+            "name": election_config["name"],
+            "date": election_config["dates"][0]["date"],  # Ensimmäinen vaalipäivä
+            "type": election_config["type"],
+            "timelock_enabled": election_config["timelock_enabled"],
+            "edit_deadline": election_config["edit_deadline"],
+            "grace_period_hours": election_config["grace_period_hours"],
+            "community_managed": election_config["community_managed"],
+            "phases": election_config["phases"],
+            "districts": election_config["districts"]
+        },
+        "community_governance": {
+            "multisig_wallet": "{{MULTISIG_WALLET}}",
+            "proposal_system": "{{PROPOSAL_SYSTEM_URL}}",
+            "voting_contract": "{{VOTING_CONTRACT}}",
+            "emergency_council": {
+                "members": 5,
+                "activation_threshold": 3
+            }
+        },
+        "metadata": {
+            "created": datetime.now().isoformat(),
+            "version": "1.0.0",
+            "generated_by": "create_install_config.py"
+        }
+    }
+    
+    return install_config
+
+def create_meta_config(election_config):
+    """Luo meta.base.json tiedoston"""
+    
+    meta_config = {
+        "election": {
+            "id": election_config["election_id"],
+            "name": election_config["name"],
+            "date": election_config["dates"][0]["date"],
+            "type": election_config["type"],
+            "timelock_enabled": election_config["timelock_enabled"],
+            "edit_deadline": election_config["edit_deadline"],
+            "grace_period_hours": election_config["grace_period_hours"],
+            "governance_model": "community_driven"
+        },
+        "system_info": {
+            "system_id": f"system_{election_config['election_id']}",
+            "public_key": "{{SYSTEM_PUBLIC_KEY}}",
+            "created": datetime.now().isoformat(),
+            "governance_contract": "{{GOVERNANCE_CONTRACT_ADDRESS}}"
+        },
+        "community_governance": {
+            "validators": [],
+            "current_proposals": [],
+            "voting_parameters": {
+                "quorum": 15,
+                "approval_threshold": 60
+            }
+        },
+        "version": "1.0.0",
+        "metadata": {
+            "created": datetime.now().isoformat(),
+            "config_source": "manual_creation"
+        }
+    }
+    
+    return meta_config
+
+def create_elections_list(election_config):
+    """Luo elections_list.json tiedoston"""
+    
+    elections_list = {
+        "metadata": {
+            "version": "1.0.0",
+            "created": datetime.now().isoformat(),
+            "last_updated": datetime.now().isoformat(),
+            "ipfs_cid": f"QmElectionsList{uuid.uuid4().hex[:16]}",  # Mock-CID
+            "description": {
+                "fi": "Käsin luotu vaalilista",
+                "en": "Manually created elections list", 
+                "sv": "Manuellt skapad valista"
+            }
+        },
+        "elections": [election_config],
+        "election_types": {
+            election_config["type"]: {
+                "description": {
+                    "fi": f"{election_config['name']['fi']} - tyyppi",
+                    "en": f"{election_config['name']['en']} - type",
+                    "sv": f"{election_config['name']['sv']} - typ"
+                },
+                "term_years": 4,  # Oletusarvo
+                "max_terms": None
+            }
+        },
+        "system_config": {
+            "default_timelock_enabled": True,
+            "default_grace_period_hours": 48,
+            "default_community_managed": True,
+            "supported_languages": ["fi", "en", "sv"],
+            "version_control": True,
+            "ipfs_backed": True
+        }
+    }
+    
+    return elections_list
+
+def save_configs(election_config, output_dir="config_output"):
+    """Tallentaa kaikki konfiguraatiotiedostot"""
+    
+    output_path = Path(output_dir)
+    output_path.mkdir(exist_ok=True)
+    
+    # 1. Luo install_config.base.json
+    install_config = create_install_config(election_config)
+    install_file = output_path / "install_config.base.json"
+    with open(install_file, 'w', encoding='utf-8') as f:
+        json.dump(install_config, f, indent=2, ensure_ascii=False)
+    print(f"✅ Luotu: {install_file}")
+    
+    # 2. Luo meta.base.json
+    meta_config = create_meta_config(election_config)
+    meta_file = output_path / "meta.base.json"
+    with open(meta_file, 'w', encoding='utf-8') as f:
+        json.dump(meta_config, f, indent=2, ensure_ascii=False)
+    print(f"✅ Luotu: {meta_file}")
+    
+    # 3. Luo elections_list.json
+    elections_list = create_elections_list(election_config)
+    elections_file = output_path / "elections_list.json"
+    with open(elections_file, 'w', encoding='utf-8') as f:
+        json.dump(elections_list, f, indent=2, ensure_ascii=False)
+    print(f"✅ Luotu: {elections_file}")
+    
+    # 4. Luo yksinkertainen system_chain.base.json
+    system_chain = {
+        "chain_id": election_config["election_id"],
+        "created_at": datetime.now().isoformat(),
+        "description": f"Vaalijärjestelmä ketju: {election_config['name']['fi']}",
+        "version": "1.0.0",
+        "blocks": [
+            {
+                "block_id": 0,
+                "timestamp": datetime.now().isoformat(),
+                "description": "Konfiguraation luonti",
+                "files": {
+                    "install_config.base.json": "{{HASH}}",
+                    "meta.base.json": "{{HASH}}",
+                    "elections_list.json": "{{HASH}}"
+                },
+                "previous_hash": None,
+                "block_hash": "{{CREATION_HASH}}"
+            }
+        ],
+        "current_state": {
+            "election_id": election_config["election_id"],
+            "election_name": election_config["name"]["fi"],
+            "config_created": datetime.now().isoformat()
+        },
+        "metadata": {
+            "algorithm": "sha256",
+            "system_id": f"system_{election_config['election_id']}",
+            "config_source": "manual_creation"
+        }
+    }
+    
+    system_chain_file = output_path / "system_chain.base.json"
+    with open(system_chain_file, 'w', encoding='utf-8') as f:
+        json.dump(system_chain, f, indent=2, ensure_ascii=False)
+    print(f"✅ Luotu: {system_chain_file}")
+    
+    return output_path
+
+def show_usage_instructions(election_config, output_dir):
+    """Näyttää käyttöohjeet luotujen tiedostojen käyttöön"""
+    
+    print("\n" + "="*60)
+    print("🎉 KONFIGURAATIOT LUOTU ONNISTUNEESTI!")
+    print("="*60)
+    
+    print(f"\n📁 Tiedostot tallennettu hakemistoon: {output_dir}")
+    print(f"🏛️  Vaali: {election_config['name']['fi']}")
+    print(f"🆔 Vaali-ID: {election_config['election_id']}")
+    
+    print(f"\n🚀 ASENNA JÄRJESTELMÄ:")
+    print(f"python install.py --config-file={output_dir}/elections_list.json --election-id={election_config['election_id']} --first-install")
+    
+    print(f"\n💡 VAIHTOEHTOISET ASENNUSTAVAT:")
+    print(f"# 1. Käytä suoraan install_configia:")
+    print(f"python install.py --config-file={output_dir}/install_config.base.json --election-id={election_config['election_id']} --first-install")
+    
+    print(f"\n# 2. Asenna ilman first-install lippua (lisäkoneet):")
+    print(f"python install.py --config-file={output_dir}/elections_list.json --election-id={election_config['election_id']}")
+    
+    print(f"\n# 3. Tarkista asennus:")
+    print(f"python install.py --config-file={output_dir}/elections_list.json --election-id={election_config['election_id']} --verify")
+    
+    print(f"\n📋 LUODUT TIEDOSTOT:")
+    for file in Path(output_dir).glob("*.json"):
+        print(f"   📄 {file.name}")
+    
+    print(f"\n⚠️  HUOMIOITAVAA:")
+    print("   - Korvaa {{MULTISIG_WALLET}} ja muut placeholderit oikeilla arvoilla")
+    print("   - Tarkista erityisesti päivämäärät")
+    print("   - Testaa aina asennus ennen tuotantokäyttöä")
+
+def main():
+    """Pääohjelma"""
+    
+    print("🎯 VAAILIJÄRJESTELMÄN KONFIGURAATION LUONTI")
+    print("=" * 60)
+    print("Tämä työkalu luo vaalijärjestelmälle tarvittavat konfiguraatiotiedostot")
+    print("Vastaa seuraaviin kysymyksiin luodaksesi vaalin konfiguraation\n")
+    
+    try:
+        # 1. Luo vaalikonfiguraatio
+        election_config = create_election_config()
+        
+        # 2. Kysy tallennushakemisto
+        output_dir = get_input("Tallennushakemisto", "config_output")
+        
+        # 3. Tallenna konfiguraatiot
+        saved_path = save_configs(election_config, output_dir)
+        
+        # 4. Näytä käyttöohjeet
+        show_usage_instructions(election_config, output_dir)
+        
+        print(f"\n✅ VALMIS! Järjestelmä on nyt valmis asennettavaksi.")
+        
+    except KeyboardInterrupt:
+        print("\n\n❌ Konfiguraation luonti keskeytetty")
+        sys.exit(1)
+    except Exception as e:
+        print(f"\n❌ Virhe konfiguraation luonnissa: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
+#[file content end]
+# elo_manager.py
+from datetime import datetime
+import json
+from typing import Dict, Optional
+from complete_elo_calculator import ComparisonResult, VoteType, UserTrustLevel  # Lisää tämä import
+
+class ELOManager:
+    """Integroi ELO-laskenta koko vaalikonejärjestelmään"""
+    
+    def __init__(self, questions_file: str = "questions.json"):
+        self.questions_file = questions_file
+        from complete_elo_calculator import CompleteELOCalculator  # Lazy import välttääkseen circular dependency
+        self.elo_calculator = CompleteELOCalculator()
+    
+    def handle_comparison(self, user_id: str, question_a_id: str, 
+                        question_b_id: str, result: ComparisonResult,  # Nyt ComparisonResult on saatavilla
+                        user_trust: UserTrustLevel) -> Dict:
+        """Käsittele käyttäjän tekemä vertailu"""
+        # Lataa kysymykset
+        questions_data = self._load_questions()
+        question_a = self._find_question(questions_data, question_a_id)
+        question_b = self._find_question(questions_data, question_b_id)
+        
+        if not question_a or not question_b:
+            return {"success": False, "error": "Questions not found"}
+        
+        # Suorita ELO-laskenta
+        elo_result = self.elo_calculator.process_comparison(
+            question_a, question_b, result, user_trust
+        )
+        
+        if not elo_result["success"]:
+            return elo_result
+        
+        # Päivitä kysymysten ratingit
+        self._update_question_rating(question_a_id, elo_result["changes"]["question_a"])
+        self._update_question_rating(question_b_id, elo_result["changes"]["question_b"])
+        
+        # Tarkista estoehdot
+        block_check_a = self.elo_calculator.check_auto_block_conditions(question_a)
+        block_check_b = self.elo_calculator.check_auto_block_conditions(question_b)
+        
+        # Tallenna muutokset
+        self._save_questions(questions_data)
+        
+        return {
+            "success": True,
+            "rating_changes": elo_result["changes"],
+            "block_checks": {
+                "question_a": block_check_a,
+                "question_b": block_check_b
+            },
+            "user_id": user_id,
+            "timestamp": datetime.now().isoformat()
+        }
+    
+    def handle_vote(self, user_id: str, question_id: str, vote_type: VoteType,
+                  confidence: int, user_trust: UserTrustLevel) -> Dict:
+        """Käsittele käyttäjän antama ääni"""
+        # Lataa kysymys
+        questions_data = self._load_questions()
+        question = self._find_question(questions_data, question_id)
+        
+        if not question:
+            return {"success": False, "error": "Question not found"}
+        
+        # Suorita äänestyslaskenta
+        vote_result = self.elo_calculator.process_vote(
+            question, vote_type, confidence, user_trust
+        )
+        
+        if not vote_result["success"]:
+            return vote_result
+        
+        # Päivitä kysymyksen rating
+        self._update_question_rating(question_id, vote_result["change"])
+        
+        # Tarkista estoehdot
+        block_check = self.elo_calculator.check_auto_block_conditions(question)
+        
+        # Tallenna muutokset
+        self._save_questions(questions_data)
+        
+        return {
+            "success": True,
+            "vote_result": vote_result,
+            "block_check": block_check,
+            "user_id": user_id,
+            "timestamp": datetime.now().isoformat()
+        }
+    
+    def _load_questions(self) -> Dict:
+        """Lataa kysymystiedosto"""
+        try:
+            with open(self.questions_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except FileNotFoundError:
+            return {"questions": []}
+    
+    def _save_questions(self, questions_data: Dict):
+        """Tallenna kysymystiedosto"""
+        with open(self.questions_file, 'w', encoding='utf-8') as f:
+            json.dump(questions_data, f, indent=2, ensure_ascii=False)
+    
+    def _find_question(self, questions_data: Dict, question_id: str) -> Optional[Dict]:
+        """Etsi kysymys ID:llä"""
+        for question in questions_data.get("questions", []):
+            if question["local_id"] == question_id:
+                return question
+        return None
+    
+    def _update_question_rating(self, question_id: str, change_data: Dict):
+        """Päivitä kysymyksen ELO-rating"""
+        questions_data = self._load_questions()
+        
+        for question in questions_data.get("questions", []):
+            if question["local_id"] == question_id:
+                # Päivitä rating
+                question["elo_rating"]["current_rating"] = change_data["new_rating"]
+                
+                # Päivitä deltat
+                if "expected_score" in change_data:  # Vertailu
+                    question["elo_rating"]["comparison_delta"] += change_data["change"]
+                    question["elo_rating"]["total_comparisons"] = question["elo_rating"].get("total_comparisons", 0) + 1
+                else:  # Äänestys
+                    question["elo_rating"]["vote_delta"] += change_data["change"]
+                    question["elo_rating"]["total_votes"] = question["elo_rating"].get("total_votes", 0) + 1
+                    
+                    if change_data["vote_type"] == "upvote":
+                        question["elo_rating"]["up_votes"] = question["elo_rating"].get("up_votes", 0) + 1
+                    else:
+                        question["elo_rating"]["down_votes"] = question["elo_rating"].get("down_votes", 0) + 1
+                
+                # Päivitä aikaleima
+                question["timestamps"]["modified_local"] = datetime.now().isoformat()
+                break
+        
+        self._save_questions(questions_data)
+#!/usr/bin/env python3
+"""
+Testidatan import-ohjelma kreikkalaisten jumalien vaaleille
+"""
+
+import json
+import sys
+import os
+from datetime import datetime
+from pathlib import Path
+
+class TestDataImporter:
+    """Lataa testidatan järjestelmään"""
+    
+    def __init__(self, runtime_dir: str = "runtime"):
+        self.runtime_dir = Path(runtime_dir)
+        self.runtime_dir.mkdir(exist_ok=True)
+        
+    def import_all_data(self):
+        """Tuo kaikki testidatat järjestelmään"""
+        print("🏛️  TUODAAN KREIKKALAISTEN JUMALIEN TESTIDATA...")
+        
+        try:
+            # 1. Tuo puolueet
+            self.import_parties()
+            
+            # 2. Tuo kysymykset
+            self.import_questions()
+            
+            # 3. Tuo ehdokkaat
+            self.import_candidates()
+            
+            # 4. Päivitä meta-tiedot
+            self.update_metadata()
+            
+            print("✅ KAIKKI TESTIDATAT TUOTU ONNISTUNEESTI!")
+            self.print_summary()
+            
+        except Exception as e:
+            print(f"❌ VIRHE DATAN TUONNISSA: {e}")
+            sys.exit(1)
+    
+    def import_parties(self):
+        """Tuo puolueet"""
+        print("📋 Tuodaan puolueet...")
+        
+        # Lataa testidata
+        with open('parties.test.json', 'r', encoding='utf-8') as f:
+            test_parties = json.load(f)
+        
+        # Tallenna runtime-kansioon
+        output_file = self.runtime_dir / "parties.json"
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump(test_parties, f, indent=2, ensure_ascii=False)
+        
+        print(f"✅ Tuotu {len(test_parties['parties'])} puoluetta")
+    
+    def import_questions(self):
+        """Tuo kysymykset"""
+        print("❓ Tuodaan kysymykset...")
+        
+        # Lataa testidata
+        with open('questions.test.json', 'r', encoding='utf-8') as f:
+            test_questions = json.load(f)
+        
+        # Tallenna runtime-kansioon
+        output_file = self.runtime_dir / "questions.json"
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump(test_questions, f, indent=2, ensure_ascii=False)
+        
+        print(f"✅ Tuotu {len(test_questions['questions'])} kysymystä")
+    
+    def import_candidates(self):
+        """Tuo ehdokkaat"""
+        print("👑 Tuodaan ehdokkaat...")
+        
+        # Lataa testidata
+        with open('candidates.test.json', 'r', encoding='utf-8') as f:
+            test_candidates = json.load(f)
+        
+        # Tallenna runtime-kansioon
+        output_file = self.runtime_dir / "candidates.json"
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump(test_candidates, f, indent=2, ensure_ascii=False)
+        
+        print(f"✅ Tuotu {len(test_candidates['candidates'])} ehdokasta")
+    
+    def update_metadata(self):
+        """Päivitä järjestelmän meta-tiedot"""
+        print("📊 Päivitetään meta-tiedot...")
+        
+        # Luo/Lataa meta.json
+        meta_file = self.runtime_dir / "meta.json"
+        
+        if meta_file.exists():
+            with open(meta_file, 'r', encoding='utf-8') as f:
+                meta_data = json.load(f)
+        else:
+            meta_data = {
+                "election": {
+                    "id": "greek_gods_2024",
+                    "name": {
+                        "fi": "Kreikkalaisten Jumalien Vaalit 2024",
+                        "en": "Greek Gods Election 2024",
+                        "sv": "Grekiska Gudarnas Val 2024"
+                    },
+                    "date": "2024-01-15",
+                    "type": "divine_council",
+                    "timelock_enabled": True,
+                    "edit_deadline": "2024-01-20",
+                    "grace_period_hours": 48,
+                    "governance_model": "community_driven"
+                },
+                "system_info": {
+                    "system_id": "system_greek_gods",
+                    "created": datetime.now().isoformat()
+                },
+                "version": "1.0.0"
+            }
+        
+        # Päivitä testidatan tiedot
+        meta_data["test_data_imported"] = {
+            "timestamp": datetime.now().isoformat(),
+            "description": "Greek gods test dataset",
+            "questions_count": 20,
+            "candidates_count": 12,
+            "parties_count": 3
+        }
+        
+        with open(meta_file, 'w', encoding='utf-8') as f:
+            json.dump(meta_data, f, indent=2, ensure_ascii=False)
+        
+        print("✅ Meta-tiedot päivitetty")
+    
+    def print_summary(self):
+        """Tulosta yhteenveto tuoduista datoista"""
+        print("\n" + "="*50)
+        print("🎉 TESTIDATAN YHTEENVETO")
+        print("="*50)
+        
+        # Lataa tiedot summarya varten
+        with open(self.runtime_dir / "parties.json", 'r', encoding='utf-8') as f:
+            parties = json.load(f)
+        
+        with open(self.runtime_dir / "questions.json", 'r', encoding='utf-8') as f:
+            questions = json.load(f)
+        
+        with open(self.runtime_dir / "candidates.json", 'r', encoding='utf-8') as f:
+            candidates = json.load(f)
+        
+        print(f"🏛️  POHJA: Kreikkalaisten jumalien vaalit")
+        print(f"📋 Puolueita: {len(parties['parties'])}")
+        print(f"❓ Kysymyksiä: {len(questions['questions'])}")
+        print(f"👑 Ehdokkaita: {len(candidates['candidates'])}")
+        
+        print(f"\n📁 Data tallennettu hakemistoon: {self.runtime_dir}")
+        print(f"⏰ Tuontiaika: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        
+        print("\n🚀 KÄYTTÖÖNOTTO:")
+        print("python test_elo_system.py  # Testaa ELO-järjestelmää")
+        print("python demo_comparisons.py # Tee vertailuja")
+        print("python demo_voting.py      # Anna ääniä")
+
+def main():
+    """Pääohjelma"""
+    if len(sys.argv) > 1:
+        runtime_dir = sys.argv[1]
+    else:
+        runtime_dir = "runtime"
+    
+    importer = TestDataImporter(runtime_dir)
+    importer.import_all_data()
+
+if __name__ == "__main__":
+    main()
+# initialization.py
+import json
+import shutil
+from datetime import datetime
+
+class FileInitializer:
+    def __init__(self, base_dir="base_templates", runtime_dir="runtime"):
+        self.base_dir = base_dir
+        self.runtime_dir = runtime_dir
+        
+    def initialize_runtime_files(self):
+        """Kloonaa base-tiedostot runtime-kansioon"""
+        base_files = [
+            'questions.base.json', 'meta.base.json', 'governance.base.json',
+            'community.base.json', 'install_config.base.json', 
+            'system_chain.base.json', 'ipfs.base.json', 'ipfs_conf.base.json'
+        ]
+        
+        for base_file in base_files:
+            runtime_file = base_file.replace('.base.json', '.json')
+            source_path = f"{self.base_dir}/{base_file}"
+            target_path = f"{self.runtime_dir}/{runtime_file}"
+            
+            # Kloonaa base -> runtime
+            shutil.copy2(source_path, target_path)
+            print(f"Kloonattu: {source_path} -> {target_path}")
+            
+        # Alusta tyhjät runtime-tiedostot
+        self.initialize_empty_runtime_files()
+        
+    def initialize_empty_runtime_files(self):
+        """Alusta tyhjät runtime-tiedostot"""
+        empty_files = [
+            'new_questions.json',
+            'active_questions.json', 
+            'ipfs_questions.json',
+            'parties.json',
+            'party_profiles.json',
+            'candidates.json',
+            'candidate_profiles.json'
+        ]
+        
+        for file in empty_files:
+            file_path = f"{self.runtime_dir}/{file}"
+            with open(file_path, 'w', encoding='utf-8') as f:
+                json.dump({
+                    "metadata": {
+                        "created": datetime.now().isoformat(),
+                        "version": "1.0.0",
+                        "source": "empty_initialization"
+                    },
+                    "data": []
+                }, f, indent=2, ensure_ascii=False)
+            
+            print(f"Alustettu tyhjä: {file_path}")
+
+# Käyttö
+initializer = FileInitializer()
+initializer.initialize_runtime_files()
+"""
+Asennusmoottori vaalijärjestelmälle - KORJATTU VERSIO
+Käsittelee asennuslogiikan modulaarisesti sekä IPFS:n että paikalliset tiedostot
+"""
+
+import json
+import sys
+from pathlib import Path
+from typing import Dict, Any, Optional
+from datetime import datetime
+
+from metadata_manager import get_metadata_manager
+
+class InstallationEngine:
+    """Käsittelee vaalijärjestelmän asennuslogiikan"""
+    
+    def __init__(self, runtime_dir: str = "runtime"):
+        self.runtime_dir = Path(runtime_dir)
+        self.metadata_manager = get_metadata_manager(runtime_dir)
+        self.ipfs_client = None  # Asetetaan ulkopuolelta
+    
+    def set_ipfs_client(self, ipfs_client):
+        """Asettaa IPFS-asiakkaan"""
+        self.ipfs_client = ipfs_client
+    
+    def load_elections_config(self, config_source: str) -> Dict[str, Any]:
+        """Lataa vaalikonfiguraation joko IPFS:stä tai paikallisesta tiedostosta"""
+        
+        # Tarkista onko lähde paikallinen tiedosto
+        if config_source.endswith('.json') and Path(config_source).exists():
+            print(f"📁 Ladataan paikallisesta tiedostosta: {config_source}")
+            return self._load_from_local_file(config_source)
+        
+        # Tarkista onko lähde IPFS CID
+        elif config_source.startswith('Qm') and self.ipfs_client:
+            print(f"🌐 Ladataan IPFS:stä CID:llä: {config_source}")
+            return self._load_from_ipfs(config_source)
+        
+        else:
+            raise ValueError(f"Tuntematon konfiguraatiolähde: {config_source}")
+    
+    def _load_from_local_file(self, file_path: str) -> Dict[str, Any]:
+        """Lataa konfiguraatio paikallisesta tiedostosta"""
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                
+            # Tarkista tiedoston rakenne
+            if 'elections' in data:
+                # elections_list.json rakenne
+                return data
+            elif 'election_data' in data:
+                # install_config.base.json rakenne - muunna elections_list muotoon
+                return self._convert_install_config_to_elections_list(data)
+            else:
+                raise ValueError("Tuntematon konfiguraatiotiedoston rakenne")
+                
+        except Exception as e:
+            raise ValueError(f"Virhe ladattaessa tiedostoa {file_path}: {e}")
+    
+    def _load_from_ipfs(self, cid: str) -> Dict[str, Any]:
+        """Lataa konfiguraatio IPFS:stä"""
+        if not self.ipfs_client:
+            raise ValueError("IPFS-asiakas puuttuu")
+        
+        elections_data = self.ipfs_client.download(cid)
+        
+        if not elections_data:
+            raise ValueError(f"Vaalikonfiguraatiota ei löydy CID:llä: {cid}")
+        
+        return elections_data
+    
+    def _convert_install_config_to_elections_list(self, install_config: Dict[str, Any]) -> Dict[str, Any]:
+        """Muuntaa install_config.base.json muotoon elections_list.json"""
+        election_data = install_config['election_data']
+        
+        return {
+            "metadata": {
+                "version": "1.0.0",
+                "created": datetime.now().isoformat(),
+                "source": "converted_from_install_config"
+            },
+            "elections": [
+                {
+                    "election_id": election_data["id"],
+                    "name": election_data["name"],
+                    "description": election_data["name"],  # Käytä nimea kuvauksena
+                    "dates": [
+                        {
+                            "phase": 1,
+                            "date": election_data["date"],
+                            "description": {
+                                "fi": "Vaalipäivä",
+                                "en": "Election day",
+                                "sv": "Valdag"
+                            }
+                        }
+                    ],
+                    "type": election_data["type"],
+                    "timelock_enabled": election_data["timelock_enabled"],
+                    "edit_deadline": election_data["edit_deadline"],
+                    "grace_period_hours": election_data["grace_period_hours"],
+                    "community_managed": election_data["community_managed"],
+                    "phases": 1,
+                    "districts": election_data.get("districts", ["koko_maa"]),
+                    "status": "upcoming",
+                    "config_cid": election_data.get("ipfs_cid", "")
+                }
+            ]
+        }
+    
+    def list_available_elections(self, elections_data: Dict[str, Any]) -> None:
+        """Listaa saatavilla olevat vaalit"""
+        print("\n📋 SAATAVILLA OLEVAT VAALIT:")
+        print("=" * 70)
+        
+        for i, election in enumerate(elections_data['elections'], 1):
+            status = election.get('status', 'unknown')
+            dates = ", ".join([phase['date'] for phase in election['dates']])
+            election_id = election['election_id']
+            
+            # Tarkista asennustila
+            machine_info = self.metadata_manager.get_machine_info()
+            is_installed = (machine_info['election_id'] == election_id)
+            install_status = "✅ ASENNETTU" if is_installed else "🔲 EI ASENNETTU"
+            
+            print(f"{i}. {election['name']['fi']} {install_status}")
+            print(f"   🆔 ID: {election_id}")
+            print(f"   📅 Päivät: {dates}")
+            print(f"   🏛️  Tyyppi: {election['type']}")
+            print(f"   📊 Tila: {status}")
+            print(f"   🔗 Konfiguraatio CID: {election.get('config_cid', 'Ei määritelty')}")
+            print()
+    
+    def install_election(self, election_id: str, elections_data: Dict[str, Any], 
+                        first_install: bool = False) -> Dict[str, Any]:
+        """Asentaa tietyn vaalin"""
+        
+        # Etsi vaali
+        election = self._find_election(election_id, elections_data)
+        if not election:
+            raise ValueError(f"Vaalia '{election_id}' ei löydy")
+        
+        print(f"🚀 ASENNETAAN VAALI: {election['name']['fi']}")
+        
+        # 1. Alusta metadata
+        metadata = self.metadata_manager.initialize_system_metadata(election_id, first_install)
+        machine_info = self.metadata_manager.get_machine_info()
+        
+        print(f"   💻 Kone-ID: {machine_info['machine_id']}")
+        print(f"   📝 Asennustyyppi: {'Ensimmäinen asennus' if first_install else 'Lisäasennus'}")
+        
+        # 2. Lataa vaalin spesifinen konfiguraatio jos saatavilla
+        election_config = self._load_election_config(election)
+        
+        # 3. Luo konfiguraatiotiedostot
+        self._create_configuration_files(election, election_config, first_install)
+        
+        # 4. Luo vaalirekisteri ensimmäiselle asennukselle
+        if first_install:
+            registry = self.metadata_manager.create_election_registry(election)
+            self._save_election_registry(registry)
+        
+        # 5. Päivitä system_chain
+        self._update_system_chain(election, machine_info)
+        
+        return {
+            "election": election,
+            "metadata": metadata,
+            "machine_info": machine_info,
+            "installation_time": datetime.now().isoformat()
+        }
+    
+    def _find_election(self, election_id: str, elections_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """Etsii vaalin ID:llä"""
+        for election in elections_data['elections']:
+            if election['election_id'] == election_id:
+                return election
+        return None
+    
+    def _load_election_config(self, election: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """Lataa vaalin spesifinen konfiguraatio"""
+        config_cid = election.get('config_cid')
+        if config_cid and self.ipfs_client:
+            print(f"   🔍 Ladataan vaalin spesifistä konfiguraatiota...")
+            return self.ipfs_client.download(config_cid)
+        return None
+    
+    def _create_configuration_files(self, election: Dict[str, Any], 
+                                  election_config: Optional[Dict[str, Any]], 
+                                  first_install: bool):
+        """Luo konfiguraatiotiedostot"""
+        
+        # Luo base-templatet
+        self._create_base_templates(election, election_config)
+        
+        # Luo runtime-tiedostot
+        self._create_runtime_files(election)
+        
+        # Luo asennusmetatiedot
+        self._create_installation_meta(election, first_install)
+        
+        print(f"   ✅ Konfiguraatiotiedostot luotu")
+    
+    def _create_base_templates(self, election: Dict[str, Any], election_config: Optional[Dict[str, Any]]):
+        """Luo base-template tiedostot"""
+        base_dir = self.runtime_dir / "base_templates"
+        base_dir.mkdir(exist_ok=True)
+        
+        # install_config.base.json
+        install_config = {
+            "election_data": {
+                "id": election["election_id"],
+                "ipfs_cid": election.get("config_cid", ""),
+                "name": election["name"],
+                "date": election["dates"][0]["date"],
+                "type": election["type"],
+                "timelock_enabled": election["timelock_enabled"],
+                "edit_deadline": election["edit_deadline"],
+                "grace_period_hours": election["grace_period_hours"],
+                "community_managed": election["community_managed"],
+                "phases": election.get("phases", 1),
+                "districts": election.get("districts", [])
+            },
+            "system_metadata": {
+                "machine_id": self.metadata_manager.get_machine_info()["machine_id"],
+                "first_install": self.metadata_manager.get_machine_info()["first_install"],
+                "installed_at": datetime.now().isoformat()
+            }
+        }
+        
+        with open(base_dir / "install_config.base.json", "w", encoding="utf-8") as f:
+            json.dump(install_config, f, indent=2, ensure_ascii=False)
+    
+    def _create_runtime_files(self, election: Dict[str, Any]):
+        """Luo runtime-tiedostot"""
+        runtime_files = {
+            "questions.json": {
+                "metadata": {
+                    "election_id": election["election_id"],
+                    "machine_id": self.metadata_manager.get_machine_info()["machine_id"],
+                    "created": datetime.now().isoformat()
+                },
+                "questions": []
+            },
+            "candidates.json": {
+                "metadata": {
+                    "election_id": election["election_id"],
+                    "machine_id": self.metadata_manager.get_machine_info()["machine_id"],
+                    "created": datetime.now().isoformat()
+                },
+                "candidates": []
+            },
+            "new_questions.json": {
+                "metadata": {
+                    "election_id": election["election_id"],
+                    "created": datetime.now().isoformat()
+                },
+                "questions": []
+            },
+            "active_questions.json": {
+                "metadata": {
+                    "election_id": election["election_id"],
+                    "created": datetime.now().isoformat()
+                },
+                "questions": []
+            },
+            "ipfs_questions.json": {
+                "metadata": {
+                    "election_id": election["election_id"],
+                    "created": datetime.now().isoformat(),
+                    "last_sync": None
+                },
+                "questions": []
+            }
+        }
+        
+        for filename, content in runtime_files.items():
+            with open(self.runtime_dir / filename, "w", encoding="utf-8") as f:
+                json.dump(content, f, indent=2, ensure_ascii=False)
+    
+    def _create_installation_meta(self, election: Dict[str, Any], first_install: bool):
+        """Luo asennusmetatiedot"""
+        installation_meta = {
+            "installation": {
+                "election_id": election["election_id"],
+                "election_name": election["name"]["fi"],
+                "machine_id": self.metadata_manager.get_machine_info()["machine_id"],
+                "first_install": first_install,
+                "installed_at": datetime.now().isoformat(),
+                "system_version": "1.0.0"
+            }
+        }
+        
+        with open(self.runtime_dir / "installation_meta.json", "w", encoding="utf-8") as f:
+            json.dump(installation_meta, f, indent=2, ensure_ascii=False)
+    
+    def _save_election_registry(self, registry: Dict[str, Any]):
+        """Tallentaa vaalirekisterin"""
+        with open(self.runtime_dir / "election_registry.json", "w", encoding="utf-8") as f:
+            json.dump(registry, f, indent=2, ensure_ascii=False)
+    
+    def _update_system_chain(self, election: Dict[str, Any], machine_info: Dict[str, Any]):
+        """Päivittää system_chain.json"""
+        system_chain = {
+            "chain_id": election["election_id"],
+            "machine_id": machine_info["machine_id"],
+            "created_at": datetime.now().isoformat(),
+            "description": f"Vaalijärjestelmä: {election['name']['fi']}",
+            "installation_type": "first" if machine_info["first_install"] else "additional",
+            "blocks": [
+                {
+                    "block_id": 0,
+                    "timestamp": datetime.now().isoformat(),
+                    "description": "Järjestelmän asennus",
+                    "machine_id": machine_info["machine_id"],
+                    "first_install": machine_info["first_install"]
+                }
+            ],
+            "current_state": {
+                "election_id": election["election_id"],
+                "installation_time": datetime.now().isoformat(),
+                "files_created": [
+                    "install_config.base.json",
+                    "questions.json", 
+                    "candidates.json",
+                    "system_chain.json",
+                    "installation_meta.json"
+                ]
+            }
+        }
+        
+        with open(self.runtime_dir / "system_chain.json", "w", encoding="utf-8") as f:
+            json.dump(system_chain, f, indent=2, ensure_ascii=False)
+    
+    def verify_installation(self, election_id: str) -> bool:
+        """Tarkistaa asennuksen onnistumisen"""
+        required_files = [
+            "base_templates/install_config.base.json",
+            "questions.json",
+            "candidates.json", 
+            "system_chain.json",
+            "installation_meta.json",
+            "new_questions.json",
+            "active_questions.json",
+            "ipfs_questions.json"
+        ]
+        
+        for file_path in required_files:
+            if not (self.runtime_dir / file_path).exists():
+                print(f"❌ Puuttuu: {file_path}")
+                return False
+        
+        # Tarkista että metadata on oikealle vaalille
+        machine_info = self.metadata_manager.get_machine_info()
+        if machine_info["election_id"] != election_id:
+            print(f"❌ Väärä vaali: {machine_info['election_id']} != {election_id}")
+            return False
+        
+        print("✅ Asennus tarkistettu onnistuneesti")
+        return True
+
+#!/usr/bin/env python3
+"""
+Vaalijärjestelmän modulaarinen asennusskripti - KORJATTU VERSIO
+Käyttö: 
+  python install.py --config-file=CID/TIEDOSTO --election-id=ID [--first-install] [--output-dir=DIR]
+"""
+
+import argparse
+import sys
+import json
+from pathlib import Path
+from datetime import datetime
+
+# Lisää moduulit polkuun
+sys.path.append('.')
+
+try:
+    from metadata_manager import get_metadata_manager
+    from installation_engine import InstallationEngine
+except ImportError as e:
+    print(f"Moduulien latausvirhe: {e}")
+    sys.exit(1)
+
+# Yksinkertainen MockIPFS korvaaja jos ei saatavilla
+class SimpleMockIPFS:
+    """Yksinkertainen Mock-IPFS paikallisille tiedostoille"""
+    
+    def download(self, cid_or_path):
+        """Lataa dataa - tukea paikallisille tiedostoille"""
+        if cid_or_path.endswith('.json') and Path(cid_or_path).exists():
+            # Lataa paikallisesta tiedostosta
+            try:
+                with open(cid_or_path, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception as e:
+                print(f"❌ Virhe ladattaessa tiedostoa {cid_or_path}: {e}")
+                return None
+        else:
+            print(f"⚠️  IPFS-toiminto ei saatavilla, käytetään paikallisia tiedostoja")
+            return None
+    
+    def upload(self, data):
+        """Mock-upload - palauttaa mock-CID:n"""
+        import hashlib
+        content_string = json.dumps(data, sort_keys=True, ensure_ascii=False)
+        content_hash = hashlib.sha256(content_string.encode('utf-8')).hexdigest()
+        return f"QmMock{content_hash[:40]}"
+
+def load_elections_config_direct(file_path: str) -> dict:
+    """Lataa vaalikonfiguraatio suoraan tiedostosta"""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        # Tarkista tiedoston rakenne
+        if 'elections' in data:
+            # elections_list.json rakenne
+            return data
+        elif 'election_data' in data:
+            # install_config.base.json rakenne - muunna elections_list muotoon
+            return convert_install_config_to_elections_list(data)
+        else:
+            raise ValueError("Tuntematon konfiguraatiotiedoston rakenne")
+            
+    except Exception as e:
+        raise ValueError(f"Virhe ladattaessa tiedostoa {file_path}: {e}")
+
+def convert_install_config_to_elections_list(install_config: dict) -> dict:
+    """Muuntaa install_config.base.json muotoon elections_list.json"""
+    election_data = install_config['election_data']
+    
+    return {
+        "metadata": {
+            "version": "1.0.0",
+            "created": datetime.now().isoformat(),
+            "source": "converted_from_install_config"
+        },
+        "elections": [
+            {
+                "election_id": election_data["id"],
+                "name": election_data["name"],
+                "description": election_data["name"],  # Käytä nimeä kuvauksena
+                "dates": [
+                    {
+                        "phase": 1,
+                        "date": election_data["date"],
+                        "description": {
+                            "fi": "Vaalipäivä",
+                            "en": "Election day",
+                            "sv": "Valdag"
+                        }
+                    }
+                ],
+                "type": election_data["type"],
+                "timelock_enabled": election_data["timelock_enabled"],
+                "edit_deadline": election_data["edit_deadline"],
+                "grace_period_hours": election_data["grace_period_hours"],
+                "community_managed": election_data["community_managed"],
+                "phases": 1,
+                "districts": election_data.get("districts", ["koko_maa"]),
+                "status": "upcoming",
+                "config_cid": election_data.get("ipfs_cid", "")
+            }
+        ]
+    }
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Vaalijärjestelmän modulaarinen asennus",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Esimerkkejä:
+  # Käytä paikallista elections_list.json tiedostoa
+  python install.py --config-file=config_output/elections_list.json --election-id=Testivaalit_2027 --first-install
+  
+  # Käytä paikallista install_config.base.json tiedostoa
+  python install.py --config-file=config_output/install_config.base.json --election-id=Testivaalit_2027 --first-install
+        """
+    )
+    
+    parser.add_argument(
+        "--config-file", 
+        required=True,
+        help="Polku paikalliseen JSON-tiedostoon"
+    )
+    parser.add_argument(
+        "--election-id", 
+        help="Tietyn vaalin ID asennettuna (lista näytetään jos ei anneta)"
+    )
+    parser.add_argument(
+        "--output-dir", 
+        default="runtime",
+        help="Output-hakemisto (oletus: runtime)"
+    )
+    parser.add_argument(
+        "--first-install", 
+        action="store_true",
+        help="Merkitse ensimmäiseksi asennukseksi (luo master-kone)"
+    )
+    parser.add_argument(
+        "--list-elections", 
+        action="store_true",
+        help="Listaa saatavilla olevat vaalit"
+    )
+    parser.add_argument(
+        "--verify", 
+        action="store_true",
+        help="Tarkista nykyinen asennus"
+    )
+    
+    args = parser.parse_args()
+    
+    # Tarkista että config-file on olemassa
+    if not Path(args.config_file).exists():
+        print(f"❌ Tiedostoa ei löydy: {args.config_file}")
+        sys.exit(1)
+    
+    # Alusta komponentit
+    engine = InstallationEngine(args.output_dir)
+    engine.set_ipfs_client(SimpleMockIPFS())  # Yksinkertainen mock-IPFS
+    
+    try:
+        # Lataa vaalikonfiguraatio SUORAAN tiedostosta
+        print(f"📁 Ladataan konfiguraatiota tiedostosta: {args.config_file}")
+        elections_data = load_elections_config_direct(args.config_file)
+        
+        if args.list_elections:
+            engine.list_available_elections(elections_data)
+            return
+        
+        if args.verify:
+            if not args.election_id:
+                print("Virhe: --election-id vaaditaan verifiointiin")
+                return
+            
+            if engine.verify_installation(args.election_id):
+                machine_info = get_metadata_manager(args.output_dir).get_machine_info()
+                print(f"✅ ASENNUS OK")
+                print(f"   Vaali: {args.election_id}")
+                print(f"   Kone-ID: {machine_info['machine_id']}")
+                print(f"   Master-kone: {'✅' if machine_info['is_master'] else '❌'}")
+            else:
+                print("❌ ASENNUS VIRHEELLINEN TAI KESKEN")
+            return
+        
+        if not args.election_id:
+            engine.list_available_elections(elections_data)
+            print("\n💡 Käytä --election-id=<id> asentaaksesi tietyn vaalin")
+            print("💡 Käytä --first-install ensimmäiselle asennukselle")
+            return
+        
+        # Tarkista first-install logiikka
+        metadata_manager = get_metadata_manager(args.output_dir)
+        is_first = metadata_manager.is_first_installation(args.election_id)
+        
+        if args.first_install and not is_first:
+            print("⚠️  VAROITUS: --first-install asetettu, mutta vaali on jo asennettu")
+            print("   Käytetään olemassa olevaa asennusta")
+            args.first_install = False
+        elif not args.first_install and is_first:
+            print("💡 INFO: Ensimmäinen asennus tälle vaalille")
+            print("   Käytetään --first-install lippua luodaksesi master-kone")
+            args.first_install = True
+        
+        # Suorita asennus
+        result = engine.install_election(
+            args.election_id, 
+            elections_data, 
+            args.first_install
+        )
+        
+        # Näytä loppuraportti
+        election = result["election"]
+        machine_info = result["machine_info"]
+        
+        print("\n🎉 ASENNUS VALMIS!")
+        print("=" * 50)
+        print(f"Vaali: {election['name']['fi']}")
+        print(f"Kone-ID: {machine_info['machine_id']}")
+        print(f"Asennustyyppi: {'Master-kone' if machine_info['is_master'] else 'Työasema'}")
+        print(f"Hakemisto: {args.output_dir}")
+        print(f"Asennettu: {result['installation_time']}")
+        
+        if machine_info['is_master']:
+            print("\n🔑 Olet nyt MASTER-KONE tälle vaalille")
+            print("   Muut koneet voivat liittyä tähän vaaliin")
+        else:
+            print("\n💻 Olet nyt TYÖASEMA tälle vaalille")
+            print("   Synkronoi data master-koneen kanssa")
+            
+    except Exception as e:
+        print(f"❌ ASENNUS EPÄONNISTUI: {e}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
+
+#[file name]: ipfs_sync_manager.py
+#[file content begin]
+#!/usr/bin/env python3
+"""
+IPFS synkronointien hallintaskripti - KORJATTU VERSIO
+Hallitsee mock-IPFS:n ja oikean IPFS:n välistä synkronointia
+"""
+
+import argparse
+import sys
+import json
+from datetime import datetime
+from pathlib import Path
+
+# Yksinkertainen MockIPFS korvaaja
+class SimpleMockIPFS:
+    def __init__(self):
+        self.content_store = {}
+        self.data_file = "mock_ipfs_data.json"
+        self._load_data()
+    
+    def _load_data(self):
+        try:
+            with open(self.data_file, 'r') as f:
+                self.content_store = json.load(f)
+        except FileNotFoundError:
+            self.content_store = {}
+    
+    def _save_data(self):
+        with open(self.data_file, 'w') as f:
+            json.dump(self.content_store, f, indent=2)
+    
+    def download(self, cid):
+        return self.content_store.get(cid)
+    
+    def upload(self, data):
+        import hashlib
+        content_string = json.dumps(data, sort_keys=True)
+        content_hash = hashlib.sha256(content_string.encode()).hexdigest()
+        cid = f"QmMock{content_hash[:40]}"
+        self.content_store[cid] = data
+        self._save_data()
+        return cid
+    
+    def get_stats(self):
+        total_size = sum(len(json.dumps(data).encode('utf-8')) for data in self.content_store.values())
+        return {
+            "total_cids": len(self.content_store),
+            "total_size_bytes": total_size,
+            "total_access_count": 0
+        }
+
+# Yksinkertainen synkronointitila
+class SimpleSyncEngine:
+    def __init__(self):
+        self.status_file = "ipfs_sync_status.json"
+        self.mock_ipfs = SimpleMockIPFS()
+        self.sync_status = self._load_status()
+    
+    def _load_status(self):
+        try:
+            with open(self.status_file, 'r') as f:
+                return json.load(f)
+        except FileNotFoundError:
+            return {
+                "sync_enabled": False,
+                "sync_mode": "mock_only",
+                "real_ipfs_available": False,
+                "last_sync": None,
+                "synced_cids": []
+            }
+    
+    def _save_status(self):
+        with open(self.status_file, 'w') as f:
+            json.dump(self.sync_status, f, indent=2)
+    
+    def get_sync_status(self):
+        status = self.sync_status.copy()
+        status['mock_stats'] = self.mock_ipfs.get_stats()
+        status['real_stats'] = {"connected": False}
+        return status
+
+def show_sync_status():
+    """Näytä synkronointitila"""
+    sync_engine = SimpleSyncEngine()
+    status = sync_engine.get_sync_status()
+    
+    print("📊 IPFS SYNKRONOINTITILA")
+    print("=" * 50)
+    
+    print(f"🔧 Synkronointi käytössä: {'✅' if status['sync_enabled'] else '❌'}")
+    print(f"🏷️  Tila: {status['sync_mode']}")
+    print(f"🔗 Oikea IPFS saatavilla: {'✅' if status['real_ipfs_available'] else '❌'}")
+    
+    if status['last_sync']:
+        print(f"🕒 Viimeisin synkronointi: {status['last_sync']}")
+    
+    # Mock-tilastot
+    mock_stats = status['mock_stats']
+    print(f"\n🔄 MOCK-IPFS:")
+    print(f"   CID:itä: {mock_stats['total_cids']}")
+    print(f"   Koko: {mock_stats['total_size_bytes']} tavua")
+    print(f"   Latauksia: {mock_stats['total_access_count']}")
+    
+    # Real-tilastot
+    real_stats = status['real_stats']
+    print(f"\n🌐 OIKEA IPFS:")
+    print(f"   Yhdistetty: {'✅' if real_stats['connected'] else '❌'}")
+
+def main():
+    parser = argparse.ArgumentParser(description="IPFS synkronointien hallinta")
+    
+    parser.add_argument('command', nargs='?', help='Komento (status, enable, disable, sync-all, migrate, test)')
+    parser.add_argument('--mode', choices=['hybrid', 'real_only'], help='Synkronointitila')
+    
+    args = parser.parse_args()
+    
+    if not args.command or args.command == 'status':
+        show_sync_status()
+    else:
+        print(f"Komentoa '{args.command}' ei ole vielä toteutettu tässä yksinkertaisessa versiossa")
+        print("Käytettävissä olevat komennot: status")
+
+if __name__ == "__main__":
+    main()
+#[file content end]
+
+"""
+Metadata hallintamoduuli vaalijärjestelmälle
+Käsittelee järjestelmän metadataa, kone-ID:t ja allekirjoitukset
+"""
+
+import json
+import uuid
+import hashlib
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, Any, Optional, List
+
+class MetadataManager:
+    """Hallinnoi järjestelmän metadataa ja konekohtaisia tunnisteita"""
+    
+    def __init__(self, runtime_dir: str = "runtime"):
+        self.runtime_dir = Path(runtime_dir)
+        self.metadata_file = self.runtime_dir / "system_metadata.json"
+        self._ensure_directories()
+    
+    def _ensure_directories(self):
+        """Varmistaa että tarvittavat hakemistot ovat olemassa"""
+        self.runtime_dir.mkdir(exist_ok=True)
+    
+    def generate_machine_id(self) -> str:
+        """
+        Generoi yksilöllisen kone-ID:n
+        Perustuu UUID:hen ja koneen tietoihin (simuloitu)
+        """
+        # Käytännössä voitaisiin käyttää koneen MAC-osoitetta tms.
+        # Tässä mock-versio
+        base_uuid = str(uuid.uuid4())
+        machine_specific = f"machine_{base_uuid[:8]}_{datetime.now().timestamp()}"
+        
+        # Hashaa lopputuloksen
+        machine_id = hashlib.sha256(machine_specific.encode()).hexdigest()[:16]
+        return f"machine_{machine_id}"
+    
+    def get_election_signature(self, election_id: str, machine_id: str) -> str:
+        """
+        Generoi allekirjoituksen vaalikohtaiselle koneelle
+        """
+        signature_data = f"{election_id}:{machine_id}:{datetime.now().isoformat()}"
+        return hashlib.sha256(signature_data.encode()).hexdigest()
+    
+    def initialize_system_metadata(self, election_id: str, first_install: bool = False) -> Dict[str, Any]:
+        """
+        Alustaa järjestelmän metadatan
+        """
+        machine_id = self.generate_machine_id()
+        
+        metadata = {
+            "system_metadata": {
+                "machine_id": machine_id,
+                "created": datetime.now().isoformat(),
+                "first_install": first_install,
+                "installation_type": "first" if first_install else "additional"
+            },
+            "election_specific": {
+                "election_id": election_id,
+                "election_signature": self.get_election_signature(election_id, machine_id),
+                "installed_machines": [machine_id] if first_install else [],
+                "master_machine": machine_id if first_install else None
+            },
+            "sync_metadata": {
+                "last_sync": None,
+                "sync_count": 0,
+                "conflict_count": 0
+            }
+        }
+        
+        # Tallenna metadata
+        self._save_metadata(metadata)
+        
+        return metadata
+    
+    def load_metadata(self) -> Dict[str, Any]:
+        """Lataa järjestelmän metadata"""
+        try:
+            with open(self.metadata_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except FileNotFoundError:
+            return {}
+    
+    def _save_metadata(self, metadata: Dict[str, Any]):
+        """Tallentaa järjestelmän metadatan"""
+        with open(self.metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(metadata, f, indent=2, ensure_ascii=False)
+    
+    def update_metadata(self, updates: Dict[str, Any]):
+        """Päivittää metadataa osittain"""
+        current_metadata = self.load_metadata()
+        
+        # Syvä merge
+        def deep_update(current, update):
+            for key, value in update.items():
+                if isinstance(value, dict) and key in current and isinstance(current[key], dict):
+                    deep_update(current[key], value)
+                else:
+                    current[key] = value
+        
+        deep_update(current_metadata, updates)
+        self._save_metadata(current_metadata)
+    
+    def register_new_machine(self, election_id: str, master_signature: str) -> bool:
+        """
+        Rekisteröi uusi kone olemassa olevaan vaaliin
+        """
+        metadata = self.load_metadata()
+        
+        if not metadata:
+            return False
+        
+        # Tarkista että master_signature on validi
+        current_master = metadata["election_specific"].get("master_machine")
+        if not current_master:
+            return False
+        
+        # Generoi uusi kone-ID
+        new_machine_id = self.generate_machine_id()
+        
+        # Päivitä metadata
+        metadata["election_specific"]["installed_machines"].append(new_machine_id)
+        metadata["system_metadata"]["machine_id"] = new_machine_id
+        metadata["system_metadata"]["first_install"] = False
+        metadata["system_metadata"]["installation_type"] = "additional"
+        metadata["election_specific"]["election_signature"] = self.get_election_signature(
+            election_id, new_machine_id
+        )
+        
+        self._save_metadata(metadata)
+        return True
+    
+    def is_first_installation(self, election_id: str) -> bool:
+        """
+        Tarkistaa onko kyseessä ensimmäinen asennus tälle vaalille
+        """
+        metadata = self.load_metadata()
+        
+        if not metadata:
+            return True
+        
+        # Tarkista että metadata on samalle vaalille
+        current_election = metadata["election_specific"].get("election_id")
+        if current_election != election_id:
+            return True
+        
+        return metadata["system_metadata"].get("first_install", False)
+    
+    def get_machine_info(self) -> Dict[str, Any]:
+        """Palauttaa koneen tiedot"""
+        metadata = self.load_metadata()
+        
+        if not metadata:
+            return {
+                "machine_id": "unknown",
+                "first_install": True,
+                "election_id": "unknown"
+            }
+        
+        return {
+            "machine_id": metadata["system_metadata"]["machine_id"],
+            "first_install": metadata["system_metadata"]["first_install"],
+            "election_id": metadata["election_specific"]["election_id"],
+            "is_master": metadata["election_specific"].get("master_machine") == metadata["system_metadata"]["machine_id"]
+        }
+    
+    def create_election_registry(self, election_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Luo vaalirekisterin ensimmäiselle asennukselle
+        """
+        machine_info = self.get_machine_info()
+        
+        registry = {
+            "election_registry": {
+                "election_id": election_data["election_id"],
+                "name": election_data["name"],
+                "master_machine": machine_info["machine_id"],
+                "created": datetime.now().isoformat(),
+                "total_machines": 1,
+                "machines": [machine_info["machine_id"]],
+                "config_hash": self._calculate_config_hash(election_data)
+            },
+            "installation_metadata": {
+                "first_installation": machine_info["first_install"],
+                "installation_timestamp": datetime.now().isoformat(),
+                "system_version": "1.0.0"
+            }
+        }
+        
+        return registry
+    
+    def _calculate_config_hash(self, election_data: Dict[str, Any]) -> str:
+        """Laskee konfiguraation hashin"""
+        config_string = json.dumps(election_data, sort_keys=True)
+        return hashlib.sha256(config_string.encode()).hexdigest()
+
+# Singleton instance
+_metadata_manager = None
+
+def get_metadata_manager(runtime_dir: str = "runtime") -> MetadataManager:
+    """Palauttaa MetadataManager-instanssin"""
+    global _metadata_manager
+    if _metadata_manager is None:
+        _metadata_manager = MetadataManager(runtime_dir)
+    return _metadata_manager
+
+# mock_ipfs.py
+import json
+import hashlib
+from datetime import datetime
+from typing import Dict, Any, Optional
+
+class MockIPFS:
+    """
+    Mock-IPFS toteutus testausta varten.
+    Simuloi IPFS-verkkoa ilman ulkoisia riippuvuuksia.
+    """
+    
+    def __init__(self, persist_data: bool = True, data_file: str = "mock_ipfs_data.json"):
+        self.content_store: Dict[str, Any] = {}
+        self.cid_counter = 0
+        self.persist_data = persist_data
+        self.data_file = data_file
+        
+        # Lataa aiemmat mock-datat jos saatavilla
+        if persist_data:
+            self._load_mock_data()
+    
+    def _load_mock_data(self):
+        """Lataa aiemmat mock-datat tiedostosta"""
+        try:
+            with open(self.data_file, 'r', encoding='utf-8') as f:
+                self.content_store = json.load(f)
+                self.cid_counter = len(self.content_store)
+            print(f"Mock-IPFS: Ladattu {len(self.content_store)} CID:ä tiedostosta")
+        except FileNotFoundError:
+            print("Mock-IPFS: Ei aiempaa dataa, aloitetaan tyhjästä")
+            self.content_store = {}
+    
+    def _save_mock_data(self):
+        """Tallentaa mock-datat tiedostoon"""
+        if self.persist_data:
+            with open(self.data_file, 'w', encoding='utf-8') as f:
+                json.dump(self.content_store, f, indent=2, ensure_ascii=False)
+            print(f"Mock-IPFS: Tallennettu {len(self.content_store)} CID:ä tiedostoon")
+    
+    def upload(self, data: Dict[str, Any]) -> str:
+        """
+        Mock IPFS-upload: generoi CID ja tallentaa dataan mock-tietokantaan
+        """
+        # Generoi deterministinen CID datasta
+        content_string = json.dumps(data, sort_keys=True, ensure_ascii=False)
+        content_hash = hashlib.sha256(content_string.encode('utf-8')).hexdigest()
+        cid = f"QmMock{content_hash[:40]}"
+        
+        # Tallenna data mock-tietokantaan
+        self.content_store[cid] = {
+            "data": data,
+            "upload_timestamp": datetime.now().isoformat(),
+            "size_bytes": len(content_string.encode('utf-8')),
+            "access_count": 0
+        }
+        
+        self.cid_counter += 1
+        
+        # Tallenna pysyväistila jos haluttu
+        self._save_mock_data()
+        
+        print(f"Mock-IPFS: Upload onnistui - CID: {cid}")
+        return cid
+    
+    def download(self, cid: str) -> Optional[Dict[str, Any]]:
+        """
+        Mock IPFS-download: hakee dataa mock-tietokannasta CID:llä
+        """
+        if cid in self.content_store:
+            # Päivitä käyttötilastot
+            self.content_store[cid]["access_count"] += 1
+            self.content_store[cid]["last_access"] = datetime.now().isoformat()
+            
+            self._save_mock_data()
+            
+            print(f"Mock-IPFS: Download onnistui - CID: {cid}")
+            return self.content_store[cid]["data"]
+        else:
+            print(f"Mock-IPFS: CID:ä ei löydy - {cid}")
+            return None
+    
+    def pin(self, cid: str) -> bool:
+        """Mock IPFS-pin - merkitsee datan pysyväksi"""
+        if cid in self.content_store:
+            self.content_store[cid]["pinned"] = True
+            self.content_store[cid]["pinned_at"] = datetime.now().isoformat()
+            self._save_mock_data()
+            print(f"Mock-IPFS: CID pinned: {cid}")
+            return True
+        return False
+    
+    def unpin(self, cid: str) -> bool:
+        """Mock IPFS-unpin - poistaa pysyvyysmerkinnän"""
+        if cid in self.content_store:
+            self.content_store[cid]["pinned"] = False
+            self._save_mock_data()
+            print(f"Mock-IPFS: CID unpinned: {cid}")
+            return True
+        return False
+    
+    def get_stats(self) -> Dict[str, Any]:
+        """Palauttaa mock-IPFS tilastot"""
+        total_size = sum(item["size_bytes"] for item in self.content_store.values())
+        pinned_count = sum(1 for item in self.content_store.values() if item.get("pinned", False))
+        
+        return {
+            "total_cids": len(self.content_store),
+            "total_size_bytes": total_size,
+            "pinned_cids": pinned_count,
+            "total_access_count": sum(item.get("access_count", 0) for item in self.content_store.values())
+        }
+    
+    def clear_mock_data(self):
+        """Tyhjentää mock-datat (testausta varten)"""
+        self.content_store = {}
+        self.cid_counter = 0
+        if self.persist_data:
+            import os
+            try:
+                os.remove(self.data_file)
+            except FileNotFoundError:
+                pass
+        print("Mock-IPFS: Kaikki data tyhjennetty")
+#!/usr/bin/env python3
+"""
+Yksinkertainen ELO-testi joka varmistaa että kaikki moduulit toimivat
+"""
+
+import json
+import sys
+import os
+
+# Lisää nykyinen hakemisto polkuun
+sys.path.append('.')
+
+def simple_elo_test():
+    """Yksinkertainen testi joka varmistaa perustoiminnallisuuden"""
+    
+    print("🧪 YKSINKERTAINEN ELO-TESTI")
+    print("="*40)
+    
+    try:
+        # 1. Testaa että tiedostot löytyvät
+        print("1. 📁 Tarkistetaan tiedostot...")
+        required_files = [
+            "runtime/questions.json",
+            "runtime/parties.json", 
+            "runtime/candidates.json"
+        ]
+        
+        for file in required_files:
+            if os.path.exists(file):
+                print(f"   ✅ {file} löytyy")
+            else:
+                print(f"   ❌ {file} puuttuu")
+                return False
+        
+        # 2. Testaa että kysymystiedosto on validi JSON
+        print("2. 📊 Tarkistetaan kysymysdata...")
+        with open("runtime/questions.json", 'r', encoding='utf-8') as f:
+            questions_data = json.load(f)
+        
+        question_count = len(questions_data.get("questions", []))
+        print(f"   ✅ {question_count} kysymystä ladattu")
+        
+        # 3. Näytä ensimmäiset 3 kysymystä
+        print("3. ❓ Näytetään esimerkkikysymyksiä:")
+        for i, question in enumerate(questions_data["questions"][:3]):
+            print(f"   {i+1}. {question['content']['question']['fi']}")
+        
+        # 4. Testaa ELO-calculatorin lataus
+        print("4. ⚡ Testataan ELO-calculator...")
+        try:
+            from complete_elo_calculator import CompleteELOCalculator, ComparisonResult, VoteType, UserTrustLevel
+            calculator = CompleteELOCalculator()
+            print("   ✅ ELO-calculator ladattu onnistuneesti")
+        except ImportError as e:
+            print(f"   ❌ ELO-calculatorin lataus epäonnistui: {e}")
+            return False
+        
+        # 5. Testaa ELO-managerin lataus
+        print("5. 🔄 Testataan ELO-manager...")
+        try:
+            from elo_manager import ELOManager
+            manager = ELOManager("runtime/questions.json")
+            print("   ✅ ELO-manager ladattu onnistuneesti")
+        except ImportError as e:
+            print(f"   ❌ ELO-managerin lataus epäonnistui: {e}")
+            return False
+        
+        print("\n🎉 PERUSTESTIT ONNISTUIVAT!")
+        print("\n💡 Nyt voit suorittaa täydellisen testin:")
+        print("   python test_elo_with_greek_gods.py")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ TESTI EPÄONNISTUI: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+if __name__ == "__main__":
+    success = simple_elo_test()
+    sys.exit(0 if success else 1)
+#!/usr/bin/env python3
+"""
+Testaa ELO-järjestelmää kreikkalaisten jumalien datalla
+"""
+
+import json
+import sys
+import os
+from datetime import datetime
+from datetime import timezone  # Lisää tämä
+
+# Lisää nykyinen hakemisto polkuun jotta moduulit löytyvät
+sys.path.append('.')
+
+try:
+    from complete_elo_calculator import CompleteELOCalculator, ComparisonResult, VoteType, UserTrustLevel
+    from elo_manager import ELOManager
+except ImportError as e:
+    print(f"❌ Moduulien latausvirhe: {e}")
+    print("💡 Varmista että complete_elo_calculator.py ja elo_manager.py ovat hakemistossa")
+    sys.exit(1)
+
+def test_elo_with_greek_gods():
+    """Testaa ELO-järjestelmää kreikkalaisten jumalien datalla"""
+    
+    print("🏛️  TESTATAAN ELO-JÄRJESTELMÄÄ KREIKKALAISTEN JUMALIEN DATALLA")
+    print("="*60)
+    
+    try:
+        # Alusta ELO manager
+        elo_manager = ELOManager("runtime/questions.json")
+        
+        # Lataa testikysymykset
+        with open("runtime/questions.json", 'r', encoding='utf-8') as f:
+            questions_data = json.load(f)
+        
+        questions = questions_data["questions"]
+        print(f"✅ Ladattu {len(questions)} kysymystä")
+        
+        # Testaa vertailut
+        print("\n🔀 VERTAILUTESTIT:")
+        print("-" * 30)
+        
+        # Valitse ensimmäiset 5 kysymystä testaamiseen
+        test_questions = questions[:5]
+        
+        for i in range(3):
+            question_a = test_questions[i]
+            question_b = test_questions[(i + 1) % len(test_questions)]
+            
+            print(f"\nVertailu {i+1}:")
+            print(f"  A: {question_a['content']['question']['fi'][:50]}...")
+            print(f"  B: {question_b['content']['question']['fi'][:50]}...")
+            
+            result = elo_manager.handle_comparison(
+                user_id=f"test_user_{i}",
+                question_a_id=question_a["local_id"],
+                question_b_id=question_b["local_id"],
+                result=ComparisonResult.A_WINS,
+                user_trust=UserTrustLevel.REGULAR_USER
+            )
+            
+            if result["success"]:
+                changes = result["rating_changes"]
+                print(f"✅ Muutokset:")
+                print(f"   A: {changes['question_a']['old_rating']:.1f} → {changes['question_a']['new_rating']:.1f} ({changes['question_a']['change']:+.1f})")
+                print(f"   B: {changes['question_b']['old_rating']:.1f} → {changes['question_b']['new_rating']:.1f} ({changes['question_b']['change']:+.1f})")
+            else:
+                print(f"⚠️  Estetty: {result['error']}")
+                if 'details' in result:
+                    print(f"   Syy: {result['details']['checks']}")
+        
+        # Testaa äänestykset
+        print("\n🗳️  ÄÄNESTYSTESTIT:")
+        print("-" * 30)
+        
+        for i, question in enumerate(test_questions[:3]):
+            print(f"\nÄänestys {i+1}: {question['content']['question']['fi'][:50]}...")
+            
+            # Upvote
+            result = elo_manager.handle_vote(
+                user_id=f"test_voter_{i}",
+                question_id=question["local_id"],
+                vote_type=VoteType.UPVOTE,
+                confidence=4,
+                user_trust=UserTrustLevel.REGULAR_USER
+            )
+            
+            if result["success"]:
+                change = result["vote_result"]["change"]
+                print(f"✅ Upvote: {change['old_rating']:.1f} → {change['new_rating']:.1f} ({change['change']:+.1f})")
+            else:
+                print(f"⚠️  Estetty: {result['error']}")
+        
+        # Näytä lopulliset ratingit
+        print("\n📊 LOPPUTILA - TOP 5 KYSYMYSTÄ:")
+        print("-" * 40)
+        
+        with open("runtime/questions.json", 'r', encoding='utf-8') as f:
+            updated_questions = json.load(f)
+        
+        # Lajittele ratingin mukaan
+        sorted_questions = sorted(
+            updated_questions["questions"], 
+            key=lambda x: x["elo_rating"]["current_rating"], 
+            reverse=True
+        )
+        
+        for i, question in enumerate(sorted_questions[:5]):
+            rating = question["elo_rating"]["current_rating"]
+            comparisons = question["elo_rating"].get("total_comparisons", 0)
+            votes = question["elo_rating"].get("total_votes", 0)
+            print(f"{i+1}. {rating:.1f} pts (C:{comparisons}, V:{votes}) - {question['content']['question']['fi'][:40]}...")
+        
+        print(f"\n🎉 ELO-testit valmiit! Järjestelmä toimii odotetusti.")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ TESTI EPÄONNISTUI: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+def test_rate_limiting():
+    """Testaa rate limiting -toimintaa"""
+    print("\n🛡️  TESTATAAN RATE LIMITINGIÄ:")
+    print("-" * 30)
+    
+    try:
+        elo_manager = ELOManager("runtime/questions.json")
+        
+        with open("runtime/questions.json", 'r', encoding='utf-8') as f:
+            questions_data = json.load(f)
+        
+        test_question = questions_data["questions"][0]
+        
+        print(f"Testataan kysymystä: {test_question['content']['question']['fi'][:40]}...")
+        
+        # Tee useita äänestyksiä nopeasti testataksemme rate limitingiä
+        blocked_count = 0
+        successful_count = 0
+        
+        for i in range(15):  # Yritä 15 ääntä (yli päivärajan)
+            result = elo_manager.handle_vote(
+                user_id="rate_limit_tester",
+                question_id=test_question["local_id"],
+                vote_type=VoteType.UPVOTE,
+                confidence=3,
+                user_trust=UserTrustLevel.REGULAR_USER
+            )
+            
+            if result["success"]:
+                successful_count += 1
+                print(f"  Ääni {i+1}: ✅ Hyväksytty")
+            else:
+                blocked_count += 1
+                print(f"  Ääni {i+1}: ❌ Estetty - {result['error']}")
+                break  # Lopeta kun tulee ensimmäinen esto
+        
+        print(f"\n📈 Rate limiting -tulokset:")
+        print(f"   Onnistuneet äänet: {successful_count}")
+        print(f"   Estetyt äänet: {blocked_count}")
+        
+        return successful_count > 0 and blocked_count > 0
+        
+    except Exception as e:
+        print(f"❌ Rate limiting -testi epäonnistui: {e}")
+        return False
+
+def main():
+    """Pääohjelma"""
+    print("🚀 KREIKKALAISTEN JUMALIEN ELO-TESTIT")
+    print("="*50)
+    
+    # Testaa perustoiminnot
+    success1 = test_elo_with_greek_gods()
+    
+    # Testaa rate limiting
+    success2 = test_rate_limiting()
+    
+    # Yhteenveto
+    print("\n" + "="*50)
+    print("🎯 TESTITULOKSET:")
+    print(f"   Perustoiminnot: {'✅ ONNISTUI' if success1 else '❌ EPÄONNISTUI'}")
+    print(f"   Rate limiting:  {'✅ ONNISTUI' if success2 else '❌ EPÄONNISTUI'}")
+    
+    if success1 and success2:
+        print("\n🎉 KAIKKI TESTIT ONNISTUIVAT! ELO-järjestelmä on valmis.")
+        print("\n💡 SEURAAVA VAIHE:")
+        print("   - Testaa järjestelmää enemmän vertailuilla")
+        print("   - Kokeile eri käyttäjärooleja (new_user, trusted_user, validator)")
+        print("   - Testaa konfliktien hallintaa")
+    else:
+        print("\n⚠️  JOITKIN TESTIT EPÄONNISTUIVAT. Tarkista virheilmoitukset.")
+
+if __name__ == "__main__":
+    main()
