@@ -1,0 +1,31 @@
+{
+  "chain_id": "{{ELECTION_ID}}",
+  "created_at": "{{TIMESTAMP}}",
+  "description": "Vaalijärjestelmä ketju: {{ELECTION_ID}}",
+  "version": "2.0.0",
+  "blocks": [
+    {
+      "block_id": 0,
+      "timestamp": "{{TIMESTAMP}}",
+      "description": "Järjestelmän alustus",
+      "files": {
+        "install_config.base.json": "{{HASH}}",
+        "meta.base.json": "{{HASH}}",
+        "questions.base.json": "{{HASH}}",
+        "candidates.base.json": "{{HASH}}",
+        "active_questions.base.json": "{{HASH}}"
+      },
+      "previous_hash": null,
+      "block_hash": "{{CREATION_HASH}}"
+    }
+  ],
+  "current_state": {
+    "election_id": "{{ELECTION_ID}}",
+    "config_created": "{{TIMESTAMP}}"
+  },
+  "metadata": {
+    "algorithm": "sha256",
+    "system_id": "system_{{ELECTION_ID}}",
+    "config_source": "base_template"
+  }
+}

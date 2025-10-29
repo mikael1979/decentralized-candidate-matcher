@@ -2,37 +2,35 @@
   "election": {
     "id": "{{ELECTION_ID}}",
     "name": {
-      "fi": "{{ELECTION_NAME_FI}}",
-      "en": "{{ELECTION_NAME_EN}}",
-      "sv": "{{ELECTION_NAME_SV}}"
+      "fi": "{{FI_ELECTION_NAME}}",
+      "en": "{{EN_ELECTION_NAME}}",
+      "sv": "{{SV_ELECTION_NAME}}"
     },
     "date": "{{ELECTION_DATE}}",
-    "type": "{{ELECTION_TYPE}}",
-    "timelock_enabled": {{ELECTION_TIMELOCK_ENABLED}},
-    "edit_deadline": "{{ELECTION_EDIT_DEADLINE}}",
-    "grace_period_hours": {{ELECTION_GRACE_PERIOD_HOURS}},
+    "type": "municipal",
+    "timelock_enabled": true,
+    "edit_deadline": "{{EDIT_DEADLINE}}",
+    "grace_period_hours": 48,
     "governance_model": "community_driven"
   },
   "system_info": {
-    "system_id": "{{SYSTEM_ID}}",
+    "system_id": "system_{{ELECTION_ID}}",
     "public_key": "{{SYSTEM_PUBLIC_KEY}}",
-    "created": "{{SYSTEM_CREATED_TIMESTAMP}}",
-    "governance_contract": "{{GOVERNANCE_CONTRACT_ADDRESS}}"
+    "created": "{{TIMESTAMP}}",
+    "governance_contract": "{{GOVERNANCE_CONTRACT_ADDRESS}}",
+    "version": "2.0.0"
   },
   "community_governance": {
-    "validators": [
-      {
-        "address": "{{VALIDATOR_1_ADDRESS}}",
-        "role": "technical",
-        "elected_date": "{{VALIDATOR_1_ELECTED}}",
-        "term_end": "{{VALIDATOR_1_TERM_END}}"
-      }
-    ],
+    "validators": [],
     "current_proposals": [],
     "voting_parameters": {
-      "quorum": {{COMMUNITY_QUORUM}},
-      "approval_threshold": {{COMMUNITY_APPROVAL_THRESHOLD}}
+      "quorum": 15,
+      "approval_threshold": 60
     }
   },
-  "version": "{{SYSTEM_VERSION}}"
+  "version": "2.0.0",
+  "metadata": {
+    "created": "{{TIMESTAMP}}",
+    "config_source": "base_template"
+  }
 }

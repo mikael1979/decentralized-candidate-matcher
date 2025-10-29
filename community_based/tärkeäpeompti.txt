@@ -302,3 +302,13 @@ esimerkki base tiedostosta:
     }
   ]
 }
+
+*ehdokasprofiilissa pitäisi myös muuten olla paikka perusteluille, eli jokaisen kysymyksen id:n mukaan vastaava perustelu kenttä
+*Ehdokkaiden ja puolueiden vastauksien oikeallisuus ja vahvistettavuus on silti tärkeä luotettavuuden kannalta.
+*tämä järjeslmä on kuitenkin vain parhaan ehdokkaan löytämiseksi.
+*elections_list.json:ssa pitäisi olla kohta jossa on cid-osoite vaalienmukaiselle install_config.json tiedostolle
+*tehdään listaus mitä moduuleja mikäkin ohjelma käyttää
+*tarvitaan active_questions.base.json, josta generoidaan active_questions.json. Tähän tiedostoon synkronoidaan korkeimman elo luokituksen kysymykset, kun kysymysten    lähettäminen on lukittu, jos joku ei lukitse vaaleja, niin tämä järjestelmä käyttää koko kysymyslistaa vaalikoneessa.
+*varsinainen vaalikone tuossa vielä puuttuu, missä käyttäjä vertaa vastauksiansa ehdokkaiden vastauksiin ja laittaa ehdokkaat paremmuusjärjestykseen. Toisaalta tämä on todennäköisemmin gui tyylinen syvellus
+*system chainin päivityksen pitäisi varmaankin olla moduuli, jota jokainen ohjelma kutsuu lopussa.
+
