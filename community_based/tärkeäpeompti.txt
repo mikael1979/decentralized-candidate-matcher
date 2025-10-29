@@ -312,3 +312,30 @@ esimerkki base tiedostosta:
 *varsinainen vaalikone tuossa vielä puuttuu, missä käyttäjä vertaa vastauksiansa ehdokkaiden vastauksiin ja laittaa ehdokkaat paremmuusjärjestykseen. Toisaalta tämä on todennäköisemmin gui tyylinen syvellus
 *system chainin päivityksen pitäisi varmaankin olla moduuli, jota jokainen ohjelma kutsuu lopussa.
 
+💡 YDINPARANNUKSET
+✅ Ehdokasprofiileihin perustelukentät - Jokaiselle vastaukselle
+
+✅ Elections_list CID-tuki - IPFS-linkitys konfiguraatioihin
+
+✅ Active questions -logiikka - Lukitustila määrää käytetyn kysymyslistan
+
+✅ System chain standardointi - Yhdenmukainen lokitus kaikille moduuleille
+
+✅ Base-template minimalisointi - Placeholderit esimerkkidatan sijaan
+
+🔮 SEURAAVAT VAIHEET
+Toteuta voting_engine.py - Vaalikoneen ydin
+
+Luo question_manager.py - Kysymysten elinkaaren hallinta
+
+Kehitä candidate_verifier.py - Vastausten vahvistus
+
+Tee GUI-käyttöliittymä - Visualisointi tuloksille
+
+Paranna IPFS-synkronointia - Reaaliaikainen datajako
+
+pidetään nuo todo-listalla. Tuli itselläkin tuossa idea mieleen, joten analysoi onnistuuko sen toteutus.
+
+eli järjestelmällä on kehitys-tila ja käyttö-tila, jossa käyttö tilaa varten järjestelmä lukitaan ottamalla jokaisesta aktiivisesta tiedostosta fingerprint aikaleimalla ja nämä tallenetaan ipfs:ään menevään listaan aktiivisista ohjelmatiedostoista. Tämä myös tarkoittaa, että jokainen ohjelma käyttää moduulia, alussa ja tarkistaa listan fingerprinttien avulla, ettei ohjelmatiedostoja ole "käpälöity"
+*Joo ajattelin tuossa, että synkronoitaisiin useampi kysymys tmp tiedostosta -> new_questions, joko niin että tietty kysymysmäärä on saavutettu tmp tiedostossa, tai aikaväli tulee täyteen
+
