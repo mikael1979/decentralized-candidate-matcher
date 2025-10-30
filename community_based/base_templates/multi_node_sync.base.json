@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "created": "{{TIMESTAMP}}",
+    "last_updated": "{{TIMESTAMP}}",
+    "election_id": "{{ELECTION_ID}}",
+    "description": {
+      "fi": "Moninodisynkronoinnin konfiguraatio",
+      "en": "Multi-node synchronization configuration",
+      "sv": "Multi-nod synkroniseringskonfiguration"
+    }
+  },
+  "sync_settings": {
+    "enabled": true,
+    "auto_sync_interval": 1800,
+    "max_nodes_per_sync": 10,
+    "sync_timeout_seconds": 30,
+    "retry_attempts": 3
+  },
+  "conflict_resolution": {
+    "strategy": "timestamp_based",
+    "fallback_strategy": "manual_intervention",
+    "priority_rules": {
+      "master_node_priority": true,
+      "newer_data_wins": true,
+      "consensus_required": false
+    }
+  },
+  "node_discovery": {
+    "auto_discovery": true,
+    "known_nodes": ["{{NODE_ID}}"],
+    "discovery_interval": 3600,
+    "max_node_age_hours": 24
+  },
+  "data_synchronization": {
+    "sync_blocks": ["urgent", "sync", "active"],
+    "exclude_blocks": ["buffer1", "buffer2"],
+    "max_data_per_sync_mb": 10,
+    "compress_data": true
+  },
+  "security": {
+    "verify_node_identity": true,
+    "require_authentication": false,
+    "encrypt_sync_data": false,
+    "audit_sync_operations": true
+  }
+}
