@@ -13,7 +13,7 @@ Selitän tässä nyt vielä mitä olin itse ajatellut, jos onnistun selittämä�
         "meta.json": 
 
 jossa kysymykset lisätään new_questions.json, niin että tiedosta luodaan väliaikainen tmp_new_questions.json, johon lähetetyt kysymykset tallennetaan. Tästä kysymykset synkronoidaan -> questions.json ja questions.json synkronoidaan <--> ipfs_questions.json synkronoidaan <--> ipfs-verkko
-
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 # Vaalikonejärjestelmä - Tekninen Kuvaus
 
 ## 🎯 Järjestelmän Ydinkonsepti
@@ -141,7 +141,7 @@ Paikallinen Kone → Mock-IPFS → Real-IPFS
   ]
 }
 ```
-
+---------------------------------------------------------------------------------------------------------------------------
 ## 🔐 Tietoturva & Eheys
 
 ### System Chain - Muutoshistoria
@@ -227,7 +227,7 @@ Tämä järjestelmä yhdistää:
 - **Käytettävyyden** (yksinkertaiset työkalut)
 - **Laajennettavuuden** (modulaarisuus)
 
----
+----------------------------------------------------------------------------------------------------------------------------------------------
 
 **Käynnistä uusi keskustelu aiheesta:** "Miten parantaisit tätä arkkitehtuuria?" tai "Mitä ominaisuuksia näet tärkeimpinä vaalikoneelle?"
 
@@ -302,7 +302,7 @@ esimerkki base tiedostosta:
     }
   ]
 }
-
+---------------------------------------------------------------------------------------------------------------------------
 *ehdokasprofiilissa pitäisi myös muuten olla paikka perusteluille, eli jokaisen kysymyksen id:n mukaan vastaava perustelu kenttä
 *Ehdokkaiden ja puolueiden vastauksien oikeallisuus ja vahvistettavuus on silti tärkeä luotettavuuden kannalta.
 *tämä järjeslmä on kuitenkin vain parhaan ehdokkaan löytämiseksi.
@@ -311,7 +311,7 @@ esimerkki base tiedostosta:
 *tarvitaan active_questions.base.json, josta generoidaan active_questions.json. Tähän tiedostoon synkronoidaan korkeimman elo luokituksen kysymykset, kun kysymysten    lähettäminen on lukittu, jos joku ei lukitse vaaleja, niin tämä järjestelmä käyttää koko kysymyslistaa vaalikoneessa.
 *varsinainen vaalikone tuossa vielä puuttuu, missä käyttäjä vertaa vastauksiansa ehdokkaiden vastauksiin ja laittaa ehdokkaat paremmuusjärjestykseen. Toisaalta tämä on todennäköisemmin gui tyylinen syvellus
 *system chainin päivityksen pitäisi varmaankin olla moduuli, jota jokainen ohjelma kutsuu lopussa.
-
+-----------------------------------------------------------------------------------------------------------------------
 💡 YDINPARANNUKSET
 ✅ Ehdokasprofiileihin perustelukentät - Jokaiselle vastaukselle
 
@@ -335,7 +335,15 @@ Tee GUI-käyttöliittymä - Visualisointi tuloksille
 Paranna IPFS-synkronointia - Reaaliaikainen datajako
 
 pidetään nuo todo-listalla. Tuli itselläkin tuossa idea mieleen, joten analysoi onnistuuko sen toteutus.
-
-eli järjestelmällä on kehitys-tila ja käyttö-tila, jossa käyttö tilaa varten järjestelmä lukitaan ottamalla jokaisesta aktiivisesta tiedostosta fingerprint aikaleimalla ja nämä tallenetaan ipfs:ään menevään listaan aktiivisista ohjelmatiedostoista. Tämä myös tarkoittaa, että jokainen ohjelma käyttää moduulia, alussa ja tarkistaa listan fingerprinttien avulla, ettei ohjelmatiedostoja ole "käpälöity"
+---------------------------------------------------------------------------------------------------------------------
+*eli järjestelmällä on kehitys-tila ja käyttö-tila, jossa käyttö tilaa varten järjestelmä lukitaan ottamalla jokaisesta aktiivisesta tiedostosta fingerprint aikaleimalla ja nämä tallenetaan ipfs:ään menevään listaan aktiivisista ohjelmatiedostoista. Tämä myös tarkoittaa, että jokainen ohjelma käyttää moduulia, alussa ja tarkistaa listan fingerprinttien avulla, ettei ohjelmatiedostoja ole "käpälöity"
 *Joo ajattelin tuossa, että synkronoitaisiin useampi kysymys tmp tiedostosta -> new_questions, joko niin että tietty kysymysmäärä on saavutettu tmp tiedostossa, tai aikaväli tulee täyteen
+*Itse ajattelin varsinaisen listan organisointia usean "noden" käyttäessä samaa listaa ipfs:ssä.
+
+eli miten listaa täytetään lohkoissa, jokainen varaus sisältää nämä lohkot. Jokainen lohko on oma aikaikkunansa
+1. lohko bufferi, eli tyhjää tilaa 
+2. lohko tila kiireellisille varauksille. aikaisemmin puhuttiin hätävarauksista, mutta tämä on jyrkkä termi, joten käytetään kiireellistä.
+3. lohko varaus, eli paikka synkronoidaan data.
+4. lohko tila varausten tekemiseen
+5. lohko bufferi
 
