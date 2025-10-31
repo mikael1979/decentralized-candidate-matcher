@@ -9,6 +9,15 @@ import os
 from datetime import datetime
 from datetime import timezone
 
+# 🔒 LISÄTTY: Järjestelmän käynnistystarkistus
+try:
+    from system_bootstrap import verify_system_startup
+    if not verify_system_startup():
+        print("❌ Järjestelmän käynnistystarkistus epäonnistui")
+        sys.exit(1)
+except ImportError:
+    print("⚠️  System bootstrap ei saatavilla - jatketaan ilman tarkistusta")
+
 # Lisää nykyinen hakemisto polkuun jotta moduulit löytyvät
 sys.path.append('.')
 

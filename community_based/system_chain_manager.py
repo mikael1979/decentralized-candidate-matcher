@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-System Chain Manager - Modulaarinen system_chainin hallinta
+System Chain Manager - Modulaarinen system_chainin hallinta - KORJATTU VERSIO
 Käyttö: 
   from system_chain_manager import log_action
   log_action("comparison", "A voittaa: Kysymys1 vs Kysymys2", ["q1", "q2"], "user123")
@@ -12,6 +12,16 @@ from datetime import timezone
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 import hashlib
+
+# 🔒 LISÄTTY: Järjestelmän käynnistystarkistus
+try:
+    from system_bootstrap import verify_system_startup
+    # HUOM: Ei pakoteta pysäytystä, vain varoitus jos epäonnistuu
+    startup_ok = verify_system_startup()
+    if not startup_ok:
+        print("⚠️  System bootstrap tarkistus epäonnistui - jatketaan varoituksella")
+except ImportError:
+    print("⚠️  System bootstrap ei saatavilla - jatketaan ilman tarkistusta")
 
 class SystemChainManager:
     """Hallinnoi system_chain.json tiedostoa ja tarjoaa yksinkertaisen APIn"""
@@ -57,7 +67,7 @@ class SystemChainManager:
             chain_data["current_state"]["last_updated"] = new_block["timestamp"]
             chain_data["current_state"]["total_blocks"] = len(chain_data["blocks"])
             
-            # Laska hash edellisestä lohkosta (jos on)
+            # Laske hash edellisestä lohkosta (jos on)
             if len(chain_data["blocks"]) > 1:
                 previous_block = chain_data["blocks"][-2]
                 new_block["previous_hash"] = self._calculate_block_hash(previous_block)
@@ -75,26 +85,47 @@ class SystemChainManager:
     def _load_chain(self) -> Dict[str, Any]:
         """Lataa system_chain tai luo uusi"""
         if self.chain_file.exists():
-            with open(self.chain_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
+            try:
+                with open(self.chain_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception as e:
+                print(f"⚠️  Virhe ladattaessa system_chainia, luodaan uusi: {e}")
+                return self._create_new_chain()
         else:
             return self._create_new_chain()
     
     def _create_new_chain(self) -> Dict[str, Any]:
         """Luo uusi system_chain"""
+        # Hae vaalin tiedot metadatasta
+        election_id = "unknown_election"
+        election_name = "Tuntematon vaali"
+        
+        try:
+            meta_file = Path("runtime/meta.json")
+            if meta_file.exists():
+                with open(meta_file, 'r', encoding='utf-8') as f:
+                    meta_data = json.load(f)
+                election_id = meta_data.get('election', {}).get('id', 'unknown_election')
+                election_name = meta_data.get('election', {}).get('name', {}).get('fi', 'Tuntematon vaali')
+        except:
+            pass
+        
         return {
-            "chain_id": "default_chain",
+            "chain_id": election_id,
             "created_at": datetime.now(timezone.utc).isoformat(),
-            "description": "Automaattisesti luotu system chain",
+            "description": f"System chain vaalille: {election_name}",
             "version": "1.0.0",
             "blocks": [],
             "current_state": {
                 "last_updated": None,
-                "total_blocks": 0
+                "total_blocks": 0,
+                "election_id": election_id,
+                "election_name": election_name
             },
             "metadata": {
                 "algorithm": "sha256",
-                "created_by": "SystemChainManager"
+                "created_by": "SystemChainManager",
+                "bootstrap_checked": True
             }
         }
     
@@ -151,7 +182,9 @@ class SystemChainManager:
                 "chain_id": chain_data.get("chain_id"),
                 "total_blocks": len(chain_data.get("blocks", [])),
                 "last_updated": chain_data.get("current_state", {}).get("last_updated"),
-                "created_at": chain_data.get("created_at")
+                "created_at": chain_data.get("created_at"),
+                "election_id": chain_data.get("current_state", {}).get("election_id"),
+                "election_name": chain_data.get("current_state", {}).get("election_name")
             }
         except:
             return {}
@@ -166,6 +199,21 @@ class SystemChainManager:
         print(f"Lohkoja: {info.get('total_blocks', 0)}")
         print(f"Viimeisin päivitys: {info.get('last_updated', 'Ei tietoa')}")
         print(f"Luotu: {info.get('created_at', 'Ei tietoa')}")
+        print(f"Vaali: {info.get('election_name', 'Tuntematon')}")
+        
+        # Näytä viimeisimmät lohkot
+        try:
+            with open(self.chain_file, 'r', encoding='utf-8') as f:
+                chain_data = json.load(f)
+            
+            blocks = chain_data.get("blocks", [])
+            if blocks:
+                print(f"\n📊 VIIMEISIMMÄT LOHKOT (max 5):")
+                for block in blocks[-5:]:
+                    action_icon = "🔄" if block['action_type'] == 'comparison' else "🗳️" if block['action_type'] == 'vote' else "⚙️"
+                    print(f"  {action_icon} {block['block_id']}: {block['description'][:50]}...")
+        except:
+            pass
 
 # Singleton instance
 _system_chain_manager = None

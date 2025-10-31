@@ -390,4 +390,5 @@ Testaa synkronointia: Käytä manage_questions.py lisätäksesi kysymyksiä ja k
 Implementoi lohkotesti: Luo demo-skripti usealle "nodelle" (esim. multiprocessing) kirjoittamaan IPFS:ään.
 TODO-integraatio: Yhdistä promptin TODOihin, kuten voting_engine.py (vaalikoneen ydin) ja GUI.
 ------------------------------------------------------------------------------------------------------------------------------------
+Ei sisään koodata esimerkkidataa py tiedostoihin
 

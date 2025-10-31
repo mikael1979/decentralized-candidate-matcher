@@ -5,18 +5,18 @@ Kysymysten synkronointityökalu
 """
 
 import argparse
-from question_manager import get_question_manager
+from question_manager import QuestionManager
 
 def main():
     parser = argparse.ArgumentParser(description="Kysymysten synkronointityökalu")
-    parser.add_argument('action', choices=['sync', 'status', 'submit', 'rules', 'force-sync'],
+    parser.add_argument('action', choices=['sync', 'status', 'submit', 'rules', 'force-sync', 'production-lock'],
                        help='Toiminto')
     parser.add_argument('--question-file', help='Kysymystiedosto (submit-toimintoa varten)')
     parser.add_argument('--batch-size', type=int, help='Aseta erän koko')
     parser.add_argument('--interval', type=int, help='Aseta aikaväli tunteina')
     
     args = parser.parse_args()
-    manager = get_question_manager()
+    manager = QuestionManager()
     
     if args.action == 'sync':
         result = manager.sync_tmp_to_new()
@@ -55,6 +55,19 @@ def main():
         print("📋 NYKYISET SÄÄNNÖT:")
         for rule, value in status['sync_rules'].items():
             print(f"   {rule}: {value}")
+    
+    elif args.action == 'production-lock':
+        try:
+            from production_lock_manager import ProductionLockManager
+            lock_manager = ProductionLockManager()
+            if lock_manager.enable_production_mode():
+                print("🎯 TUOTANTOTILA AKTIVOITU")
+                print("Kaikki moduulit tarkistavat nyt fingerprintit käynnistyessä")
+            else:
+                print("❌ Tuotantotilan aktivointi epäonnistui")
+        except ImportError as e:
+            print(f"❌ ProductionLockManager ei saatavilla: {e}")
+            print("💡 Toteuta production_lock_manager.py ensin")
 
 if __name__ == "__main__":
     main()
