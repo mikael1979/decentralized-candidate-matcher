@@ -3,10 +3,10 @@
 ## 🚀 SEURAAVAT VAIHEET
 
 ### 🔧 Tärkeät Korjaukset
-- [ ] **Integroi `create_install_config.py` → `elections_list_manager.py`**
+- [x] **Integroi `create_install_config.py` → `elections_list_manager.py`**
   - Uudet vaalit tallennetaan automaattisesti elections_list.json:iin
   - Install_config CID generoidaan automaattisesti
-- [ ] **Tarkista että Jumaltenvaalit_2026 on elections_list.json:ssa**
+- [x] **Tarkista että Jumaltenvaalit_2026 on elections_list.json:ssa**
   - Lisää install_config_cid jos puuttuu
 - [ ] **Testaa active_questions lukittu/avoin tila**
   - Varmista että vaalikone toimii molemmissa tiloissa
@@ -53,23 +53,26 @@
 - Komentorivivaalikone
 - Hajautettu arkkitehtuuri
 - Kreikkalaisten jumalien testidata
+- Elections_list.json integraatio (päivitetty automaattiseksi)
+- Install_config CID -järjestelmä (nyt generoidaan automaattisesti)
 
 ### 🔄 Käynnissä Olevat
-- Elections_list.json integraatio
-- Install_config CID -järjestelmä
+- Active_questions lukitustilan testaus
+- IPFS-siirtymä mockista oikeaan
 
 ## 🐛 Tunnetut Ongelmat
-1. `create_install_config.py` ei päivitä elections_list.json:ia automaattisesti
-2. Jumaltenvaalit_2026 puuttuu elections_list.json:ista
-3. IPFS on vielä mock-toteutus
+1. `create_install_config.py` integraatio vaatii vielä integraatiotestit
+2. Jumaltenvaalit_2026 CID:n validointi puutteellinen
+3. IPFS on vielä mock-toteutus (siirtymä käynnissä)
 
 ## 💡 Ideat Tulevaisuutta Varten
 - Graafiset tilastot ja visualisoinnit
 - Reaaliaikainen äänestystilanne
 - Sosiaalinen jakaminen
 - Monikielisyys (lisää kieliä)
+- Fingerprint-lukituksen automaattinen päivitys kehitystilasta käyttötilaan
 
 ---
-*Päivitetty: $(date)*
+*Päivitetty: October 31, 2025*
 
-**Huomisen suunnitelma: Aloita elections_list.json integraation korjauksesta!**
+**Huomisen suunnitelma: Jatka active_questions lukitustilan testauksella ja siirry IPFS-integrointiin!**
