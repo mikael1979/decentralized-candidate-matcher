@@ -1,0 +1,20 @@
+Pakolliset:
+manage_questions.py - Käyttöliittymä
+
+question_manager.py - Logiikka
+
+system_bootstrap.py - Käynnistys
+
+demo_comparisons.py - Testaus
+
+complete_elo_calculator.py - ELO
+
+enhanced_integrity_manager.py - Turvallisuus
+
+system_chain_manager.py - Lokitus
+
+mock_ipfs.py - Testi-IPFS
+
+installation_engine.py - Asennus
+
+metadata_manager.py - Metadata

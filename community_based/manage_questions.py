@@ -1,11 +1,11 @@
 # manage_questions.py
 #!/usr/bin/env python3
 """
-Kysymysten synkronointityökalu
+Kysymysten synkronointityökalu - KORJATTU
 """
 
 import argparse
-from question_manager import QuestionManager
+from question_manager import get_question_manager
 
 def main():
     parser = argparse.ArgumentParser(description="Kysymysten synkronointityökalu")
@@ -16,7 +16,9 @@ def main():
     parser.add_argument('--interval', type=int, help='Aseta aikaväli tunteina')
     
     args = parser.parse_args()
-    manager = QuestionManager()
+    
+    # Käytä get_question_manager-funktiota
+    manager = get_question_manager()
     
     if args.action == 'sync':
         result = manager.sync_tmp_to_new()

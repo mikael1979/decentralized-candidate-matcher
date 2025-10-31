@@ -9,6 +9,7 @@ Käyttö: Lisää jokaisen ohjelman alkuun:
 
 import sys
 import os
+import json  # LISÄTTY: JSON-kirjasto
 from pathlib import Path
 
 def verify_system_startup():
