@@ -1,0 +1,3492 @@
+{
+  "QmMock7368d17cdd51ab8c700306cde83c0bba737509f7": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T19:40:32.652750",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.652802",
+    "size_bytes": 283,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.706708"
+  },
+  "QmMock9afad190f0dd9b86c5cc928005f10fbe2589540b": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T19:40:32.653012",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.653034",
+    "size_bytes": 286,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.707616"
+  },
+  "QmMock5e9d849cfe222c43f7b13ce26d31372d637acb45": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T19:40:32.653201",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.653218",
+    "size_bytes": 290,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.708443"
+  },
+  "QmMock264d588ab4f7165027b0937055452d55ca8d8542": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.691776",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.693386",
+          "data_type": "test_entry",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "test_write",
+            "value": 42,
+            "timestamp": "2025-10-31T19:40:32.692759"
+          },
+          "entry_hash": "9d296a8e1169457b51a956fb3d90a5f89f886791b5980f49f8d2799283c06839"
+        },
+        {
+          "entry_id": "active_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.696790",
+          "data_type": "multi_test_0",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_0",
+            "value": 0
+          },
+          "entry_hash": "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1"
+        },
+        {
+          "entry_id": "active_2_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.699241",
+          "data_type": "multi_test_1",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_1",
+            "value": 1
+          },
+          "entry_hash": "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be"
+        },
+        {
+          "entry_id": "active_3_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.702049",
+          "data_type": "multi_test_2",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_2",
+            "value": 2
+          },
+          "entry_hash": "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+        }
+      ],
+      "current_index": 4,
+      "total_entries": 4,
+      "entry_hashes": [
+        "9d296a8e1169457b51a956fb3d90a5f89f886791b5980f49f8d2799283c06839",
+        "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1",
+        "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be",
+        "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.691848",
+    "size_bytes": 284,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.693067"
+  },
+  "QmMock88079c795718ae7a9aa9cb5014d3e508e94dd25c": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T19:40:32.692108",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.692132",
+    "size_bytes": 286,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.709815"
+  },
+  "QmMock96e08c1cfc44a3785378b3e196272a115b5dfe96": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.692404",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock7368d17cdd51ab8c700306cde83c0bba737509f7",
+        "urgent": "QmMock9afad190f0dd9b86c5cc928005f10fbe2589540b",
+        "sync": "QmMock5e9d849cfe222c43f7b13ce26d31372d637acb45",
+        "active": "QmMock498470f30c32680fb1451ba72bac720da56fff2d",
+        "buffer2": "QmMock88079c795718ae7a9aa9cb5014d3e508e94dd25c"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.692443",
+    "size_bytes": 609,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.692772"
+  },
+  "QmMock154bee6103274ec67b575d9b6b43bf0a22ea56d8": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.691776",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.693386",
+          "data_type": "test_entry",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "test_write",
+            "value": 42,
+            "timestamp": "2025-10-31T19:40:32.692759"
+          },
+          "entry_hash": "9d296a8e1169457b51a956fb3d90a5f89f886791b5980f49f8d2799283c06839"
+        },
+        {
+          "entry_id": "active_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.696790",
+          "data_type": "multi_test_0",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_0",
+            "value": 0
+          },
+          "entry_hash": "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1"
+        },
+        {
+          "entry_id": "active_2_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.699241",
+          "data_type": "multi_test_1",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_1",
+            "value": 1
+          },
+          "entry_hash": "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be"
+        },
+        {
+          "entry_id": "active_3_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.702049",
+          "data_type": "multi_test_2",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_2",
+            "value": 2
+          },
+          "entry_hash": "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+        }
+      ],
+      "current_index": 4,
+      "total_entries": 4,
+      "entry_hashes": [
+        "9d296a8e1169457b51a956fb3d90a5f89f886791b5980f49f8d2799283c06839",
+        "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1",
+        "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be",
+        "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.693417",
+    "size_bytes": 676,
+    "access_count": 3,
+    "last_access": "2025-10-31T19:40:32.696377"
+  },
+  "QmMockf5e1adf56cd332cf0b70f136f85210e5c64a14ad": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.692404",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock7368d17cdd51ab8c700306cde83c0bba737509f7",
+        "urgent": "QmMock9afad190f0dd9b86c5cc928005f10fbe2589540b",
+        "sync": "QmMock5e9d849cfe222c43f7b13ce26d31372d637acb45",
+        "active": "QmMock498470f30c32680fb1451ba72bac720da56fff2d",
+        "buffer2": "QmMock88079c795718ae7a9aa9cb5014d3e508e94dd25c"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.693831",
+    "size_bytes": 609,
+    "access_count": 3,
+    "last_access": "2025-10-31T19:40:32.695964"
+  },
+  "QmMock8016065c8ba488ef9e6e3adca681dcb43a28a8e8": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.691776",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.693386",
+          "data_type": "test_entry",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "test_write",
+            "value": 42,
+            "timestamp": "2025-10-31T19:40:32.692759"
+          },
+          "entry_hash": "9d296a8e1169457b51a956fb3d90a5f89f886791b5980f49f8d2799283c06839"
+        },
+        {
+          "entry_id": "active_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.696790",
+          "data_type": "multi_test_0",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_0",
+            "value": 0
+          },
+          "entry_hash": "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1"
+        },
+        {
+          "entry_id": "active_2_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.699241",
+          "data_type": "multi_test_1",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_1",
+            "value": 1
+          },
+          "entry_hash": "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be"
+        },
+        {
+          "entry_id": "active_3_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.702049",
+          "data_type": "multi_test_2",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_2",
+            "value": 2
+          },
+          "entry_hash": "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+        }
+      ],
+      "current_index": 4,
+      "total_entries": 4,
+      "entry_hashes": [
+        "9d296a8e1169457b51a956fb3d90a5f89f886791b5980f49f8d2799283c06839",
+        "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1",
+        "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be",
+        "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.696826",
+    "size_bytes": 1033,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.698585"
+  },
+  "QmMock1c8c63d48553ce6f940f96f8402ea4637dc51394": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.692404",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock7368d17cdd51ab8c700306cde83c0bba737509f7",
+        "urgent": "QmMock9afad190f0dd9b86c5cc928005f10fbe2589540b",
+        "sync": "QmMock5e9d849cfe222c43f7b13ce26d31372d637acb45",
+        "active": "QmMock498470f30c32680fb1451ba72bac720da56fff2d",
+        "buffer2": "QmMock88079c795718ae7a9aa9cb5014d3e508e94dd25c"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.697373",
+    "size_bytes": 609,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.697941"
+  },
+  "QmMockc1334981b24a7fd7be472589bd8609aa47247f45": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.691776",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.693386",
+          "data_type": "test_entry",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "test_write",
+            "value": 42,
+            "timestamp": "2025-10-31T19:40:32.692759"
+          },
+          "entry_hash": "9d296a8e1169457b51a956fb3d90a5f89f886791b5980f49f8d2799283c06839"
+        },
+        {
+          "entry_id": "active_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.696790",
+          "data_type": "multi_test_0",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_0",
+            "value": 0
+          },
+          "entry_hash": "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1"
+        },
+        {
+          "entry_id": "active_2_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.699241",
+          "data_type": "multi_test_1",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_1",
+            "value": 1
+          },
+          "entry_hash": "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be"
+        },
+        {
+          "entry_id": "active_3_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.702049",
+          "data_type": "multi_test_2",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_2",
+            "value": 2
+          },
+          "entry_hash": "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+        }
+      ],
+      "current_index": 4,
+      "total_entries": 4,
+      "entry_hashes": [
+        "9d296a8e1169457b51a956fb3d90a5f89f886791b5980f49f8d2799283c06839",
+        "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1",
+        "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be",
+        "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.699279",
+    "size_bytes": 1390,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.701361"
+  },
+  "QmMocke65d2c8256dca50517f34de5421ed45628eec2b9": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.692404",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock7368d17cdd51ab8c700306cde83c0bba737509f7",
+        "urgent": "QmMock9afad190f0dd9b86c5cc928005f10fbe2589540b",
+        "sync": "QmMock5e9d849cfe222c43f7b13ce26d31372d637acb45",
+        "active": "QmMock498470f30c32680fb1451ba72bac720da56fff2d",
+        "buffer2": "QmMock88079c795718ae7a9aa9cb5014d3e508e94dd25c"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.699957",
+    "size_bytes": 609,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.700657"
+  },
+  "QmMock498470f30c32680fb1451ba72bac720da56fff2d": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.691776",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.693386",
+          "data_type": "test_entry",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "test_write",
+            "value": 42,
+            "timestamp": "2025-10-31T19:40:32.692759"
+          },
+          "entry_hash": "9d296a8e1169457b51a956fb3d90a5f89f886791b5980f49f8d2799283c06839"
+        },
+        {
+          "entry_id": "active_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.696790",
+          "data_type": "multi_test_0",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_0",
+            "value": 0
+          },
+          "entry_hash": "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1"
+        },
+        {
+          "entry_id": "active_2_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.699241",
+          "data_type": "multi_test_1",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_1",
+            "value": 1
+          },
+          "entry_hash": "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be"
+        },
+        {
+          "entry_id": "active_3_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.702049",
+          "data_type": "multi_test_2",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_2",
+            "value": 2
+          },
+          "entry_hash": "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+        }
+      ],
+      "current_index": 4,
+      "total_entries": 4,
+      "entry_hashes": [
+        "9d296a8e1169457b51a956fb3d90a5f89f886791b5980f49f8d2799283c06839",
+        "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1",
+        "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be",
+        "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.702089",
+    "size_bytes": 1747,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.709128"
+  },
+  "QmMock1b7708e41970fecb50b6f00cb864c5ca97d2b82c": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.692404",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock7368d17cdd51ab8c700306cde83c0bba737509f7",
+        "urgent": "QmMock9afad190f0dd9b86c5cc928005f10fbe2589540b",
+        "sync": "QmMock5e9d849cfe222c43f7b13ce26d31372d637acb45",
+        "active": "QmMock498470f30c32680fb1451ba72bac720da56fff2d",
+        "buffer2": "QmMock88079c795718ae7a9aa9cb5014d3e508e94dd25c"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.702983",
+    "size_bytes": 609,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.703902"
+  },
+  "QmMock5cd1bcdbbf305d42b8188792bfeb03ce783d3076": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.692404",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock7368d17cdd51ab8c700306cde83c0bba737509f7",
+        "urgent": "QmMock9afad190f0dd9b86c5cc928005f10fbe2589540b",
+        "sync": "QmMock5e9d849cfe222c43f7b13ce26d31372d637acb45",
+        "active": "QmMock498470f30c32680fb1451ba72bac720da56fff2d",
+        "buffer2": "QmMock88079c795718ae7a9aa9cb5014d3e508e94dd25c"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.704814",
+    "size_bytes": 624,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.705761"
+  },
+  "QmMock355752fb944053559e7337d52789a8b9e0d42c58": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T19:40:32.745904",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.745958",
+    "size_bytes": 283,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.767844"
+  },
+  "QmMock5f78a704ab5e85ba1d1ea9217d69a23ddd419d00": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T19:40:32.746934",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "urgent_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.759921",
+          "data_type": "emergency_backup",
+          "node_id": "test_node_1",
+          "priority": "emergency",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:32.757933",
+            "data_type": "emergency_backup",
+            "priority": "emergency",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "emergency": true,
+              "reason": "test_emergency",
+              "timestamp": "2025-10-31T19:40:32.757929"
+            }
+          },
+          "entry_hash": "7e5a9d745817d6531487743a4ba751bdba52d3839d414ec16bf8f4ac5cfc1d8e"
+        }
+      ],
+      "current_index": 1,
+      "total_entries": 1,
+      "entry_hashes": [
+        "7e5a9d745817d6531487743a4ba751bdba52d3839d414ec16bf8f4ac5cfc1d8e"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.746969",
+    "size_bytes": 286,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.758885"
+  },
+  "QmMockeefa07f186e94e700623c56fd9fa54e391c61155": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T19:40:32.747691",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "sync_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.764361",
+          "data_type": "sync_backup",
+          "node_id": "test_node_1",
+          "priority": "high",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:32.762049",
+            "data_type": "sync_backup",
+            "priority": "high",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "sync_operation": "test_sync",
+              "timestamp": "2025-10-31T19:40:32.762046"
+            }
+          },
+          "entry_hash": "a46da2f202ed465dacf59da1a9266433efe1dfe30241a2e918dec8f4b5ed1c87"
+        },
+        {
+          "entry_id": "sync_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.779597",
+          "data_type": "multi_node_sync",
+          "node_id": "test_node_1",
+          "priority": "high",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:32.777276",
+            "data_type": "multi_node_sync",
+            "priority": "high",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "summary": {
+                "sync_operation": "multi_node_synchronization",
+                "timestamp": "2025-10-31T19:40:32.777271",
+                "nodes_synchronized": 3,
+                "total_entries_received": 1,
+                "unique_entries_after_deduplication": 1,
+                "participating_nodes": [
+                  "node_1",
+                  "node_2",
+                  "node_3"
+                ]
+              },
+              "entries": [
+                {
+                  "entry_id": "sync_0_test_node_1",
+                  "timestamp": "2025-10-31T19:40:32.764361",
+                  "data_type": "sync_backup",
+                  "node_id": "test_node_1",
+                  "priority": "high",
+                  "data": {
+                    "backup_timestamp": "2025-10-31T19:40:32.762049",
+                    "data_type": "sync_backup",
+                    "priority": "high",
+                    "node_id": "test_node_1",
+                    "election_id": "test_election_2024",
+                    "original_data": {
+                      "sync_operation": "test_sync",
+                      "timestamp": "2025-10-31T19:40:32.762046"
+                    }
+                  },
+                  "entry_hash": "a46da2f202ed465dacf59da1a9266433efe1dfe30241a2e918dec8f4b5ed1c87"
+                }
+              ]
+            }
+          },
+          "entry_hash": "dab2a33bf4313c894745bc9679916ec11b6c48fa90b9ad370a4413302e9734f0"
+        }
+      ],
+      "current_index": 2,
+      "total_entries": 2,
+      "entry_hashes": [
+        "a46da2f202ed465dacf59da1a9266433efe1dfe30241a2e918dec8f4b5ed1c87",
+        "dab2a33bf4313c894745bc9679916ec11b6c48fa90b9ad370a4413302e9734f0"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.747721",
+    "size_bytes": 290,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.763089"
+  },
+  "QmMock1acdff20ea82b33f831fba4752f1b3d3e5ce4494": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.748539",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.752467",
+          "data_type": "system_init",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:32.750869",
+            "data_type": "system_init",
+            "priority": "normal",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "system_initialized": "2025-10-31T19:40:32.750864",
+              "election_id": "test_election_2024",
+              "node_id": "test_node_1",
+              "version": "1.0.0"
+            }
+          },
+          "entry_hash": "cc2a0906e81bcf924a2de1396bfcff5980de6c90a354788564c4661d5406b2bb"
+        },
+        {
+          "entry_id": "active_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.755939",
+          "data_type": "normal_backup",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:32.754201",
+            "data_type": "normal_backup",
+            "priority": "normal",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "questions": [
+                "q1",
+                "q2",
+                "q3"
+              ],
+              "candidates": [
+                "c1",
+                "c2"
+              ],
+              "timestamp": "2025-10-31T19:40:32.754197"
+            }
+          },
+          "entry_hash": "432df517b38cca526314659e31946df004192fad5f6d987ae468c2a8bb42776d"
+        }
+      ],
+      "current_index": 2,
+      "total_entries": 2,
+      "entry_hashes": [
+        "cc2a0906e81bcf924a2de1396bfcff5980de6c90a354788564c4661d5406b2bb",
+        "432df517b38cca526314659e31946df004192fad5f6d987ae468c2a8bb42776d"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.748572",
+    "size_bytes": 284,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.751656"
+  },
+  "QmMock0c6ec58c28f3d0423a332f61c495d742f3c4168f": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T19:40:32.749304",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.749330",
+    "size_bytes": 286,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.772532"
+  },
+  "QmMock84f75d3ede0eb390d14cd7b01f7b14f917a22656": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.750049",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock355752fb944053559e7337d52789a8b9e0d42c58",
+        "urgent": "QmMock21479c6fd2b12ef80195e58126cdd35718df9748",
+        "sync": "QmMock8f039cd2ffe7c3fc5834f4b2f3a527c1ccc49017",
+        "active": "QmMockde35776f20456efdb8033af998fb3c03f571b222",
+        "buffer2": "QmMock0c6ec58c28f3d0423a332f61c495d742f3c4168f"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.750076",
+    "size_bytes": 609,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.750874"
+  },
+  "QmMockfdf237b70d36a97e96f8994ec7a948a6ebf4d86c": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.748539",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.752467",
+          "data_type": "system_init",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:32.750869",
+            "data_type": "system_init",
+            "priority": "normal",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "system_initialized": "2025-10-31T19:40:32.750864",
+              "election_id": "test_election_2024",
+              "node_id": "test_node_1",
+              "version": "1.0.0"
+            }
+          },
+          "entry_hash": "cc2a0906e81bcf924a2de1396bfcff5980de6c90a354788564c4661d5406b2bb"
+        },
+        {
+          "entry_id": "active_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.755939",
+          "data_type": "normal_backup",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:32.754201",
+            "data_type": "normal_backup",
+            "priority": "normal",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "questions": [
+                "q1",
+                "q2",
+                "q3"
+              ],
+              "candidates": [
+                "c1",
+                "c2"
+              ],
+              "timestamp": "2025-10-31T19:40:32.754197"
+            }
+          },
+          "entry_hash": "432df517b38cca526314659e31946df004192fad5f6d987ae468c2a8bb42776d"
+        }
+      ],
+      "current_index": 2,
+      "total_entries": 2,
+      "entry_hashes": [
+        "cc2a0906e81bcf924a2de1396bfcff5980de6c90a354788564c4661d5406b2bb",
+        "432df517b38cca526314659e31946df004192fad5f6d987ae468c2a8bb42776d"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.752492",
+    "size_bytes": 914,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.755054"
+  },
+  "QmMock23e381d4441f4013fc6ff0b6ecdc736cac683d06": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.750049",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock355752fb944053559e7337d52789a8b9e0d42c58",
+        "urgent": "QmMock21479c6fd2b12ef80195e58126cdd35718df9748",
+        "sync": "QmMock8f039cd2ffe7c3fc5834f4b2f3a527c1ccc49017",
+        "active": "QmMockde35776f20456efdb8033af998fb3c03f571b222",
+        "buffer2": "QmMock0c6ec58c28f3d0423a332f61c495d742f3c4168f"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.753315",
+    "size_bytes": 609,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.754204"
+  },
+  "QmMockde35776f20456efdb8033af998fb3c03f571b222": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.748539",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.752467",
+          "data_type": "system_init",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:32.750869",
+            "data_type": "system_init",
+            "priority": "normal",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "system_initialized": "2025-10-31T19:40:32.750864",
+              "election_id": "test_election_2024",
+              "node_id": "test_node_1",
+              "version": "1.0.0"
+            }
+          },
+          "entry_hash": "cc2a0906e81bcf924a2de1396bfcff5980de6c90a354788564c4661d5406b2bb"
+        },
+        {
+          "entry_id": "active_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.755939",
+          "data_type": "normal_backup",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:32.754201",
+            "data_type": "normal_backup",
+            "priority": "normal",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "questions": [
+                "q1",
+                "q2",
+                "q3"
+              ],
+              "candidates": [
+                "c1",
+                "c2"
+              ],
+              "timestamp": "2025-10-31T19:40:32.754197"
+            }
+          },
+          "entry_hash": "432df517b38cca526314659e31946df004192fad5f6d987ae468c2a8bb42776d"
+        }
+      ],
+      "current_index": 2,
+      "total_entries": 2,
+      "entry_hashes": [
+        "cc2a0906e81bcf924a2de1396bfcff5980de6c90a354788564c4661d5406b2bb",
+        "432df517b38cca526314659e31946df004192fad5f6d987ae468c2a8bb42776d"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.755967",
+    "size_bytes": 1521,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.771360"
+  },
+  "QmMock173f35d314a51109b0a17f11343016cc97d0d29d": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.750049",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock355752fb944053559e7337d52789a8b9e0d42c58",
+        "urgent": "QmMock21479c6fd2b12ef80195e58126cdd35718df9748",
+        "sync": "QmMock8f039cd2ffe7c3fc5834f4b2f3a527c1ccc49017",
+        "active": "QmMockde35776f20456efdb8033af998fb3c03f571b222",
+        "buffer2": "QmMock0c6ec58c28f3d0423a332f61c495d742f3c4168f"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.756919",
+    "size_bytes": 609,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.757935"
+  },
+  "QmMock21479c6fd2b12ef80195e58126cdd35718df9748": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T19:40:32.746934",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "urgent_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.759921",
+          "data_type": "emergency_backup",
+          "node_id": "test_node_1",
+          "priority": "emergency",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:32.757933",
+            "data_type": "emergency_backup",
+            "priority": "emergency",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "emergency": true,
+              "reason": "test_emergency",
+              "timestamp": "2025-10-31T19:40:32.757929"
+            }
+          },
+          "entry_hash": "7e5a9d745817d6531487743a4ba751bdba52d3839d414ec16bf8f4ac5cfc1d8e"
+        }
+      ],
+      "current_index": 1,
+      "total_entries": 1,
+      "entry_hashes": [
+        "7e5a9d745817d6531487743a4ba751bdba52d3839d414ec16bf8f4ac5cfc1d8e"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.759942",
+    "size_bytes": 887,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.769023"
+  },
+  "QmMock3339eefbf6c6ec90e8bc518d6a9e73b1ad1b4557": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.750049",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock355752fb944053559e7337d52789a8b9e0d42c58",
+        "urgent": "QmMock21479c6fd2b12ef80195e58126cdd35718df9748",
+        "sync": "QmMock8f039cd2ffe7c3fc5834f4b2f3a527c1ccc49017",
+        "active": "QmMockde35776f20456efdb8033af998fb3c03f571b222",
+        "buffer2": "QmMock0c6ec58c28f3d0423a332f61c495d742f3c4168f"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.760982",
+    "size_bytes": 609,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.762052"
+  },
+  "QmMock5412bfeceb7417b8d399ce213f9c62322807ba2a": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T19:40:32.747691",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "sync_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.764361",
+          "data_type": "sync_backup",
+          "node_id": "test_node_1",
+          "priority": "high",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:32.762049",
+            "data_type": "sync_backup",
+            "priority": "high",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "sync_operation": "test_sync",
+              "timestamp": "2025-10-31T19:40:32.762046"
+            }
+          },
+          "entry_hash": "a46da2f202ed465dacf59da1a9266433efe1dfe30241a2e918dec8f4b5ed1c87"
+        },
+        {
+          "entry_id": "sync_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.779597",
+          "data_type": "multi_node_sync",
+          "node_id": "test_node_1",
+          "priority": "high",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:32.777276",
+            "data_type": "multi_node_sync",
+            "priority": "high",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "summary": {
+                "sync_operation": "multi_node_synchronization",
+                "timestamp": "2025-10-31T19:40:32.777271",
+                "nodes_synchronized": 3,
+                "total_entries_received": 1,
+                "unique_entries_after_deduplication": 1,
+                "participating_nodes": [
+                  "node_1",
+                  "node_2",
+                  "node_3"
+                ]
+              },
+              "entries": [
+                {
+                  "entry_id": "sync_0_test_node_1",
+                  "timestamp": "2025-10-31T19:40:32.764361",
+                  "data_type": "sync_backup",
+                  "node_id": "test_node_1",
+                  "priority": "high",
+                  "data": {
+                    "backup_timestamp": "2025-10-31T19:40:32.762049",
+                    "data_type": "sync_backup",
+                    "priority": "high",
+                    "node_id": "test_node_1",
+                    "election_id": "test_election_2024",
+                    "original_data": {
+                      "sync_operation": "test_sync",
+                      "timestamp": "2025-10-31T19:40:32.762046"
+                    }
+                  },
+                  "entry_hash": "a46da2f202ed465dacf59da1a9266433efe1dfe30241a2e918dec8f4b5ed1c87"
+                }
+              ]
+            }
+          },
+          "entry_hash": "dab2a33bf4313c894745bc9679916ec11b6c48fa90b9ad370a4413302e9734f0"
+        }
+      ],
+      "current_index": 2,
+      "total_entries": 2,
+      "entry_hashes": [
+        "a46da2f202ed465dacf59da1a9266433efe1dfe30241a2e918dec8f4b5ed1c87",
+        "dab2a33bf4313c894745bc9679916ec11b6c48fa90b9ad370a4413302e9734f0"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.764391",
+    "size_bytes": 853,
+    "access_count": 3,
+    "last_access": "2025-10-31T19:40:32.778426"
+  },
+  "QmMocke02b50b7ca7c199eac616e2752dbcc4711f66593": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.750049",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock355752fb944053559e7337d52789a8b9e0d42c58",
+        "urgent": "QmMock21479c6fd2b12ef80195e58126cdd35718df9748",
+        "sync": "QmMock8f039cd2ffe7c3fc5834f4b2f3a527c1ccc49017",
+        "active": "QmMockde35776f20456efdb8033af998fb3c03f571b222",
+        "buffer2": "QmMock0c6ec58c28f3d0423a332f61c495d742f3c4168f"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.765555",
+    "size_bytes": 609,
+    "access_count": 4,
+    "last_access": "2025-10-31T19:40:32.777283"
+  },
+  "QmMock8f039cd2ffe7c3fc5834f4b2f3a527c1ccc49017": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T19:40:32.747691",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "sync_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.764361",
+          "data_type": "sync_backup",
+          "node_id": "test_node_1",
+          "priority": "high",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:32.762049",
+            "data_type": "sync_backup",
+            "priority": "high",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "sync_operation": "test_sync",
+              "timestamp": "2025-10-31T19:40:32.762046"
+            }
+          },
+          "entry_hash": "a46da2f202ed465dacf59da1a9266433efe1dfe30241a2e918dec8f4b5ed1c87"
+        },
+        {
+          "entry_id": "sync_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.779597",
+          "data_type": "multi_node_sync",
+          "node_id": "test_node_1",
+          "priority": "high",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:32.777276",
+            "data_type": "multi_node_sync",
+            "priority": "high",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "summary": {
+                "sync_operation": "multi_node_synchronization",
+                "timestamp": "2025-10-31T19:40:32.777271",
+                "nodes_synchronized": 3,
+                "total_entries_received": 1,
+                "unique_entries_after_deduplication": 1,
+                "participating_nodes": [
+                  "node_1",
+                  "node_2",
+                  "node_3"
+                ]
+              },
+              "entries": [
+                {
+                  "entry_id": "sync_0_test_node_1",
+                  "timestamp": "2025-10-31T19:40:32.764361",
+                  "data_type": "sync_backup",
+                  "node_id": "test_node_1",
+                  "priority": "high",
+                  "data": {
+                    "backup_timestamp": "2025-10-31T19:40:32.762049",
+                    "data_type": "sync_backup",
+                    "priority": "high",
+                    "node_id": "test_node_1",
+                    "election_id": "test_election_2024",
+                    "original_data": {
+                      "sync_operation": "test_sync",
+                      "timestamp": "2025-10-31T19:40:32.762046"
+                    }
+                  },
+                  "entry_hash": "a46da2f202ed465dacf59da1a9266433efe1dfe30241a2e918dec8f4b5ed1c87"
+                }
+              ]
+            }
+          },
+          "entry_hash": "dab2a33bf4313c894745bc9679916ec11b6c48fa90b9ad370a4413302e9734f0"
+        }
+      ],
+      "current_index": 2,
+      "total_entries": 2,
+      "entry_hashes": [
+        "a46da2f202ed465dacf59da1a9266433efe1dfe30241a2e918dec8f4b5ed1c87",
+        "dab2a33bf4313c894745bc9679916ec11b6c48fa90b9ad370a4413302e9734f0"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.779629",
+    "size_bytes": 2120,
+    "access_count": 0
+  },
+  "QmMock4986b78e104ec1b5d92dcf85bcef524c3fc9316b": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.750049",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock355752fb944053559e7337d52789a8b9e0d42c58",
+        "urgent": "QmMock21479c6fd2b12ef80195e58126cdd35718df9748",
+        "sync": "QmMock8f039cd2ffe7c3fc5834f4b2f3a527c1ccc49017",
+        "active": "QmMockde35776f20456efdb8033af998fb3c03f571b222",
+        "buffer2": "QmMock0c6ec58c28f3d0423a332f61c495d742f3c4168f"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.781043",
+    "size_bytes": 609,
+    "access_count": 0
+  },
+  "QmMock89e1d1ff9c48753759f18913bdc4a3fc963b4b24": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T19:40:32.820352",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.820373",
+    "size_bytes": 283,
+    "access_count": 0
+  },
+  "QmMock5c7e22452fbee90d177304424514cb3c19fb10b0": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T19:40:32.821796",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.821821",
+    "size_bytes": 286,
+    "access_count": 0
+  },
+  "QmMock3fd56eafd700ee24cbf9f3ed955e12325003bd09": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T19:40:32.823207",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.823231",
+    "size_bytes": 290,
+    "access_count": 0
+  },
+  "QmMock926abf19952cf539dbcd5d894f318fdbfac195aa": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.824635",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.824658",
+    "size_bytes": 284,
+    "access_count": 0
+  },
+  "QmMock18d4bb875d766da91779815ebb314c41acce214b": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T19:40:32.826077",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.826099",
+    "size_bytes": 286,
+    "access_count": 0
+  },
+  "QmMock75854355f2b59bda9bb4a531c6eabb6753858cbc": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.827539",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock89e1d1ff9c48753759f18913bdc4a3fc963b4b24",
+        "urgent": "QmMock5c7e22452fbee90d177304424514cb3c19fb10b0",
+        "sync": "QmMock3fd56eafd700ee24cbf9f3ed955e12325003bd09",
+        "active": "QmMock926abf19952cf539dbcd5d894f318fdbfac195aa",
+        "buffer2": "QmMock18d4bb875d766da91779815ebb314c41acce214b"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.827568",
+    "size_bytes": 609,
+    "access_count": 0
+  },
+  "QmMock751b535b0371b3e73a645f2395772df03807fe4d": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T19:40:32.868350",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.868377",
+    "size_bytes": 283,
+    "access_count": 0
+  },
+  "QmMockb942a351eda80e474312c8ef3a9863f752b667cd": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T19:40:32.870369",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.870398",
+    "size_bytes": 286,
+    "access_count": 0
+  },
+  "QmMock1abe30ff9b7c8e6dc52c0f946f28fff02fb95982": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T19:40:32.872388",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.872413",
+    "size_bytes": 290,
+    "access_count": 0
+  },
+  "QmMock4879cd0b2d6fbfe46afc0c72714e8fb2a3ff9ac7": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.873988",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.874011",
+    "size_bytes": 284,
+    "access_count": 0
+  },
+  "QmMock98cd86b12f6585d8e86bce60d5d78a141e84124c": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T19:40:32.875536",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.875562",
+    "size_bytes": 286,
+    "access_count": 0
+  },
+  "QmMock4dcc76b7ddc3e61ce1a885f2394a0234ead41f62": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.877079",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock751b535b0371b3e73a645f2395772df03807fe4d",
+        "urgent": "QmMockb942a351eda80e474312c8ef3a9863f752b667cd",
+        "sync": "QmMock1abe30ff9b7c8e6dc52c0f946f28fff02fb95982",
+        "active": "QmMock4879cd0b2d6fbfe46afc0c72714e8fb2a3ff9ac7",
+        "buffer2": "QmMock98cd86b12f6585d8e86bce60d5d78a141e84124c"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.877108",
+    "size_bytes": 609,
+    "access_count": 0
+  },
+  "QmMock5aedc0edd35fb980ec4b9ed253787ac5390473c0": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T19:40:32.918895",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.918957",
+    "size_bytes": 283,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.974819"
+  },
+  "QmMock5da1bc23be9c8240eda71911d88785a9027b64d8": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T19:40:32.920673",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.920716",
+    "size_bytes": 286,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.976978"
+  },
+  "QmMock8bfbf6ec6b666aff8136a51b6444cd2ddbcc782a": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T19:40:32.922340",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.922364",
+    "size_bytes": 290,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.979279"
+  },
+  "QmMock2cc23d9b85d742c926430b074f642c918bdff0a3": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.924044",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.933542",
+          "data_type": "test_entry",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "test_write",
+            "value": 42,
+            "timestamp": "2025-10-31T19:40:32.929474"
+          },
+          "entry_hash": "cef1027eae91df6ed471a88ab3f4aab879899780b4ed96354aa5d33acfa36c83"
+        },
+        {
+          "entry_id": "active_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.948280",
+          "data_type": "multi_test_0",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_0",
+            "value": 0
+          },
+          "entry_hash": "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1"
+        },
+        {
+          "entry_id": "active_2_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.955891",
+          "data_type": "multi_test_1",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_1",
+            "value": 1
+          },
+          "entry_hash": "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be"
+        },
+        {
+          "entry_id": "active_3_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.963988",
+          "data_type": "multi_test_2",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_2",
+            "value": 2
+          },
+          "entry_hash": "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+        }
+      ],
+      "current_index": 4,
+      "total_entries": 4,
+      "entry_hashes": [
+        "cef1027eae91df6ed471a88ab3f4aab879899780b4ed96354aa5d33acfa36c83",
+        "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1",
+        "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be",
+        "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.924076",
+    "size_bytes": 284,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.931589"
+  },
+  "QmMocka136df20aff32ad895d9d8c52fb357ee744ac08d": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T19:40:32.925709",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.925733",
+    "size_bytes": 286,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.983957"
+  },
+  "QmMock9dce8292d1012bbc6751b137c432c41c81104cdc": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.927391",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock5aedc0edd35fb980ec4b9ed253787ac5390473c0",
+        "urgent": "QmMock5da1bc23be9c8240eda71911d88785a9027b64d8",
+        "sync": "QmMock8bfbf6ec6b666aff8136a51b6444cd2ddbcc782a",
+        "active": "QmMock09afe87c80386192d40edc368b17b07a51a3d412",
+        "buffer2": "QmMocka136df20aff32ad895d9d8c52fb357ee744ac08d"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.927423",
+    "size_bytes": 609,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.929499"
+  },
+  "QmMock1a4310693c40d422d3f5c7fc41e4a771f9e42c1f": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.924044",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.933542",
+          "data_type": "test_entry",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "test_write",
+            "value": 42,
+            "timestamp": "2025-10-31T19:40:32.929474"
+          },
+          "entry_hash": "cef1027eae91df6ed471a88ab3f4aab879899780b4ed96354aa5d33acfa36c83"
+        },
+        {
+          "entry_id": "active_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.948280",
+          "data_type": "multi_test_0",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_0",
+            "value": 0
+          },
+          "entry_hash": "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1"
+        },
+        {
+          "entry_id": "active_2_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.955891",
+          "data_type": "multi_test_1",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_1",
+            "value": 1
+          },
+          "entry_hash": "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be"
+        },
+        {
+          "entry_id": "active_3_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.963988",
+          "data_type": "multi_test_2",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_2",
+            "value": 2
+          },
+          "entry_hash": "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+        }
+      ],
+      "current_index": 4,
+      "total_entries": 4,
+      "entry_hashes": [
+        "cef1027eae91df6ed471a88ab3f4aab879899780b4ed96354aa5d33acfa36c83",
+        "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1",
+        "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be",
+        "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.933570",
+    "size_bytes": 676,
+    "access_count": 3,
+    "last_access": "2025-10-31T19:40:32.946217"
+  },
+  "QmMockc611f58fcf4e078daa5bd86f1122411b78cdfcc7": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.927391",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock5aedc0edd35fb980ec4b9ed253787ac5390473c0",
+        "urgent": "QmMock5da1bc23be9c8240eda71911d88785a9027b64d8",
+        "sync": "QmMock8bfbf6ec6b666aff8136a51b6444cd2ddbcc782a",
+        "active": "QmMock09afe87c80386192d40edc368b17b07a51a3d412",
+        "buffer2": "QmMocka136df20aff32ad895d9d8c52fb357ee744ac08d"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.935351",
+    "size_bytes": 609,
+    "access_count": 3,
+    "last_access": "2025-10-31T19:40:32.944327"
+  },
+  "QmMock08ab4ce1cb974657244d89d99fa5a5cf70b3b149": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.924044",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.933542",
+          "data_type": "test_entry",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "test_write",
+            "value": 42,
+            "timestamp": "2025-10-31T19:40:32.929474"
+          },
+          "entry_hash": "cef1027eae91df6ed471a88ab3f4aab879899780b4ed96354aa5d33acfa36c83"
+        },
+        {
+          "entry_id": "active_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.948280",
+          "data_type": "multi_test_0",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_0",
+            "value": 0
+          },
+          "entry_hash": "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1"
+        },
+        {
+          "entry_id": "active_2_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.955891",
+          "data_type": "multi_test_1",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_1",
+            "value": 1
+          },
+          "entry_hash": "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be"
+        },
+        {
+          "entry_id": "active_3_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.963988",
+          "data_type": "multi_test_2",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_2",
+            "value": 2
+          },
+          "entry_hash": "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+        }
+      ],
+      "current_index": 4,
+      "total_entries": 4,
+      "entry_hashes": [
+        "cef1027eae91df6ed471a88ab3f4aab879899780b4ed96354aa5d33acfa36c83",
+        "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1",
+        "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be",
+        "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.948320",
+    "size_bytes": 1033,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.954019"
+  },
+  "QmMockc2d89c6b2cad42e8076971bbece71c833cb63164": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.927391",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock5aedc0edd35fb980ec4b9ed253787ac5390473c0",
+        "urgent": "QmMock5da1bc23be9c8240eda71911d88785a9027b64d8",
+        "sync": "QmMock8bfbf6ec6b666aff8136a51b6444cd2ddbcc782a",
+        "active": "QmMock09afe87c80386192d40edc368b17b07a51a3d412",
+        "buffer2": "QmMocka136df20aff32ad895d9d8c52fb357ee744ac08d"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.950264",
+    "size_bytes": 609,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.952072"
+  },
+  "QmMockf5891d84a913a2bafd52e70e76f48ed5510eaea9": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.924044",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.933542",
+          "data_type": "test_entry",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "test_write",
+            "value": 42,
+            "timestamp": "2025-10-31T19:40:32.929474"
+          },
+          "entry_hash": "cef1027eae91df6ed471a88ab3f4aab879899780b4ed96354aa5d33acfa36c83"
+        },
+        {
+          "entry_id": "active_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.948280",
+          "data_type": "multi_test_0",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_0",
+            "value": 0
+          },
+          "entry_hash": "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1"
+        },
+        {
+          "entry_id": "active_2_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.955891",
+          "data_type": "multi_test_1",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_1",
+            "value": 1
+          },
+          "entry_hash": "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be"
+        },
+        {
+          "entry_id": "active_3_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.963988",
+          "data_type": "multi_test_2",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_2",
+            "value": 2
+          },
+          "entry_hash": "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+        }
+      ],
+      "current_index": 4,
+      "total_entries": 4,
+      "entry_hashes": [
+        "cef1027eae91df6ed471a88ab3f4aab879899780b4ed96354aa5d33acfa36c83",
+        "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1",
+        "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be",
+        "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.955921",
+    "size_bytes": 1390,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.961880"
+  },
+  "QmMock2a092bc6f4211d0e6a7c77e1935d93383a886163": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.927391",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock5aedc0edd35fb980ec4b9ed253787ac5390473c0",
+        "urgent": "QmMock5da1bc23be9c8240eda71911d88785a9027b64d8",
+        "sync": "QmMock8bfbf6ec6b666aff8136a51b6444cd2ddbcc782a",
+        "active": "QmMock09afe87c80386192d40edc368b17b07a51a3d412",
+        "buffer2": "QmMocka136df20aff32ad895d9d8c52fb357ee744ac08d"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.957867",
+    "size_bytes": 609,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.959842"
+  },
+  "QmMock09afe87c80386192d40edc368b17b07a51a3d412": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.924044",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.933542",
+          "data_type": "test_entry",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "test_write",
+            "value": 42,
+            "timestamp": "2025-10-31T19:40:32.929474"
+          },
+          "entry_hash": "cef1027eae91df6ed471a88ab3f4aab879899780b4ed96354aa5d33acfa36c83"
+        },
+        {
+          "entry_id": "active_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.948280",
+          "data_type": "multi_test_0",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_0",
+            "value": 0
+          },
+          "entry_hash": "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1"
+        },
+        {
+          "entry_id": "active_2_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.955891",
+          "data_type": "multi_test_1",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_1",
+            "value": 1
+          },
+          "entry_hash": "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be"
+        },
+        {
+          "entry_id": "active_3_test_node_1",
+          "timestamp": "2025-10-31T19:40:32.963988",
+          "data_type": "multi_test_2",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_2",
+            "value": 2
+          },
+          "entry_hash": "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+        }
+      ],
+      "current_index": 4,
+      "total_entries": 4,
+      "entry_hashes": [
+        "cef1027eae91df6ed471a88ab3f4aab879899780b4ed96354aa5d33acfa36c83",
+        "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1",
+        "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be",
+        "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.964020",
+    "size_bytes": 1747,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.981627"
+  },
+  "QmMock6e9fa4f864636a51bff64e4d6b913c4ff228b296": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.927391",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock5aedc0edd35fb980ec4b9ed253787ac5390473c0",
+        "urgent": "QmMock5da1bc23be9c8240eda71911d88785a9027b64d8",
+        "sync": "QmMock8bfbf6ec6b666aff8136a51b6444cd2ddbcc782a",
+        "active": "QmMock09afe87c80386192d40edc368b17b07a51a3d412",
+        "buffer2": "QmMocka136df20aff32ad895d9d8c52fb357ee744ac08d"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.966232",
+    "size_bytes": 609,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.968349"
+  },
+  "QmMockab3d6dbd28d0ee7751dcb52f9fc819aea9186c60": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.927391",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock5aedc0edd35fb980ec4b9ed253787ac5390473c0",
+        "urgent": "QmMock5da1bc23be9c8240eda71911d88785a9027b64d8",
+        "sync": "QmMock8bfbf6ec6b666aff8136a51b6444cd2ddbcc782a",
+        "active": "QmMock09afe87c80386192d40edc368b17b07a51a3d412",
+        "buffer2": "QmMocka136df20aff32ad895d9d8c52fb357ee744ac08d"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.970499",
+    "size_bytes": 624,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:32.972654"
+  },
+  "QmMock70651d05b04349c38a5c3d908e0ad884c032870c": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T19:40:32.987736",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.987777",
+    "size_bytes": 283,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:33.045356"
+  },
+  "QmMock929f8542db9bab2af2e06cbabca78a883e6527f1": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T19:40:32.989961",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "urgent_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:33.026594",
+          "data_type": "emergency_backup",
+          "node_id": "test_node_1",
+          "priority": "emergency",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:33.021508",
+            "data_type": "emergency_backup",
+            "priority": "emergency",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "emergency": true,
+              "reason": "test_emergency",
+              "timestamp": "2025-10-31T19:40:33.021501"
+            }
+          },
+          "entry_hash": "72cf4443e13b6580fdaa6a31c432e188cfcdae478c62404bff1143720a39347d"
+        }
+      ],
+      "current_index": 1,
+      "total_entries": 1,
+      "entry_hashes": [
+        "72cf4443e13b6580fdaa6a31c432e188cfcdae478c62404bff1143720a39347d"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.989992",
+    "size_bytes": 286,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:33.023992"
+  },
+  "QmMock3ccdbe08b8cc3d0793943908722e3c8e92d9fa10": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T19:40:32.992310",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "sync_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:33.037194",
+          "data_type": "sync_backup",
+          "node_id": "test_node_1",
+          "priority": "high",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:33.032011",
+            "data_type": "sync_backup",
+            "priority": "high",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "sync_operation": "test_sync",
+              "timestamp": "2025-10-31T19:40:33.032002"
+            }
+          },
+          "entry_hash": "4c8e4a9f767c48015f6a2277af1bdca2c1243b8edc7bdbb095b5d23a79499c27"
+        },
+        {
+          "entry_id": "sync_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:33.073038",
+          "data_type": "multi_node_sync",
+          "node_id": "test_node_1",
+          "priority": "high",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:33.067658",
+            "data_type": "multi_node_sync",
+            "priority": "high",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "summary": {
+                "sync_operation": "multi_node_synchronization",
+                "timestamp": "2025-10-31T19:40:33.067652",
+                "nodes_synchronized": 3,
+                "total_entries_received": 1,
+                "unique_entries_after_deduplication": 1,
+                "participating_nodes": [
+                  "node_1",
+                  "node_2",
+                  "node_3"
+                ]
+              },
+              "entries": [
+                {
+                  "entry_id": "sync_0_test_node_1",
+                  "timestamp": "2025-10-31T19:40:33.037194",
+                  "data_type": "sync_backup",
+                  "node_id": "test_node_1",
+                  "priority": "high",
+                  "data": {
+                    "backup_timestamp": "2025-10-31T19:40:33.032011",
+                    "data_type": "sync_backup",
+                    "priority": "high",
+                    "node_id": "test_node_1",
+                    "election_id": "test_election_2024",
+                    "original_data": {
+                      "sync_operation": "test_sync",
+                      "timestamp": "2025-10-31T19:40:33.032002"
+                    }
+                  },
+                  "entry_hash": "4c8e4a9f767c48015f6a2277af1bdca2c1243b8edc7bdbb095b5d23a79499c27"
+                }
+              ]
+            }
+          },
+          "entry_hash": "82f082fae8d0875dd89409465548ca8e7c017d2bc93fa14b65850feb269507d7"
+        }
+      ],
+      "current_index": 2,
+      "total_entries": 2,
+      "entry_hashes": [
+        "4c8e4a9f767c48015f6a2277af1bdca2c1243b8edc7bdbb095b5d23a79499c27",
+        "82f082fae8d0875dd89409465548ca8e7c017d2bc93fa14b65850feb269507d7"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.992336",
+    "size_bytes": 290,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:33.034558"
+  },
+  "QmMock4932e6407d2adc05610da5995681f10f82747c47": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.994580",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:33.006439",
+          "data_type": "system_init",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:33.001851",
+            "data_type": "system_init",
+            "priority": "normal",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "system_initialized": "2025-10-31T19:40:33.001845",
+              "election_id": "test_election_2024",
+              "node_id": "test_node_1",
+              "version": "1.0.0"
+            }
+          },
+          "entry_hash": "f18b196260392da955fa905385bb83cb3a901cefed25bc3a42322d4516e48b4d"
+        },
+        {
+          "entry_id": "active_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:33.016524",
+          "data_type": "normal_backup",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:33.011334",
+            "data_type": "normal_backup",
+            "priority": "normal",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "questions": [
+                "q1",
+                "q2",
+                "q3"
+              ],
+              "candidates": [
+                "c1",
+                "c2"
+              ],
+              "timestamp": "2025-10-31T19:40:33.011316"
+            }
+          },
+          "entry_hash": "bc1788492f47b319dfd8cae468a279b9ca36fe3742a2e9642072368ab5812a25"
+        }
+      ],
+      "current_index": 2,
+      "total_entries": 2,
+      "entry_hashes": [
+        "f18b196260392da955fa905385bb83cb3a901cefed25bc3a42322d4516e48b4d",
+        "bc1788492f47b319dfd8cae468a279b9ca36fe3742a2e9642072368ab5812a25"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.994628",
+    "size_bytes": 284,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:33.004133"
+  },
+  "QmMock521d6ba4482881b231460731ce2857c387a79e22": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T19:40:32.997016",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.997113",
+    "size_bytes": 286,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:33.056378"
+  },
+  "QmMock27084bb83105c227e4c6e51b7d7e1c1bdc53e6fb": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.999542",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock70651d05b04349c38a5c3d908e0ad884c032870c",
+        "urgent": "QmMock625e943b90312921953a6f781dace6bd10a7f1e6",
+        "sync": "QmMocka0c05a2d63932bddc737a4a851159d9ac9dae061",
+        "active": "QmMock0b4b223909f9451df3a7c8e7b137a62426188109",
+        "buffer2": "QmMock521d6ba4482881b231460731ce2857c387a79e22"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:32.999576",
+    "size_bytes": 609,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:33.001862"
+  },
+  "QmMockb9ece5ffc48df2fe25845a6bc12623f83df2f922": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.994580",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:33.006439",
+          "data_type": "system_init",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:33.001851",
+            "data_type": "system_init",
+            "priority": "normal",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "system_initialized": "2025-10-31T19:40:33.001845",
+              "election_id": "test_election_2024",
+              "node_id": "test_node_1",
+              "version": "1.0.0"
+            }
+          },
+          "entry_hash": "f18b196260392da955fa905385bb83cb3a901cefed25bc3a42322d4516e48b4d"
+        },
+        {
+          "entry_id": "active_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:33.016524",
+          "data_type": "normal_backup",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:33.011334",
+            "data_type": "normal_backup",
+            "priority": "normal",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "questions": [
+                "q1",
+                "q2",
+                "q3"
+              ],
+              "candidates": [
+                "c1",
+                "c2"
+              ],
+              "timestamp": "2025-10-31T19:40:33.011316"
+            }
+          },
+          "entry_hash": "bc1788492f47b319dfd8cae468a279b9ca36fe3742a2e9642072368ab5812a25"
+        }
+      ],
+      "current_index": 2,
+      "total_entries": 2,
+      "entry_hashes": [
+        "f18b196260392da955fa905385bb83cb3a901cefed25bc3a42322d4516e48b4d",
+        "bc1788492f47b319dfd8cae468a279b9ca36fe3742a2e9642072368ab5812a25"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.006470",
+    "size_bytes": 914,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:33.013943"
+  },
+  "QmMock2a0ebd26fd218656eec02c0340dc231a266af420": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.999542",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock70651d05b04349c38a5c3d908e0ad884c032870c",
+        "urgent": "QmMock625e943b90312921953a6f781dace6bd10a7f1e6",
+        "sync": "QmMocka0c05a2d63932bddc737a4a851159d9ac9dae061",
+        "active": "QmMock0b4b223909f9451df3a7c8e7b137a62426188109",
+        "buffer2": "QmMock521d6ba4482881b231460731ce2857c387a79e22"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.008798",
+    "size_bytes": 609,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:33.011340"
+  },
+  "QmMock0b4b223909f9451df3a7c8e7b137a62426188109": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:32.994580",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:33.006439",
+          "data_type": "system_init",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:33.001851",
+            "data_type": "system_init",
+            "priority": "normal",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "system_initialized": "2025-10-31T19:40:33.001845",
+              "election_id": "test_election_2024",
+              "node_id": "test_node_1",
+              "version": "1.0.0"
+            }
+          },
+          "entry_hash": "f18b196260392da955fa905385bb83cb3a901cefed25bc3a42322d4516e48b4d"
+        },
+        {
+          "entry_id": "active_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:33.016524",
+          "data_type": "normal_backup",
+          "node_id": "test_node_1",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:33.011334",
+            "data_type": "normal_backup",
+            "priority": "normal",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "questions": [
+                "q1",
+                "q2",
+                "q3"
+              ],
+              "candidates": [
+                "c1",
+                "c2"
+              ],
+              "timestamp": "2025-10-31T19:40:33.011316"
+            }
+          },
+          "entry_hash": "bc1788492f47b319dfd8cae468a279b9ca36fe3742a2e9642072368ab5812a25"
+        }
+      ],
+      "current_index": 2,
+      "total_entries": 2,
+      "entry_hashes": [
+        "f18b196260392da955fa905385bb83cb3a901cefed25bc3a42322d4516e48b4d",
+        "bc1788492f47b319dfd8cae468a279b9ca36fe3742a2e9642072368ab5812a25"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.016554",
+    "size_bytes": 1521,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:33.053710"
+  },
+  "QmMock8f12ca41ed133e73b332783d72b041ffef878e57": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.999542",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock70651d05b04349c38a5c3d908e0ad884c032870c",
+        "urgent": "QmMock625e943b90312921953a6f781dace6bd10a7f1e6",
+        "sync": "QmMocka0c05a2d63932bddc737a4a851159d9ac9dae061",
+        "active": "QmMock0b4b223909f9451df3a7c8e7b137a62426188109",
+        "buffer2": "QmMock521d6ba4482881b231460731ce2857c387a79e22"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.018980",
+    "size_bytes": 609,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:33.021511"
+  },
+  "QmMock625e943b90312921953a6f781dace6bd10a7f1e6": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T19:40:32.989961",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "urgent_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:33.026594",
+          "data_type": "emergency_backup",
+          "node_id": "test_node_1",
+          "priority": "emergency",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:33.021508",
+            "data_type": "emergency_backup",
+            "priority": "emergency",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "emergency": true,
+              "reason": "test_emergency",
+              "timestamp": "2025-10-31T19:40:33.021501"
+            }
+          },
+          "entry_hash": "72cf4443e13b6580fdaa6a31c432e188cfcdae478c62404bff1143720a39347d"
+        }
+      ],
+      "current_index": 1,
+      "total_entries": 1,
+      "entry_hashes": [
+        "72cf4443e13b6580fdaa6a31c432e188cfcdae478c62404bff1143720a39347d"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.026615",
+    "size_bytes": 887,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:33.048348"
+  },
+  "QmMockf022cfcb946c4f5cc23b1e261736b4e87bccd223": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.999542",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock70651d05b04349c38a5c3d908e0ad884c032870c",
+        "urgent": "QmMock625e943b90312921953a6f781dace6bd10a7f1e6",
+        "sync": "QmMocka0c05a2d63932bddc737a4a851159d9ac9dae061",
+        "active": "QmMock0b4b223909f9451df3a7c8e7b137a62426188109",
+        "buffer2": "QmMock521d6ba4482881b231460731ce2857c387a79e22"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.029330",
+    "size_bytes": 609,
+    "access_count": 1,
+    "last_access": "2025-10-31T19:40:33.032015"
+  },
+  "QmMockb4ac9ec116478bb433ed4c6077b193b51d37a266": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T19:40:32.992310",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "sync_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:33.037194",
+          "data_type": "sync_backup",
+          "node_id": "test_node_1",
+          "priority": "high",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:33.032011",
+            "data_type": "sync_backup",
+            "priority": "high",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "sync_operation": "test_sync",
+              "timestamp": "2025-10-31T19:40:33.032002"
+            }
+          },
+          "entry_hash": "4c8e4a9f767c48015f6a2277af1bdca2c1243b8edc7bdbb095b5d23a79499c27"
+        },
+        {
+          "entry_id": "sync_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:33.073038",
+          "data_type": "multi_node_sync",
+          "node_id": "test_node_1",
+          "priority": "high",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:33.067658",
+            "data_type": "multi_node_sync",
+            "priority": "high",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "summary": {
+                "sync_operation": "multi_node_synchronization",
+                "timestamp": "2025-10-31T19:40:33.067652",
+                "nodes_synchronized": 3,
+                "total_entries_received": 1,
+                "unique_entries_after_deduplication": 1,
+                "participating_nodes": [
+                  "node_1",
+                  "node_2",
+                  "node_3"
+                ]
+              },
+              "entries": [
+                {
+                  "entry_id": "sync_0_test_node_1",
+                  "timestamp": "2025-10-31T19:40:33.037194",
+                  "data_type": "sync_backup",
+                  "node_id": "test_node_1",
+                  "priority": "high",
+                  "data": {
+                    "backup_timestamp": "2025-10-31T19:40:33.032011",
+                    "data_type": "sync_backup",
+                    "priority": "high",
+                    "node_id": "test_node_1",
+                    "election_id": "test_election_2024",
+                    "original_data": {
+                      "sync_operation": "test_sync",
+                      "timestamp": "2025-10-31T19:40:33.032002"
+                    }
+                  },
+                  "entry_hash": "4c8e4a9f767c48015f6a2277af1bdca2c1243b8edc7bdbb095b5d23a79499c27"
+                }
+              ]
+            }
+          },
+          "entry_hash": "82f082fae8d0875dd89409465548ca8e7c017d2bc93fa14b65850feb269507d7"
+        }
+      ],
+      "current_index": 2,
+      "total_entries": 2,
+      "entry_hashes": [
+        "4c8e4a9f767c48015f6a2277af1bdca2c1243b8edc7bdbb095b5d23a79499c27",
+        "82f082fae8d0875dd89409465548ca8e7c017d2bc93fa14b65850feb269507d7"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.037218",
+    "size_bytes": 853,
+    "access_count": 3,
+    "last_access": "2025-10-31T19:40:33.070317"
+  },
+  "QmMock991d7884d76d81a51df99b84bcb995f301ac5cde": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.999542",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock70651d05b04349c38a5c3d908e0ad884c032870c",
+        "urgent": "QmMock625e943b90312921953a6f781dace6bd10a7f1e6",
+        "sync": "QmMocka0c05a2d63932bddc737a4a851159d9ac9dae061",
+        "active": "QmMock0b4b223909f9451df3a7c8e7b137a62426188109",
+        "buffer2": "QmMock521d6ba4482881b231460731ce2857c387a79e22"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.039824",
+    "size_bytes": 609,
+    "access_count": 4,
+    "last_access": "2025-10-31T19:40:33.067662"
+  },
+  "QmMocka0c05a2d63932bddc737a4a851159d9ac9dae061": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T19:40:32.992310",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [
+        {
+          "entry_id": "sync_0_test_node_1",
+          "timestamp": "2025-10-31T19:40:33.037194",
+          "data_type": "sync_backup",
+          "node_id": "test_node_1",
+          "priority": "high",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:33.032011",
+            "data_type": "sync_backup",
+            "priority": "high",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "sync_operation": "test_sync",
+              "timestamp": "2025-10-31T19:40:33.032002"
+            }
+          },
+          "entry_hash": "4c8e4a9f767c48015f6a2277af1bdca2c1243b8edc7bdbb095b5d23a79499c27"
+        },
+        {
+          "entry_id": "sync_1_test_node_1",
+          "timestamp": "2025-10-31T19:40:33.073038",
+          "data_type": "multi_node_sync",
+          "node_id": "test_node_1",
+          "priority": "high",
+          "data": {
+            "backup_timestamp": "2025-10-31T19:40:33.067658",
+            "data_type": "multi_node_sync",
+            "priority": "high",
+            "node_id": "test_node_1",
+            "election_id": "test_election_2024",
+            "original_data": {
+              "summary": {
+                "sync_operation": "multi_node_synchronization",
+                "timestamp": "2025-10-31T19:40:33.067652",
+                "nodes_synchronized": 3,
+                "total_entries_received": 1,
+                "unique_entries_after_deduplication": 1,
+                "participating_nodes": [
+                  "node_1",
+                  "node_2",
+                  "node_3"
+                ]
+              },
+              "entries": [
+                {
+                  "entry_id": "sync_0_test_node_1",
+                  "timestamp": "2025-10-31T19:40:33.037194",
+                  "data_type": "sync_backup",
+                  "node_id": "test_node_1",
+                  "priority": "high",
+                  "data": {
+                    "backup_timestamp": "2025-10-31T19:40:33.032011",
+                    "data_type": "sync_backup",
+                    "priority": "high",
+                    "node_id": "test_node_1",
+                    "election_id": "test_election_2024",
+                    "original_data": {
+                      "sync_operation": "test_sync",
+                      "timestamp": "2025-10-31T19:40:33.032002"
+                    }
+                  },
+                  "entry_hash": "4c8e4a9f767c48015f6a2277af1bdca2c1243b8edc7bdbb095b5d23a79499c27"
+                }
+              ]
+            }
+          },
+          "entry_hash": "82f082fae8d0875dd89409465548ca8e7c017d2bc93fa14b65850feb269507d7"
+        }
+      ],
+      "current_index": 2,
+      "total_entries": 2,
+      "entry_hashes": [
+        "4c8e4a9f767c48015f6a2277af1bdca2c1243b8edc7bdbb095b5d23a79499c27",
+        "82f082fae8d0875dd89409465548ca8e7c017d2bc93fa14b65850feb269507d7"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.073074",
+    "size_bytes": 2120,
+    "access_count": 0
+  },
+  "QmMocka89d664c93b8e78ead78029b2c38ce51d5d3a13a": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:32.999542",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock70651d05b04349c38a5c3d908e0ad884c032870c",
+        "urgent": "QmMock625e943b90312921953a6f781dace6bd10a7f1e6",
+        "sync": "QmMocka0c05a2d63932bddc737a4a851159d9ac9dae061",
+        "active": "QmMock0b4b223909f9451df3a7c8e7b137a62426188109",
+        "buffer2": "QmMock521d6ba4482881b231460731ce2857c387a79e22"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.075969",
+    "size_bytes": 609,
+    "access_count": 0
+  },
+  "QmMock60febb58253077e61cbfe794cbd3071d28fd6435": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T19:40:33.084297",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.084320",
+    "size_bytes": 283,
+    "access_count": 0
+  },
+  "QmMock9c2a2d9492a313cd8c9eafaea0ada9926883fa56": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T19:40:33.087208",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.087235",
+    "size_bytes": 286,
+    "access_count": 0
+  },
+  "QmMockdf51181751aa3bdef4ba4da76c664560e658377d": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T19:40:33.090138",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.090156",
+    "size_bytes": 290,
+    "access_count": 0
+  },
+  "QmMockb3a586e8e68e6b9564012b83f94408ae231f61af": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:33.093083",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.093114",
+    "size_bytes": 284,
+    "access_count": 0
+  },
+  "QmMock7046e64f5714280167b87e0b1e14d98e53a46468": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T19:40:33.096224",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.096287",
+    "size_bytes": 286,
+    "access_count": 0
+  },
+  "QmMock840c41988c8ae251296c868915a54cd9df7888d8": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:33.099523",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock60febb58253077e61cbfe794cbd3071d28fd6435",
+        "urgent": "QmMock9c2a2d9492a313cd8c9eafaea0ada9926883fa56",
+        "sync": "QmMockdf51181751aa3bdef4ba4da76c664560e658377d",
+        "active": "QmMockb3a586e8e68e6b9564012b83f94408ae231f61af",
+        "buffer2": "QmMock7046e64f5714280167b87e0b1e14d98e53a46468"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.099576",
+    "size_bytes": 609,
+    "access_count": 0
+  },
+  "QmMocke16de66a0bc2d7e96daf09aa42a0db60a797da76": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T19:40:33.106961",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.106979",
+    "size_bytes": 283,
+    "access_count": 0
+  },
+  "QmMockd9203ea576daf0dc1bde6fa314911c23fea505fa": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T19:40:33.109957",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.109975",
+    "size_bytes": 286,
+    "access_count": 0
+  },
+  "QmMock9082bba8c091980fc70f699535d1f7fa307b0259": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T19:40:33.113130",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.113195",
+    "size_bytes": 290,
+    "access_count": 0
+  },
+  "QmMock2a4706b2cf98b702039b95cb9f3987d219ed94c9": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T19:40:33.116523",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.116573",
+    "size_bytes": 284,
+    "access_count": 0
+  },
+  "QmMock1f07b65fb8f623c8b266005143b19b120a988b69": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T19:40:33.119627",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "test_election_2024",
+        "node_id": "test_node_1"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.119644",
+    "size_bytes": 286,
+    "access_count": 0
+  },
+  "QmMock1752dc37ccfbbed4f5accb82aa4cd9f49763091f": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T19:40:33.122727",
+      "election_id": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMocke16de66a0bc2d7e96daf09aa42a0db60a797da76",
+        "urgent": "QmMockd9203ea576daf0dc1bde6fa314911c23fea505fa",
+        "sync": "QmMock9082bba8c091980fc70f699535d1f7fa307b0259",
+        "active": "QmMock2a4706b2cf98b702039b95cb9f3987d219ed94c9",
+        "buffer2": "QmMock1f07b65fb8f623c8b266005143b19b120a988b69"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T19:40:33.122760",
+    "size_bytes": 609,
+    "access_count": 0
+  }
+}
