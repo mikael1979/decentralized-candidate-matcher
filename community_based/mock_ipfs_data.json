@@ -3912,5 +3912,1660 @@
     "size_bytes": 66,
     "access_count": 1,
     "last_access": "2025-10-31T22:16:07.164082"
+  },
+  "QmMocka0ede0b360a24b526d9c0808e860bcf9a76bcd61": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T22:28:10.020838",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.020896",
+    "size_bytes": 282,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:28:10.094072"
+  },
+  "QmMock50a09637d32575766233d8bd4398c842bd1a1796": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T22:28:10.024430",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.024459",
+    "size_bytes": 285,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:28:10.097890"
+  },
+  "QmMock36e65c095ebfdcb9075e53dbecdc53a20f9758de": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T22:28:10.039080",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.039106",
+    "size_bytes": 289,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:28:10.101665"
+  },
+  "QmMock77a5036402dcd6304396bc9855d04b54102124f6": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T22:28:10.042619",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.042658",
+    "size_bytes": 283,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:28:10.105401"
+  },
+  "QmMockc28ee3e81b7b24db2741cb52635c77898052cff3": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T22:28:10.046092",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.046138",
+    "size_bytes": 285,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:28:10.109115"
+  },
+  "QmMockf9b8e683506df6f9a4a4dc01db630478ca9dbc10": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T22:28:10.049653",
+      "election_id": "Jumaltenvaalit_2026",
+      "node_id": "main_node",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMocka0ede0b360a24b526d9c0808e860bcf9a76bcd61",
+        "urgent": "QmMock50a09637d32575766233d8bd4398c842bd1a1796",
+        "sync": "QmMock36e65c095ebfdcb9075e53dbecdc53a20f9758de",
+        "active": "QmMock77a5036402dcd6304396bc9855d04b54102124f6",
+        "buffer2": "QmMockc28ee3e81b7b24db2741cb52635c77898052cff3"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "main_node"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.049678",
+    "size_bytes": 606,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:28:10.090209"
+  },
+  "QmMock258fffaa18007dfe56f20510b1c2d1d827fdd995": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T22:28:10.053296",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.053322",
+    "size_bytes": 282,
+    "access_count": 0
+  },
+  "QmMock89bbdc0c886b3def9d2ad5e8049fdf6978113884": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T22:28:10.056802",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.056822",
+    "size_bytes": 285,
+    "access_count": 0
+  },
+  "QmMocke187e7712426402ddfcb6b24059ff296063ef7d8": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T22:28:10.060695",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.060716",
+    "size_bytes": 289,
+    "access_count": 0
+  },
+  "QmMock42f77efb9bc80f088a404b1d0c0ca7dc14551514": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T22:28:10.064263",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_main_node",
+          "timestamp": "2025-10-31T22:28:10.082672",
+          "data_type": "system_init",
+          "node_id": "main_node",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T22:28:10.075325",
+            "data_type": "system_init",
+            "priority": "normal",
+            "node_id": "main_node",
+            "election_id": "Jumaltenvaalit_2026",
+            "original_data": {
+              "system_initialized": "2025-10-31T22:28:10.075319",
+              "election_id": "Jumaltenvaalit_2026",
+              "node_id": "main_node",
+              "version": "1.0.0"
+            }
+          },
+          "entry_hash": "a4d25143d723c5ef5f9f37ea5bf34093095c5933e7bfb857cc6ad7fda51a2265"
+        }
+      ],
+      "current_index": 1,
+      "total_entries": 1,
+      "entry_hashes": [
+        "a4d25143d723c5ef5f9f37ea5bf34093095c5933e7bfb857cc6ad7fda51a2265"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.064281",
+    "size_bytes": 283,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:28:10.078966"
+  },
+  "QmMock1df71ff737b9bc9ad36dc5ce8cf6569eaa023fdd": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T22:28:10.067831",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.067848",
+    "size_bytes": 285,
+    "access_count": 0
+  },
+  "QmMock5a98215408a138177fe9e6abb24c85f7098e3da6": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T22:28:10.071493",
+      "election_id": "Jumaltenvaalit_2026",
+      "node_id": "main_node",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock258fffaa18007dfe56f20510b1c2d1d827fdd995",
+        "urgent": "QmMock89bbdc0c886b3def9d2ad5e8049fdf6978113884",
+        "sync": "QmMocke187e7712426402ddfcb6b24059ff296063ef7d8",
+        "active": "QmMock103897a56efa0b615915f666cefa83325694ca32",
+        "buffer2": "QmMock1df71ff737b9bc9ad36dc5ce8cf6569eaa023fdd"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "main_node"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.071517",
+    "size_bytes": 606,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:28:10.075330"
+  },
+  "QmMock103897a56efa0b615915f666cefa83325694ca32": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T22:28:10.064263",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_main_node",
+          "timestamp": "2025-10-31T22:28:10.082672",
+          "data_type": "system_init",
+          "node_id": "main_node",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T22:28:10.075325",
+            "data_type": "system_init",
+            "priority": "normal",
+            "node_id": "main_node",
+            "election_id": "Jumaltenvaalit_2026",
+            "original_data": {
+              "system_initialized": "2025-10-31T22:28:10.075319",
+              "election_id": "Jumaltenvaalit_2026",
+              "node_id": "main_node",
+              "version": "1.0.0"
+            }
+          },
+          "entry_hash": "a4d25143d723c5ef5f9f37ea5bf34093095c5933e7bfb857cc6ad7fda51a2265"
+        }
+      ],
+      "current_index": 1,
+      "total_entries": 1,
+      "entry_hashes": [
+        "a4d25143d723c5ef5f9f37ea5bf34093095c5933e7bfb857cc6ad7fda51a2265"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.082706",
+    "size_bytes": 907,
+    "access_count": 0
+  },
+  "QmMock97b7e2a2372e6b46751462013c2a2a56c933b145": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T22:28:10.071493",
+      "election_id": "Jumaltenvaalit_2026",
+      "node_id": "main_node",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock258fffaa18007dfe56f20510b1c2d1d827fdd995",
+        "urgent": "QmMock89bbdc0c886b3def9d2ad5e8049fdf6978113884",
+        "sync": "QmMocke187e7712426402ddfcb6b24059ff296063ef7d8",
+        "active": "QmMock103897a56efa0b615915f666cefa83325694ca32",
+        "buffer2": "QmMock1df71ff737b9bc9ad36dc5ce8cf6569eaa023fdd"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "main_node"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.086437",
+    "size_bytes": 606,
+    "access_count": 0
+  },
+  "QmMock81e2943a615438dfa06e16ebd2f2e0854dc752ad": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T22:28:10.150874",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.150934",
+    "size_bytes": 282,
+    "access_count": 0
+  },
+  "QmMock09884b08775de8e0d31eaec2b8ea0f4a679fa6bd": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T22:28:10.154961",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.155002",
+    "size_bytes": 285,
+    "access_count": 0
+  },
+  "QmMock1898ad614ab0c27fcf0da0ca2b33b35fd15314bb": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T22:28:10.158790",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.158813",
+    "size_bytes": 289,
+    "access_count": 0
+  },
+  "QmMocked149025b7c0f3e956b60b1b7630e12b5ea10df2": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T22:28:10.162987",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.163049",
+    "size_bytes": 283,
+    "access_count": 0
+  },
+  "QmMock508c1d6fbee335247afeb557b176191749f732f0": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T22:28:10.167253",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.167310",
+    "size_bytes": 285,
+    "access_count": 0
+  },
+  "QmMock7a59fad2c9cf61ac73fe4317d70adb8946eba060": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T22:28:10.171093",
+      "election_id": "Jumaltenvaalit_2026",
+      "node_id": "main_node",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock81e2943a615438dfa06e16ebd2f2e0854dc752ad",
+        "urgent": "QmMock09884b08775de8e0d31eaec2b8ea0f4a679fa6bd",
+        "sync": "QmMock1898ad614ab0c27fcf0da0ca2b33b35fd15314bb",
+        "active": "QmMocked149025b7c0f3e956b60b1b7630e12b5ea10df2",
+        "buffer2": "QmMock508c1d6fbee335247afeb557b176191749f732f0"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "main_node"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:28:10.171118",
+    "size_bytes": 606,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:28:10.174924"
+  },
+  "QmMock2fe586ce9d29b38b76105d467ebf05b4fd68b911": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T22:29:34.018221",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.018279",
+    "size_bytes": 282,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:34.131923"
+  },
+  "QmMock7d48146e8faaf92e9280f31f632f93415ab69b4f": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T22:29:34.022244",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.022267",
+    "size_bytes": 285,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:34.136948"
+  },
+  "QmMockd34f8204713ef8f9b8edab06b98c3ba0a4804b7b": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T22:29:34.066674",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.066743",
+    "size_bytes": 289,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:34.141566"
+  },
+  "QmMockbf8fbcd763682640d5ad4fdb21efe5efbc099b19": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T22:29:34.072455",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.072494",
+    "size_bytes": 283,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:34.145682"
+  },
+  "QmMock79ffbece558e8d00c53f0f5d8b335e524099fc19": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T22:29:34.077204",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.077249",
+    "size_bytes": 285,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:34.149828"
+  },
+  "QmMockfae410486cfe28691ce7fa689d6bd300ed6d6718": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T22:29:34.081067",
+      "election_id": "Jumaltenvaalit_2026",
+      "node_id": "main_node",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock2fe586ce9d29b38b76105d467ebf05b4fd68b911",
+        "urgent": "QmMock7d48146e8faaf92e9280f31f632f93415ab69b4f",
+        "sync": "QmMockd34f8204713ef8f9b8edab06b98c3ba0a4804b7b",
+        "active": "QmMockbf8fbcd763682640d5ad4fdb21efe5efbc099b19",
+        "buffer2": "QmMock79ffbece558e8d00c53f0f5d8b335e524099fc19"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "main_node"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.081091",
+    "size_bytes": 606,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:34.126628"
+  },
+  "QmMock8d1733684a654b29abf5d33cc6862a86a80094cf": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T22:29:34.085050",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.085072",
+    "size_bytes": 282,
+    "access_count": 0
+  },
+  "QmMock9547b996d23aacd446bf687bd76943e66fb29ffd": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T22:29:34.088981",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.089000",
+    "size_bytes": 285,
+    "access_count": 0
+  },
+  "QmMockf4d5665739e41b6c7881fc1ed296078e691cffce": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T22:29:34.092962",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.092981",
+    "size_bytes": 289,
+    "access_count": 0
+  },
+  "QmMock9c82a7ced87adf787c19c84e2c6df7d0e9cbcfb8": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T22:29:34.096930",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_main_node",
+          "timestamp": "2025-10-31T22:29:34.117199",
+          "data_type": "system_init",
+          "node_id": "main_node",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T22:29:34.109052",
+            "data_type": "system_init",
+            "priority": "normal",
+            "node_id": "main_node",
+            "election_id": "Jumaltenvaalit_2026",
+            "original_data": {
+              "system_initialized": "2025-10-31T22:29:34.109042",
+              "election_id": "Jumaltenvaalit_2026",
+              "node_id": "main_node",
+              "version": "1.0.0"
+            }
+          },
+          "entry_hash": "8cd663473b49de556236532b4b510327b3097185f12ef8ce8122f875123cdf49"
+        }
+      ],
+      "current_index": 1,
+      "total_entries": 1,
+      "entry_hashes": [
+        "8cd663473b49de556236532b4b510327b3097185f12ef8ce8122f875123cdf49"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.096949",
+    "size_bytes": 283,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:34.113131"
+  },
+  "QmMockd253e3444379f7485ae0d8c46bb5581872d774af": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T22:29:34.100884",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.100903",
+    "size_bytes": 285,
+    "access_count": 0
+  },
+  "QmMockbe31d4d228ab2ca7bf01a8b5cb3c9c5bd7c8f065": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T22:29:34.104924",
+      "election_id": "Jumaltenvaalit_2026",
+      "node_id": "main_node",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock8d1733684a654b29abf5d33cc6862a86a80094cf",
+        "urgent": "QmMock9547b996d23aacd446bf687bd76943e66fb29ffd",
+        "sync": "QmMockf4d5665739e41b6c7881fc1ed296078e691cffce",
+        "active": "QmMock970171b256ca7337ef65f74c6dd6fb9efc4f9cd0",
+        "buffer2": "QmMockd253e3444379f7485ae0d8c46bb5581872d774af"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "main_node"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.104948",
+    "size_bytes": 606,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:34.109062"
+  },
+  "QmMock970171b256ca7337ef65f74c6dd6fb9efc4f9cd0": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T22:29:34.096930",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_main_node",
+          "timestamp": "2025-10-31T22:29:34.117199",
+          "data_type": "system_init",
+          "node_id": "main_node",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T22:29:34.109052",
+            "data_type": "system_init",
+            "priority": "normal",
+            "node_id": "main_node",
+            "election_id": "Jumaltenvaalit_2026",
+            "original_data": {
+              "system_initialized": "2025-10-31T22:29:34.109042",
+              "election_id": "Jumaltenvaalit_2026",
+              "node_id": "main_node",
+              "version": "1.0.0"
+            }
+          },
+          "entry_hash": "8cd663473b49de556236532b4b510327b3097185f12ef8ce8122f875123cdf49"
+        }
+      ],
+      "current_index": 1,
+      "total_entries": 1,
+      "entry_hashes": [
+        "8cd663473b49de556236532b4b510327b3097185f12ef8ce8122f875123cdf49"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.117225",
+    "size_bytes": 907,
+    "access_count": 0
+  },
+  "QmMock038a4250c047c4b0ea086c4f90115e145fbf735b": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T22:29:34.104924",
+      "election_id": "Jumaltenvaalit_2026",
+      "node_id": "main_node",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock8d1733684a654b29abf5d33cc6862a86a80094cf",
+        "urgent": "QmMock9547b996d23aacd446bf687bd76943e66fb29ffd",
+        "sync": "QmMockf4d5665739e41b6c7881fc1ed296078e691cffce",
+        "active": "QmMock970171b256ca7337ef65f74c6dd6fb9efc4f9cd0",
+        "buffer2": "QmMockd253e3444379f7485ae0d8c46bb5581872d774af"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "main_node"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.121471",
+    "size_bytes": 606,
+    "access_count": 0
+  },
+  "QmMock4f8f7bbb515f87f059394f5c50a4d2460a07557a": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T22:29:34.186248",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.186306",
+    "size_bytes": 282,
+    "access_count": 0
+  },
+  "QmMock71d0511ba68d864fa746df8641911475d922aa32": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T22:29:34.190624",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.190667",
+    "size_bytes": 285,
+    "access_count": 0
+  },
+  "QmMock8b7073e69d12298a4c21dbcff8f847ed64d22624": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T22:29:34.194873",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.194918",
+    "size_bytes": 289,
+    "access_count": 0
+  },
+  "QmMock278de028257dad3e673622cbf710e23fda921ee2": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T22:29:34.199185",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.199205",
+    "size_bytes": 283,
+    "access_count": 0
+  },
+  "QmMock043d841825a0474f661024d25a3cf3a83ad867f7": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T22:29:34.203487",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.203510",
+    "size_bytes": 285,
+    "access_count": 0
+  },
+  "QmMock6c0cb4b0bbed04493cdbceffb762f72948c5961b": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T22:29:34.207721",
+      "election_id": "Jumaltenvaalit_2026",
+      "node_id": "main_node",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock4f8f7bbb515f87f059394f5c50a4d2460a07557a",
+        "urgent": "QmMock71d0511ba68d864fa746df8641911475d922aa32",
+        "sync": "QmMock8b7073e69d12298a4c21dbcff8f847ed64d22624",
+        "active": "QmMock278de028257dad3e673622cbf710e23fda921ee2",
+        "buffer2": "QmMock043d841825a0474f661024d25a3cf3a83ad867f7"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "main_node"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:29:34.207748",
+    "size_bytes": 606,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:34.211988"
+  },
+  "QmMock6e3c24a472684ee085e7fe6d3b955d7d237a7e9d": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T22:29:49.034949",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.035011",
+    "size_bytes": 282,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:49.154233"
+  },
+  "QmMock63b85b1eefb054c5577840e4b3cc8f82312fbe3f": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T22:29:49.039411",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.039439",
+    "size_bytes": 285,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:49.158819"
+  },
+  "QmMock9d6544379164c9d12cfe10d07286088cd585e3ba": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T22:29:49.083963",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.084022",
+    "size_bytes": 289,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:49.163375"
+  },
+  "QmMock312e53d725632a9e5d76b8e25433685dff572d9c": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T22:29:49.090358",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.090401",
+    "size_bytes": 283,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:49.167921"
+  },
+  "QmMock978e8dbd792aacf0ee4c62b9e80ff890a70af4ed": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T22:29:49.095554",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.095576",
+    "size_bytes": 285,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:49.172455"
+  },
+  "QmMock7fb6a61e50f495512f1903bee2715c0e534169a9": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T22:29:49.099856",
+      "election_id": "Jumaltenvaalit_2026",
+      "node_id": "main_node",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock6e3c24a472684ee085e7fe6d3b955d7d237a7e9d",
+        "urgent": "QmMock63b85b1eefb054c5577840e4b3cc8f82312fbe3f",
+        "sync": "QmMock9d6544379164c9d12cfe10d07286088cd585e3ba",
+        "active": "QmMock312e53d725632a9e5d76b8e25433685dff572d9c",
+        "buffer2": "QmMock978e8dbd792aacf0ee4c62b9e80ff890a70af4ed"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "main_node"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.099881",
+    "size_bytes": 606,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:49.149605"
+  },
+  "QmMockaf288fad4cbb87f5c80e6dd0c45b7872a92f9011": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T22:29:49.104226",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.104244",
+    "size_bytes": 282,
+    "access_count": 0
+  },
+  "QmMock58b06b56ab45a02c5d130f3c997b5fd951d75720": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T22:29:49.109283",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.109355",
+    "size_bytes": 285,
+    "access_count": 0
+  },
+  "QmMock89160949f0298c6cce7834f21dd3dbd561d43752": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T22:29:49.113737",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.113767",
+    "size_bytes": 289,
+    "access_count": 0
+  },
+  "QmMockdbf6bef8bf0164e15f8f115defd573711f4d54b5": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T22:29:49.118236",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_main_node",
+          "timestamp": "2025-10-31T22:29:49.140525",
+          "data_type": "system_init",
+          "node_id": "main_node",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T22:29:49.131610",
+            "data_type": "system_init",
+            "priority": "normal",
+            "node_id": "main_node",
+            "election_id": "Jumaltenvaalit_2026",
+            "original_data": {
+              "system_initialized": "2025-10-31T22:29:49.131605",
+              "election_id": "Jumaltenvaalit_2026",
+              "node_id": "main_node",
+              "version": "1.0.0"
+            }
+          },
+          "entry_hash": "5e9a36270eb500f18121073216ec72bc89d73b197d8189964751d244ef095a5b"
+        }
+      ],
+      "current_index": 1,
+      "total_entries": 1,
+      "entry_hashes": [
+        "5e9a36270eb500f18121073216ec72bc89d73b197d8189964751d244ef095a5b"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.118273",
+    "size_bytes": 283,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:49.136038"
+  },
+  "QmMockab586d3fe24d6a2a881a7a62d892422388224ee3": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T22:29:49.122682",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.122705",
+    "size_bytes": 285,
+    "access_count": 0
+  },
+  "QmMockf61a3e21b6a1d9ef01493f29fb9ad9c2226fae6d": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T22:29:49.127095",
+      "election_id": "Jumaltenvaalit_2026",
+      "node_id": "main_node",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMockaf288fad4cbb87f5c80e6dd0c45b7872a92f9011",
+        "urgent": "QmMock58b06b56ab45a02c5d130f3c997b5fd951d75720",
+        "sync": "QmMock89160949f0298c6cce7834f21dd3dbd561d43752",
+        "active": "QmMockfebf346416ee58790f6fcb3c150b704bdb72fe6a",
+        "buffer2": "QmMockab586d3fe24d6a2a881a7a62d892422388224ee3"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "main_node"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.127134",
+    "size_bytes": 606,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:49.131615"
+  },
+  "QmMockfebf346416ee58790f6fcb3c150b704bdb72fe6a": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T22:29:49.118236",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [
+        {
+          "entry_id": "active_0_main_node",
+          "timestamp": "2025-10-31T22:29:49.140525",
+          "data_type": "system_init",
+          "node_id": "main_node",
+          "priority": "normal",
+          "data": {
+            "backup_timestamp": "2025-10-31T22:29:49.131610",
+            "data_type": "system_init",
+            "priority": "normal",
+            "node_id": "main_node",
+            "election_id": "Jumaltenvaalit_2026",
+            "original_data": {
+              "system_initialized": "2025-10-31T22:29:49.131605",
+              "election_id": "Jumaltenvaalit_2026",
+              "node_id": "main_node",
+              "version": "1.0.0"
+            }
+          },
+          "entry_hash": "5e9a36270eb500f18121073216ec72bc89d73b197d8189964751d244ef095a5b"
+        }
+      ],
+      "current_index": 1,
+      "total_entries": 1,
+      "entry_hashes": [
+        "5e9a36270eb500f18121073216ec72bc89d73b197d8189964751d244ef095a5b"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.140557",
+    "size_bytes": 907,
+    "access_count": 0
+  },
+  "QmMock62128f539ab6eec2bfcd513cf28dd5f31a4388b0": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T22:29:49.127095",
+      "election_id": "Jumaltenvaalit_2026",
+      "node_id": "main_node",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMockaf288fad4cbb87f5c80e6dd0c45b7872a92f9011",
+        "urgent": "QmMock58b06b56ab45a02c5d130f3c997b5fd951d75720",
+        "sync": "QmMock89160949f0298c6cce7834f21dd3dbd561d43752",
+        "active": "QmMockfebf346416ee58790f6fcb3c150b704bdb72fe6a",
+        "buffer2": "QmMockab586d3fe24d6a2a881a7a62d892422388224ee3"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "main_node"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.145016",
+    "size_bytes": 606,
+    "access_count": 0
+  },
+  "QmMock89e56f61f547d3af4879c778cdebe3d2afbf8a4c": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T22:29:49.210575",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.210632",
+    "size_bytes": 282,
+    "access_count": 0
+  },
+  "QmMockf94a4aa53cc2753563df46fad4bd6dd5f70e3cab": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T22:29:49.215357",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.215403",
+    "size_bytes": 285,
+    "access_count": 0
+  },
+  "QmMock5e6d36e11e42c647e4d7ec288bc6e23da1c236cf": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T22:29:49.219970",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.219992",
+    "size_bytes": 289,
+    "access_count": 0
+  },
+  "QmMocka8d355d3c45ad089ff337ff64dda85799de70efb": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T22:29:49.225135",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.225203",
+    "size_bytes": 283,
+    "access_count": 0
+  },
+  "QmMockc5feb663ec7fe112066297e9d667e413ee876ded": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T22:29:49.230331",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.230399",
+    "size_bytes": 285,
+    "access_count": 0
+  },
+  "QmMockcabc04fed19c5659148bc0d521dcdecbc2e20b0e": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T22:29:49.235051",
+      "election_id": "Jumaltenvaalit_2026",
+      "node_id": "main_node",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock89e56f61f547d3af4879c778cdebe3d2afbf8a4c",
+        "urgent": "QmMockf94a4aa53cc2753563df46fad4bd6dd5f70e3cab",
+        "sync": "QmMock5e6d36e11e42c647e4d7ec288bc6e23da1c236cf",
+        "active": "QmMocka8d355d3c45ad089ff337ff64dda85799de70efb",
+        "buffer2": "QmMockc5feb663ec7fe112066297e9d667e413ee876ded"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "main_node"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:29:49.235096",
+    "size_bytes": 606,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:29:49.239714"
+  },
+  "QmMock7775745bba357b4d6649e3f7e3af6be683d89f62": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "purpose": "empty_buffer",
+        "created": "2025-10-31T22:31:00.617911",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:31:00.617969",
+    "size_bytes": 282,
+    "access_count": 0
+  },
+  "QmMockba3ad36521ac1d2084b4d8de00eab6516090c930": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "purpose": "emergency_backups",
+        "created": "2025-10-31T22:31:00.622732",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:31:00.622758",
+    "size_bytes": 285,
+    "access_count": 0
+  },
+  "QmMock251f8b43e6dfd297e3f332590850a40caff5f183": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "purpose": "synchronization_point",
+        "created": "2025-10-31T22:31:00.638577",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:31:00.638627",
+    "size_bytes": 289,
+    "access_count": 0
+  },
+  "QmMockdd6246b9953706681779493d20ebd61cb5830d34": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "purpose": "active_writing",
+        "created": "2025-10-31T22:31:00.643294",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:31:00.643314",
+    "size_bytes": 283,
+    "access_count": 0
+  },
+  "QmMockc21011dc79e2ff352c37d812d3b0d7d82a6c4838": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "purpose": "transfer_buffer",
+        "created": "2025-10-31T22:31:00.648034",
+        "max_size": 100,
+        "time_window": null,
+        "election_id": "Jumaltenvaalit_2026",
+        "node_id": "main_node"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-10-31T22:31:00.648063",
+    "size_bytes": 285,
+    "access_count": 0
+  },
+  "QmMock4ad16732fccb99d2b6026ed47d724c880dc72b19": {
+    "data": {
+      "version": "1.0.0",
+      "created": "2025-10-31T22:31:00.652799",
+      "election_id": "Jumaltenvaalit_2026",
+      "node_id": "main_node",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock7775745bba357b4d6649e3f7e3af6be683d89f62",
+        "urgent": "QmMockba3ad36521ac1d2084b4d8de00eab6516090c930",
+        "sync": "QmMock251f8b43e6dfd297e3f332590850a40caff5f183",
+        "active": "QmMockdd6246b9953706681779493d20ebd61cb5830d34",
+        "buffer2": "QmMockc21011dc79e2ff352c37d812d3b0d7d82a6c4838"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "main_node"
+      ]
+    },
+    "upload_timestamp": "2025-10-31T22:31:00.652832",
+    "size_bytes": 606,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:31:00.657637"
+  },
+  "QmMock48ff25da0fb65607d09465019089bfe2c651744b": {
+    "data": {
+      "security_test": true,
+      "timestamp": "2025-10-31T22:31:22.700765"
+    },
+    "upload_timestamp": "2025-10-31T22:31:22.700803",
+    "size_bytes": 66,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:31:22.705713"
+  },
+  "QmMockd13b7590af2b51b289eefe0f0de3adcb7f07aff4": {
+    "data": {
+      "security_test": true,
+      "timestamp": "2025-10-31T22:36:02.251229"
+    },
+    "upload_timestamp": "2025-10-31T22:36:02.251259",
+    "size_bytes": 66,
+    "access_count": 1,
+    "last_access": "2025-10-31T22:36:02.256128"
   }
 }

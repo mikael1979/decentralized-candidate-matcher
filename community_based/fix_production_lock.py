@@ -1,7 +1,7 @@
 # fix_production_lock.py
 #!/usr/bin/env python3
 """
-Korjaa tuotantolukituksen ongelma
+Korjaa tuotantolukituksen ongelma alustamalla IPFS-lohkot
 """
 
 import json
