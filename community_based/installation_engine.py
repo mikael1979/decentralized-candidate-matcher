@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Asennusmoottori vaalijärjestelmälle - KORJATTU VERSIO
 Käsittelee asennuslogiikan modulaarisesti sekä IPFS:n että paikalliset tiedostot
@@ -197,10 +198,58 @@ class InstallationEngine:
         # Luo runtime-tiedostot
         self._create_runtime_files(election)
         
+        # Luo kriittiset metatiedostot
+        self._create_meta_file(election)
+        self._create_system_metadata_file(election)
+        
         # Luo asennusmetatiedot
         self._create_installation_meta(election, first_install)
         
         print(f"   ✅ Konfiguraatiotiedostot luotu")
+    
+    def _create_meta_file(self, election: Dict[str, Any]):
+        """Luo meta.json-tiedoston vaalin tiedoista."""
+        meta_data = {
+            "election": {
+                "id": election["election_id"],
+                "name": election["name"],
+                "date": election["dates"][0]["date"],
+                "type": election["type"],
+                "timelock_enabled": election["timelock_enabled"],
+                "edit_deadline": election["edit_deadline"],
+                "grace_period_hours": election["grace_period_hours"],
+                "governance_model": "community_driven"
+            },
+            "system_info": {
+                "system_id": f"system_{election['election_id']}",
+                "created": datetime.now().isoformat(),
+                "machine_id": self.metadata_manager.get_machine_info()["machine_id"]
+            },
+            "version": "1.0.0"
+        }
+        with open(self.runtime_dir / "meta.json", "w", encoding="utf-8") as f:
+            json.dump(meta_data, f, indent=2, ensure_ascii=False)
+    
+    def _create_system_metadata_file(self, election: Dict[str, Any]):
+        """Luo system_metadata.json-tiedoston."""
+        system_metadata = {
+            "election_specific": {
+                "election_id": election["election_id"],
+                "election_name": election["name"]["fi"],
+                "machine_id": self.metadata_manager.get_machine_info()["machine_id"],
+                "installed_at": datetime.now().isoformat(),
+                "first_install": self.metadata_manager.get_machine_info()["first_install"]
+            },
+            "node_info": {
+                "node_id": self.metadata_manager.get_machine_info()["machine_id"],
+                "role": "master" if self.metadata_manager.get_machine_info()["first_install"] else "worker",
+                "capabilities": ["comparisons", "voting", "sync"]
+            },
+            "version": "1.0.0"
+        }
+        
+        with open(self.runtime_dir / "system_metadata.json", "w", encoding="utf-8") as f:
+            json.dump(system_metadata, f, indent=2, ensure_ascii=False)
     
     def _create_base_templates(self, election: Dict[str, Any], election_config: Optional[Dict[str, Any]]):
         """Luo base-template tiedostot"""
@@ -325,7 +374,9 @@ class InstallationEngine:
                     "questions.json", 
                     "candidates.json",
                     "system_chain.json",
-                    "installation_meta.json"
+                    "installation_meta.json",
+                    "meta.json",
+                    "system_metadata.json"
                 ]
             }
         }
@@ -343,7 +394,9 @@ class InstallationEngine:
             "installation_meta.json",
             "new_questions.json",
             "active_questions.json",
-            "ipfs_questions.json"
+            "ipfs_questions.json",
+            "meta.json",
+            "system_metadata.json"
         ]
         
         for file_path in required_files:
@@ -359,4 +412,3 @@ class InstallationEngine:
         
         print("✅ Asennus tarkistettu onnistuneesti")
         return True
-

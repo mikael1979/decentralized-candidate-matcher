@@ -1,7 +1,7 @@
-
+#!/usr/bin/env python3
 """
-Metadata hallintamoduuli vaalijärjestelmälle
-Käsittelee järjestelmän metadataa, kone-ID:t ja allekirjoitukset
+Metadata Manager - KORJATTU VERSIO
+Hallinnoi järjestelmän metatietoja ja koneiden identiteettejä
 """
 
 import json
@@ -9,200 +9,233 @@ import uuid
 import hashlib
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional
 
 class MetadataManager:
-    """Hallinnoi järjestelmän metadataa ja konekohtaisia tunnisteita"""
+    """Hallinnoi järjestelmän metatietoja"""
     
     def __init__(self, runtime_dir: str = "runtime"):
         self.runtime_dir = Path(runtime_dir)
-        self.metadata_file = self.runtime_dir / "system_metadata.json"
-        self._ensure_directories()
-    
-    def _ensure_directories(self):
-        """Varmistaa että tarvittavat hakemistot ovat olemassa"""
         self.runtime_dir.mkdir(exist_ok=True)
+        self.machine_id = self._get_or_create_machine_id()
     
-    def generate_machine_id(self) -> str:
-        """
-        Generoi yksilöllisen kone-ID:n
-        Perustuu UUID:hen ja koneen tietoihin (simuloitu)
-        """
-        # Käytännössä voitaisiin käyttää koneen MAC-osoitetta tms.
-        # Tässä mock-versio
-        base_uuid = str(uuid.uuid4())
-        machine_specific = f"machine_{base_uuid[:8]}_{datetime.now().timestamp()}"
+    def _get_or_create_machine_id(self) -> str:
+        """Hae tai luo koneen yksilöllinen ID"""
+        machine_id_file = self.runtime_dir / "machine_id.json"
         
-        # Hashaa lopputuloksen
-        machine_id = hashlib.sha256(machine_specific.encode()).hexdigest()[:16]
-        return f"machine_{machine_id}"
+        if machine_id_file.exists():
+            try:
+                with open(machine_id_file, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                return data.get('machine_id', self._generate_machine_id())
+            except:
+                return self._generate_machine_id()
+        else:
+            return self._generate_machine_id()
     
-    def get_election_signature(self, election_id: str, machine_id: str) -> str:
-        """
-        Generoi allekirjoituksen vaalikohtaiselle koneelle
-        """
-        signature_data = f"{election_id}:{machine_id}:{datetime.now().isoformat()}"
-        return hashlib.sha256(signature_data.encode()).hexdigest()
+    def _generate_machine_id(self) -> str:
+        """Luo uusi kone-ID"""
+        machine_id = f"machine_{uuid.uuid4().hex[:16]}"
+        
+        # Tallenna kone-ID
+        machine_id_file = self.runtime_dir / "machine_id.json"
+        with open(machine_id_file, 'w', encoding='utf-8') as f:
+            json.dump({
+                'machine_id': machine_id,
+                'created': datetime.now().isoformat()
+            }, f, indent=2, ensure_ascii=False)
+        
+        return machine_id
     
     def initialize_system_metadata(self, election_id: str, first_install: bool = False) -> Dict[str, Any]:
-        """
-        Alustaa järjestelmän metadatan
-        """
-        machine_id = self.generate_machine_id()
+        """Alusta järjestelmän metadata"""
         
-        metadata = {
-            "system_metadata": {
-                "machine_id": machine_id,
-                "created": datetime.now().isoformat(),
-                "first_install": first_install,
-                "installation_type": "first" if first_install else "additional"
-            },
+        # Luo system_metadata.json
+        system_metadata = {
             "election_specific": {
                 "election_id": election_id,
-                "election_signature": self.get_election_signature(election_id, machine_id),
-                "installed_machines": [machine_id] if first_install else [],
-                "master_machine": machine_id if first_install else None
+                "machine_id": self.machine_id,
+                "installed_at": datetime.now().isoformat(),
+                "first_install": first_install
             },
-            "sync_metadata": {
-                "last_sync": None,
-                "sync_count": 0,
-                "conflict_count": 0
+            "node_info": {
+                "node_id": self.machine_id,
+                "role": "master" if first_install else "worker",
+                "capabilities": ["comparisons", "voting", "sync"],
+                "ipfs_available": False
+            },
+            "version": "1.0.0",
+            "metadata": {
+                "created": datetime.now().isoformat(),
+                "last_updated": datetime.now().isoformat()
             }
         }
         
-        # Tallenna metadata
-        self._save_metadata(metadata)
+        with open(self.runtime_dir / "system_metadata.json", 'w', encoding='utf-8') as f:
+            json.dump(system_metadata, f, indent=2, ensure_ascii=False)
         
-        return metadata
-    
-    def load_metadata(self) -> Dict[str, Any]:
-        """Lataa järjestelmän metadata"""
-        try:
-            with open(self.metadata_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except FileNotFoundError:
-            return {}
-    
-    def _save_metadata(self, metadata: Dict[str, Any]):
-        """Tallentaa järjestelmän metadatan"""
-        with open(self.metadata_file, 'w', encoding='utf-8') as f:
-            json.dump(metadata, f, indent=2, ensure_ascii=False)
-    
-    def update_metadata(self, updates: Dict[str, Any]):
-        """Päivittää metadataa osittain"""
-        current_metadata = self.load_metadata()
-        
-        # Syvä merge
-        def deep_update(current, update):
-            for key, value in update.items():
-                if isinstance(value, dict) and key in current and isinstance(current[key], dict):
-                    deep_update(current[key], value)
-                else:
-                    current[key] = value
-        
-        deep_update(current_metadata, updates)
-        self._save_metadata(current_metadata)
-    
-    def register_new_machine(self, election_id: str, master_signature: str) -> bool:
-        """
-        Rekisteröi uusi kone olemassa olevaan vaaliin
-        """
-        metadata = self.load_metadata()
-        
-        if not metadata:
-            return False
-        
-        # Tarkista että master_signature on validi
-        current_master = metadata["election_specific"].get("master_machine")
-        if not current_master:
-            return False
-        
-        # Generoi uusi kone-ID
-        new_machine_id = self.generate_machine_id()
-        
-        # Päivitä metadata
-        metadata["election_specific"]["installed_machines"].append(new_machine_id)
-        metadata["system_metadata"]["machine_id"] = new_machine_id
-        metadata["system_metadata"]["first_install"] = False
-        metadata["system_metadata"]["installation_type"] = "additional"
-        metadata["election_specific"]["election_signature"] = self.get_election_signature(
-            election_id, new_machine_id
-        )
-        
-        self._save_metadata(metadata)
-        return True
-    
-    def is_first_installation(self, election_id: str) -> bool:
-        """
-        Tarkistaa onko kyseessä ensimmäinen asennus tälle vaalille
-        """
-        metadata = self.load_metadata()
-        
-        if not metadata:
-            return True
-        
-        # Tarkista että metadata on samalle vaalille
-        current_election = metadata["election_specific"].get("election_id")
-        if current_election != election_id:
-            return True
-        
-        return metadata["system_metadata"].get("first_install", False)
+        return system_metadata
     
     def get_machine_info(self) -> Dict[str, Any]:
-        """Palauttaa koneen tiedot"""
-        metadata = self.load_metadata()
+        """Hae koneen tiedot"""
+        system_metadata_file = self.runtime_dir / "system_metadata.json"
         
-        if not metadata:
-            return {
-                "machine_id": "unknown",
-                "first_install": True,
-                "election_id": "unknown"
-            }
+        if system_metadata_file.exists():
+            try:
+                with open(system_metadata_file, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                
+                election_id = data.get('election_specific', {}).get('election_id', 'unknown')
+                first_install = data.get('election_specific', {}).get('first_install', False)
+                
+                return {
+                    'machine_id': self.machine_id,
+                    'election_id': election_id,
+                    'first_install': first_install,
+                    'is_master': first_install,
+                    'node_role': 'master' if first_install else 'worker'
+                }
+            except:
+                pass
         
+        # Fallback, jos metadataa ei ole
         return {
-            "machine_id": metadata["system_metadata"]["machine_id"],
-            "first_install": metadata["system_metadata"]["first_install"],
-            "election_id": metadata["election_specific"]["election_id"],
-            "is_master": metadata["election_specific"].get("master_machine") == metadata["system_metadata"]["machine_id"]
+            'machine_id': self.machine_id,
+            'election_id': 'unknown',
+            'first_install': False,
+            'is_master': False,
+            'node_role': 'unknown'
         }
     
-    def create_election_registry(self, election_data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Luo vaalirekisterin ensimmäiselle asennukselle
-        """
-        machine_info = self.get_machine_info()
+    def create_election_registry(self, election: Dict[str, Any]) -> Dict[str, Any]:
+        """Luo vaalirekisterin ensimmäiselle asennukselle"""
         
         registry = {
             "election_registry": {
-                "election_id": election_data["election_id"],
-                "name": election_data["name"],
-                "master_machine": machine_info["machine_id"],
-                "created": datetime.now().isoformat(),
-                "total_machines": 1,
-                "machines": [machine_info["machine_id"]],
-                "config_hash": self._calculate_config_hash(election_data)
+                "election_id": election["election_id"],
+                "election_name": election["name"]["fi"],
+                "master_machine_id": self.machine_id,
+                "created_at": datetime.now().isoformat(),
+                "worker_nodes": [],
+                "config_hash": self._calculate_config_hash(election)
             },
-            "installation_metadata": {
-                "first_installation": machine_info["first_install"],
-                "installation_timestamp": datetime.now().isoformat(),
-                "system_version": "1.0.0"
+            "metadata": {
+                "version": "1.0.0",
+                "registry_type": "election_master"
             }
         }
         
         return registry
     
-    def _calculate_config_hash(self, election_data: Dict[str, Any]) -> str:
-        """Laskee konfiguraation hashin"""
-        config_string = json.dumps(election_data, sort_keys=True)
-        return hashlib.sha256(config_string.encode()).hexdigest()
+    def _calculate_config_hash(self, election: Dict[str, Any]) -> str:
+        """Laske vaalikonfiguraation hash"""
+        config_string = json.dumps(election, sort_keys=True, ensure_ascii=False)
+        return hashlib.sha256(config_string.encode('utf-8')).hexdigest()
+    
+    def register_worker_node(self, worker_machine_id: str, election_id: str) -> bool:
+        """Rekisteröi työasema vaalirekisteriin"""
+        
+        registry_file = self.runtime_dir / "election_registry.json"
+        
+        if not registry_file.exists():
+            print("❌ Vaalirekisteriä ei löydy - oletko master-kone?")
+            return False
+        
+        try:
+            with open(registry_file, 'r', encoding='utf-8') as f:
+                registry = json.load(f)
+            
+            # Tarkista että oikea vaali
+            if registry["election_registry"]["election_id"] != election_id:
+                print(f"❌ Väärä vaali rekisterissä: {registry['election_registry']['election_id']}")
+                return False
+            
+            # Lisää työasema
+            worker_nodes = registry["election_registry"].get("worker_nodes", [])
+            if worker_machine_id not in worker_nodes:
+                worker_nodes.append(worker_machine_id)
+                registry["election_registry"]["worker_nodes"] = worker_nodes
+                registry["election_registry"]["last_updated"] = datetime.now().isoformat()
+                
+                with open(registry_file, 'w', encoding='utf-8') as f:
+                    json.dump(registry, f, indent=2, ensure_ascii=False)
+                
+                print(f"✅ Työasema rekisteröity: {worker_machine_id}")
+                return True
+            else:
+                print(f"ℹ️  Työasema on jo rekisteröity: {worker_machine_id}")
+                return True
+                
+        except Exception as e:
+            print(f"❌ Virhe rekisteröitäessä työasemaa: {e}")
+            return False
+    
+    def get_election_registry(self) -> Optional[Dict[str, Any]]:
+        """Hae vaalirekisteri"""
+        registry_file = self.runtime_dir / "election_registry.json"
+        
+        if registry_file.exists():
+            try:
+                with open(registry_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except:
+                pass
+        
+        return None
+    
+    def update_system_metadata(self, updates: Dict[str, Any]) -> bool:
+        """Päivitä järjestelmän metadataa"""
+        
+        system_metadata_file = self.runtime_dir / "system_metadata.json"
+        
+        if not system_metadata_file.exists():
+            print("❌ System metadataa ei löydy")
+            return False
+        
+        try:
+            with open(system_metadata_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            # Päivitä data
+            for key, value in updates.items():
+                if key in data:
+                    if isinstance(data[key], dict) and isinstance(value, dict):
+                        data[key].update(value)
+                    else:
+                        data[key] = value
+                else:
+                    data[key] = value
+            
+            # Päivitä timestamp
+            data['metadata']['last_updated'] = datetime.now().isoformat()
+            
+            with open(system_metadata_file, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+            
+            print("✅ System metadata päivitetty")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Virhe päivittäessä metadataa: {e}")
+            return False
 
 # Singleton instance
 _metadata_manager = None
 
 def get_metadata_manager(runtime_dir: str = "runtime") -> MetadataManager:
-    """Palauttaa MetadataManager-instanssin"""
+    """Hae MetadataManager-instanssi"""
     global _metadata_manager
     if _metadata_manager is None:
         _metadata_manager = MetadataManager(runtime_dir)
     return _metadata_manager
 
+# Testaus
+if __name__ == "__main__":
+    manager = MetadataManager()
+    info = manager.get_machine_info()
+    
+    print("💻 KONEEN TIEDOT:")
+    print(f"   Machine ID: {info['machine_id']}")
+    print(f"   Vaali ID: {info['election_id']}")
+    print(f"   Rooli: {info['node_role']}")
+    print(f"   Master: {info['is_master']}")
