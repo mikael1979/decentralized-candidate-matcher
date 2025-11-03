@@ -29,10 +29,9 @@ def make_demo_comparisons(count: int = 3, user_id: str = "demo_user"):
         
         # Alusta ELO-manageri
         manager = ELOManager("runtime/questions.json")
-        calculator = CompleteELOCalculator()
         
-        # Lataa kysymykset
-        questions = manager.load_questions()
+        # KORJATTU: Käytä _load_questions() metodia
+        questions = manager._load_questions()
         if not questions:
             print("❌ Ei kysymyksiä saatavilla")
             return []
@@ -55,7 +54,10 @@ def make_demo_comparisons(count: int = 3, user_id: str = "demo_user"):
             
             comparison_pairs.append((q1, q2))
         
-        print(f"✅ Alustettu {len(comparison_pairs)} kysymystä vertailuihin")
+        print(f"✅ Alustettu {len(comparison_pairs)} kysymysparia vertailuihin")
+        
+        # Alusta ELO-calculator
+        calculator = CompleteELOCalculator()
         
         # Suorita vertailut
         results = []
@@ -162,10 +164,10 @@ def make_demo_comparisons(count: int = 3, user_id: str = "demo_user"):
             print()
         
         # Tallenna muutokset
-        manager.save_questions()
+        manager._save_questions()
         
-        # Näytä lopputila
-        updated_questions = manager.load_questions()
+        # Lataa päivitetyt kysymykset näyttämistä varten
+        updated_questions = manager._load_questions()
         sorted_questions = sorted(updated_questions, key=lambda x: x["elo_rating"]["current_rating"], reverse=True)
         
         print(f"📊 LOPPUTILA - TESTIKYSYMYKSET:")
@@ -218,7 +220,7 @@ def main():
             print("❌ Järjestelmän käynnistystarkistus epäonnistui")
             return
     except ImportError:
-        print("⚠️  System bootstrap ei saatavilla - jatketaan ilman tarkistusta")
+        print("⚠️  System bootstrap ei saatavilla - jatketaan ilnan tarkistusta")
     
     results = make_demo_comparisons(args.count, args.user)
     
