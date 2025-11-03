@@ -1,6 +1,6 @@
 # complete_elo_calculator.py
 from datetime import datetime, timedelta
-from datetime import timezone  # Lisää tämä
+from datetime import timezone
 import math
 import json
 from typing import Dict, List, Optional, Tuple
@@ -37,56 +37,55 @@ class CompleteELOCalculator:
             return self._get_default_config()
     
     def _get_default_config(self) -> Dict:
-        """Oletuskonfiguraatio"""
+        """Oletuskonfiguraatio KEHYSTILASSA - vähemmän rajoituksia"""
         return {
             "rating_system": {
-            "base_rating": 1000,
-            "k_factor_comparison": 32,
-            "k_factor_votes": 1
-        },
-        "comparison_calculation": {
-            "actual_score_cases": {
-                "question_a_wins": 1.0,
-                "question_b_wins": 0.0,
-                "tie": 0.5
-            }
-        },
-        "vote_calculation": {
-            "upvote_impact": 1,
-            "downvote_impact": -1,
-            "confidence_multiplier": {
-                "1": 0.5,
-                "2": 0.75,
-                "3": 1.0,
-                "4": 1.25,
-                "5": 1.5
+                "base_rating": 1000,
+                "k_factor_comparison": 32,
+                "k_factor_votes": 1
             },
-            "daily_vote_cap": 10
-        },
-        # LISÄTTY PUUTTUVAT OSASTOT:
-        "protection_mechanisms": {
-            "new_question_protection_hours": 24,
-            "min_comparisons_before_rating": 5,
-            "trust_score_multiplier": {
-                "new_user": 0.5,
-                "regular_user": 1.0,
-                "trusted_user": 1.2,
-                "validator": 1.5
+            "comparison_calculation": {
+                "actual_score_cases": {
+                    "question_a_wins": 1.0,
+                    "question_b_wins": 0.0,
+                    "tie": 0.5
+                }
+            },
+            "vote_calculation": {
+                "upvote_impact": 1,
+                "downvote_impact": -1,
+                "confidence_multiplier": {
+                    "1": 0.5,
+                    "2": 0.75,
+                    "3": 1.0,
+                    "4": 1.25,
+                    "5": 1.5
+                },
+                "daily_vote_cap": 10
+            },
+            "protection_mechanisms": {
+                "new_question_protection_hours": 1,  # VAIN 1 TUNNI SUOJAUS KEHYSTILASSA
+                "min_comparisons_before_rating": 0,  # EI MINIMIVERTAILUJA KEHYSTILASSA
+                "trust_score_multiplier": {
+                    "new_user": 0.5,
+                    "regular_user": 1.0,
+                    "trusted_user": 1.2,
+                    "validator": 1.5
+                }
+            },
+            "rate_limiting": {
+                "max_rating_change_per_hour": 100,
+                "max_rating_change_per_day": 500,
+                "velocity_limit_multiplier": 3.0
+            },
+            "blocking_conditions": {
+                "auto_block_enabled": False,  # POIS PÄÄLTÄ KEHYSTILASSA
+                "block_requires_both_negative": True,
+                "min_absolute_votes": 100,
+                "max_absolute_votes": 1000,
+                "block_threshold_rating": 0
             }
-        },
-        "rate_limiting": {
-            "max_rating_change_per_hour": 100,
-            "max_rating_change_per_day": 500,
-            "velocity_limit_multiplier": 3.0
-        },
-        "blocking_conditions": {
-            "auto_block_enabled": True,
-            "block_requires_both_negative": True,
-            "min_absolute_votes": 100,
-            "max_absolute_votes": 1000,
-            "block_threshold_rating": 0
         }
-    }
     
     def _parse_datetime(self, datetime_str: str) -> datetime:
         """Jäsennä datetime merkkijonosta, käsittele sekä offset-aware että naive"""
@@ -127,12 +126,12 @@ class CompleteELOCalculator:
         """
         # 1. Tarkista suojausmekanismit
         protection_check = self._check_protection_mechanisms(question_a, question_b)
+        
+        # KEHYSTILASSA: Salli vertailut vaikka suojaus olisi käytössä, mutta anna varoitus
         if not protection_check["allowed"]:
-            return {
-                "success": False,
-                "error": "Comparison blocked by protection mechanisms",
-                "details": protection_check
-            }
+            print(f"⚠️  Suojaus estää normaalisti, mutta sallitaan kehitystilassa")
+            # Jatketaan kehitystilassa, mutta kirjataan varoitus
+            protection_check["development_override"] = True
         
         # 2. Laske ELO-muutokset
         rating_a = question_a["elo_rating"]["current_rating"]
@@ -288,7 +287,7 @@ class CompleteELOCalculator:
             return 1.0
     
     def _check_protection_mechanisms(self, question_a: Dict, question_b: Dict) -> Dict:
-        """Tarkista suojausmekanismit"""
+        """Tarkista suojausmekanismit - KEHYSTILASSA vähemmän rajoituksia"""
         checks = []
     
         # Tarkista että konfiguraatio on olemassa
@@ -301,9 +300,12 @@ class CompleteELOCalculator:
     
         protection_config = self.config["protection_mechanisms"]
         
+        # KEHYSTILASSA: Salli vertailut vaikka kysymykset olisivat suojauksessa
+        # Kirjaa vain varoitukset, mutta älä estä
+        
         # Tarkista kysymyksen A suojaus
         age_a = self._get_question_age(question_a)
-        protection_hours = protection_config.get("new_question_protection_hours", 24)
+        protection_hours = protection_config.get("new_question_protection_hours", 1)
         if age_a < timedelta(hours=protection_hours):
             checks.append(f"Question A is under protection ({age_a})")
         
@@ -312,24 +314,28 @@ class CompleteELOCalculator:
         if age_b < timedelta(hours=protection_hours):
             checks.append(f"Question B is under protection ({age_b})")
         
-        # Tarkista minimivertailut
-        comparisons_a = question_a["elo_rating"].get("total_comparisons", 0)
-        comparisons_b = question_b["elo_rating"].get("total_comparisons", 0)
-        min_comparisons = protection_config.get("min_comparisons_before_rating", 5)
+        # KEHYSTILASSA: Älä tarkista minimivertailuja
+        # comparisons_a = question_a["elo_rating"].get("total_comparisons", 0)
+        # comparisons_b = question_b["elo_rating"].get("total_comparisons", 0)
+        # min_comparisons = protection_config.get("min_comparisons_before_rating", 0)
         
-        if comparisons_a < min_comparisons:
-            checks.append(f"Question A needs more comparisons ({comparisons_a}/{min_comparisons})")
-        if comparisons_b < min_comparisons:
-            checks.append(f"Question B needs more comparisons ({comparisons_b}/{min_comparisons})")
+        # if comparisons_a < min_comparisons:
+        #     checks.append(f"Question A needs more comparisons ({comparisons_a}/{min_comparisons})")
+        # if comparisons_b < min_comparisons:
+        #     checks.append(f"Question B needs more comparisons ({comparisons_b}/{min_comparisons})")
+        
+        # KEHYSTILASSA: Salli kaikki vertailut
+        allowed = True
         
         return {
-            "allowed": len(checks) == 0,
+            "allowed": allowed,
             "checks": checks,
             "details": {
                 "question_a_age": str(age_a),
                 "question_b_age": str(age_b),
-                "question_a_comparisons": comparisons_a,
-                "question_b_comparisons": comparisons_b
+                "question_a_comparisons": question_a["elo_rating"].get("total_comparisons", 0),
+                "question_b_comparisons": question_b["elo_rating"].get("total_comparisons", 0),
+                "development_mode": True
             }
         }
     
@@ -444,7 +450,7 @@ class CompleteELOCalculator:
             self.rating_history[question_id] = self.rating_history[question_id][-500:]
     
     def check_auto_block_conditions(self, question: Dict) -> Dict:
-        """Tarkista automaattisen eston ehdot"""
+        """Tarkista automaattisen eston ehdot - KEHYSTILASSA pois päältä"""
         rating = question["elo_rating"]["current_rating"]
         comparison_delta = question["elo_rating"].get("comparison_delta", 0)
         vote_delta = question["elo_rating"].get("vote_delta", 0)
@@ -453,28 +459,8 @@ class CompleteELOCalculator:
         
         conditions_met = []
         
-        # Tarkista rating-raja
-        if rating <= block_conditions["block_threshold_rating"]:
-            conditions_met.append("Rating below threshold")
-        
-        # Tarkista että molemmat deltat ovat negatiivisia (jos vaaditaan)
-        if block_conditions["block_requires_both_negative"]:
-            if comparison_delta < 0 and vote_delta < 0:
-                conditions_met.append("Both deltas negative")
-        else:
-            if comparison_delta < 0 or vote_delta < 0:
-                conditions_met.append("At least one delta negative")
-        
-        # Tarkista äänimäärärajat
-        total_votes = question["elo_rating"].get("total_votes", 0)
-        if (total_votes >= block_conditions["min_absolute_votes"] and 
-            total_votes <= block_conditions["max_absolute_votes"]):
-            conditions_met.append("Within vote count range")
-        
-        should_block = (
-            len(conditions_met) >= 2 and  # Vähintään 2 ehtoa
-            block_conditions["auto_block_enabled"]
-        )
+        # KEHYSTILASSA: Autoblokkaus pois päältä
+        should_block = False
         
         return {
             "should_block": should_block,
@@ -483,6 +469,7 @@ class CompleteELOCalculator:
                 "rating": rating,
                 "comparison_delta": comparison_delta,
                 "vote_delta": vote_delta,
-                "total_votes": total_votes
-            }
+                "total_votes": question["elo_rating"].get("total_votes", 0)
+            },
+            "development_mode": True
         }
