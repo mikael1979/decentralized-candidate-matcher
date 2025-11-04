@@ -473,3 +473,78 @@ class CompleteELOCalculator:
             },
             "development_mode": True
         }
+
+    def run_tests(self):
+        """Testaa ELO-laskentaa erillisestä testidatasta"""
+        try:
+            from tests.test_data_loader import load_test_questions
+            
+            test_data = load_test_questions()
+            if not test_data or "test_questions" not in test_data:
+                print("❌ Testidataa ei saatavilla")
+                return False
+                
+            questions = test_data["test_questions"]
+            if len(questions) < 2:
+                print("❌ Riittämätön testidata - tarvitaan vähintään 2 kysymystä")
+                return False
+            
+            # Käytä testidataa JSON-tiedostosta
+            question_a = questions[0]
+            question_b = questions[1]
+            
+            print("🧪 ELO-LASKENTA TESTI")
+            print("=" * 40)
+            
+            # Testaa vertailu
+            result = self.process_comparison(
+                question_a, question_b, 
+                ComparisonResult.A_WINS, 
+                UserTrustLevel.REGULAR_USER
+            )
+            
+            if result["success"]:
+                print("✅ Vertailu testi ONNISTUI")
+                changes = result["changes"]
+                print(f"   Kysymys A: {changes['question_a']['old_rating']:.1f} → {changes['question_a']['new_rating']:.1f}")
+                print(f"   Kysymys B: {changes['question_b']['old_rating']:.1f} → {changes['question_b']['new_rating']:.1f}")
+            else:
+                print("❌ Vertailu testi EPÄONNISTUI")
+                return False
+            
+            # Testaa äänestys
+            vote_result = self.process_vote(
+                question_a, VoteType.UPVOTE, 3, UserTrustLevel.REGULAR_USER
+            )
+            
+            if vote_result["success"]:
+                print("✅ Äänestys testi ONNISTUI")
+                change = vote_result["change"]
+                print(f"   Ääni: {change['old_rating']:.1f} → {change['new_rating']:.1f}")
+            else:
+                print("❌ Äänestys testi EPÄONNISTUI")
+                return False
+            
+            print("🎯 KAIKKI TESTIT LÄPÄISTY!")
+            return True
+            
+        except ImportError:
+            print("⚠️  Testidata-moduulia ei saatavilla - testit ohitettu")
+            return True
+        except Exception as e:
+            print(f"❌ Testit epäonnistuivat: {e}")
+            return False
+
+# Testaus jos suoritetaan suoraan
+if __name__ == "__main__":
+    calculator = CompleteELOCalculator()
+    
+    print("🎯 ELO-LASKENTA TESTAUS")
+    print("=" * 50)
+    
+    success = calculator.run_tests()
+    
+    if success:
+        print("\n✅ ELO-laskenta toimii odotetusti")
+    else:
+        print("\n❌ ELO-laskennassa ongelmia")

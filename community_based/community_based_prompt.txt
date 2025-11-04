@@ -390,5 +390,18 @@ Testaa synkronointia: Käytä manage_questions.py lisätäksesi kysymyksiä ja k
 Implementoi lohkotesti: Luo demo-skripti usealle "nodelle" (esim. multiprocessing) kirjoittamaan IPFS:ään.
 TODO-integraatio: Yhdistä promptin TODOihin, kuten voting_engine.py (vaalikoneen ydin) ja GUI.
 ------------------------------------------------------------------------------------------------------------------------------------
-Ei sisään koodata esimerkkidataa py tiedostoihin
+*Ei sisään koodata esimerkkidataa py tiedostoihin
+* Sitten IPFS:n synkronoinnin ajanvaraus systeemi, jossa ipfs:stä luettaessa voi synkronoida aina tarvittaessa. IPFS:ään kirjoitettaessa ajattelin tällaista, eli varauslistassa käytetään aikaikkunoita, jossa nodi merkkaa varauslistaan nämä kohdat.
+1. jätetään hiukan tyhjää tilaa jokaisen varauksen väliin. (tyhjä aikaikkuna)
+2. Aikaikkuna kiireellisille varauksille
+3. nodin oma varaus
+4.  jätetään hiukan tyhjää tilaa jokaisen varauksen väliin. (tyhjä aikaikkuna)
+
+kohtien kestot voisi luoda json konfiguraatio tiedostoon
+--------------------------------------------------------------------------------------------------------------------
+asennusprosessin voisi kyllä käydä läpi:
+1. --first-install on jo aika selkeä, joka luo ensimmäisen vaalikohtaisen master noden ja muuten pitää tarkistaa, että systeemi toimii vain yksille vaaleile ja nimet ja cid-osoitteet on luotu niin, ettei tule sekaannuksia toisten mahdollisesti samaan aikaan pyörivien vaalien nodejen kanssa.
+
+2. nodin luominen --first-installin tekemästä asennus konfiguraatiotiedostosta, eli tarkistaa että tämäkin luo tai hakee ipfs:stä tarvittavat json tiedostot ja toimii samassa nimiavaruudessa ja cid-osoitteissa, kuin master-node
+............................................................................................................................
 

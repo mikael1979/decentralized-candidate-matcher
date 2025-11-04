@@ -1,0 +1,25 @@
+{
+  "test_questions": [
+    {
+      "local_id": "test_q_1",
+      "content": {
+        "question": {
+          "fi": "Testikysymys 1 - Pit\u00e4isik\u00f6 kaupunkipy\u00f6ri\u00e4 lis\u00e4t\u00e4?",
+          "en": "Test question 1 - Should city bikes be increased?",
+          "sv": "Testfr\u00e5ga 1 - B\u00f6r stadscyklar \u00f6kas?"
+        },
+        "category": {
+          "fi": "Liikenne",
+          "en": "Transportation",
+          "sv": "Transport"
+        }
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "current_rating": 1000,
+        "comparison_delta": 0,
+        "vote_delta": 0
+      }
+    }
+  ]
+}

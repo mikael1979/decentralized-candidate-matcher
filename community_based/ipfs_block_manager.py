@@ -1,59 +1,62 @@
 #!/usr/bin/env python3
 # ipfs_block_manager.py
 """
-IPFS Block Manager - Hallinnoi pyöriviä varauslohkoja IPFS:ssä
+IPFS Block Manager - PÄIVITETTY NIMIAVARUUDEN KANSSA
+Hallinnoi pyöriviä varauslohkoja IPFS:ssä usealle nodelle
+Nimiavaruusperustainen eristys eri vaaleille
 Käyttö:
-  manager = IPFSBlockManager(ipfs_client, "election_2024")
+  manager = IPFSBlockManager(ipfs_client, "election_2024_namespace")
   entry_id = manager.write_to_block("active", data, "normal_backup")
 """
 
 import json
 from datetime import datetime, timedelta
+from datetime import timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 import hashlib
 
 class IPFSBlockManager:
-    """Hallinnoi pyöriviä varauslohkoja IPFS:ssä usealle nodelle"""
+    """Hallinnoi pyöriviä varauslohkoja IPFS:ssä usealle nodelle - PÄIVITETTY NIMIAVARUUDELLA"""
     
-    def __init__(self, ipfs_client, election_id: str, node_id: str = "default_node"):
+    def __init__(self, ipfs_client, namespace: str, node_id: str = "default_node"):
         self.ipfs_client = ipfs_client
-        self.election_id = election_id
+        self.namespace = namespace  # Vaalikohtainen nimiavaruus
         self.node_id = node_id
         self.blocks_metadata_cid = None
         
-        # Lohkojen määritelmät
+        # Lohkojen määritelmät nimiavaruudella
         self.blocks_config = {
             "buffer1": {
-                "purpose": "empty_buffer",
+                "purpose": f"empty_buffer_{namespace}",
                 "max_size": 100,
                 "time_window": None,
                 "priority": "low",
                 "allowed_operations": ["read", "archive"]
             },
             "urgent": {
-                "purpose": "emergency_backups", 
+                "purpose": f"emergency_backups_{namespace}", 
                 "max_size": 50,
                 "time_window": 3600,  # 1 tunti
                 "priority": "critical",
                 "allowed_operations": ["read", "write", "emergency"]
             },
             "sync": {
-                "purpose": "synchronization_point",
+                "purpose": f"synchronization_point_{namespace}",
                 "max_size": 200,
                 "time_window": 21600,  # 6 tuntia
                 "priority": "high", 
                 "allowed_operations": ["read", "write", "sync"]
             },
             "active": {
-                "purpose": "active_writing",
+                "purpose": f"active_writing_{namespace}",
                 "max_size": 150,
                 "time_window": 7200,  # 2 tuntia
                 "priority": "medium",
                 "allowed_operations": ["read", "write"]
             },
             "buffer2": {
-                "purpose": "transfer_buffer",
+                "purpose": f"transfer_buffer_{namespace}",
                 "max_size": 100,
                 "time_window": None,
                 "priority": "low",
@@ -65,7 +68,7 @@ class IPFSBlockManager:
         self.block_sequence = ["buffer1", "urgent", "sync", "active", "buffer2"]
     
     def initialize_blocks(self) -> str:
-        """Alusta lohkorakenne IPFS:ään"""
+        """Alusta lohkorakenne IPFS:ään - PÄIVITETTY NIMIAVARUUDELLA"""
         
         block_cids = {}
         
@@ -73,45 +76,53 @@ class IPFSBlockManager:
             block_data = {
                 "metadata": {
                     "block_name": block_name,
+                    "namespace": self.namespace,
                     "purpose": config["purpose"],
-                    "created": datetime.now().isoformat(),
+                    "created": datetime.now(timezone.utc).isoformat(),
                     "max_size": config["max_size"],
                     "time_window": config["time_window"],
-                    "election_id": self.election_id,
-                    "node_id": self.node_id
+                    "election_namespace": self.namespace,
+                    "node_id": self.node_id,
+                    "priority": config["priority"]
                 },
                 "entries": [],
                 "current_index": 0,
                 "total_entries": 0,
-                "entry_hashes": []  # Tarkistusta varten
+                "entry_hashes": []
             }
             
             cid = self.ipfs_client.upload(block_data)
             block_cids[block_name] = cid
-            print(f"✅ Lohko alustettu: {block_name} -> {cid}")
+            print(f"✅ Lohko alustettu ({self.namespace}): {block_name} -> {cid}")
         
-        # Luo metadata-tiedosto
+        # Luo metadata-tiedosto nimiavaruudella
         blocks_metadata = {
-            "version": "1.0.0",
-            "created": datetime.now().isoformat(),
-            "election_id": self.election_id,
+            "version": "2.0.0",
+            "namespace": self.namespace,
+            "created": datetime.now(timezone.utc).isoformat(),
+            "election_namespace": self.namespace,
             "node_id": self.node_id,
             "block_sequence": self.block_sequence,
             "current_rotation": 0,
             "total_rotations": 0,
             "blocks": block_cids,
             "rotation_history": [],
-            "node_registry": [self.node_id]  # Rekisteröi ensimmäinen node
+            "node_registry": [self.node_id],
+            "metadata": {
+                "namespace_strategy": "election_based",
+                "isolation_level": "namespace",
+                "created_by": "IPFSBlockManager"
+            }
         }
         
         self.blocks_metadata_cid = self.ipfs_client.upload(blocks_metadata)
-        print(f"🎯 Lohkometadata luotu: {self.blocks_metadata_cid}")
+        print(f"🎯 Lohkometadata luotu ({self.namespace}): {self.blocks_metadata_cid}")
         
         return self.blocks_metadata_cid
     
     def write_to_block(self, block_name: str, data: Dict, data_type: str, 
                       priority: str = "normal") -> str:
-        """Kirjoita dataa tiettyyn lohkoon"""
+        """Kirjoita dataa tiettyyn lohkoon - PÄIVITETTY NIMIAVARUUDELLA"""
         
         if block_name not in self.blocks_config:
             raise ValueError(f"Tuntematon lohko: {block_name}")
@@ -137,15 +148,16 @@ class IPFSBlockManager:
             else:
                 raise BlockFullError(f"Lohko {block_name} on täynnä")
         
-        # Luo uusi merkintä
-        entry_id = f"{block_name}_{block_data['current_index']}_{self.node_id}"
+        # Luo uusi merkintä nimiavaruudella
+        entry_id = f"{self.namespace}_{block_name}_{block_data['current_index']}_{self.node_id}"
         entry_hash = self._calculate_entry_hash(data)
         
         new_entry = {
             "entry_id": entry_id,
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "data_type": data_type,
             "node_id": self.node_id,
+            "namespace": self.namespace,
             "priority": priority,
             "data": data,
             "entry_hash": entry_hash
@@ -164,11 +176,11 @@ class IPFSBlockManager:
         blocks_metadata["blocks"][block_name] = new_block_cid
         self.blocks_metadata_cid = self.ipfs_client.upload(blocks_metadata)
         
-        print(f"📝 Kirjoitettu lohkoon {block_name}: {entry_id}")
+        print(f"📝 Kirjoitettu lohkoon {block_name} ({self.namespace}): {entry_id}")
         return entry_id
     
     def read_from_block(self, block_name: str, entry_id: str = None) -> List[Dict]:
-        """Lue dataa lohkosta"""
+        """Lue dataa lohkosta - PÄIVITETTY NIMIAVARUUDELLA"""
         
         blocks_metadata = self._load_blocks_metadata()
         block_cid = blocks_metadata["blocks"][block_name]
@@ -188,7 +200,7 @@ class IPFSBlockManager:
             return block_data["entries"]
     
     def get_block_status(self, block_name: str = None) -> Dict:
-        """Hae lohkon/lohkojen status"""
+        """Hae lohkon/lohkojen status - PÄIVITETTY NIMIAVARUUDELLA"""
         
         blocks_metadata = self._load_blocks_metadata()
         
@@ -199,11 +211,13 @@ class IPFSBlockManager:
             
             return {
                 "block_name": block_name,
+                "namespace": self.namespace,
                 "purpose": self.blocks_config[block_name]["purpose"],
                 "current_entries": len(block_data["entries"]),
                 "max_size": self.blocks_config[block_name]["max_size"],
                 "usage_percentage": (len(block_data["entries"]) / self.blocks_config[block_name]["max_size"]) * 100,
-                "last_updated": block_data["entries"][-1]["timestamp"] if block_data["entries"] else "Ei merkintöjä"
+                "last_updated": block_data["entries"][-1]["timestamp"] if block_data["entries"] else "Ei merkintöjä",
+                "node_id": self.node_id
             }
         else:
             # Kaikkien lohkojen status
@@ -216,18 +230,20 @@ class IPFSBlockManager:
                     "purpose": self.blocks_config[block_name]["purpose"],
                     "entries": len(block_data["entries"]),
                     "max_size": self.blocks_config[block_name]["max_size"],
-                    "full": len(block_data["entries"]) >= self.blocks_config[block_name]["max_size"]
+                    "full": len(block_data["entries"]) >= self.blocks_config[block_name]["max_size"],
+                    "namespace": self.namespace,
+                    "usage_percentage": (len(block_data["entries"]) / self.blocks_config[block_name]["max_size"]) * 100
                 }
             
             return status
     
     def _rotate_blocks(self):
-        """Pyöritä lohkoja kun aktiivinen lohko täyttyy"""
+        """Pyöritä lohkoja kun aktiivinen lohko täyttyy - PÄIVITETTY NIMIAVARUUDELLA"""
         
         blocks_metadata = self._load_blocks_metadata()
         old_sequence = blocks_metadata["block_sequence"]
         
-        print(f"🔄 Pyöritetään lohkoja: {old_sequence}")
+        print(f"🔄 Pyöritetään lohkoja ({self.namespace}): {old_sequence}")
         
         # Uusi sekvenssi: siirrä kaikkia yksi asema eteenpäin
         new_sequence = old_sequence[1:] + [old_sequence[0]]
@@ -237,10 +253,12 @@ class IPFSBlockManager:
         old_active_data = self.ipfs_client.download(old_active_cid)
         
         archive_entry = {
-            "archive_timestamp": datetime.now().isoformat(),
+            "archive_timestamp": datetime.now(timezone.utc).isoformat(),
             "original_block": "active",
+            "namespace": self.namespace,
             "total_entries": len(old_active_data["entries"]),
-            "entry_ids": [entry["entry_id"] for entry in old_active_data["entries"]]
+            "entry_ids": [entry["entry_id"] for entry in old_active_data["entries"]],
+            "rotated_by": self.node_id
         }
         
         # Kirjoita arkistoi buffer2:een
@@ -249,7 +267,7 @@ class IPFSBlockManager:
         # 2. Siirrä sync -> active (tyhjennä ensin)
         sync_cid = blocks_metadata["blocks"]["sync"]
         sync_data = self.ipfs_client.download(sync_cid)
-        sync_data["metadata"]["purpose"] = "active_writing"
+        sync_data["metadata"]["purpose"] = f"active_writing_{self.namespace}"
         sync_data["entries"] = []  # Tyhjennä uusi aktiivinen lohko
         sync_data["current_index"] = 0
         sync_data["total_entries"] = 0
@@ -259,13 +277,13 @@ class IPFSBlockManager:
         # 3. Siirrä urgent -> sync (säilytä data)
         urgent_cid = blocks_metadata["blocks"]["urgent"]
         urgent_data = self.ipfs_client.download(urgent_cid)
-        urgent_data["metadata"]["purpose"] = "synchronization_point"
+        urgent_data["metadata"]["purpose"] = f"synchronization_point_{self.namespace}"
         new_sync_cid = self.ipfs_client.upload(urgent_data)
         
         # 4. Siirrä buffer1 -> urgent (tyhjennä)
         buffer1_cid = blocks_metadata["blocks"]["buffer1"]
         buffer1_data = self.ipfs_client.download(buffer1_cid)
-        buffer1_data["metadata"]["purpose"] = "emergency_backups"
+        buffer1_data["metadata"]["purpose"] = f"emergency_backups_{self.namespace}"
         buffer1_data["entries"] = []  # Tyhjennä kiireelliset
         buffer1_data["current_index"] = 0
         buffer1_data["total_entries"] = 0
@@ -276,11 +294,12 @@ class IPFSBlockManager:
         new_buffer1_data = {
             "metadata": {
                 "block_name": "buffer1",
-                "purpose": "empty_buffer",
-                "created": datetime.now().isoformat(),
+                "namespace": self.namespace,
+                "purpose": f"empty_buffer_{self.namespace}",
+                "created": datetime.now(timezone.utc).isoformat(),
                 "max_size": self.blocks_config["buffer1"]["max_size"],
                 "time_window": None,
-                "election_id": self.election_id,
+                "election_namespace": self.namespace,
                 "node_id": self.node_id
             },
             "entries": [],
@@ -297,10 +316,12 @@ class IPFSBlockManager:
         
         blocks_metadata["rotation_history"].append({
             "rotation_id": blocks_metadata["current_rotation"],
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "old_sequence": old_sequence,
             "new_sequence": new_sequence,
-            "trigger": "active_block_full"
+            "trigger": "active_block_full",
+            "namespace": self.namespace,
+            "node_id": self.node_id
         })
         
         # Päivitä lohkojen CID:t
@@ -314,7 +335,7 @@ class IPFSBlockManager:
         
         self.blocks_metadata_cid = self.ipfs_client.upload(blocks_metadata)
         
-        print(f"✅ Lohkot pyörivät. Uusi sekvenssi: {new_sequence}")
+        print(f"✅ Lohkot pyörivät ({self.namespace}). Uusi sekvenssi: {new_sequence}")
         print(f"🔄 Pyöritys #{blocks_metadata['current_rotation']} valmis")
     
     def _load_blocks_metadata(self) -> Dict:
@@ -339,13 +360,13 @@ class IPFSBlockManager:
         return hashlib.sha256(data_string.encode()).hexdigest()
     
     def register_new_node(self, node_id: str) -> bool:
-        """Rekisteröi uusi node lohkoihin"""
+        """Rekisteröi uusi node lohkoihin - PÄIVITETTY NIMIAVARUUDELLA"""
         blocks_metadata = self._load_blocks_metadata()
         
         if node_id not in blocks_metadata["node_registry"]:
             blocks_metadata["node_registry"].append(node_id)
             self.blocks_metadata_cid = self.ipfs_client.upload(blocks_metadata)
-            print(f"✅ Node rekisteröity: {node_id}")
+            print(f"✅ Node rekisteröity ({self.namespace}): {node_id}")
             return True
         
         return False
@@ -354,6 +375,104 @@ class IPFSBlockManager:
         """Hae kaikki tunnetut nodet"""
         blocks_metadata = self._load_blocks_metadata()
         return blocks_metadata.get("node_registry", [])
+    
+    def get_namespace_info(self) -> Dict:
+        """Hae nimiavaruuden tiedot"""
+        blocks_metadata = self._load_blocks_metadata()
+        
+        return {
+            "namespace": self.namespace,
+            "metadata_cid": self.blocks_metadata_cid,
+            "total_blocks": len(self.blocks_config),
+            "total_rotations": blocks_metadata.get("total_rotations", 0),
+            "current_rotation": blocks_metadata.get("current_rotation", 0),
+            "node_count": len(blocks_metadata.get("node_registry", [])),
+            "created": blocks_metadata.get("created", "unknown"),
+            "node_id": self.node_id
+        }
+    
+    def verify_namespace_integrity(self) -> bool:
+        """Tarkista nimiavaruuden eheys"""
+        try:
+            blocks_metadata = self._load_blocks_metadata()
+            
+            # Tarkista että metadata-nimiavaruus vastaa instanssin nimiavaruutta
+            metadata_namespace = blocks_metadata.get("namespace")
+            if metadata_namespace != self.namespace:
+                print(f"❌ Nimiavaruussopimattomuus: {metadata_namespace} != {self.namespace}")
+                return False
+            
+            # Tarkista että kaikki lohkot ovat olemassa
+            for block_name in self.block_sequence:
+                block_cid = blocks_metadata["blocks"][block_name]
+                block_data = self.ipfs_client.download(block_cid)
+                
+                if not block_data:
+                    print(f"❌ Lohkoa ei löydy: {block_name}")
+                    return False
+                
+                # Tarkista että lohkon nimiavaruus vastaa
+                block_namespace = block_data["metadata"].get("namespace")
+                if block_namespace != self.namespace:
+                    print(f"❌ Lohkon nimiavaruussopimattomuus: {block_namespace} != {self.namespace}")
+                    return False
+            
+            print(f"✅ Nimiavaruuden eheys varmistettu: {self.namespace}")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Nimiavaruuden eheyden tarkistus epäonnistui: {e}")
+            return False
+    
+    def cleanup_old_entries(self, older_than_days: int = 30) -> Dict:
+        """Siivoa vanhat merkinnät - PÄIVITETTY NIMIAVARUUDELLA"""
+        print(f"🧹 Siivotaan vanhat merkinnät ({self.namespace}), yli {older_than_days} päivää vanhat")
+        
+        cutoff_date = datetime.now(timezone.utc) - timedelta(days=older_than_days)
+        cleanup_stats = {
+            "namespace": self.namespace,
+            "cutoff_date": cutoff_date.isoformat(),
+            "cleaned_entries": 0,
+            "affected_blocks": []
+        }
+        
+        blocks_metadata = self._load_blocks_metadata()
+        
+        for block_name in self.block_sequence:
+            block_cid = blocks_metadata["blocks"][block_name]
+            block_data = self.ipfs_client.download(block_cid)
+            
+            original_count = len(block_data["entries"])
+            
+            # Suodata vanhat merkinnät
+            block_data["entries"] = [
+                entry for entry in block_data["entries"]
+                if datetime.fromisoformat(entry["timestamp"]) > cutoff_date
+            ]
+            
+            cleaned_count = original_count - len(block_data["entries"])
+            if cleaned_count > 0:
+                # Päivitä lohko
+                new_block_cid = self.ipfs_client.upload(block_data)
+                blocks_metadata["blocks"][block_name] = new_block_cid
+                
+                cleanup_stats["cleaned_entries"] += cleaned_count
+                cleanup_stats["affected_blocks"].append({
+                    "block_name": block_name,
+                    "cleaned_entries": cleaned_count,
+                    "remaining_entries": len(block_data["entries"])
+                })
+                
+                print(f"   🧹 {block_name}: poistettu {cleaned_count} vanhaa merkintää")
+        
+        # Päivitä metadata jos tarvittaessa
+        if cleanup_stats["cleaned_entries"] > 0:
+            self.blocks_metadata_cid = self.ipfs_client.upload(blocks_metadata)
+            print(f"✅ Siivous valmis: {cleanup_stats['cleaned_entries']} merkintää poistettu")
+        else:
+            print("ℹ️  Ei vanhoja merkintöjä siivottavaksi")
+        
+        return cleanup_stats
 
 class BlockNotFoundError(Exception):
     """Lohkoa ei löydy"""
@@ -373,26 +492,42 @@ class MetadataNotFoundError(Exception):
 
 # Testaus
 if __name__ == "__main__":
-    print("🧪 IPFS BLOCK MANAGER TESTI")
-    print("=" * 50)
+    print("🧪 IPFS BLOCK MANAGER TESTI - PÄIVITETTY NIMIAVARUUDELLA")
+    print("=" * 60)
     
     # Käytä mock-IPFS:ää testaamiseen
     from mock_ipfs import MockIPFS
     
     ipfs = MockIPFS()
-    manager = IPFSBlockManager(ipfs, "test_election_2024", "test_node_1")
     
-    # Alusta lohkot
-    metadata_cid = manager.initialize_blocks()
-    print(f"✅ Lohkot alustettu: {metadata_cid}")
+    # Testaa eri nimiavaruuksilla
+    namespaces = ["election_test_2024", "election_demo_2024"]
     
-    # Testaa kirjoitus
-    test_data = {"action": "test", "value": 123}
-    entry_id = manager.write_to_block("active", test_data, "test_entry")
-    print(f"✅ Testimerkintä kirjoitettu: {entry_id}")
-    
-    # Tarkista status
-    status = manager.get_block_status()
-    print("📊 LOHKOSTATUS:")
-    for block, info in status.items():
-        print(f"   {block}: {info['entries']}/{info['max_size']} ({info['purpose']})")
+    for namespace in namespaces:
+        print(f"\n🔗 Testataan nimiavaruutta: {namespace}")
+        manager = IPFSBlockManager(ipfs, namespace, f"test_node_{namespace}")
+        
+        # Alusta lohkot
+        metadata_cid = manager.initialize_blocks()
+        print(f"✅ Lohkot alustettu: {metadata_cid}")
+        
+        # Testaa kirjoitus
+        test_data = {"action": "test", "namespace": namespace, "value": 123}
+        entry_id = manager.write_to_block("active", test_data, "test_entry")
+        print(f"✅ Testimerkintä kirjoitettu: {entry_id}")
+        
+        # Tarkista status
+        status = manager.get_block_status()
+        print("📊 LOHKOSTATUS:")
+        for block, info in status.items():
+            print(f"   {block}: {info['entries']}/{info['max_size']} ({info['namespace']})")
+        
+        # Tarkista nimiavaruuden eheys
+        integrity_ok = manager.verify_namespace_integrity()
+        print(f"🔒 Nimiavaruuden eheys: {'✅ OK' if integrity_ok else '❌ FAIL'}")
+        
+        # Näytä nimiavaruuden tiedot
+        namespace_info = manager.get_namespace_info()
+        print(f"📋 Nimiavaruustiedot: {namespace_info['namespace']}")
+        print(f"   Lohkoja: {namespace_info['total_blocks']}")
+        print(f"   Pyörityksiä: {namespace_info['total_rotations']}")
