@@ -90,6 +90,7 @@ cookies.txt
 test/IPFS/IPFS_test/venv/
 *.patch
 runtime/
+runtime_test/
 config_output
 all_python_files.txt
 echo all_admin_based_python_files.txt

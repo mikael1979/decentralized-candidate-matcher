@@ -1,241 +1,116 @@
 #!/usr/bin/env python3
-# demo_comparisons.py - KORJATTU VERSIO
 """
-Demo: Kysymysvertailut ELO-luokituksella - KORJATTU KEHYSTILASSA
-Käyttö: python demo_comparisons.py --user testi --count 5
+Demo: Kysymysvertailut - Korjattu versio
 """
 
-import argparse
+import json
 import random
 import sys
+import os
 from datetime import datetime
-from pathlib import Path
 
-# Lisää nykyinen hakemisto polkuun
-sys.path.append('.')
+# Lisää polku jotta importit toimivat
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-def make_demo_comparisons(count: int = 3, user_id: str = "demo_user"):
-    """Tee demovertailuja"""
-    
-    print(f"🎯 DEMO: KYSYMYSVERTAILUT")
-    print("=" * 50)
-    print(f"Käyttäjä: {user_id}")
-    print(f"Vertailuja: {count}")
-    print()
-    
+try:
+    from complete_elo_calculator import CompleteELOCalculator, ComparisonResult, UserTrustLevel
+except ImportError as e:
+    print(f"❌ Import error: {e}")
+    sys.exit(1)
+
+def load_questions():
+    """Lataa kysymykset"""
     try:
-        from complete_elo_calculator import CompleteELOCalculator, ComparisonResult, UserTrustLevel
-        from elo_manager import ELOManager
-        
-        # Alusta ELO-manageri
-        manager = ELOManager("runtime/questions.json")
-        
-        # KORJATTU: Käytä _load_questions() metodia
-        questions = manager._load_questions()
-        if not questions:
-            print("❌ Ei kysymyksiä saatavilla")
-            return []
-        
-        print(f"✅ Ladattu {len(questions)} kysymystä")
-        
-        # Valitse satunnaiset kysymykset vertailuihin
-        comparison_pairs = []
-        available_questions = questions.copy()
-        
-        for i in range(min(count, len(available_questions) // 2)):
-            if len(available_questions) < 2:
-                break
-                
-            # Valitse kaksi satunnaista kysymystä
-            q1 = random.choice(available_questions)
-            available_questions.remove(q1)
-            q2 = random.choice(available_questions) 
-            available_questions.remove(q2)
-            
-            comparison_pairs.append((q1, q2))
-        
-        print(f"✅ Alustettu {len(comparison_pairs)} kysymysparia vertailuihin")
-        
-        # Alusta ELO-calculator
-        calculator = CompleteELOCalculator()
-        
-        # Suorita vertailut
-        results = []
-        print(f"🔀 DEMO: VERTAILUTESTIT")
-        print("=" * 40)
-        print()
-        
-        for i, (q1, q2) in enumerate(comparison_pairs, 1):
-            print(f"🔄 Vertailu {i}:")
-            print(f"   A: {q1['content']['question']['fi'][:40]}...")
-            print(f"   B: {q2['content']['question']['fi'][:40]}...")
-            
-            # Satunnainen tulos
-            result = random.choice([
-                ComparisonResult.A_WINS, 
-                ComparisonResult.B_WINS, 
-                ComparisonResult.TIE
-            ])
-            
-            print(f"   📊 Tulos: {result.name}")
-            
-            # Käsittele vertailu
-            comparison_result = calculator.process_comparison(
-                q1, q2, result, UserTrustLevel.REGULAR_USER
-            )
-            
-            if comparison_result["success"]:
-                # Päivitä kysymysten ratingit
-                manager.update_question_rating(q1["local_id"], comparison_result["changes"]["question_a"])
-                manager.update_question_rating(q2["local_id"], comparison_result["changes"]["question_b"])
-                
-                results.append({
-                    "pair": (q1["local_id"], q2["local_id"]),
-                    "result": result.name,
-                    "changes": comparison_result["changes"],
-                    "success": True
-                })
-                
-                print(f"   ✅ Rating-muutos:")
-                print(f"      A: {q1['content']['question']['fi'][:20]}... {comparison_result['changes']['question_a']['old_rating']:.1f} → {comparison_result['changes']['question_a']['new_rating']:.1f}")
-                print(f"      B: {q2['content']['question']['fi'][:20]}... {comparison_result['changes']['question_b']['old_rating']:.1f} → {comparison_result['changes']['question_b']['new_rating']:.1f}")
-                
-            else:
-                # KEHYSTILASSA: Yritä uudelleen vähemmän rajoituksin
-                print(f"   ⚠️  Estetty: {comparison_result.get('error', 'Tuntematon virhe')}")
-                
-                # Yritä pakottaa kehitystilassa
-                if "protection" in str(comparison_result.get('error', '')).lower():
-                    print(f"   🔧 KEHYSTILA: Pakotetaan vertailu...")
-                    
-                    # Käytä suoraa ELO-laskentaa ilman suojauksia
-                    rating1 = q1["elo_rating"]["current_rating"]
-                    rating2 = q2["elo_rating"]["current_rating"]
-                    
-                    # Yksinkertainen ELO-laskenta
-                    expected1 = 1 / (1 + 10 ** ((rating2 - rating1) / 400))
-                    expected2 = 1 / (1 + 10 ** ((rating1 - rating2) / 400))
-                    
-                    if result == ComparisonResult.A_WINS:
-                        actual1, actual2 = 1.0, 0.0
-                    elif result == ComparisonResult.B_WINS:
-                        actual1, actual2 = 0.0, 1.0
-                    else:
-                        actual1, actual2 = 0.5, 0.5
-                    
-                    k_factor = 32
-                    change1 = k_factor * (actual1 - expected1)
-                    change2 = k_factor * (actual2 - expected2)
-                    
-                    # Päivitä ratingit
-                    manager.update_question_rating(q1["local_id"], {
-                        "old_rating": rating1,
-                        "new_rating": rating1 + change1,
-                        "change": change1
-                    })
-                    manager.update_question_rating(q2["local_id"], {
-                        "old_rating": rating2, 
-                        "new_rating": rating2 + change2,
-                        "change": change2
-                    })
-                    
-                    results.append({
-                        "pair": (q1["local_id"], q2["local_id"]),
-                        "result": result.name + " (FORCED)",
-                        "changes": {
-                            "question_a": {"old_rating": rating1, "new_rating": rating1 + change1, "change": change1},
-                            "question_b": {"old_rating": rating2, "new_rating": rating2 + change2, "change": change2}
-                        },
-                        "success": True,
-                        "forced": True
-                    })
-                    
-                    print(f"   ✅ PAKOTETTU Rating-muutos:")
-                    print(f"      A: {q1['content']['question']['fi'][:20]}... {rating1:.1f} → {rating1 + change1:.1f}")
-                    print(f"      B: {q2['content']['question']['fi'][:20]}... {rating2:.1f} → {rating2 + change2:.1f}")
-                else:
-                    results.append({
-                        "pair": (q1["local_id"], q2["local_id"]),
-                        "result": result.name,
-                        "success": False,
-                        "error": comparison_result.get('error')
-                    })
-            
-            print()
-        
-        # Tallenna muutokset
-        manager._save_questions()
-        
-        # Lataa päivitetyt kysymykset näyttämistä varten
-        updated_questions = manager._load_questions()
-        sorted_questions = sorted(updated_questions, key=lambda x: x["elo_rating"]["current_rating"], reverse=True)
-        
-        print(f"📊 LOPPUTILA - TESTIKYSYMYKSET:")
-        print("-" * 40)
-        for i, q in enumerate(sorted_questions[:5], 1):
-            comparisons = q["elo_rating"].get("total_comparisons", 0)
-            print(f"{i}. {q['elo_rating']['current_rating']:.1f} pts (vertailut: {comparisons}) - {q['content']['question']['fi'][:40]}...")
-        
-        # Kirjaa system_chainiin
-        try:
-            from system_chain_manager import log_action
-            log_action(
-                "demo_comparisons",
-                f"Demo: {len([r for r in results if r.get('success')])} vertailua suoritettu käyttäjällä {user_id}",
-                question_ids=[q["local_id"] for q in questions[:10]],
-                user_id=user_id,
-                metadata={
-                    "total_comparisons": len(results),
-                    "successful_comparisons": len([r for r in results if r.get('success')]),
-                    "forced_comparisons": len([r for r in results if r.get('forced')])
-                }
-            )
-        except ImportError:
-            print("⚠️  System chain ei saatavilla - skipataan kirjaus")
-        
-        return results
-        
-    except ImportError as e:
-        print(f"❌ Moduulien lataus epäonnistui: {e}")
-        return []
+        with open('runtime/questions.json', 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        return data.get('questions', [])
     except Exception as e:
-        print(f"❌ Demo epäonnistui: {e}")
-        import traceback
-        traceback.print_exc()
+        print(f"❌ Virhe ladattaessa kysymyksiä: {e}")
         return []
 
 def main():
-    """Pääohjelma"""
-    parser = argparse.ArgumentParser(description="Demo: Kysymysvertailut")
-    parser.add_argument('--user', default='demo_user', help='Käyttäjän ID')
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Kysymysvertailu demo')
+    parser.add_argument('--user', required=True, help='Käyttäjätunnus')
     parser.add_argument('--count', type=int, default=3, help='Vertailujen määrä')
     
     args = parser.parse_args()
     
-    # Suorita system bootstrap tarkistus
-    try:
-        from system_bootstrap import verify_system_startup
-        startup_ok = verify_system_startup()
-        if not startup_ok:
-            print("❌ Järjestelmän käynnistystarkistus epäonnistui")
-            return
-    except ImportError:
-        print("⚠️  System bootstrap ei saatavilla - jatketaan ilnan tarkistusta")
+    print("🎯 DEMO: KYSYMYSVERTAILUT")
+    print("=" * 50)
+    print(f"Käyttäjä: {args.user}")
+    print(f"Vertailuja: {args.count}")
+    print()
     
-    results = make_demo_comparisons(args.count, args.user)
+    # Lataa kysymykset
+    questions = load_questions()
+    print(f"📊 Ladattu {len(questions)} kysymystä")
     
-    successful = len([r for r in results if r.get('success')])
-    print(f"\n🎉 DEMO VALMIS!")
-    print(f"Suoritettu {successful} vertailua")
+    if len(questions) < 2:
+        print("❌ Tarvitaan vähintään 2 kysymystä vertailuun")
+        return
     
-    # Näytä system chainin tila
-    try:
-        from system_chain_manager import get_system_chain_manager
-        chain_manager = get_system_chain_manager()
-        info = chain_manager.get_chain_info()
-        print(f"🔗 System chain lohkoja: {info.get('total_blocks', 0)}")
-    except:
-        pass
+    calculator = CompleteELOCalculator()
+    successful_comparisons = 0
+    
+    # Tee vertailuja
+    for i in range(args.count):
+        print(f"\n🔀 VERTAILU {i+1}/{args.count}:")
+        
+        # Valitse kaksi satunnaista kysymystä
+        q1, q2 = random.sample(questions, 2)
+        
+        print(f"   A: {q1['content']['question']['fi'][:60]}...")
+        print(f"   B: {q2['content']['question']['fi'][:60]}...")
+        
+        # Satunnainen tulos
+        result = random.choice([ComparisonResult.A_WINS, ComparisonResult.B_WINS, ComparisonResult.TIE])
+        print(f"   📊 Tulos: {result.value}")
+        
+        # Käytä ELO-laskinta
+        try:
+            elo_result = calculator.process_comparison(q1, q2, result, UserTrustLevel.REGULAR_USER)
+            
+            if elo_result["success"]:
+                # Päivitä kysymykset
+                changes = elo_result["changes"]
+                q1['elo_rating']['current_rating'] = changes["question_a"]["new_rating"]
+                q2['elo_rating']['current_rating'] = changes["question_b"]["new_rating"]
+                
+                # Päivitä vertailumäärä
+                q1['elo_rating']['total_comparisons'] = q1['elo_rating'].get('total_comparisons', 0) + 1
+                q2['elo_rating']['total_comparisons'] = q2['elo_rating'].get('total_comparisons', 0) + 1
+                
+                print(f"   📈 Uudet ratingit: A={q1['elo_rating']['current_rating']}, B={q2['elo_rating']['current_rating']}")
+                successful_comparisons += 1
+            else:
+                print("   ❌ ELO-laskenta epäonnistui")
+                
+        except Exception as e:
+            print(f"   ❌ Virhe vertailussa: {e}")
+    
+    # Tallenna päivitetyt kysymykset
+    if successful_comparisons > 0:
+        try:
+            with open('runtime/questions.json', 'w', encoding='utf-8') as f:
+                data = {
+                    "metadata": {
+                        "version": "2.0.0",
+                        "last_updated": datetime.now().isoformat(),
+                        "total_questions": len(questions),
+                        "comparisons_performed": successful_comparisons
+                    },
+                    "questions": questions
+                }
+                json.dump(data, f, indent=2, ensure_ascii=False)
+            print(f"\n✅ {successful_comparisons} vertailua suoritettu ja tallennettu!")
+        except Exception as e:
+            print(f"\n⚠️ Tallennus epäonnistui: {e}")
+    else:
+        print("\n❌ Ei vertailuja suoritettu")
+    
+    print("\n🎉 DEMO VALMIS!")
 
 if __name__ == "__main__":
     main()

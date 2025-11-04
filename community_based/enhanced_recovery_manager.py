@@ -18,7 +18,7 @@ from typing import Dict, List, Optional, Any
 class ReservationType:
     URGENT = "urgent_reservation"
     NODE_SYNC = "node_reservation"
-    DATA_BACKUP = "data_backup"
+    DATA_BACKUP = ReservationType.DATA_BACKUP
     SYSTEM_SYNC = "system_sync"
     RECOVERY = "recovery_operation"
     EMERGENCY = "emergency_backup"

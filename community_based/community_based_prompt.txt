@@ -405,3 +405,5 @@ asennusprosessin voisi kyllä käydä läpi:
 2. nodin luominen --first-installin tekemästä asennus konfiguraatiotiedostosta, eli tarkistaa että tämäkin luo tai hakee ipfs:stä tarvittavat json tiedostot ja toimii samassa nimiavaruudessa ja cid-osoitteissa, kuin master-node
 ............................................................................................................................
 
+Etsitko päällekkäisyyksiä ja toistuvaa koodia? Jotkin py tiedostot alkavat olemaan todella pitkiä. Voisiko ohjelmia jakaa moduuleihin? 
+
