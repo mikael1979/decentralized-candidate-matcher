@@ -1,0 +1,1356 @@
+{
+  "metadata": {
+    "election_id": "{{ELECTION_ID}}",
+    "created": "{{TIMESTAMP}}",
+    "last_updated": "{{TIMESTAMP}}",
+    "question_limit": 15,
+    "min_rating": 800,
+    "sync_enabled": true,
+    "submission_locked": false
+  },
+  "sync_rules": {
+    "auto_sync": true,
+    "sync_interval_hours": 24,
+    "max_questions": 15,
+    "min_comparisons": 5,
+    "min_votes": 3,
+    "rating_weight": 0.7,
+    "activity_weight": 0.3
+  },
+  "questions": []
+}
+{
+  "metadata": {
+    "block_name": "{{BLOCK_NAME}}",
+    "purpose": "{{BLOCK_PURPOSE}}",
+    "created": "{{TIMESTAMP}}",
+    "last_updated": "{{TIMESTAMP}}",
+    "max_size": {{MAX_SIZE}},
+    "time_window": {{TIME_WINDOW}},
+    "election_id": "{{ELECTION_ID}}",
+    "node_id": "{{NODE_ID}}",
+    "priority": "{{PRIORITY_LEVEL}}",
+    "allowed_operations": ["{{OPERATION1}}", "{{OPERATION2}}"]
+  },
+  "entries": [
+    {
+      "entry_id": "{{BLOCK_NAME}}_0_{{NODE_ID}}",
+      "timestamp": "{{TIMESTAMP}}",
+      "data_type": "{{DATA_TYPE}}",
+      "node_id": "{{NODE_ID}}",
+      "priority": "{{PRIORITY}}",
+      "data": {
+        "{{DATA_KEY}}": "{{DATA_VALUE}}"
+      },
+      "entry_hash": "{{ENTRY_HASH}}"
+    }
+  ],
+  "current_index": 0,
+  "total_entries": 0,
+  "entry_hashes": [],
+  "block_stats": {
+    "write_operations": 0,
+    "read_operations": 0,
+    "average_entry_size": 0,
+    "last_operation": "{{TIMESTAMP}}"
+  }
+}
+[file name]: candidate_profiles.base.json
+[file content begin]
+{
+  "metadata": {
+    "version": "{{CANDIDATE_PROFILES_VERSION}}",
+    "created": "{{CREATED_TIMESTAMP}}",
+    "last_updated": "{{LAST_UPDATED_TIMESTAMP}}",
+    "total_candidates": {{TOTAL_CANDIDATES}},
+    "total_answers": {{TOTAL_ANSWERS}}
+  },
+  "candidates": [
+    {
+      "candidate_id": "{{CANDIDATE_ID}}",
+      "basic_info": {
+        "name": {
+          "fi": "{{CANDIDATE_NAME_FI}}",
+          "en": "{{CANDIDATE_NAME_EN}}", 
+          "sv": "{{CANDIDATE_NAME_SV}}"
+        },
+        "party": "{{PARTY_ID}}",
+        "district": "{{DISTRICT_ID}}",
+        "photo_url": "{{PHOTO_URL}}",
+        "contact_info": {
+          "email": "{{EMAIL}}",
+          "website": "{{WEBSITE}}",
+          "social_media": {
+            "twitter": "{{TWITTER}}",
+            "facebook": "{{FACEBOOK}}"
+          }
+        }
+      },
+      "answers": [
+        {
+          "question_id": {{QUESTION_ID}},
+          "answer_value": {{ANSWER_VALUE}},
+          "explanation": {
+            "fi": "{{EXPLANATION_FI}}",
+            "en": "{{EXPLANATION_EN}}",
+            "sv": "{{EXPLANATION_SV}}"
+          },
+          "confidence": {{CONFIDENCE}},
+          "last_updated": "{{ANSWER_TIMESTAMP}}"
+        }
+      ],
+      "profile_metadata": {
+        "status": "{{STATUS}}",
+        "created_at": "{{PROFILE_CREATED_AT}}",
+        "last_modified": "{{PROFILE_UPDATED_AT}}",
+        "version": "{{PROFILE_VERSION}}",
+        "completeness_score": {{COMPLETENESS_SCORE}}
+      }
+    }
+  ],
+  "answer_statistics": {
+    "average_answers_per_candidate": {{AVG_ANSWERS}},
+    "questions_answered": {{QUESTIONS_ANSWERED}},
+    "completion_rate": {{COMPLETION_RATE}}
+  }
+}
+[file content end]
+{
+  "metadata": {
+    "version": "2.0.0",
+    "created": "2024-01-15T10:00:00Z",
+    "last_updated": "2024-01-15T10:00:00Z",
+    "election_id": "{{ELECTION_ID}}",
+    "description": {
+      "fi": "Ehdokkaiden perustiedot ja vastaukset",
+      "en": "Candidate information and answers",
+      "sv": "Kandidatinformation och svar"
+    }
+  },
+  "candidates": [
+    {
+      "candidate_id": "{{CANDIDATE_ID}}",
+      "name": {
+        "fi": "{{FI_NAME}}",
+        "en": "{{EN_NAME}}",
+        "sv": "{{SV_NAME}}"
+      },
+      "party": "{{PARTY_ID}}",
+      "description": {
+        "fi": "{{FI_DESCRIPTION}}",
+        "en": "{{EN_DESCRIPTION}}",
+        "sv": "{{SV_DESCRIPTION}}"
+      },
+      "answers": [
+        {
+          "question_id": "{{QUESTION_ID}}",
+          "answer_value": 3,
+          "confidence": 3,
+          "explanations": {
+            "fi": "{{FI_EXPLANATION}}",
+            "en": "{{EN_EXPLANATION}}",
+            "sv": "{{SV_EXPLANATION}}"
+          },
+          "timestamp": "{{TIMESTAMP}}",
+          "version": 1
+        }
+      ],
+      "metadata": {
+        "submission_timestamp": "{{TIMESTAMP}}",
+        "last_updated": "{{TIMESTAMP}}",
+        "answers_hash": "{{ANSWERS_HASH}}",
+        "verification_tx": "{{VERIFICATION_TX}}"
+      }
+    }
+  ]
+}
+[file name]: candidate_structure.base.json
+[file content begin]
+{
+  "candidate_files": {
+    "base_templates": [
+      "candidate_profiles.base.json",
+      "candidates.base.json"
+    ],
+    "runtime_instances": [
+      "candidates.json",
+      "candidate_profiles.json", 
+      "new_candidate_profiles.json",
+      "active_candidate_profiles.json",
+      "ipfs_candidate_profiles.json"
+    ],
+    "temporary_files": [
+      "tmp_new_candidate_profiles.json",
+      "tmp_candidate_sync.json"
+    ]
+  },
+  "candidate_data_model": {
+    "candidate_basic_info": {
+      "id": "string",
+      "name": {"fi": "string", "en": "string", "sv": "string"},
+      "party": "string",
+      "district": "string",
+      "photo_url": "string",
+      "contact_info": {"email": "string", "website": "string"}
+    },
+    "candidate_answers": {
+      "question_id": "integer",
+      "answer_value": -5 to 5,
+      "explanation": {"fi": "string", "en": "string", "sv": "string"},
+      "confidence": 1-5,
+      "last_updated": "timestamp"
+    },
+    "profile_metadata": {
+      "status": "active|inactive|pending",
+      "created_at": "timestamp",
+      "last_modified": "timestamp",
+      "version": "string"
+    }
+  }
+}
+[file content end]
+[file name]: candidate_sync_protocol.base.json
+[file content begin]
+{
+  "candidate_sync_protocol": {
+    "data_flow": {
+      "step_1": "candidate_input -> tmp_new_candidate_profiles.json",
+      "step_2": "tmp_new_candidate_profiles.json -> new_candidate_profiles.json",
+      "step_3": "new_candidate_profiles.json -> candidate_profiles.json",
+      "step_4": "candidate_profiles.json -> ipfs_candidate_profiles.json", 
+      "step_5": "ipfs_candidate_profiles.json -> IPFS_network",
+      "answer_flow": "answer_input -> candidate_profiles.json -> ipfs_candidate_profiles.json -> IPFS"
+    },
+    "validation_rules": {
+      "answer_range": "-5 to +5",
+      "required_fields": ["candidate_id", "question_id", "answer_value"],
+      "max_answers_per_question": 1,
+      "completeness_threshold": 0.7
+    },
+    "sync_triggers": {
+      "on_new_candidate": true,
+      "on_answer_update": true,
+      "auto_sync_interval": 300,
+      "on_system_start": true
+    }
+  }
+}
+[file content end]
+{
+  "community": {
+    "name": "{{COMMUNITY_NAME}}",
+    "description": {
+      "fi": "{{COMMUNITY_DESC_FI}}",
+      "en": "{{COMMUNITY_DESC_EN}}",
+      "sv": "{{COMMUNITY_DESC_SV}}"
+    },
+    "membership": {
+      "type": "{{MEMBERSHIP_TYPE}}",
+      "onboarding_process": "{{ONBOARDING_PROCESS}}",
+      "reputation_system": {{REPUTATION_SYSTEM_ENABLED}},
+      "contribution_rewards": {{CONTRIBUTION_REWARDS}}
+    },
+    "communication": {
+      "forum_url": "{{FORUM_URL}}",
+      "chat_url": "{{CHAT_URL}}",
+      "notification_channel": "{{NOTIFICATION_CHANNEL}}"
+    }
+  },
+  "decision_making": {
+    "proposal_types": [
+      {
+        "type": "config_change",
+        "threshold": {{CONFIG_CHANGE_THRESHOLD}},
+        "voting_period": {{CONFIG_VOTING_DAYS}}
+      },
+      {
+        "type": "budget_allocation", 
+        "threshold": {{BUDGET_THRESHOLD}},
+        "voting_period": {{BUDGET_VOTING_DAYS}}
+      },
+      {
+        "type": "validator_election",
+        "threshold": {{ELECTION_THRESHOLD}},
+        "voting_period": {{ELECTION_VOTING_DAYS}}
+      }
+    ]
+  }
+}
+{
+  "rating_system": {
+    "base_rating": 1000,
+    "k_factor_comparison": 32,
+    "k_factor_votes": 1
+  },
+  "comparison_calculation": {
+    "actual_score_cases": {
+      "question_a_wins": 1.0,
+      "question_b_wins": 0.0,
+      "tie": 0.5
+    }
+  },
+  "vote_calculation": {
+    "upvote_impact": 1,
+    "downvote_impact": -1,
+    "confidence_multiplier": {
+      "1": 0.5,
+      "2": 0.75,
+      "3": 1.0,
+      "4": 1.25,
+      "5": 1.5
+    },
+    "daily_vote_cap": 10
+  },
+  "protection_mechanisms": {
+    "new_question_protection_hours": 24,
+    "min_comparisons_before_rating": 5,
+    "trust_score_multiplier": {
+      "new_user": 0.5,
+      "regular_user": 1.0,
+      "trusted_user": 1.2,
+      "validator": 1.5
+    }
+  },
+  "rate_limiting": {
+    "max_rating_change_per_hour": 100,
+    "max_rating_change_per_day": 500,
+    "velocity_limit_multiplier": 3.0
+  },
+  "blocking_conditions": {
+    "auto_block_enabled": true,
+    "block_requires_both_negative": true,
+    "min_absolute_votes": 100,
+    "max_absolute_votes": 1000,
+    "block_threshold_rating": 0
+  }
+}{
+  "elo_rate_limits": {
+    "version": "0.2.0",
+    "description": {
+      "fi": "ELO-luokituksen 7 päivän estojakso manipulaation estämiseksi",
+      "en": "ELO rating 7-day blocking period to prevent manipulation", 
+      "sv": "ELO-betyg 7-dagars blockering för att förhindra manipulation"
+    },
+    
+    "blocking_periods": {
+      "weekly_block_days": 7,
+      "temporary_block_hours": 24,
+      "permanent_block_threshold": 3,
+      "grace_period_first_offense_hours": 12
+    },
+    
+    "violation_triggers": {
+      "hourly_limit_violations": {
+        "soft_limit_warning": 3,
+        "temporary_block": 5,
+        "weekly_block": 8
+      },
+      "daily_limit_violations": {
+        "soft_limit_warning": 2,
+        "temporary_block": 3, 
+        "weekly_block": 5
+      },
+      "velocity_violations": {
+        "temporary_block": 3,
+        "weekly_block": 5
+      },
+      "coordination_detection": {
+        "same_ip_multiple_accounts": 2,
+        "voting_patterns_similarity": 0.9,
+        "time_based_coordination": true
+      }
+    },
+    
+    "block_severity": {
+      "temporary_24h": {
+        "max_rating_change_per_hour": 10,
+        "max_comparisons_per_hour": 5,
+        "can_participate_in_voting": true,
+        "notification_required": true
+      },
+      "weekly_7d": {
+        "max_rating_change_per_hour": 0,
+        "max_comparisons_per_hour": 0,
+        "can_participate_in_voting": false,
+        "read_only_access": true,
+        "appeal_possible_after_days": 3
+      },
+      "permanent": {
+        "complete_block": true,
+        "ip_ban": true,
+        "account_deletion": true
+      }
+    },
+    
+    "detection_algorithms": {
+      "bot_pattern_detection": {
+        "request_frequency_analysis": true,
+        "mouse_movement_tracking": true,
+        "time_between_actions_analysis": true,
+        "geolocation_verification": true
+      },
+      "coordination_detection": {
+        "cluster_analysis_voting_patterns": true,
+        "ip_address_correlation": true,
+        "time_synchronization_detection": true,
+        "content_similarity_analysis": true
+      },
+      "reputation_scoring": {
+        "trust_score_calculation": true,
+        "behavior_pattern_analysis": true,
+        "historical_compliance_tracking": true
+      }
+    }
+  }
+}
+{
+  "emergency_slots": {
+    "metadata": {
+      "created": "2024-01-15T10:00:00Z",
+      "last_updated": "2024-01-15T10:00:00Z",
+      "timezone": "UTC",
+      "current_utc_date": "2024-01-15",
+      "emergency_slots_available_today": 8,
+      "emergency_slots_used_today": 2
+    },
+    
+    "reserved_emergency_windows_utc": [
+      {
+        "window_id": "emergency_20240115_0600",
+        "time_slot_utc": {
+          "start": "2024-01-15T06:00:00Z",
+          "end": "2024-01-15T06:10:00Z",
+          "duration_minutes": 10,
+          "utc_offset": "+00:00"
+        },
+        "reserved_for": "emergency_only",
+        "max_priority": "emergency",
+        "auto_release_minutes": 5,
+        "status": "available",
+        "local_time_info": {
+          "helsinki": "08:00-08:10",
+          "london": "06:00-06:10", 
+          "new_york": "01:00-01:10"
+        }
+      },
+      {
+        "window_id": "emergency_20240115_1400",
+        "time_slot_utc": {
+          "start": "2024-01-15T14:00:00Z",
+          "end": "2024-01-15T14:10:00Z", 
+          "duration_minutes": 10,
+          "utc_offset": "+00:00"
+        },
+        "reserved_for": "emergency_only",
+        "max_priority": "emergency", 
+        "auto_release_minutes": 5,
+        "status": "reserved",
+        "reserved_by": "machine_002",
+        "reserved_at": "2024-01-15T13:45:00Z",
+        "sync_type": "security_update"
+      }
+    ],
+    
+    "emergency_usage_metrics": {
+      "emergency_requests_today_utc": 5,
+      "emergency_slots_utilized_today": 2,
+      "average_emergency_response_time_minutes": 2.5,
+      "emergency_preemptions_today": 1
+    }
+  }
+}
+{
+  "chain_id": "enhanced_chain_{{ELECTION_ID}}",
+  "created_at": "{{TIMESTAMP}}",
+  "description": {
+    "fi": "Laajennettu system chain IPFS-lohkoilla",
+    "en": "Enhanced system chain with IPFS blocks",
+    "sv": "Förbättrad systemkedja med IPFS-block"
+  },
+  "version": "2.0.0",
+  "metadata": {
+    "ipfs_integrated": true,
+    "block_recovery_supported": true,
+    "election_id": "{{ELECTION_ID}}",
+    "node_id": "{{NODE_ID}}",
+    "multi_node_aware": true
+  },
+  "blocks": [
+    {
+      "block_id": 0,
+      "timestamp": "{{TIMESTAMP}}",
+      "action_type": "system_initialization",
+      "description": "Järjestelmä alustettu IPFS-lohkojen kanssa",
+      "user_id": "system",
+      "question_ids": [],
+      "metadata": {
+        "ipfs_blocks_initialized": true,
+        "recovery_system_ready": true,
+        "integrity_checks_enabled": true
+      },
+      "previous_hash": null,
+      "block_hash": "{{INITIAL_HASH}}",
+      "ipfs_backed": false
+    }
+  ],
+  "current_state": {
+    "last_updated": "{{TIMESTAMP}}",
+    "total_blocks": 1,
+    "ipfs_backed": false,
+    "recovery_capable": true,
+    "last_recovery_check": null
+  },
+  "ipfs_block_mapping": {
+    "enabled": true,
+    "last_block_sync": null,
+    "sync_entries_count": 0
+  }
+}
+[file name]: file_states.base.json
+[file content begin]
+{
+  "file_states": {
+    "tmp_new_questions.json": {
+      "purpose": "Väliaikainen säilö uusille kysymyksille",
+      "lifecycle": "transient",
+      "auto_cleanup": true,
+      "sync_priority": "HIGH"
+    },
+    "new_questions.json": {
+      "purpose": "Odottavat kysymykset synkronointia varten",
+      "lifecycle": "persistent", 
+      "auto_cleanup": false,
+      "sync_priority": "HIGH"
+    },
+    "questions.json": {
+      "purpose": "Pääkysymyskanta",
+      "lifecycle": "persistent",
+      "auto_cleanup": false,
+      "sync_priority": "HIGH"
+    },
+    "ipfs_questions.json": {
+      "purpose": "IPFS-mirror lokalisaatiossa",
+      "lifecycle": "persistent",
+      "auto_cleanup": false,
+      "sync_priority": "MEDIUM"
+    }
+  }
+}
+[file content end]
+[file name]: file_structure.base.json
+[file content begin]
+{
+  "file_hierarchy": {
+    "base_templates": {
+      "purpose": "Alkuperäinen rakenne, ei koskaan muokata suoraan",
+      "files": [
+        "questions.base.json",
+        "meta.base.json", 
+        "governance.base.json",
+        "community.base.json",
+        "install_config.base.json",
+        "system_chain.base.json",
+        "ipfs.base.json",
+        "ipfs_conf.base.json"
+      ]
+    },
+    "runtime_instances": {
+      "purpose": "Kloonatut käyttöversiot, näitä ohjelma käsittelee",
+      "files": [
+        "questions.json",
+        "new_questions.json", 
+        "active_questions.json",
+        "ipfs_questions.json",
+        "parties.json",
+        "party_profiles.json",
+        "candidates.json",
+        "candidate_profiles.json",
+        "meta.json"
+      ]
+    },
+    "temporary_files": {
+      "purpose": "Väliaikaiset työskentelytiedostot",
+      "files": [
+        "tmp_new_questions.json",
+        "tmp_active_questions.json",
+        "tmp_sync_*.json"
+      ]
+    }
+  }
+}
+[file content end]
+{
+  "governance": {
+    "model": "{{GOVERNANCE_MODEL}}",
+    "community_token": "{{COMMUNITY_TOKEN}}",
+    "proposal_threshold": {{PROPOSAL_THRESHOLD}},
+    "voting_quorum": {{VOTING_QUORUM}},
+    "execution_delay_hours": {{EXECUTION_DELAY_HOURS}},
+    "roles": {
+      "validators": {
+        "count": {{VALIDATOR_COUNT}},
+        "stake_required": {{VALIDATOR_STAKE}},
+        "election_frequency": "{{VALIDATOR_ELECTION_FREQ}}"
+      },
+      "moderators": {
+        "count": {{MODERATOR_COUNT}},
+        "reputation_required": {{MODERATOR_REPUTATION}},
+        "selection_method": "{{MODERATOR_SELECTION}}"
+      }
+    }
+  },
+  "treasury": {
+    "management": "community_multisig",
+    "signatures_required": {{MULTISIG_SIGNATURES}},
+    "max_single_transfer": {{MAX_SINGLE_TRANSFER}},
+    "budget_approval_threshold": {{BUDGET_APPROVAL_THRESHOLD}}
+  }
+}
+{
+  "election_data": {
+    "id": "{{ELECTION_ID}}",
+    "ipfs_cid": "{{IPFS_CID}}",
+    "name": {
+      "fi": "{{FI_ELECTION_NAME}}",
+      "en": "{{EN_ELECTION_NAME}}",
+      "sv": "{{SV_ELECTION_NAME}}"
+    },
+    "date": "{{ELECTION_DATE}}",
+    "type": "municipal",
+    "timelock_enabled": true,
+    "edit_deadline": "{{EDIT_DEADLINE}}",
+    "grace_period_hours": 48,
+    "community_managed": true,
+    "phases": 1,
+    "districts": ["koko_maa"]
+  },
+  "system_config": {
+    "candidate_answer_format": "enhanced",
+    "explanation_required": false,
+    "min_explanation_length": 20,
+    "max_explanation_length": 1000,
+    "supported_languages": ["fi", "en", "sv"],
+    "default_language": "fi"
+  },
+  "metadata": {
+    "created": "{{TIMESTAMP}}",
+    "version": "2.0.0",
+    "generated_by": "create_install_config.py"
+  }
+}
+{
+  "metadata": {
+    "version": "2.0.0",
+    "created": "{{TIMESTAMP}}",
+    "last_updated": "{{TIMESTAMP}}",
+    "system_locked": false,
+    "lock_timestamp": null,
+    "mode": "development",
+    "system_version": "2.0.0",
+    "description": {
+      "fi": "Järjestelmän integriteettirekisteri",
+      "en": "System integrity fingerprint registry",
+      "sv": "Systemintegritets fingeravtrycksregister"
+    }
+  },
+  "modules": {
+    "{{MODULE_NAME}}": {
+      "fingerprint": "{{SHA256_HASH}}",
+      "last_modified": "{{TIMESTAMP}}",
+      "size_bytes": {{FILE_SIZE}},
+      "version": "{{MODULE_VERSION}}",
+      "required": true,
+      "integrity_checked": true
+    }
+  },
+  "verification_history": [
+    {
+      "timestamp": "{{TIMESTAMP}}",
+      "verified": true,
+      "modules_checked": 0,
+      "violations": [],
+      "verification_method": "startup_check"
+    }
+  ],
+  "ipfs_integration": {
+    "fingerprint_cid": null,
+    "last_ipfs_sync": null,
+    "block_backed": false
+  },
+  "security_settings": {
+    "require_integrity_check": true,
+    "lock_on_violation": true,
+    "allow_development_mode": true,
+    "emergency_recovery_mode": false
+  }
+}
+{
+  "metadata": {
+    "version": "1.0.0",
+    "created": "{{TIMESTAMP}}",
+    "last_updated": "{{TIMESTAMP}}",
+    "election_id": "{{ELECTION_ID}}",
+    "node_id": "{{NODE_ID}}",
+    "description": {
+      "fi": "IPFS-lohkojen metatiedot",
+      "en": "IPFS blocks metadata", 
+      "sv": "IPFS-block metadata"
+    }
+  },
+  "block_sequence": ["buffer1", "urgent", "sync", "active", "buffer2"],
+  "current_rotation": 0,
+  "total_rotations": 0,
+  "blocks": {
+    "buffer1": "{{BUFFER1_CID}}",
+    "urgent": "{{URGENT_CID}}",
+    "sync": "{{SYNC_CID}}",
+    "active": "{{ACTIVE_CID}}",
+    "buffer2": "{{BUFFER2_CID}}"
+  },
+  "rotation_history": [
+    {
+      "rotation_id": 0,
+      "timestamp": "{{TIMESTAMP}}",
+      "old_sequence": ["buffer1", "urgent", "sync", "active", "buffer2"],
+      "new_sequence": ["buffer1", "urgent", "sync", "active", "buffer2"],
+      "trigger": "initialization"
+    }
+  ],
+  "node_registry": ["{{NODE_ID}}"],
+  "sync_config": {
+    "auto_rotate": true,
+    "max_block_size": {
+      "buffer1": 100,
+      "urgent": 50,
+      "sync": 200,
+      "active": 150,
+      "buffer2": 100
+    },
+    "rotation_triggers": {
+      "active_block_full": true,
+      "time_based_rotation_hours": 24,
+      "emergency_rotation": true
+    }
+  }
+}
+[file name]: ipfs_filter_rules.base.json
+[file content begin]
+{
+  "ipfs_sync_filters": {
+    "local_to_ipfs": {
+      "filter_criteria": "ipfs_cid IS NULL AND source IN ['local']",
+      "description": "Vain paikallisesti lisätyt kysymykset ilman CID:ä synkronoidaan IPFS:ään",
+      "prevent_duplicates": true
+    },
+    "ipfs_to_local": {
+      "filter_criteria": "ipfs_cid IS NOT NULL AND local_id NOT IN existing_local_ids",
+      "description": "Vain IPFS:stä tuodut kysymykset joita ei ole jo paikallisesti",
+      "conflict_resolution": "use_ipfs_version_if_newer"
+    },
+    "cid_management": {
+      "local_questions_get_cid_on_sync": true,
+      "ipfs_questions_keep_existing_cid": true,
+      "prevent_cid_regeneration": true
+    }
+  }
+}
+[file content end]
+{
+  "metadata": {
+    "version": "1.0.0",
+    "created": "{{TIMESTAMP}}",
+    "last_updated": "{{TIMESTAMP}}",
+    "description": {
+      "fi": "IPFS-synkronoinnin ajanvarauskonfiguraatio",
+      "en": "IPFS synchronization scheduling configuration",
+      "sv": "IPFS-synkroniserings schemaläggningskonfiguration"
+    }
+  },
+  "schedule_config": {
+    "time_slots": {
+      "buffer_before": {
+        "duration_minutes": 5,
+        "purpose": {
+          "fi": "Tyhjä aika ennen varausta - estää konflikteja",
+          "en": "Empty time before reservation - prevents conflicts",
+          "sv": "Tom tid före reservation - förhindrar konflikter"
+        },
+        "reservable": false,
+        "priority": "low"
+      },
+      "urgent_reservation": {
+        "duration_minutes": 15,
+        "purpose": {
+          "fi": "Kiireelliset varaukset - kriittiset toiminnot",
+          "en": "Urgent reservations - critical operations", 
+          "sv": "Brådskande reservationer - kritiska operationer"
+        },
+        "reservable": true,
+        "priority": "critical",
+        "max_concurrent": 1
+      },
+      "node_reservation": {
+        "duration_minutes": 30,
+        "purpose": {
+          "fi": "Nodin oma varausaika - säännöllinen synkronointi",
+          "en": "Node's own reservation time - regular synchronization",
+          "sv": "Nodens egen reservationstid - regelbunden synkronisering"
+        },
+        "reservable": true,
+        "priority": "high",
+        "max_concurrent": 3
+      },
+      "buffer_after": {
+        "duration_minutes": 10,
+        "purpose": {
+          "fi": "Tyhjä aika varauksen jälkeen - siirtovaraa",
+          "en": "Empty time after reservation - buffer time",
+          "sv": "Tom tid efter reservation - bufferttid"
+        },
+        "reservable": false,
+        "priority": "low"
+      }
+    },
+    "scheduling_rules": {
+      "min_time_between_reservations": 2,
+      "max_reservations_per_hour": 6,
+      "max_reservations_per_day": 24,
+      "advance_booking_hours": 24,
+      "timezone": "UTC"
+    },
+    "conflict_resolution": {
+      "strategy": "timestamp_priority",
+      "auto_resolve": true,
+      "manual_intervention_threshold": 3
+    }
+  }
+}
+{
+  "election": {
+    "id": "{{ELECTION_ID}}",
+    "name": {
+      "fi": "{{FI_ELECTION_NAME}}",
+      "en": "{{EN_ELECTION_NAME}}",
+      "sv": "{{SV_ELECTION_NAME}}"
+    },
+    "date": "{{ELECTION_DATE}}",
+    "type": "municipal",
+    "timelock_enabled": true,
+    "edit_deadline": "{{EDIT_DEADLINE}}",
+    "grace_period_hours": 48,
+    "governance_model": "community_driven"
+  },
+  "system_info": {
+    "system_id": "system_{{ELECTION_ID}}",
+    "public_key": "{{SYSTEM_PUBLIC_KEY}}",
+    "created": "{{TIMESTAMP}}",
+    "governance_contract": "{{GOVERNANCE_CONTRACT_ADDRESS}}",
+    "version": "2.0.0"
+  },
+  "community_governance": {
+    "validators": [],
+    "current_proposals": [],
+    "voting_parameters": {
+      "quorum": 15,
+      "approval_threshold": 60
+    }
+  },
+  "version": "2.0.0",
+  "metadata": {
+    "created": "{{TIMESTAMP}}",
+    "config_source": "base_template"
+  }
+}
+{
+  "metadata": {
+    "version": "1.0.0",
+    "created": "{{TIMESTAMP}}",
+    "last_updated": "{{TIMESTAMP}}",
+    "election_id": "{{ELECTION_ID}}",
+    "description": {
+      "fi": "Moninodisynkronoinnin konfiguraatio",
+      "en": "Multi-node synchronization configuration",
+      "sv": "Multi-nod synkroniseringskonfiguration"
+    }
+  },
+  "sync_settings": {
+    "enabled": true,
+    "auto_sync_interval": 1800,
+    "max_nodes_per_sync": 10,
+    "sync_timeout_seconds": 30,
+    "retry_attempts": 3
+  },
+  "conflict_resolution": {
+    "strategy": "timestamp_based",
+    "fallback_strategy": "manual_intervention",
+    "priority_rules": {
+      "master_node_priority": true,
+      "newer_data_wins": true,
+      "consensus_required": false
+    }
+  },
+  "node_discovery": {
+    "auto_discovery": true,
+    "known_nodes": ["{{NODE_ID}}"],
+    "discovery_interval": 3600,
+    "max_node_age_hours": 24
+  },
+  "data_synchronization": {
+    "sync_blocks": ["urgent", "sync", "active"],
+    "exclude_blocks": ["buffer1", "buffer2"],
+    "max_data_per_sync_mb": 10,
+    "compress_data": true
+  },
+  "security": {
+    "verify_node_identity": true,
+    "require_authentication": false,
+    "encrypt_sync_data": false,
+    "audit_sync_operations": true
+  }
+}
+{
+  "metadata": {
+    "version": "2.0.0",
+    "created": "2024-01-15T10:00:00Z",
+    "last_updated": "2024-01-15T10:00:00Z",
+    "election_id": "{{ELECTION_ID}}",
+    "description": {
+      "fi": "Kysymysten perusrakenteet",
+      "en": "Basic question structures",
+      "sv": "Grundläggande frågestrukturer"
+    }
+  },
+  "questions": [
+    {
+      "local_id": "{{QUESTION_ID}}",
+      "ipfs_cid": "{{IPFS_CID}}",
+      "source": "local",
+      "content": {
+        "category": {
+          "fi": "{{FI_CATEGORY}}",
+          "en": "{{EN_CATEGORY}}",
+          "sv": "{{SV_CATEGORY}}"
+        },
+        "question": {
+          "fi": "{{FI_QUESTION}}",
+          "en": "{{EN_QUESTION}}",
+          "sv": "{{SV_QUESTION}}"
+        },
+        "tags": ["{{TAG1}}", "{{TAG2}}"],
+        "scale": {
+          "min": -5,
+          "max": 5,
+          "labels": {
+            "fi": {
+              "min": "Täysin eri mieltä",
+              "neutral": "Neutraali",
+              "max": "Täysin samaa mieltä"
+            },
+            "en": {
+              "min": "Strongly disagree",
+              "neutral": "Neutral",
+              "max": "Strongly agree"
+            },
+            "sv": {
+              "min": "Helt avig",
+              "neutral": "Neutral",
+              "max": "Helt enig"
+            }
+          }
+        }
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "current_rating": 1000,
+        "comparison_delta": 0,
+        "vote_delta": 0,
+        "total_comparisons": 0,
+        "total_votes": 0,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "{{TIMESTAMP}}",
+        "modified_local": "{{TIMESTAMP}}"
+      }
+    }
+  ]
+}
+{
+  "metadata": {
+    "version": "1.0.0",
+    "created": "{{TIMESTAMP}}",
+    "last_updated": "{{TIMESTAMP}}",
+    "election_id": "{{ELECTION_ID}}",
+    "node_id": "{{NODE_ID}}",
+    "description": {
+      "fi": "Palautusjärjestelmän konfiguraatio",
+      "en": "Recovery system configuration",
+      "sv": "Återställningssystem konfiguration"
+    }
+  },
+  "recovery_config": {
+    "auto_backup_interval": 3600,
+    "emergency_threshold": 5,
+    "max_recovery_attempts": 3,
+    "data_retention_days": 30,
+    "backup_priorities": {
+      "emergency": "urgent",
+      "high": "sync",
+      "normal": "active", 
+      "low": "buffer2"
+    }
+  },
+  "block_management": {
+    "auto_rotation": true,
+    "rotation_check_interval": 300,
+    "max_blocks_before_cleanup": 100,
+    "archive_old_blocks": true
+  },
+  "multi_node_sync": {
+    "enabled": true,
+    "sync_interval": 1800,
+    "max_nodes_per_sync": 10,
+    "conflict_resolution": "timestamp_based"
+  },
+  "integrity_checks": {
+    "verify_on_startup": true,
+    "periodic_verification": 3600,
+    "verify_block_consistency": true,
+    "emergency_lock_on_failure": true
+  }
+}
+[file name]: sync_protocol.base.json
+[file content begin]
+{
+  "sync_protocol": {
+    "question_flow": {
+      "step_1": "user_input -> tmp_new_questions.json",
+      "step_2": "tmp_new_questions.json -> new_questions.json",
+      "step_3": "new_questions.json -> questions.json", 
+      "step_4": "questions.json -> ipfs_questions.json",
+      "step_5": "ipfs_questions.json -> IPFS_network"
+    },
+    "sync_triggers": {
+      "auto_sync_interval": 300,
+      "manual_sync_trigger": true,
+      "on_question_add": true,
+      "on_system_start": true,
+      "on_ipfs_change": false
+    },
+    "conflict_resolution": {
+      "local_wins": true,
+      "ipfs_as_backup": true,
+      "manual_intervention_required": false
+    }
+  }
+}
+[file content end]
+{
+  "sync_scheduling": {
+    "version": "3.0.0",
+    "description": {
+      "fi": "UTC-pohjainen hybridi-aikavarauslista",
+      "en": "UTC-based hybrid time slot system", 
+      "sv": "UTC-baserat hybrid tidslotsystem"
+    },
+    
+    "time_handling": {
+      "timezone": "UTC",
+      "date_format": "YYYY-MM-DD",
+      "time_format": "HH:mm:ssZ",
+      "day_starts_utc": "00:00:00Z",
+      "day_ends_utc": "23:59:59Z",
+      "week_starts_monday": true
+    },
+    
+    "time_slots": {
+      "regular_slot_duration_minutes": 15,
+      "emergency_slot_duration_minutes": 10,
+      "max_regular_slots_per_machine": 4,
+      "max_emergency_slots_per_day": 8,
+      "min_advance_booking_hours": 1,
+      "max_advance_booking_days": 7,
+      "buffer_between_slots_minutes": 5
+    },
+    
+    "reservation_strategy": {
+      "emergency_slot_distribution_utc": {
+        "00-06_utc": 1,    // Yö (00:00-06:00 UTC)
+        "06-12_utc": 2,    // Aamu (06:00-12:00 UTC)  
+        "12-18_utc": 3,    // Iltapäivä (12:00-18:00 UTC)
+        "18-24_utc": 2     // Ilta (18:00-24:00 UTC)
+      },
+      "peak_hours_utc": ["09:00-11:00", "14:00-16:00"],
+      "off_peak_hours_utc": ["00:00-06:00", "22:00-24:00"],
+      "auto_reserve_emergency_slots": true
+    },
+    
+    "global_coordination": {
+      "sync_epoch_start": "2024-01-01T00:00:00Z",
+      "slot_alignment_minutes": 15,
+      "global_maintenance_window": "02:00-04:00 UTC",
+      "holiday_schedule": []
+    }
+  }
+}
+{
+  "chain_id": "{{ELECTION_ID}}",
+  "created_at": "{{TIMESTAMP}}",
+  "description": "Vaalijärjestelmä ketju: {{ELECTION_ID}}",
+  "version": "2.0.0",
+  "blocks": [
+    {
+      "block_id": 0,
+      "timestamp": "{{TIMESTAMP}}",
+      "description": "Järjestelmän alustus",
+      "files": {
+        "install_config.base.json": "{{HASH}}",
+        "meta.base.json": "{{HASH}}",
+        "questions.base.json": "{{HASH}}",
+        "candidates.base.json": "{{HASH}}",
+        "active_questions.base.json": "{{HASH}}"
+      },
+      "previous_hash": null,
+      "block_hash": "{{CREATION_HASH}}"
+    }
+  ],
+  "current_state": {
+    "election_id": "{{ELECTION_ID}}",
+    "config_created": "{{TIMESTAMP}}"
+  },
+  "metadata": {
+    "algorithm": "sha256",
+    "system_id": "system_{{ELECTION_ID}}",
+    "config_source": "base_template"
+  }
+}
+{
+  "time_slots": {
+    "metadata": {
+      "created": "2024-01-15T10:00:00Z",
+      "last_updated": "2024-01-15T10:00:00Z",
+      "timezone": "Europe/Helsinki",
+      "slot_duration_minutes": 15
+    },
+    
+    "reservations": [
+      {
+        "reservation_id": "rsv_202401151030_machine_001",
+        "machine_id": "machine_001",
+        "machine_priority": 2,
+        "time_slot": {
+          "start": "2024-01-15T10:30:00Z",
+          "end": "2024-01-15T10:45:00Z",
+          "duration_minutes": 15
+        },
+        "sync_type": "questions_full_sync",
+        "data_metadata": {
+          "estimated_size_mb": 5.2,
+          "change_count": 15,
+          "conflict_probability": 0.1
+        },
+        "status": "confirmed",
+        "created_at": "2024-01-15T09:15:00Z",
+        "confirmed_at": "2024-01-15T09:16:00Z"
+      },
+      {
+        "reservation_id": "rsv_202401151100_machine_002", 
+        "machine_id": "machine_002",
+        "machine_priority": 1,
+        "time_slot": {
+          "start": "2024-01-15T11:00:00Z",
+          "end": "2024-01-15T11:15:00Z",
+          "duration_minutes": 15
+        },
+        "sync_type": "candidates_incremental",
+        "data_metadata": {
+          "estimated_size_mb": 2.1,
+          "change_count": 8,
+          "conflict_probability": 0.05
+        },
+        "status": "pending",
+        "created_at": "2024-01-15T09:20:00Z",
+        "confirmed_at": null
+      }
+    ],
+    
+    "availability": {
+      "next_available_slot": "2024-01-15T11:30:00Z",
+      "busy_periods": ["08:00-10:00", "14:00-16:00"],
+      "maintenance_windows": ["02:00-04:00"]
+    }
+  }
+}
+{
+  "metadata": {
+    "version": "1.0.0",
+    "created": "2025-10-28T13:32:47.616977",
+    "last_updated": "2025-10-28T13:32:47.616996",
+    "ipfs_cid": "QmElectionsListac8a3d9704e045d5",
+    "description": {
+      "fi": "Käsin luotu vaalilista",
+      "en": "Manually created elections list",
+      "sv": "Manuellt skapad valista"
+    }
+  },
+  "elections": [
+    {
+      "election_id": "Jumaltenvaalit_2026",
+      "name": {
+        "fi": "Jumaltenvaalit_2026",
+        "en": "test",
+        "sv": "test"
+      },
+      "description": {
+        "fi": "testivaalit",
+        "en": "test",
+        "sv": "test"
+      },
+      "dates": [
+        {
+          "phase": 1,
+          "date": "2026-12-10",
+          "description": {
+            "fi": "perusvaalit",
+            "en": "test",
+            "sv": "test"
+          }
+        }
+      ],
+      "type": "testivaalit",
+      "phases": 1,
+      "timelock_enabled": false,
+      "edit_deadline": "2026-12-10",
+      "grace_period_hours": 0,
+      "community_managed": true,
+      "districts": [
+        "koko_maa"
+      ],
+      "candidate_count": null,
+      "status": "upcoming",
+      "config_cid": "QmConfig4ffac58072544f66",
+      "created": "2025-10-28T13:32:39.461629"
+    }
+  ],
+  "election_types": {
+    "testivaalit": {
+      "description": {
+        "fi": "Jumaltenvaalit_2026 - tyyppi",
+        "en": "test - type",
+        "sv": "test - typ"
+      },
+      "term_years": 4,
+      "max_terms": null
+    }
+  },
+  "system_config": {
+    "default_timelock_enabled": true,
+    "default_grace_period_hours": 48,
+    "default_community_managed": true,
+    "supported_languages": [
+      "fi",
+      "en",
+      "sv"
+    ],
+    "version_control": true,
+    "ipfs_backed": true
+  }
+}{
+  "election_data": {
+    "id": "Jumaltenvaalit_2026",
+    "ipfs_cid": "QmConfig4ffac58072544f66",
+    "name": {
+      "fi": "Jumaltenvaalit_2026",
+      "en": "test",
+      "sv": "test"
+    },
+    "date": "2026-12-10",
+    "type": "testivaalit",
+    "timelock_enabled": false,
+    "edit_deadline": "2026-12-10",
+    "grace_period_hours": 0,
+    "community_managed": true,
+    "phases": 1,
+    "districts": [
+      "koko_maa"
+    ]
+  },
+  "community_governance": {
+    "multisig_wallet": "{{MULTISIG_WALLET}}",
+    "proposal_system": "{{PROPOSAL_SYSTEM_URL}}",
+    "voting_contract": "{{VOTING_CONTRACT}}",
+    "emergency_council": {
+      "members": 5,
+      "activation_threshold": 3
+    }
+  },
+  "metadata": {
+    "created": "2025-10-28T13:32:47.615360",
+    "version": "1.0.0",
+    "generated_by": "create_install_config.py"
+  }
+}{
+  "election": {
+    "id": "Jumaltenvaalit_2026",
+    "name": {
+      "fi": "Jumaltenvaalit_2026",
+      "en": "test",
+      "sv": "test"
+    },
+    "date": "2026-12-10",
+    "type": "testivaalit",
+    "timelock_enabled": false,
+    "edit_deadline": "2026-12-10",
+    "grace_period_hours": 0,
+    "governance_model": "community_driven"
+  },
+  "system_info": {
+    "system_id": "system_Jumaltenvaalit_2026",
+    "public_key": "{{SYSTEM_PUBLIC_KEY}}",
+    "created": "2025-10-28T13:32:47.616259",
+    "governance_contract": "{{GOVERNANCE_CONTRACT_ADDRESS}}"
+  },
+  "community_governance": {
+    "validators": [],
+    "current_proposals": [],
+    "voting_parameters": {
+      "quorum": 15,
+      "approval_threshold": 60
+    }
+  },
+  "version": "1.0.0",
+  "metadata": {
+    "created": "2025-10-28T13:32:47.616290",
+    "config_source": "manual_creation"
+  }
+}{
+  "chain_id": "Jumaltenvaalit_2026",
+  "created_at": "2025-10-28T13:32:47.617880",
+  "description": "Vaalijärjestelmä ketju: Jumaltenvaalit_2026",
+  "version": "1.0.0",
+  "blocks": [
+    {
+      "block_id": 0,
+      "timestamp": "2025-10-28T13:32:47.617901",
+      "description": "Konfiguraation luonti",
+      "files": {
+        "install_config.base.json": "{{HASH}}",
+        "meta.base.json": "{{HASH}}",
+        "elections_list.json": "{{HASH}}"
+      },
+      "previous_hash": null,
+      "block_hash": "{{CREATION_HASH}}"
+    }
+  ],
+  "current_state": {
+    "election_id": "Jumaltenvaalit_2026",
+    "election_name": "Jumaltenvaalit_2026",
+    "config_created": "2025-10-28T13:32:47.617918"
+  },
+  "metadata": {
+    "algorithm": "sha256",
+    "system_id": "system_Jumaltenvaalit_2026",
+    "config_source": "manual_creation"
+  }
+}

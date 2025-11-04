@@ -7363,5 +7363,1065 @@
     "size_bytes": 23177,
     "access_count": 1,
     "last_access": "2025-11-03T23:26:57.519987"
+  },
+  "QmMock711d28be7db4049d147d72d152fd92f05b872e1a": {
+    "data": {
+      "security_test": true,
+      "timestamp": "2025-11-04T17:31:43.946903"
+    },
+    "upload_timestamp": "2025-11-04T17:31:43.947336",
+    "size_bytes": 66,
+    "access_count": 1,
+    "last_access": "2025-11-04T17:31:43.969524"
+  },
+  "QmMock9adbf8b9ee56bbc13d64fe2d5e444b88796f3b9b": {
+    "data": {
+      "security_test": true,
+      "timestamp": "2025-11-04T17:31:44.123543"
+    },
+    "upload_timestamp": "2025-11-04T17:31:44.123713",
+    "size_bytes": 66,
+    "access_count": 1,
+    "last_access": "2025-11-04T17:31:44.144801"
+  },
+  "QmMock326c15f00173a4b73a18343f6f6f3b464fcae777": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "namespace": "test_election_2024",
+        "purpose": "empty_buffer_test_election_2024",
+        "created": "2025-11-04T15:32:04.105293+00:00",
+        "max_size": 100,
+        "time_window": null,
+        "election_namespace": "test_election_2024",
+        "node_id": "test_node_1",
+        "priority": "low"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.105379",
+    "size_bytes": 369,
+    "access_count": 1,
+    "last_access": "2025-11-04T17:32:04.440490"
+  },
+  "QmMock7776d5f5707572647a37df0b9773933f1e3e6525": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "namespace": "test_election_2024",
+        "purpose": "emergency_backups_test_election_2024",
+        "created": "2025-11-04T15:32:04.118133+00:00",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_namespace": "test_election_2024",
+        "node_id": "test_node_1",
+        "priority": "critical"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.118514",
+    "size_bytes": 377,
+    "access_count": 1,
+    "last_access": "2025-11-04T17:32:04.452419"
+  },
+  "QmMock1e922baf322cf4bb3ab44ece058d518cfe3e96cc": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "namespace": "test_election_2024",
+        "purpose": "synchronization_point_test_election_2024",
+        "created": "2025-11-04T15:32:04.130622+00:00",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_namespace": "test_election_2024",
+        "node_id": "test_node_1",
+        "priority": "high"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.130732",
+    "size_bytes": 377,
+    "access_count": 1,
+    "last_access": "2025-11-04T17:32:04.463886"
+  },
+  "QmMockbcf7adc870f5bea2e92f73a728f7dd05127bc8a3": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "namespace": "test_election_2024",
+        "purpose": "active_writing_test_election_2024",
+        "created": "2025-11-04T15:32:04.141328+00:00",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_namespace": "test_election_2024",
+        "node_id": "test_node_1",
+        "priority": "medium"
+      },
+      "entries": [
+        {
+          "entry_id": "test_election_2024_active_0_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.197457+00:00",
+          "data_type": "test_entry",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "test_write",
+            "value": 42,
+            "timestamp": "2025-11-04T17:32:04.174915"
+          },
+          "entry_hash": "605174ed1b9231ac220ed66f0f4f3af049d65846aeb1aa9c5d9de075d78b575c"
+        },
+        {
+          "entry_id": "test_election_2024_active_1_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.287255+00:00",
+          "data_type": "multi_test_0",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_0",
+            "value": 0
+          },
+          "entry_hash": "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1"
+        },
+        {
+          "entry_id": "test_election_2024_active_2_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.333378+00:00",
+          "data_type": "multi_test_1",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_1",
+            "value": 1
+          },
+          "entry_hash": "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be"
+        },
+        {
+          "entry_id": "test_election_2024_active_3_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.379847+00:00",
+          "data_type": "multi_test_2",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_2",
+            "value": 2
+          },
+          "entry_hash": "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+        }
+      ],
+      "current_index": 4,
+      "total_entries": 4,
+      "entry_hashes": [
+        "605174ed1b9231ac220ed66f0f4f3af049d65846aeb1aa9c5d9de075d78b575c",
+        "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1",
+        "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be",
+        "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+      ]
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.141389",
+    "size_bytes": 373,
+    "access_count": 1,
+    "last_access": "2025-11-04T17:32:04.186383"
+  },
+  "QmMocked97e57a56fbeebfaf0fdd38b255e3560b8cfe5b": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "namespace": "test_election_2024",
+        "purpose": "transfer_buffer_test_election_2024",
+        "created": "2025-11-04T15:32:04.152711+00:00",
+        "max_size": 100,
+        "time_window": null,
+        "election_namespace": "test_election_2024",
+        "node_id": "test_node_1",
+        "priority": "low"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.152774",
+    "size_bytes": 372,
+    "access_count": 1,
+    "last_access": "2025-11-04T17:32:04.488011"
+  },
+  "QmMock8f9e7053f615cd8a86943ff90d0326ecd333b7a0": {
+    "data": {
+      "version": "2.0.0",
+      "namespace": "test_election_2024",
+      "created": "2025-11-04T15:32:04.163131+00:00",
+      "election_namespace": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock326c15f00173a4b73a18343f6f6f3b464fcae777",
+        "urgent": "QmMock7776d5f5707572647a37df0b9773933f1e3e6525",
+        "sync": "QmMock1e922baf322cf4bb3ab44ece058d518cfe3e96cc",
+        "active": "QmMock4686eb7b496855ac46c3c2a08823b7e2e4973c5f",
+        "buffer2": "QmMocked97e57a56fbeebfaf0fdd38b255e3560b8cfe5b"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ],
+      "metadata": {
+        "namespace_strategy": "election_based",
+        "isolation_level": "namespace",
+        "created_by": "IPFSBlockManager"
+      }
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.163206",
+    "size_bytes": 777,
+    "access_count": 1,
+    "last_access": "2025-11-04T17:32:04.174934"
+  },
+  "QmMocke4cec7915a71f2efd120db433d935f43e9babc4b": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "namespace": "test_election_2024",
+        "purpose": "active_writing_test_election_2024",
+        "created": "2025-11-04T15:32:04.141328+00:00",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_namespace": "test_election_2024",
+        "node_id": "test_node_1",
+        "priority": "medium"
+      },
+      "entries": [
+        {
+          "entry_id": "test_election_2024_active_0_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.197457+00:00",
+          "data_type": "test_entry",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "test_write",
+            "value": 42,
+            "timestamp": "2025-11-04T17:32:04.174915"
+          },
+          "entry_hash": "605174ed1b9231ac220ed66f0f4f3af049d65846aeb1aa9c5d9de075d78b575c"
+        },
+        {
+          "entry_id": "test_election_2024_active_1_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.287255+00:00",
+          "data_type": "multi_test_0",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_0",
+            "value": 0
+          },
+          "entry_hash": "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1"
+        },
+        {
+          "entry_id": "test_election_2024_active_2_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.333378+00:00",
+          "data_type": "multi_test_1",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_1",
+            "value": 1
+          },
+          "entry_hash": "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be"
+        },
+        {
+          "entry_id": "test_election_2024_active_3_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.379847+00:00",
+          "data_type": "multi_test_2",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_2",
+            "value": 2
+          },
+          "entry_hash": "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+        }
+      ],
+      "current_index": 4,
+      "total_entries": 4,
+      "entry_hashes": [
+        "605174ed1b9231ac220ed66f0f4f3af049d65846aeb1aa9c5d9de075d78b575c",
+        "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1",
+        "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be",
+        "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+      ]
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.197523",
+    "size_bytes": 825,
+    "access_count": 3,
+    "last_access": "2025-11-04T17:32:04.275881"
+  },
+  "QmMock4e1266166940e5e997ff623a49a43ba29aac9d75": {
+    "data": {
+      "version": "2.0.0",
+      "namespace": "test_election_2024",
+      "created": "2025-11-04T15:32:04.163131+00:00",
+      "election_namespace": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock326c15f00173a4b73a18343f6f6f3b464fcae777",
+        "urgent": "QmMock7776d5f5707572647a37df0b9773933f1e3e6525",
+        "sync": "QmMock1e922baf322cf4bb3ab44ece058d518cfe3e96cc",
+        "active": "QmMock4686eb7b496855ac46c3c2a08823b7e2e4973c5f",
+        "buffer2": "QmMocked97e57a56fbeebfaf0fdd38b255e3560b8cfe5b"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ],
+      "metadata": {
+        "namespace_strategy": "election_based",
+        "isolation_level": "namespace",
+        "created_by": "IPFSBlockManager"
+      }
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.208344",
+    "size_bytes": 777,
+    "access_count": 3,
+    "last_access": "2025-11-04T17:32:04.264534"
+  },
+  "QmMock4f86a08cc597b2d84f06664b888b02baef05e032": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "namespace": "test_election_2024",
+        "purpose": "active_writing_test_election_2024",
+        "created": "2025-11-04T15:32:04.141328+00:00",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_namespace": "test_election_2024",
+        "node_id": "test_node_1",
+        "priority": "medium"
+      },
+      "entries": [
+        {
+          "entry_id": "test_election_2024_active_0_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.197457+00:00",
+          "data_type": "test_entry",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "test_write",
+            "value": 42,
+            "timestamp": "2025-11-04T17:32:04.174915"
+          },
+          "entry_hash": "605174ed1b9231ac220ed66f0f4f3af049d65846aeb1aa9c5d9de075d78b575c"
+        },
+        {
+          "entry_id": "test_election_2024_active_1_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.287255+00:00",
+          "data_type": "multi_test_0",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_0",
+            "value": 0
+          },
+          "entry_hash": "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1"
+        },
+        {
+          "entry_id": "test_election_2024_active_2_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.333378+00:00",
+          "data_type": "multi_test_1",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_1",
+            "value": 1
+          },
+          "entry_hash": "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be"
+        },
+        {
+          "entry_id": "test_election_2024_active_3_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.379847+00:00",
+          "data_type": "multi_test_2",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_2",
+            "value": 2
+          },
+          "entry_hash": "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+        }
+      ],
+      "current_index": 4,
+      "total_entries": 4,
+      "entry_hashes": [
+        "605174ed1b9231ac220ed66f0f4f3af049d65846aeb1aa9c5d9de075d78b575c",
+        "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1",
+        "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be",
+        "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+      ]
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.287315",
+    "size_bytes": 1242,
+    "access_count": 1,
+    "last_access": "2025-11-04T17:32:04.322097"
+  },
+  "QmMock6e38cd157952658059a485d0fdbc877f69b2e86a": {
+    "data": {
+      "version": "2.0.0",
+      "namespace": "test_election_2024",
+      "created": "2025-11-04T15:32:04.163131+00:00",
+      "election_namespace": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock326c15f00173a4b73a18343f6f6f3b464fcae777",
+        "urgent": "QmMock7776d5f5707572647a37df0b9773933f1e3e6525",
+        "sync": "QmMock1e922baf322cf4bb3ab44ece058d518cfe3e96cc",
+        "active": "QmMock4686eb7b496855ac46c3c2a08823b7e2e4973c5f",
+        "buffer2": "QmMocked97e57a56fbeebfaf0fdd38b255e3560b8cfe5b"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ],
+      "metadata": {
+        "namespace_strategy": "election_based",
+        "isolation_level": "namespace",
+        "created_by": "IPFSBlockManager"
+      }
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.298403",
+    "size_bytes": 777,
+    "access_count": 1,
+    "last_access": "2025-11-04T17:32:04.309412"
+  },
+  "QmMock547ec5a7a94de1104fb21349d74d65a431f1c30b": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "namespace": "test_election_2024",
+        "purpose": "active_writing_test_election_2024",
+        "created": "2025-11-04T15:32:04.141328+00:00",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_namespace": "test_election_2024",
+        "node_id": "test_node_1",
+        "priority": "medium"
+      },
+      "entries": [
+        {
+          "entry_id": "test_election_2024_active_0_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.197457+00:00",
+          "data_type": "test_entry",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "test_write",
+            "value": 42,
+            "timestamp": "2025-11-04T17:32:04.174915"
+          },
+          "entry_hash": "605174ed1b9231ac220ed66f0f4f3af049d65846aeb1aa9c5d9de075d78b575c"
+        },
+        {
+          "entry_id": "test_election_2024_active_1_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.287255+00:00",
+          "data_type": "multi_test_0",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_0",
+            "value": 0
+          },
+          "entry_hash": "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1"
+        },
+        {
+          "entry_id": "test_election_2024_active_2_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.333378+00:00",
+          "data_type": "multi_test_1",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_1",
+            "value": 1
+          },
+          "entry_hash": "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be"
+        },
+        {
+          "entry_id": "test_election_2024_active_3_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.379847+00:00",
+          "data_type": "multi_test_2",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_2",
+            "value": 2
+          },
+          "entry_hash": "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+        }
+      ],
+      "current_index": 4,
+      "total_entries": 4,
+      "entry_hashes": [
+        "605174ed1b9231ac220ed66f0f4f3af049d65846aeb1aa9c5d9de075d78b575c",
+        "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1",
+        "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be",
+        "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+      ]
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.333448",
+    "size_bytes": 1659,
+    "access_count": 1,
+    "last_access": "2025-11-04T17:32:04.367877"
+  },
+  "QmMock67fec5951dc841e5471698302673cec1f4da4e03": {
+    "data": {
+      "version": "2.0.0",
+      "namespace": "test_election_2024",
+      "created": "2025-11-04T15:32:04.163131+00:00",
+      "election_namespace": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock326c15f00173a4b73a18343f6f6f3b464fcae777",
+        "urgent": "QmMock7776d5f5707572647a37df0b9773933f1e3e6525",
+        "sync": "QmMock1e922baf322cf4bb3ab44ece058d518cfe3e96cc",
+        "active": "QmMock4686eb7b496855ac46c3c2a08823b7e2e4973c5f",
+        "buffer2": "QmMocked97e57a56fbeebfaf0fdd38b255e3560b8cfe5b"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ],
+      "metadata": {
+        "namespace_strategy": "election_based",
+        "isolation_level": "namespace",
+        "created_by": "IPFSBlockManager"
+      }
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.344256",
+    "size_bytes": 777,
+    "access_count": 1,
+    "last_access": "2025-11-04T17:32:04.355917"
+  },
+  "QmMock4686eb7b496855ac46c3c2a08823b7e2e4973c5f": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "namespace": "test_election_2024",
+        "purpose": "active_writing_test_election_2024",
+        "created": "2025-11-04T15:32:04.141328+00:00",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_namespace": "test_election_2024",
+        "node_id": "test_node_1",
+        "priority": "medium"
+      },
+      "entries": [
+        {
+          "entry_id": "test_election_2024_active_0_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.197457+00:00",
+          "data_type": "test_entry",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "test_write",
+            "value": 42,
+            "timestamp": "2025-11-04T17:32:04.174915"
+          },
+          "entry_hash": "605174ed1b9231ac220ed66f0f4f3af049d65846aeb1aa9c5d9de075d78b575c"
+        },
+        {
+          "entry_id": "test_election_2024_active_1_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.287255+00:00",
+          "data_type": "multi_test_0",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_0",
+            "value": 0
+          },
+          "entry_hash": "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1"
+        },
+        {
+          "entry_id": "test_election_2024_active_2_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.333378+00:00",
+          "data_type": "multi_test_1",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_1",
+            "value": 1
+          },
+          "entry_hash": "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be"
+        },
+        {
+          "entry_id": "test_election_2024_active_3_test_node_1",
+          "timestamp": "2025-11-04T15:32:04.379847+00:00",
+          "data_type": "multi_test_2",
+          "node_id": "test_node_1",
+          "namespace": "test_election_2024",
+          "priority": "normal",
+          "data": {
+            "action": "multi_write_2",
+            "value": 2
+          },
+          "entry_hash": "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+        }
+      ],
+      "current_index": 4,
+      "total_entries": 4,
+      "entry_hashes": [
+        "605174ed1b9231ac220ed66f0f4f3af049d65846aeb1aa9c5d9de075d78b575c",
+        "05005bf1ecf71a8c4b1cf5caed9ce8747dcb0aa16cb19c125360e649a166d0f1",
+        "9f80e99dd660aae9d3e2e6a0e2b4739e0c4fe01e34fcdccd625535fc239744be",
+        "134ebcf4036abccd2031ce66b61ff4067969f37fa98b076b92d7208474e1f95c"
+      ]
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.379917",
+    "size_bytes": 2076,
+    "access_count": 1,
+    "last_access": "2025-11-04T17:32:04.475777"
+  },
+  "QmMock42d4d491c29d9b293d874346c22a10801d7730c4": {
+    "data": {
+      "version": "2.0.0",
+      "namespace": "test_election_2024",
+      "created": "2025-11-04T15:32:04.163131+00:00",
+      "election_namespace": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock326c15f00173a4b73a18343f6f6f3b464fcae777",
+        "urgent": "QmMock7776d5f5707572647a37df0b9773933f1e3e6525",
+        "sync": "QmMock1e922baf322cf4bb3ab44ece058d518cfe3e96cc",
+        "active": "QmMock4686eb7b496855ac46c3c2a08823b7e2e4973c5f",
+        "buffer2": "QmMocked97e57a56fbeebfaf0fdd38b255e3560b8cfe5b"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ],
+      "metadata": {
+        "namespace_strategy": "election_based",
+        "isolation_level": "namespace",
+        "created_by": "IPFSBlockManager"
+      }
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.392250",
+    "size_bytes": 777,
+    "access_count": 1,
+    "last_access": "2025-11-04T17:32:04.404396"
+  },
+  "QmMockac8525def0fb9a5851dd45dc83f479cda7398144": {
+    "data": {
+      "version": "2.0.0",
+      "namespace": "test_election_2024",
+      "created": "2025-11-04T15:32:04.163131+00:00",
+      "election_namespace": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock326c15f00173a4b73a18343f6f6f3b464fcae777",
+        "urgent": "QmMock7776d5f5707572647a37df0b9773933f1e3e6525",
+        "sync": "QmMock1e922baf322cf4bb3ab44ece058d518cfe3e96cc",
+        "active": "QmMock4686eb7b496855ac46c3c2a08823b7e2e4973c5f",
+        "buffer2": "QmMocked97e57a56fbeebfaf0fdd38b255e3560b8cfe5b"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1",
+        "test_node_2"
+      ],
+      "metadata": {
+        "namespace_strategy": "election_based",
+        "isolation_level": "namespace",
+        "created_by": "IPFSBlockManager"
+      }
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.416142",
+    "size_bytes": 792,
+    "access_count": 1,
+    "last_access": "2025-11-04T17:32:04.428290"
+  },
+  "QmMock28c2f4c9679f45aa963a271b6d07a30bb6367ad2": {
+    "data": {
+      "security_test": true,
+      "timestamp": "2025-11-04T17:32:04.668084"
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.668143",
+    "size_bytes": 66,
+    "access_count": 1,
+    "last_access": "2025-11-04T17:32:04.680238"
+  },
+  "QmMock01412544fd2ac077d0a6a2c8d4c94751f113d884": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "namespace": "unknown",
+        "purpose": "empty_buffer_unknown",
+        "created": "2025-11-04T15:32:04.776578+00:00",
+        "max_size": 100,
+        "time_window": null,
+        "election_namespace": "unknown",
+        "node_id": "test_node_1",
+        "priority": "low"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.776637",
+    "size_bytes": 336,
+    "access_count": 0
+  },
+  "QmMockc3da70dc95c64cfc8210402e921570105d2e9601": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "namespace": "unknown",
+        "purpose": "emergency_backups_unknown",
+        "created": "2025-11-04T15:32:04.790786+00:00",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_namespace": "unknown",
+        "node_id": "test_node_1",
+        "priority": "critical"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.790862",
+    "size_bytes": 344,
+    "access_count": 0
+  },
+  "QmMock9c84d01d1906cd97e1e798d169f0903aa3ca723d": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "namespace": "unknown",
+        "purpose": "synchronization_point_unknown",
+        "created": "2025-11-04T15:32:04.805355+00:00",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_namespace": "unknown",
+        "node_id": "test_node_1",
+        "priority": "high"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.805416",
+    "size_bytes": 344,
+    "access_count": 0
+  },
+  "QmMock5c56afaac3d25ccc04a7d6288fab33825e816312": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "namespace": "unknown",
+        "purpose": "active_writing_unknown",
+        "created": "2025-11-04T15:32:04.820014+00:00",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_namespace": "unknown",
+        "node_id": "test_node_1",
+        "priority": "medium"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.820076",
+    "size_bytes": 340,
+    "access_count": 0
+  },
+  "QmMock8d30b6dd6480efa9617ba49dc26effbedf4869ae": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "namespace": "unknown",
+        "purpose": "transfer_buffer_unknown",
+        "created": "2025-11-04T15:32:04.833385+00:00",
+        "max_size": 100,
+        "time_window": null,
+        "election_namespace": "unknown",
+        "node_id": "test_node_1",
+        "priority": "low"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.833473",
+    "size_bytes": 339,
+    "access_count": 0
+  },
+  "QmMock60b0d94742e4bdc67c27c69d7fd1b87eefcd8ea7": {
+    "data": {
+      "version": "2.0.0",
+      "namespace": "unknown",
+      "created": "2025-11-04T15:32:04.845471+00:00",
+      "election_namespace": "unknown",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock01412544fd2ac077d0a6a2c8d4c94751f113d884",
+        "urgent": "QmMockc3da70dc95c64cfc8210402e921570105d2e9601",
+        "sync": "QmMock9c84d01d1906cd97e1e798d169f0903aa3ca723d",
+        "active": "QmMock5c56afaac3d25ccc04a7d6288fab33825e816312",
+        "buffer2": "QmMock8d30b6dd6480efa9617ba49dc26effbedf4869ae"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ],
+      "metadata": {
+        "namespace_strategy": "election_based",
+        "isolation_level": "namespace",
+        "created_by": "IPFSBlockManager"
+      }
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.845543",
+    "size_bytes": 755,
+    "access_count": 0
+  },
+  "QmMock7c80da87588dcf099c2165d6e8f61daaa504c628": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer1",
+        "namespace": "test_election_2024",
+        "purpose": "empty_buffer_test_election_2024",
+        "created": "2025-11-04T15:32:04.957400+00:00",
+        "max_size": 100,
+        "time_window": null,
+        "election_namespace": "test_election_2024",
+        "node_id": "test_node_1",
+        "priority": "low"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.957451",
+    "size_bytes": 369,
+    "access_count": 0
+  },
+  "QmMock1fe82cf1ae900b0862f73317dd84b4562ec8edeb": {
+    "data": {
+      "metadata": {
+        "block_name": "urgent",
+        "namespace": "test_election_2024",
+        "purpose": "emergency_backups_test_election_2024",
+        "created": "2025-11-04T15:32:04.969407+00:00",
+        "max_size": 50,
+        "time_window": 3600,
+        "election_namespace": "test_election_2024",
+        "node_id": "test_node_1",
+        "priority": "critical"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.969470",
+    "size_bytes": 377,
+    "access_count": 0
+  },
+  "QmMock7d364fc7bfac6f1938f0b5af2af42404f89b37d5": {
+    "data": {
+      "metadata": {
+        "block_name": "sync",
+        "namespace": "test_election_2024",
+        "purpose": "synchronization_point_test_election_2024",
+        "created": "2025-11-04T15:32:04.980930+00:00",
+        "max_size": 200,
+        "time_window": 21600,
+        "election_namespace": "test_election_2024",
+        "node_id": "test_node_1",
+        "priority": "high"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.981012",
+    "size_bytes": 377,
+    "access_count": 0
+  },
+  "QmMockd2e093f9733b15c5984d7838d45bf0a8215b4b98": {
+    "data": {
+      "metadata": {
+        "block_name": "active",
+        "namespace": "test_election_2024",
+        "purpose": "active_writing_test_election_2024",
+        "created": "2025-11-04T15:32:04.992951+00:00",
+        "max_size": 150,
+        "time_window": 7200,
+        "election_namespace": "test_election_2024",
+        "node_id": "test_node_1",
+        "priority": "medium"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-11-04T17:32:04.993010",
+    "size_bytes": 373,
+    "access_count": 0
+  },
+  "QmMock40b959f14d3d47026c2c4759ed7ad99d674a3306": {
+    "data": {
+      "metadata": {
+        "block_name": "buffer2",
+        "namespace": "test_election_2024",
+        "purpose": "transfer_buffer_test_election_2024",
+        "created": "2025-11-04T15:32:05.008271+00:00",
+        "max_size": 100,
+        "time_window": null,
+        "election_namespace": "test_election_2024",
+        "node_id": "test_node_1",
+        "priority": "low"
+      },
+      "entries": [],
+      "current_index": 0,
+      "total_entries": 0,
+      "entry_hashes": []
+    },
+    "upload_timestamp": "2025-11-04T17:32:05.008332",
+    "size_bytes": 372,
+    "access_count": 0
+  },
+  "QmMock99752504740e67d5584fefc49ef492e32f39b75a": {
+    "data": {
+      "version": "2.0.0",
+      "namespace": "test_election_2024",
+      "created": "2025-11-04T15:32:05.023342+00:00",
+      "election_namespace": "test_election_2024",
+      "node_id": "test_node_1",
+      "block_sequence": [
+        "buffer1",
+        "urgent",
+        "sync",
+        "active",
+        "buffer2"
+      ],
+      "current_rotation": 0,
+      "total_rotations": 0,
+      "blocks": {
+        "buffer1": "QmMock7c80da87588dcf099c2165d6e8f61daaa504c628",
+        "urgent": "QmMock1fe82cf1ae900b0862f73317dd84b4562ec8edeb",
+        "sync": "QmMock7d364fc7bfac6f1938f0b5af2af42404f89b37d5",
+        "active": "QmMockd2e093f9733b15c5984d7838d45bf0a8215b4b98",
+        "buffer2": "QmMock40b959f14d3d47026c2c4759ed7ad99d674a3306"
+      },
+      "rotation_history": [],
+      "node_registry": [
+        "test_node_1"
+      ],
+      "metadata": {
+        "namespace_strategy": "election_based",
+        "isolation_level": "namespace",
+        "created_by": "IPFSBlockManager"
+      }
+    },
+    "upload_timestamp": "2025-11-04T17:32:05.023424",
+    "size_bytes": 777,
+    "access_count": 0
   }
 }

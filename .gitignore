@@ -95,3 +95,4 @@ all_python_files.txt
 echo all_admin_based_python_files.txt
 all_community_based_python_files.txt
 
+*core_python_files.txt
