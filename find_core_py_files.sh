@@ -1,10 +1,10 @@
 #!/bin/bash
-# find_core_py_files.sh - LUKEE VAIN YDINOHJELMATIEDOSTOT
+# find_core_py_files.sh - Etsii YDIN- ja MODUULItiedostot, ohittaa testit/demo/korjaukset
 
-echo "🔍 YDINOHJELMIEN Python tiedostojen etsintä"
+echo "🔍 YDIN- JA MODUULIEN Python tiedostojen etsintä"
 echo "============================================"
 
-# Whitelist - vain nämä tiedostot sisällytetään
+# === 1. Whitelist - ydintiedostot (vanhat pääohjelmat) ===
 core_files=(
   "question_manager.py"
   "complete_elo_calculator.py"
@@ -22,7 +22,48 @@ core_files=(
   "elections_list_manager.py"
   "install.py"
   "initialization.py"
+  "installation_engine.py"
+  "manage_questions.py"
 )
+
+# === 2. Moduulitiedostot logiikka-kerroksittain ===
+domain_files=(
+  "domain/entities/question.py"
+  "domain/entities/election.py"
+  "domain/value_objects.py"
+  "domain/events.py"
+  "domain/repositories/question_repository.py"
+  "domain/repositories/election_repository.py"
+  "domain/services/rating_calculation.py"
+)
+
+application_files=(
+  "application/commands.py"
+  "application/queries.py"
+  "application/results.py"
+  "application/services/question_service.py"
+  "application/use_cases/submit_question.py"
+  "application/use_cases/sync_questions.py"
+  "application/use_cases/process_rating.py"
+  "application/query_handlers/question_queries.py"
+)
+
+infrastructure_files=(
+  "infrastructure/config/config_manager.py"
+  "infrastructure/logging/system_logger.py"
+  "infrastructure/repositories/json_question_repository.py"
+  "infrastructure/repositories/ipfs_question_repository.py"
+  "infrastructure/services/legacy_integration.py"
+  "infrastructure/adapters/ipfs_client.py"
+  "infrastructure/adapters/block_manager_adapter.py"
+)
+
+core_files_extra=(
+  "core/dependency_container.py"
+)
+
+# Yhdistetään kaikki tiedostot yhteen listaan
+all_files=("${core_files[@]}" "${domain_files[@]}" "${application_files[@]}" "${infrastructure_files[@]}" "${core_files_extra[@]}")
 
 directory="${1:-./}"
 
@@ -31,14 +72,42 @@ if [ ! -d "$directory" ]; then
   exit 1
 fi
 
-echo "📁 Etsitään YDINOHJELMATIEDOSTOJA hakemistosta: $directory"
+echo "📁 Etsitään ydin- ja moduulitiedostoja hakemistosta: $directory"
 
 > core_python_files.txt
 
 found_count=0
+total_expected=${#all_files[@]}
 
-for core_file in "${core_files[@]}"; do
-  file_path=$(find "$directory" -name "$core_file" -not -path "*/venv/*" | head -1)
+for file_spec in "${all_files[@]}"; do
+  # Etsi tiedostoa, mutta ohita venv/, tests/, interface/, tmp/
+  file_path=$(find "$directory" \
+    -name "$(basename "$file_spec")" \
+    -not -path "*/venv/*" \
+    -not -path "*/tests/*" \
+    -not -path "*/interface/*" \
+    -not -path "*/__pycache__/*" \
+    -not -name "*demo*.py" \
+    -not -name "fix_*.py" \
+    -not -name "*test*.py" \
+    -not -name "*_fixed.py" \
+    | grep -F "/$(dirname "$file_spec")/" \
+    | head -1)
+  
+  # Fallback: etsi kaikkialta (jos polku ei täsmännyt)
+  if [ -z "$file_path" ]; then
+    file_path=$(find "$directory" \
+      -name "$(basename "$file_spec")" \
+      -not -path "*/venv/*" \
+      -not -path "*/tests/*" \
+      -not -path "*/interface/*" \
+      -not -path "*/__pycache__/*" \
+      -not -name "*demo*.py" \
+      -not -name "fix_*.py" \
+      -not -name "*test*.py" \
+      -not -name "*_fixed.py" \
+      | head -1)
+  fi
   
   if [ -n "$file_path" ] && [ -f "$file_path" ]; then
     echo "=== FILE: $file_path ===" >> core_python_files.txt
@@ -47,9 +116,9 @@ for core_file in "${core_files[@]}"; do
     echo "=== END OF: $file_path ===" >> core_python_files.txt
     echo "" >> core_python_files.txt
     ((found_count++))
-    echo "  ✅ $core_file"
+    echo "  ✅ $file_spec"
   else
-    echo "  ❌ $core_file (ei löytynyt)"
+    echo "  ❌ $file_spec (ei löytynyt)"
   fi
 done
 
@@ -57,6 +126,6 @@ line_count=$(wc -l < core_python_files.txt)
 
 echo ""
 echo "✅ VALMIS!"
-echo "📊 Löydetty $found_count / ${#core_files[@]} ydinohjelmatiedostoa"
+echo "📊 Löydetty $found_count / $total_expected ydin- ja moduulitiedostoa"
 echo "📄 Yhteensä $line_count riviä core_python_files.txt tiedostossa"
 echo "📁 Tiedosto: $(pwd)/core_python_files.txt"

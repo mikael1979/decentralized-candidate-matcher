@@ -1,0 +1,4 @@
+# Vaalijärjestelmä - Uusi Arkkitehtuuri
+
+## 📁 Hakemistorakenne
+
