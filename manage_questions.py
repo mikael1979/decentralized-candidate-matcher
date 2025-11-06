@@ -3,16 +3,18 @@
 Manage Questions CLI - Refaktoroitu uudella arkkitehtuurilla
 Kysymysten hallinta unified_question_handlerin kautta
 """
+
 import sys
 from cli.cli_template import CLITemplate, main_template
+from managers.unified_question_handler import UnifiedQuestionHandler
 
 class ManageQuestionsCLI(CLITemplate):
     def __init__(self):
-        super().__init__("Kysymysten hallinta", "runtime")
+        super().__init__("Kysymysten hallinta")
+        self.question_handler = UnifiedQuestionHandler()
     
-    def create_parser(self):
-        """Luo parser kysymysten hallinnan komennoille"""
-        parser = super().create_parser()
+    def _add_arguments(self, parser):
+        """Lisää kysymysten hallinnan spesifiset argumentit"""
         subparsers = parser.add_subparsers(dest='command', help='Komennot')
         
         # Submit-komento
@@ -35,16 +37,17 @@ class ManageQuestionsCLI(CLITemplate):
         
         # Status-komento
         subparsers.add_parser('status', help='Näytä kysymysten tila')
-        
-        return parser
     
     def run(self):
         """Suorita CLI-ohjelma"""
-        parser = self.create_parser()
-        args = parser.parse_args()
+        if not self.initialized:
+            print("❌ Järjestelmää ei ole alustettu")
+            return 1
+        
+        args = self.parser.parse_args()
         
         if not args.command:
-            parser.print_help()
+            self.parser.print_help()
             return 1
         
         # Käsittele komennot
@@ -65,7 +68,7 @@ class ManageQuestionsCLI(CLITemplate):
             import traceback
             traceback.print_exc()
             return 1
-
+    
     def _handle_submit(self, args):
         """Käsittele kysymyksen lähetys"""
         print("📝 Lähetetään uusi kysymys...")
@@ -83,19 +86,10 @@ class ManageQuestionsCLI(CLITemplate):
                     "en": args.category,
                     "sv": args.category
                 }
-            },
-            "category": args.category,
-            "tags": []
+            }
         }
         
-        # Check available methods for submission
-        if hasattr(self.question_handler, 'submit_question'):
-            result = self.question_handler.submit_question(question_data, args.user_id)
-        else:
-            print("❌ submit_question method not available in question_handler")
-            available_methods = [method for method in dir(self.question_handler) if not method.startswith('_')]
-            print(f"💡 Available methods: {available_methods}")
-            return 1
+        result = self.question_handler.submit_question(question_data, args.user_id)
         
         if result.get('success'):
             print("✅ Kysymys lähetetty onnistuneesti!")
@@ -123,126 +117,72 @@ class ManageQuestionsCLI(CLITemplate):
         else:
             print(f"❌ Lähetys epäonnistui: {result.get('error', 'Tuntematon virhe')}")
             return 1
-
+    
     def _handle_list(self, args):
         """Listaa kysymykset"""
-        print("🔍 Haetaan kysymyksiä...")
-        
         result = self.question_handler.list_questions(args.limit, args.category)
         
         if result.get('success'):
             questions = result.get('questions', [])
-            sources = result.get('sources', {})
-            
             print(f"📋 KYSYMYSLISTA ({len(questions)}/{result.get('total_count', 0)} kysymystä)")
-            print(f"   📚 ELO Manager: {sources.get('elo_manager', 0)}")
-            print(f"   🆕 New questions: {sources.get('new_questions', 0)}") 
-            print(f"   📝 Tmp questions: {sources.get('tmp_questions', 0)}")
             print("=" * 60)
             
-            if not questions:
-                print("ℹ️  Ei kysymyksiä saatavilla")
-                return 0
-                
             for i, question in enumerate(questions, 1):
-                # Hae sisältö
-                content_obj = question.get('content', {})
-                question_texts = content_obj.get('question', {})
-                category_obj = content_obj.get('category', {})
+                content = question.get('content', {}).get('question', {}).get('fi', 'Ei nimeä')
+                rating = question.get('elo_rating', {}).get('current_rating', 0)
+                category = question.get('content', {}).get('category', {}).get('fi', 'tuntematon')
                 
-                content = (question_texts.get('fi') or 
-                          question_texts.get('en') or 
-                          question_texts.get('sv') or 'Ei nimeä')
-                
-                category = (category_obj.get('fi') or 
-                           category_obj.get('en') or 
-                           category_obj.get('sv') or 'tuntematon')
-                
-                rating_obj = question.get('elo_rating', {})
-                rating = rating_obj.get('current_rating', 0)
-                question_id = question.get('local_id', 'N/A')
-                
-                # Tarkista mistä tiedostosta kysymys tulee
-                source = "questions.json"
-                if question_id.startswith('tmp_'):
-                    source = "tmp"
-                elif 'new_questions' in str(question):
-                    source = "new"
-                
-                print(f"{i:2d}. {rating:6.1f} | {category:12} | {content[:45]}... [{source}]")
+                print(f"{i:2d}. {rating:6.1f} | {category:12} | {content[:45]}...")
             
             # Lokitus
             self.log_action(
                 action_type="questions_listed",
                 description=f"Listattu {len(questions)} kysymystä",
                 user_id="cli_user",
-                metadata={
-                    "limit": args.limit, 
-                    "category": args.category,
-                    "sources": sources
-                }
+                metadata={"limit": args.limit, "category": args.category}
             )
             
             return 0
         else:
             print(f"❌ Listaus epäonnistui: {result.get('error', 'Tuntematon virhe')}")
             return 1
-
+    
     def _handle_sync(self, args):
         """Käsittele synkronointi"""
         print(f"🔄 Synkronoidaan kysymyksiä ({args.type})...")
         
-        success = True
-        
         if args.type == 'tmp_to_new' or args.type == 'all':
-            if hasattr(self.question_handler, 'sync_tmp_to_new'):
-                result = self.question_handler.sync_tmp_to_new(args.force)
-                if result.get('success'):
-                    print(f"✅ Tmp → New: {result.get('synced_count', 0)} kysymystä")
-                    if result.get('remaining_in_tmp', 0) > 0:
-                        print(f"📊 Jäljellä tmp:ssä: {result.get('remaining_in_tmp')}")
-                else:
-                    print(f"❌ Tmp → New epäonnistui: {result.get('error')}")
-                    success = False
-                    if args.type == 'all':
-                        return 1
+            result = self.question_handler.sync_tmp_to_new(args.force)
+            if result.get('success'):
+                print(f"✅ Tmp → New: {result.get('synced_count', 0)} kysymystä")
+                if result.get('remaining_in_tmp', 0) > 0:
+                    print(f"📊 Jäljellä tmp:ssä: {result.get('remaining_in_tmp')}")
             else:
-                print("❌ sync_tmp_to_new method not available")
-                success = False
+                print(f"❌ Tmp → New epäonnistui: {result.get('error')}")
+                if args.type == 'all':
+                    return 1
         
         if args.type == 'new_to_main' or args.type == 'all':
-            if hasattr(self.question_handler, 'sync_new_to_main'):
-                result = self.question_handler.sync_new_to_main(args.force)
-                if result.get('success'):
-                    print(f"✅ New → Main: {result.get('synced_count', 0)} kysymystä")
-                else:
-                    print(f"❌ New → Main epäonnistui: {result.get('error')}")
-                    success = False
-                    return 1
+            result = self.question_handler.sync_new_to_main(args.force)
+            if result.get('success'):
+                print(f"✅ New → Main: {result.get('synced_count', 0)} kysymystä")
             else:
-                print("❌ sync_new_to_main method not available")
-                success = False
+                print(f"❌ New → Main epäonnistui: {result.get('error')}")
+                return 1
         
-        if success:
-            # Lokitus
-            self.log_action(
-                action_type="questions_synced",
-                description=f"Kysymyksiä synkronoitu: {args.type}",
-                user_id="cli_user",
-                metadata={"sync_type": args.type, "forced": args.force}
-            )
+        # Lokitus
+        self.log_action(
+            action_type="questions_synced",
+            description=f"Kysymyksiä synkronoitu: {args.type}",
+            user_id="cli_user",
+            metadata={"sync_type": args.type, "forced": args.force}
+        )
         
-        return 0 if success else 1
-
+        return 0
+    
     def _handle_status(self, args):
         """Näytä kysymysten tila"""
-        if hasattr(self.question_handler, 'get_sync_status'):
-            result = self.question_handler.get_sync_status()
-        elif hasattr(self.question_handler, 'get_system_status'):
-            result = self.question_handler.get_system_status()
-        else:
-            print("❌ get_sync_status or get_system_status method not available")
-            return 1
+        result = self.question_handler.get_sync_status()
         
         if 'error' in result:
             print(f"❌ Tilahaun virhe: {result['error']}")

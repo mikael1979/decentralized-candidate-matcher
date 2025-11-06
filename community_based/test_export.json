@@ -1,0 +1,369 @@
+{
+  "metadata": {
+    "exported_at": "2025-11-06T13:35:06.045151+00:00",
+    "total_questions": 20,
+    "system_version": "2.0.0"
+  },
+  "questions": [
+    {
+      "local_id": "q1_lightning_control",
+      "content_preview": "Pitäisikö salamaniskujen käyttö rangaistuksena sallia?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": -14.499697309666285,
+        "vote_delta": 0,
+        "current_rating": 1001.4004147677819,
+        "total_comparisons": 14,
+        "total_votes": 5,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q2_sea_travel",
+      "content_preview": "Pitäisikö merimatkoista tehdä ilmaisia kaikille?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": 16.0,
+        "vote_delta": 0,
+        "current_rating": 1012.6377290709074,
+        "total_comparisons": 13,
+        "total_votes": 6,
+        "up_votes": 0,
+        "down_votes": 1
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q3_underworld_access",
+      "content_preview": "Pitäisikö manalla olla paremmat palvelut kuoleman jälkeiselle elämälle?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": 15.263693206478006,
+        "vote_delta": 0,
+        "current_rating": 1023.217722088018,
+        "total_comparisons": 13,
+        "total_votes": 6,
+        "up_votes": 1,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q4_love_regulation",
+      "content_preview": "Pitäisikö rakkauden jumalilla olla vähemmän valtaa ihmisten sydämiin?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": -0.7039567248734073,
+        "vote_delta": 0,
+        "current_rating": 998.5630446030873,
+        "total_comparisons": 13,
+        "total_votes": 5,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q5_war_funding",
+      "content_preview": "Pitäisikö sodan jumalan budjetria leikata rauhan aikaan?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": 15.229860185357271,
+        "vote_delta": 0,
+        "current_rating": 1015.2298601853573,
+        "total_comparisons": 12,
+        "total_votes": 5,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q6_wisdom_education",
+      "content_preview": "Pitäisikö viisauden jumalattaren opetukset olla pakollisia kaikille?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": -0.702467172524635,
+        "vote_delta": 0,
+        "current_rating": 1008.5935102933543,
+        "total_comparisons": 13,
+        "total_votes": 6,
+        "up_votes": 1,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q7_hunting_regulation",
+      "content_preview": "Pitäisikö metsästyksen jumalattarella olla tiukemmat säännöt luonnon suojelusta?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": 14.531972262590276,
+        "vote_delta": 0,
+        "current_rating": 1014.5319722625903,
+        "total_comparisons": 12,
+        "total_votes": 5,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q8_festival_funding",
+      "content_preview": "Pitäisikö juhlan ja viinin jumalan festivaaleille myöntää enemmän julkista tukea?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": 0.032281398266729155,
+        "vote_delta": 0,
+        "current_rating": 1016.0322813982667,
+        "total_comparisons": 13,
+        "total_votes": 5,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q9_forge_regulation",
+      "content_preview": "Pitäisikö sepän jumalan pajojen saastuttamiselle asettaa tiukemmat rajat?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": -16.0,
+        "vote_delta": 0,
+        "current_rating": 1000.0,
+        "total_comparisons": 12,
+        "total_votes": 5,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q10_beauty_standards",
+      "content_preview": "Pitäisikö kauneuden jumalattaren vaikutus kauneusstandardeihin olla läpinäkyvämpi?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": -0.06618308976932141,
+        "vote_delta": 0,
+        "current_rating": 1008.6056268720001,
+        "total_comparisons": 13,
+        "total_votes": 5,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q11_messenger_privacy",
+      "content_preview": "Pitäisikö viestien jumalan lukea kaikkien kuuluvien viestien sisältöä turvallisuuden vuoksi?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": 15.265111220547055,
+        "vote_delta": 0,
+        "current_rating": 1015.2651112205472,
+        "total_comparisons": 13,
+        "total_votes": 5,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q12_agriculture_subsidies",
+      "content_preview": "Pitäisikö satojen jumalattaren saada enemmän tukea maatalouden tukemiseen?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": 14.530566946301757,
+        "vote_delta": 0,
+        "current_rating": 997.8587569845323,
+        "total_comparisons": 15,
+        "total_votes": 5,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q13_wine_regulation",
+      "content_preview": "Pitäisikö viinin jumalan juomien alkoholipitoisuutta rajoittaa terveyssyistä?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": -15.39522663003925,
+        "vote_delta": 0,
+        "current_rating": 970.0130154175133,
+        "total_comparisons": 15,
+        "total_votes": 5,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q14_crafts_protection",
+      "content_preview": "Pitäisikö sepän jumalan käsityötä suojella jäljennöksiltä jumalallisin tekijänoikeuksin?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": 2.9098946776931047,
+        "vote_delta": 0,
+        "current_rating": 1002.909894677693,
+        "total_comparisons": 14,
+        "total_votes": 5,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q15_moonlight_access",
+      "content_preview": "Pitäisikö kuun jumalattaren kuunvalon jakaa tasapuolisesti kaikille alueille?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": 0.0,
+        "vote_delta": 0,
+        "current_rating": 984.1010286594217,
+        "total_comparisons": 13,
+        "total_votes": 5,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q16_war_veterans",
+      "content_preview": "Pitäisikö sodan jumalan huolehtia entisten sotilaiden eläkkeistä?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": 0.003112800687144812,
+        "vote_delta": 0,
+        "current_rating": 984.0029694509179,
+        "total_comparisons": 14,
+        "total_votes": 5,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q17_love_marriage",
+      "content_preview": "Pitäisikö rakkauden jumalattaren hyväksyä kaikki avioliitot ilman ehtoja?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": -16.66876416839467,
+        "vote_delta": 0,
+        "current_rating": 960.431123754157,
+        "total_comparisons": 13,
+        "total_votes": 6,
+        "up_votes": 0,
+        "down_votes": 1
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q18_travel_safety",
+      "content_preview": "Pitäisikö matkailun jumalan varmistaa, että kaikki matkustajat palaavat kotiin turvallisesti?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": -16.0,
+        "vote_delta": 0,
+        "current_rating": 984.7040225341211,
+        "total_comparisons": 13,
+        "total_votes": 5,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q19_earth_fertility",
+      "content_preview": "Pitäisikö maan viljelyn jumalattaren estää kaikki maan muokkaus, joka vahingoittaa hedelmällisyyttä?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": 0.0,
+        "vote_delta": 0,
+        "current_rating": 1031.0001433497691,
+        "total_comparisons": 12,
+        "total_votes": 6,
+        "up_votes": 1,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    },
+    {
+      "local_id": "q20_festival_excess",
+      "content_preview": "Pitäisikö juhlien jumalan juhlia rajoittaa liiallisen ekstaasin estämiseksi?",
+      "elo_rating": {
+        "base_rating": 1000,
+        "comparison_delta": -13.73019760265377,
+        "vote_delta": 0,
+        "current_rating": 1002.9017724099639,
+        "total_comparisons": 14,
+        "total_votes": 5,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-04T23:46:04.871359",
+        "modified_local": "2025-11-04T23:46:04.871359"
+      }
+    }
+  ]
+}

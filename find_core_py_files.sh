@@ -4,7 +4,7 @@
 echo "🔍 YDIN- JA MODUULIEN Python tiedostojen etsintä"
 echo "============================================"
 
-# === 1. Whitelist - ydintiedostot (vanhat pääohjelmat) ===
+# === 1. Whitelist - ydintiedostot (pääohjelmat) ===
 core_files=(
   "question_manager.py"
   "complete_elo_calculator.py"
@@ -24,6 +24,11 @@ core_files=(
   "initialization.py"
   "installation_engine.py"
   "manage_questions.py"
+  # UUDET CLI-TYÖKALUJEN POHJAT
+  "cli/cli_template.py"
+  # UNIFIED HANDLERIT
+  "managers/unified_question_handler.py"
+  "managers/unified_system_chain.py"
 )
 
 # === 2. Moduulitiedostot logiikka-kerroksittain ===
@@ -62,8 +67,15 @@ core_files_extra=(
   "core/dependency_container.py"
 )
 
+# === 3. UTILITIES - aputyökalut ===
+utils_files=(
+  "utils/json_utils.py"
+  "utils/file_utils.py"
+  "utils/ipfs_client.py"
+)
+
 # Yhdistetään kaikki tiedostot yhteen listaan
-all_files=("${core_files[@]}" "${domain_files[@]}" "${application_files[@]}" "${infrastructure_files[@]}" "${core_files_extra[@]}")
+all_files=("${core_files[@]}" "${domain_files[@]}" "${application_files[@]}" "${infrastructure_files[@]}" "${core_files_extra[@]}" "${utils_files[@]}")
 
 directory="${1:-./}"
 
@@ -73,6 +85,15 @@ if [ ! -d "$directory" ]; then
 fi
 
 echo "📁 Etsitään ydin- ja moduulitiedostoja hakemistosta: $directory"
+echo "🗂️  Hakemistorakenne:"
+echo "   - CLI pohjat: cli/"
+echo "   - Unified handlers: managers/"
+echo "   - Domain logiikka: domain/"
+echo "   - Application services: application/"
+echo "   - Infrastructure: infrastructure/"
+echo "   - Utils: utils/"
+echo "   - Core: core/"
+echo ""
 
 > core_python_files.txt
 
@@ -91,6 +112,8 @@ for file_spec in "${all_files[@]}"; do
     -not -name "fix_*.py" \
     -not -name "*test*.py" \
     -not -name "*_fixed.py" \
+    -not -name "*_old.py" \
+    -not -name "*_backup.py" \
     | grep -F "/$(dirname "$file_spec")/" \
     | head -1)
   
@@ -106,6 +129,8 @@ for file_spec in "${all_files[@]}"; do
       -not -name "fix_*.py" \
       -not -name "*test*.py" \
       -not -name "*_fixed.py" \
+      -not -name "*_old.py" \
+      -not -name "*_backup.py" \
       | head -1)
   fi
   
@@ -123,9 +148,19 @@ for file_spec in "${all_files[@]}"; do
 done
 
 line_count=$(wc -l < core_python_files.txt)
+file_size=$(du -h core_python_files.txt | cut -f1)
 
 echo ""
 echo "✅ VALMIS!"
 echo "📊 Löydetty $found_count / $total_expected ydin- ja moduulitiedostoa"
-echo "📄 Yhteensä $line_count riviä core_python_files.txt tiedostossa"
+echo "📄 Yhteensä $line_count riviä ($file_size) core_python_files.txt tiedostossa"
 echo "📁 Tiedosto: $(pwd)/core_python_files.txt"
+
+# Näytä tiedostojen jakauma
+echo ""
+echo "📈 TIEDOSTOJEN JAKAUMA:"
+echo "   CLI & Managers: $(echo "${core_files[@]}" "${utils_files[@]}" | wc -w) tiedostoa"
+echo "   Domain: ${#domain_files[@]} tiedostoa"
+echo "   Application: ${#application_files[@]} tiedostoa"
+echo "   Infrastructure: ${#infrastructure_files[@]} tiedostoa"
+echo "   Core: ${#core_files_extra[@]} tiedostoa"
