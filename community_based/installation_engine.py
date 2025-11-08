@@ -412,3 +412,67 @@ class InstallationEngine:
         
         print("✅ Asennus tarkistettu onnistuneesti")
         return True
+
+    def verify_installation(self, election_id: str) -> bool:
+        """Tarkista asennuksen onnistuminen"""
+        required_files = [
+            "base_templates/install_config.base.json",
+            "questions.json",
+            "candidates.json", 
+            "system_chain.json",
+            "installation_meta.json",
+            "new_questions.json",
+            "active_questions.json",
+            "ipfs_questions.json",
+            "meta.json",
+            "system_metadata.json"
+        ]
+        
+        for file_path in required_files:
+            if not (self.runtime_dir / file_path).exists():
+                print(f"❌ Puuttuu: {file_path}")
+                return False
+        
+        # Tarkista että metadata on oikealle vaalille
+        machine_info = self.metadata_manager.get_machine_info()
+        if machine_info.get("election_id") != election_id:
+            print(f"❌ Väärä vaali: {machine_info.get('election_id')} != {election_id}")
+            return False
+        
+        print("✅ Kaikki tarvittavat tiedostot löytyvät")
+        print(f"✅ Oikea vaali: {election_id}")
+        print(f"✅ Node rooli: {machine_info.get('node_role')}")
+        print(f"✅ Machine ID: {machine_info.get('machine_id')}")
+        
+        return True
+
+    def _fetch_election_registry(self, master_node: str, election_id: str) -> Dict[str, Any]:
+        """Hae vaalirekisteri master-nodelta (simuloi)"""
+        # Tässä vaiheessa simuloidaan - todellisessa toteutuksessa
+        # tämä yhdistäisi master-noden IPFS:ään tai verkkoon
+        print(f"🔗 Haetaan vaalirekisteriä master-nodelta: {master_node}")
+        
+        # Simuloi rekisterin haku
+        return {
+            "election_registry": {
+                "election_id": election_id,
+                "election_name": f"Vaalit {election_id}",
+                "master_machine_id": master_node,
+                "namespace": f"election_{election_id}",
+                "worker_nodes": [],
+                "created_at": "2025-01-01T00:00:00Z",
+                "status": "active"
+            }
+        }
+
+    def _sync_from_master(self, master_node: str) -> Dict[str, Any]:
+        """Synkronoi data master-nodelta (simuloi)"""
+        print(f"🔄 Synkronoidaan dataa master-nodelta: {master_node}")
+        
+        # Simuloi synkronointi
+        return {
+            "success": True,
+            "synced_items": 15,
+            "message": "Data synkronoitu masterilta",
+            "master_node": master_node
+        }
