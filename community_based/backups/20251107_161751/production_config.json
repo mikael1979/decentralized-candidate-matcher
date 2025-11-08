@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "production_lock": true,
+    "locked_at": "2025-11-04T23:44:19.752315",
+    "election_id": "Jumaltenvaalit_2026",
+    "fingerprint_cid": "QmMockd09b2431ca359b8472b2340fd890b8680c26df0e",
+    "system_version": "2.0.0",
+    "lock_method": "simple"
+  },
+  "security_settings": {
+    "integrity_checks": true,
+    "submission_locked": true,
+    "auto_backup": true,
+    "emergency_recovery": true
+  },
+  "ipfs_settings": {
+    "blocks_initialized": true,
+    "fingerprint_stored": true
+  }
+}

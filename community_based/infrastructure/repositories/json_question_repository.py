@@ -1,241 +1,173 @@
 #!/usr/bin/env python3
 """
-JSON Question Repository - File-based implementation of question repository
+JSON Question Repository - KORJATTU VERSIO
 """
 
 import json
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from datetime import datetime
+from datetime import timezone
 
 from domain.repositories.question_repository import QuestionRepository
 from domain.entities.question import Question
-from domain.value_objects import QuestionId
+from domain.value_objects import QuestionId, QuestionContent, QuestionScale, CreationTimestamps
 
 class JSONQuestionRepository(QuestionRepository):
-    """JSON file-based implementation of QuestionRepository"""
+    """Question repository that stores questions in JSON files"""
     
     def __init__(self, runtime_dir: str = "runtime"):
         self.runtime_dir = Path(runtime_dir)
+        self.questions_file = self.runtime_dir / "questions.json"
+        self._ensure_questions_file()
+    
+    def _ensure_questions_file(self):
+        """Varmista että questions.json tiedosto on olemassa"""
         self.runtime_dir.mkdir(exist_ok=True)
         
-        # Define file paths
-        self.tmp_file = self.runtime_dir / "tmp_new_questions.json"
-        self.new_file = self.runtime_dir / "new_questions.json"
-        self.active_file = self.runtime_dir / "active_questions.json"
-        self.questions_file = self.runtime_dir / "questions.json"
-        
-        # Initialize files if they don't exist
-        self._initialize_files()
+        if not self.questions_file.exists():
+            # Luo tyhjä questions.json tiedosto
+            initial_data = {
+                "metadata": {
+                    "version": "2.0.0",
+                    "created": datetime.now(timezone.utc).isoformat(),
+                    "total_questions": 0,
+                    "last_updated": datetime.now(timezone.utc).isoformat()
+                },
+                "questions": []
+            }
+            
+            with open(self.questions_file, 'w', encoding='utf-8') as f:
+                json.dump(initial_data, f, indent=2, ensure_ascii=False)
     
-    def _initialize_files(self):
-        """Initialize JSON files with proper structure if they don't exist"""
-        files_to_init = [
-            (self.tmp_file, "temporary"),
-            (self.new_file, "new"),
-            (self.active_file, "active"),
-            (self.questions_file, "main")
-        ]
-        
-        for file_path, storage_type in files_to_init:
-            if not file_path.exists():
-                self._create_empty_structure(file_path, storage_type)
-    
-    def _create_empty_structure(self, file_path: Path, storage_type: str):
-        """Create empty JSON structure for a storage file"""
-        empty_data = {
-            "metadata": {
-                "storage_type": storage_type,
-                "created": datetime.now().isoformat(),
-                "last_updated": datetime.now().isoformat(),
-                "total_questions": 0,
-                "version": "2.0.0"
-            },
-            "questions": []
-        }
-        
-        with open(file_path, 'w', encoding='utf-8') as f:
-            json.dump(empty_data, f, indent=2, ensure_ascii=False)
-    
-    def _load_questions_from_file(self, file_path: Path) -> List[Question]:
-        """Load questions from a JSON file"""
-        if not file_path.exists():
-            return []
-        
+    def _load_questions(self) -> List[Dict[str, Any]]:
+        """Lataa kysymykset JSON-tiedostosta"""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(self.questions_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-            
-            questions = []
-            for question_data in data.get("questions", []):
-                try:
-                    question = Question.from_dict(question_data)
-                    questions.append(question)
-                except Exception as e:
-                    print(f"Warning: Could not load question from {file_path}: {e}")
-                    continue
-            
-            return questions
-            
+                return data.get('questions', [])
         except Exception as e:
-            print(f"Error loading questions from {file_path}: {e}")
+            print(f"❌ Virhe ladattaessa kysymyksiä: {e}")
             return []
     
-    def _save_questions_to_file(self, file_path: Path, questions: List[Question]):
-        """Save questions to a JSON file"""
+    def _save_questions(self, questions: List[Dict[str, Any]]):
+        """Tallenna kysymykset JSON-tiedostoon"""
         try:
             data = {
                 "metadata": {
-                    "storage_type": file_path.stem,
-                    "last_updated": datetime.now().isoformat(),
+                    "version": "2.0.0",
+                    "created": datetime.now(timezone.utc).isoformat(),
                     "total_questions": len(questions),
-                    "version": "2.0.0"
+                    "last_updated": datetime.now(timezone.utc).isoformat()
                 },
-                "questions": [question.to_dict() for question in questions]
+                "questions": questions
             }
             
-            with open(file_path, 'w', encoding='utf-8') as f:
+            with open(self.questions_file, 'w', encoding='utf-8') as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
-                
         except Exception as e:
-            print(f"Error saving questions to {file_path}: {e}")
-            raise
+            print(f"❌ Virhe tallentaessa kysymyksiä: {e}")
     
-    def save_temporary(self, question: Question) -> None:
-        """Save question to temporary storage"""
-        questions = self._load_questions_from_file(self.tmp_file)
-        questions.append(question)
-        self._save_questions_to_file(self.tmp_file, questions)
+    def _dict_to_question(self, question_dict: Dict[str, Any]) -> Question:
+        """Muunna dictionary Question-entiteetiksi"""
+        return Question(
+            question_id=QuestionId(question_dict.get('local_id', '')),
+            content=QuestionContent(
+                question=question_dict.get('content', {}).get('question', {}),
+                category=question_dict.get('content', {}).get('category', {}),
+                tags=question_dict.get('content', {}).get('tags', []),
+                scale=question_dict.get('content', {}).get('scale', {})
+            ),
+            elo_rating=question_dict.get('elo_rating', {}),
+            timestamps=CreationTimestamps(
+                created=question_dict.get('timestamps', {}).get('created_local'),
+                modified=question_dict.get('timestamps', {}).get('modified_local')
+            ),
+            metadata=question_dict.get('metadata', {})
+        )
     
-    def save_new(self, question: Question) -> None:
-        """Save question to new questions storage"""
-        questions = self._load_questions_from_file(self.new_file)
-        questions.append(question)
-        self._save_questions_to_file(self.new_file, questions)
-    
-    def save_active(self, question: Question) -> None:
-        """Save question to active questions storage"""
-        questions = self._load_questions_from_file(self.active_file)
-        
-        # Remove existing question with same ID if present
-        questions = [q for q in questions if q.id.value != question.id.value]
-        questions.append(question)
-        
-        self._save_questions_to_file(self.active_file, questions)
+    def _question_to_dict(self, question: Question) -> Dict[str, Any]:
+        """Muunna Question-entiteetti dictionaryksi"""
+        return {
+            "local_id": str(question.question_id),
+            "source": "local",
+            "content": {
+                "question": question.content.question,
+                "category": question.content.category,
+                "tags": question.content.tags,
+                "scale": question.content.scale
+            },
+            "elo_rating": question.elo_rating,
+            "timestamps": {
+                "created_local": str(question.timestamps.created),
+                "modified_local": str(question.timestamps.modified)
+            },
+            "metadata": question.metadata
+        }
     
     def find_by_id(self, question_id: QuestionId) -> Optional[Question]:
-        """Find question by ID across all storage levels"""
-        # Search in all storage files
-        storage_files = [self.tmp_file, self.new_file, self.active_file, self.questions_file]
+        """Etsi kysymys ID:llä"""
+        questions_data = self._load_questions()
         
-        for file_path in storage_files:
-            questions = self._load_questions_from_file(file_path)
-            for question in questions:
-                if question.id.value == question_id.value:
-                    return question
+        for question_dict in questions_data:
+            if question_dict.get('local_id') == str(question_id):
+                return self._dict_to_question(question_dict)
         
         return None
     
-    def find_temporary_questions(self) -> List[Question]:
-        """Get all temporary questions"""
-        return self._load_questions_from_file(self.tmp_file)
+    def find_all(self) -> List[Question]:
+        """Hae kaikki kysymykset"""
+        questions_data = self._load_questions()
+        return [self._dict_to_question(q) for q in questions_data]
     
-    def find_new_questions(self) -> List[Question]:
-        """Get all new questions"""
-        return self._load_questions_from_file(self.new_file)
-    
-    def find_active_questions(self, limit: Optional[int] = None) -> List[Question]:
-        """Get active questions, optionally limited"""
-        questions = self._load_questions_from_file(self.active_file)
-        
-        # Sort by rating (descending)
-        questions.sort(key=lambda q: q.rating.value, reverse=True)
-        
-        if limit:
-            return questions[:limit]
-        
-        return questions
-    
-    def remove_temporary(self, question_id: QuestionId) -> bool:
-        """Remove question from temporary storage"""
-        questions = self._load_questions_from_file(self.tmp_file)
-        original_count = len(questions)
-        
-        questions = [q for q in questions if q.id.value != question_id.value]
-        
-        if len(questions) < original_count:
-            self._save_questions_to_file(self.tmp_file, questions)
-            return True
-        
-        return False
-    
-    def remove_new(self, question_id: QuestionId) -> bool:
-        """Remove question from new questions storage"""
-        questions = self._load_questions_from_file(self.new_file)
-        original_count = len(questions)
-        
-        questions = [q for q in questions if q.id.value != question_id.value]
-        
-        if len(questions) < original_count:
-            self._save_questions_to_file(self.new_file, questions)
-            return True
-        
-        return False
-    
-    def update_rating(self, question_id: QuestionId, new_rating: int) -> bool:
-        """Update question rating across all storage levels"""
-        updated = False
-        
-        # Update in all storage files where the question exists
-        storage_files = [self.tmp_file, self.new_file, self.active_file, self.questions_file]
-        
-        for file_path in storage_files:
-            questions = self._load_questions_from_file(file_path)
+    def save(self, question: Question) -> bool:
+        """Tallenna kysymys"""
+        try:
+            questions_data = self._load_questions()
             
-            for question in questions:
-                if question.id.value == question_id.value:
-                    # Calculate delta to maintain comparison/vote deltas
-                    delta = new_rating - question.rating.value
-                    question.update_rating(delta, "manual_update")
-                    updated = True
+            # Tarkista onko kysymys jo olemassa
+            existing_index = None
+            for i, q_dict in enumerate(questions_data):
+                if q_dict.get('local_id') == str(question.question_id):
+                    existing_index = i
+                    break
             
-            if any(q.id.value == question_id.value for q in questions):
-                self._save_questions_to_file(file_path, questions)
-        
-        return updated
+            question_dict = self._question_to_dict(question)
+            
+            if existing_index is not None:
+                # Päivitä olemassa oleva kysymys
+                questions_data[existing_index] = question_dict
+            else:
+                # Lisää uusi kysymys
+                questions_data.append(question_dict)
+            
+            self._save_questions(questions_data)
+            return True
+            
+        except Exception as e:
+            print(f"❌ Virhe tallentaessa kysymystä: {e}")
+            return False
     
-    def get_question_stats(self) -> dict:
-        """Get repository statistics"""
-        all_questions = []
-        storage_files = [self.tmp_file, self.new_file, self.active_file, self.questions_file]
-        
-        for file_path in storage_files:
-            all_questions.extend(self._load_questions_from_file(file_path))
-        
-        if not all_questions:
-            return {
-                "total_questions": 0,
-                "average_rating": 0,
-                "recent_activity": {}
-            }
-        
-        total_rating = sum(q.rating.value for q in all_questions)
-        average_rating = total_rating / len(all_questions)
-        
-        # Calculate recent activity (last 24 hours)
-        one_day_ago = datetime.now().timestamp() - 86400
-        recent_questions = [
-            q for q in all_questions 
-            if q.timestamps.modified.timestamp() > one_day_ago
-        ]
-        
-        return {
-            "total_questions": len(all_questions),
-            "average_rating": round(average_rating, 2),
-            "recent_activity": {
-                "questions_modified_24h": len(recent_questions),
-                "tmp_questions": len(self._load_questions_from_file(self.tmp_file)),
-                "new_questions": len(self._load_questions_from_file(self.new_file)),
-                "active_questions": len(self._load_questions_from_file(self.active_file))
-            }
-        }
+    def delete(self, question_id: QuestionId) -> bool:
+        """Poista kysymys"""
+        try:
+            questions_data = self._load_questions()
+            
+            # Poista kysymys
+            original_count = len(questions_data)
+            questions_data = [q for q in questions_data if q.get('local_id') != str(question_id)]
+            
+            if len(questions_data) < original_count:
+                self._save_questions(questions_data)
+                return True
+            else:
+                return False  # Kysymystä ei löytynyt
+                
+        except Exception as e:
+            print(f"❌ Virhe poistaessa kysymystä: {e}")
+            return False
+    
+    def count(self) -> int:
+        """Laske kysymysten määrä"""
+        questions_data = self._load_questions()
+        return len(questions_data)

@@ -1,0 +1,70 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "created": "{{TIMESTAMP}}",
+    "last_updated": "{{TIMESTAMP}}",
+    "description": {
+      "fi": "IPFS-synkronoinnin ajanvarauskonfiguraatio",
+      "en": "IPFS synchronization scheduling configuration",
+      "sv": "IPFS-synkroniserings schemaläggningskonfiguration"
+    }
+  },
+  "schedule_config": {
+    "time_slots": {
+      "buffer_before": {
+        "duration_minutes": 5,
+        "purpose": {
+          "fi": "Tyhjä aika ennen varausta - estää konflikteja",
+          "en": "Empty time before reservation - prevents conflicts",
+          "sv": "Tom tid före reservation - förhindrar konflikter"
+        },
+        "reservable": false,
+        "priority": "low"
+      },
+      "urgent_reservation": {
+        "duration_minutes": 15,
+        "purpose": {
+          "fi": "Kiireelliset varaukset - kriittiset toiminnot",
+          "en": "Urgent reservations - critical operations", 
+          "sv": "Brådskande reservationer - kritiska operationer"
+        },
+        "reservable": true,
+        "priority": "critical",
+        "max_concurrent": 1
+      },
+      "node_reservation": {
+        "duration_minutes": 30,
+        "purpose": {
+          "fi": "Nodin oma varausaika - säännöllinen synkronointi",
+          "en": "Node's own reservation time - regular synchronization",
+          "sv": "Nodens egen reservationstid - regelbunden synkronisering"
+        },
+        "reservable": true,
+        "priority": "high",
+        "max_concurrent": 3
+      },
+      "buffer_after": {
+        "duration_minutes": 10,
+        "purpose": {
+          "fi": "Tyhjä aika varauksen jälkeen - siirtovaraa",
+          "en": "Empty time after reservation - buffer time",
+          "sv": "Tom tid efter reservation - bufferttid"
+        },
+        "reservable": false,
+        "priority": "low"
+      }
+    },
+    "scheduling_rules": {
+      "min_time_between_reservations": 2,
+      "max_reservations_per_hour": 6,
+      "max_reservations_per_day": 24,
+      "advance_booking_hours": 24,
+      "timezone": "UTC"
+    },
+    "conflict_resolution": {
+      "strategy": "timestamp_priority",
+      "auto_resolve": true,
+      "manual_intervention_threshold": 3
+    }
+  }
+}

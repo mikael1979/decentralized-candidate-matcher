@@ -1,0 +1,42 @@
+[file name]: file_structure.base.json
+[file content begin]
+{
+  "file_hierarchy": {
+    "base_templates": {
+      "purpose": "Alkuperäinen rakenne, ei koskaan muokata suoraan",
+      "files": [
+        "questions.base.json",
+        "meta.base.json", 
+        "governance.base.json",
+        "community.base.json",
+        "install_config.base.json",
+        "system_chain.base.json",
+        "ipfs.base.json",
+        "ipfs_conf.base.json"
+      ]
+    },
+    "runtime_instances": {
+      "purpose": "Kloonatut käyttöversiot, näitä ohjelma käsittelee",
+      "files": [
+        "questions.json",
+        "new_questions.json", 
+        "active_questions.json",
+        "ipfs_questions.json",
+        "parties.json",
+        "party_profiles.json",
+        "candidates.json",
+        "candidate_profiles.json",
+        "meta.json"
+      ]
+    },
+    "temporary_files": {
+      "purpose": "Väliaikaiset työskentelytiedostot",
+      "files": [
+        "tmp_new_questions.json",
+        "tmp_active_questions.json",
+        "tmp_sync_*.json"
+      ]
+    }
+  }
+}
+[file content end]

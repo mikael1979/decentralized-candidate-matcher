@@ -5,7 +5,7 @@ Question Query Handlers - Handle data queries for questions
 
 from typing import List
 from domain.repositories.question_repository import QuestionRepository
-from ..queries import (
+from application.queries import (
     GetQuestionStatusQuery, GetActiveQuestionsQuery, 
     GetQuestionStatsQuery, FindQuestionsQuery,
     QuestionListResult, SystemStatusResult, QueryResult

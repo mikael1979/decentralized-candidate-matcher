@@ -1,0 +1,56 @@
+{
+  "emergency_slots": {
+    "metadata": {
+      "created": "2024-01-15T10:00:00Z",
+      "last_updated": "2024-01-15T10:00:00Z",
+      "timezone": "UTC",
+      "current_utc_date": "2024-01-15",
+      "emergency_slots_available_today": 8,
+      "emergency_slots_used_today": 2
+    },
+    
+    "reserved_emergency_windows_utc": [
+      {
+        "window_id": "emergency_20240115_0600",
+        "time_slot_utc": {
+          "start": "2024-01-15T06:00:00Z",
+          "end": "2024-01-15T06:10:00Z",
+          "duration_minutes": 10,
+          "utc_offset": "+00:00"
+        },
+        "reserved_for": "emergency_only",
+        "max_priority": "emergency",
+        "auto_release_minutes": 5,
+        "status": "available",
+        "local_time_info": {
+          "helsinki": "08:00-08:10",
+          "london": "06:00-06:10", 
+          "new_york": "01:00-01:10"
+        }
+      },
+      {
+        "window_id": "emergency_20240115_1400",
+        "time_slot_utc": {
+          "start": "2024-01-15T14:00:00Z",
+          "end": "2024-01-15T14:10:00Z", 
+          "duration_minutes": 10,
+          "utc_offset": "+00:00"
+        },
+        "reserved_for": "emergency_only",
+        "max_priority": "emergency", 
+        "auto_release_minutes": 5,
+        "status": "reserved",
+        "reserved_by": "machine_002",
+        "reserved_at": "2024-01-15T13:45:00Z",
+        "sync_type": "security_update"
+      }
+    ],
+    
+    "emergency_usage_metrics": {
+      "emergency_requests_today_utc": 5,
+      "emergency_slots_utilized_today": 2,
+      "average_emergency_response_time_minutes": 2.5,
+      "emergency_preemptions_today": 1
+    }
+  }
+}

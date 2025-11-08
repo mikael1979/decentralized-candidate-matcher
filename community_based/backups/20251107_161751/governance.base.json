@@ -1,0 +1,27 @@
+{
+  "governance": {
+    "model": "{{GOVERNANCE_MODEL}}",
+    "community_token": "{{COMMUNITY_TOKEN}}",
+    "proposal_threshold": {{PROPOSAL_THRESHOLD}},
+    "voting_quorum": {{VOTING_QUORUM}},
+    "execution_delay_hours": {{EXECUTION_DELAY_HOURS}},
+    "roles": {
+      "validators": {
+        "count": {{VALIDATOR_COUNT}},
+        "stake_required": {{VALIDATOR_STAKE}},
+        "election_frequency": "{{VALIDATOR_ELECTION_FREQ}}"
+      },
+      "moderators": {
+        "count": {{MODERATOR_COUNT}},
+        "reputation_required": {{MODERATOR_REPUTATION}},
+        "selection_method": "{{MODERATOR_SELECTION}}"
+      }
+    }
+  },
+  "treasury": {
+    "management": "community_multisig",
+    "signatures_required": {{MULTISIG_SIGNATURES}},
+    "max_single_transfer": {{MAX_SINGLE_TRANSFER}},
+    "budget_approval_threshold": {{BUDGET_APPROVAL_THRESHOLD}}
+  }
+}

@@ -1,0 +1,27 @@
+[file name]: candidate_sync_protocol.base.json
+[file content begin]
+{
+  "candidate_sync_protocol": {
+    "data_flow": {
+      "step_1": "candidate_input -> tmp_new_candidate_profiles.json",
+      "step_2": "tmp_new_candidate_profiles.json -> new_candidate_profiles.json",
+      "step_3": "new_candidate_profiles.json -> candidate_profiles.json",
+      "step_4": "candidate_profiles.json -> ipfs_candidate_profiles.json", 
+      "step_5": "ipfs_candidate_profiles.json -> IPFS_network",
+      "answer_flow": "answer_input -> candidate_profiles.json -> ipfs_candidate_profiles.json -> IPFS"
+    },
+    "validation_rules": {
+      "answer_range": "-5 to +5",
+      "required_fields": ["candidate_id", "question_id", "answer_value"],
+      "max_answers_per_question": 1,
+      "completeness_threshold": 0.7
+    },
+    "sync_triggers": {
+      "on_new_candidate": true,
+      "on_answer_update": true,
+      "auto_sync_interval": 300,
+      "on_system_start": true
+    }
+  }
+}
+[file content end]

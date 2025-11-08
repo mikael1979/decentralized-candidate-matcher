@@ -1,0 +1,22 @@
+[file name]: ipfs_filter_rules.base.json
+[file content begin]
+{
+  "ipfs_sync_filters": {
+    "local_to_ipfs": {
+      "filter_criteria": "ipfs_cid IS NULL AND source IN ['local']",
+      "description": "Vain paikallisesti lisätyt kysymykset ilman CID:ä synkronoidaan IPFS:ään",
+      "prevent_duplicates": true
+    },
+    "ipfs_to_local": {
+      "filter_criteria": "ipfs_cid IS NOT NULL AND local_id NOT IN existing_local_ids",
+      "description": "Vain IPFS:stä tuodut kysymykset joita ei ole jo paikallisesti",
+      "conflict_resolution": "use_ipfs_version_if_newer"
+    },
+    "cid_management": {
+      "local_questions_get_cid_on_sync": true,
+      "ipfs_questions_keep_existing_cid": true,
+      "prevent_cid_regeneration": true
+    }
+  }
+}
+[file content end]

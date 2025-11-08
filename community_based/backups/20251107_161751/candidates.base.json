@@ -1,0 +1,49 @@
+{
+  "metadata": {
+    "version": "2.0.0",
+    "created": "2024-01-15T10:00:00Z",
+    "last_updated": "2024-01-15T10:00:00Z",
+    "election_id": "{{ELECTION_ID}}",
+    "description": {
+      "fi": "Ehdokkaiden perustiedot ja vastaukset",
+      "en": "Candidate information and answers",
+      "sv": "Kandidatinformation och svar"
+    }
+  },
+  "candidates": [
+    {
+      "candidate_id": "{{CANDIDATE_ID}}",
+      "name": {
+        "fi": "{{FI_NAME}}",
+        "en": "{{EN_NAME}}",
+        "sv": "{{SV_NAME}}"
+      },
+      "party": "{{PARTY_ID}}",
+      "description": {
+        "fi": "{{FI_DESCRIPTION}}",
+        "en": "{{EN_DESCRIPTION}}",
+        "sv": "{{SV_DESCRIPTION}}"
+      },
+      "answers": [
+        {
+          "question_id": "{{QUESTION_ID}}",
+          "answer_value": 3,
+          "confidence": 3,
+          "explanations": {
+            "fi": "{{FI_EXPLANATION}}",
+            "en": "{{EN_EXPLANATION}}",
+            "sv": "{{SV_EXPLANATION}}"
+          },
+          "timestamp": "{{TIMESTAMP}}",
+          "version": 1
+        }
+      ],
+      "metadata": {
+        "submission_timestamp": "{{TIMESTAMP}}",
+        "last_updated": "{{TIMESTAMP}}",
+        "answers_hash": "{{ANSWERS_HASH}}",
+        "verification_tx": "{{VERIFICATION_TX}}"
+      }
+    }
+  ]
+}

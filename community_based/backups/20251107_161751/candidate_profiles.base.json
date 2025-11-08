@@ -1,0 +1,60 @@
+[file name]: candidate_profiles.base.json
+[file content begin]
+{
+  "metadata": {
+    "version": "{{CANDIDATE_PROFILES_VERSION}}",
+    "created": "{{CREATED_TIMESTAMP}}",
+    "last_updated": "{{LAST_UPDATED_TIMESTAMP}}",
+    "total_candidates": {{TOTAL_CANDIDATES}},
+    "total_answers": {{TOTAL_ANSWERS}}
+  },
+  "candidates": [
+    {
+      "candidate_id": "{{CANDIDATE_ID}}",
+      "basic_info": {
+        "name": {
+          "fi": "{{CANDIDATE_NAME_FI}}",
+          "en": "{{CANDIDATE_NAME_EN}}", 
+          "sv": "{{CANDIDATE_NAME_SV}}"
+        },
+        "party": "{{PARTY_ID}}",
+        "district": "{{DISTRICT_ID}}",
+        "photo_url": "{{PHOTO_URL}}",
+        "contact_info": {
+          "email": "{{EMAIL}}",
+          "website": "{{WEBSITE}}",
+          "social_media": {
+            "twitter": "{{TWITTER}}",
+            "facebook": "{{FACEBOOK}}"
+          }
+        }
+      },
+      "answers": [
+        {
+          "question_id": {{QUESTION_ID}},
+          "answer_value": {{ANSWER_VALUE}},
+          "explanation": {
+            "fi": "{{EXPLANATION_FI}}",
+            "en": "{{EXPLANATION_EN}}",
+            "sv": "{{EXPLANATION_SV}}"
+          },
+          "confidence": {{CONFIDENCE}},
+          "last_updated": "{{ANSWER_TIMESTAMP}}"
+        }
+      ],
+      "profile_metadata": {
+        "status": "{{STATUS}}",
+        "created_at": "{{PROFILE_CREATED_AT}}",
+        "last_modified": "{{PROFILE_UPDATED_AT}}",
+        "version": "{{PROFILE_VERSION}}",
+        "completeness_score": {{COMPLETENESS_SCORE}}
+      }
+    }
+  ],
+  "answer_statistics": {
+    "average_answers_per_candidate": {{AVG_ANSWERS}},
+    "questions_answered": {{QUESTIONS_ANSWERED}},
+    "completion_rate": {{COMPLETION_RATE}}
+  }
+}
+[file content end]

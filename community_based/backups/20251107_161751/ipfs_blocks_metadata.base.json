@@ -1,0 +1,49 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "created": "{{TIMESTAMP}}",
+    "last_updated": "{{TIMESTAMP}}",
+    "election_id": "{{ELECTION_ID}}",
+    "node_id": "{{NODE_ID}}",
+    "description": {
+      "fi": "IPFS-lohkojen metatiedot",
+      "en": "IPFS blocks metadata", 
+      "sv": "IPFS-block metadata"
+    }
+  },
+  "block_sequence": ["buffer1", "urgent", "sync", "active", "buffer2"],
+  "current_rotation": 0,
+  "total_rotations": 0,
+  "blocks": {
+    "buffer1": "{{BUFFER1_CID}}",
+    "urgent": "{{URGENT_CID}}",
+    "sync": "{{SYNC_CID}}",
+    "active": "{{ACTIVE_CID}}",
+    "buffer2": "{{BUFFER2_CID}}"
+  },
+  "rotation_history": [
+    {
+      "rotation_id": 0,
+      "timestamp": "{{TIMESTAMP}}",
+      "old_sequence": ["buffer1", "urgent", "sync", "active", "buffer2"],
+      "new_sequence": ["buffer1", "urgent", "sync", "active", "buffer2"],
+      "trigger": "initialization"
+    }
+  ],
+  "node_registry": ["{{NODE_ID}}"],
+  "sync_config": {
+    "auto_rotate": true,
+    "max_block_size": {
+      "buffer1": 100,
+      "urgent": 50,
+      "sync": 200,
+      "active": 150,
+      "buffer2": 100
+    },
+    "rotation_triggers": {
+      "active_block_full": true,
+      "time_based_rotation_hours": 24,
+      "emergency_rotation": true
+    }
+  }
+}

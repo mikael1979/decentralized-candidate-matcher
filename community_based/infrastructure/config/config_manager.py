@@ -1,253 +1,211 @@
 #!/usr/bin/env python3
 """
-Configuration Manager - Centralized configuration management
+Config Manager - TÄYDELLINEN VERSIO
 """
 
 import json
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
+from datetime import datetime
+from datetime import timezone
 
 class ConfigManager:
-    """Centralized configuration management for the application"""
+    """Hallinnoi järjestelmän konfiguraatiota"""
     
-    def __init__(self, config_dir: str = "config", runtime_dir: str = "runtime"):
-        self.config_dir = Path(config_dir)
+    def __init__(self, runtime_dir: str = "runtime"):
         self.runtime_dir = Path(runtime_dir)
-        
-        # Ensure directories exist
-        self.config_dir.mkdir(exist_ok=True)
         self.runtime_dir.mkdir(exist_ok=True)
-        
-        # Load configuration
-        self._config = self._load_config()
     
-    def _load_config(self) -> Dict[str, Any]:
-        """Load configuration from files"""
-        config = {
-            "system": self._load_system_config(),
-            "questions": self._load_questions_config(),
-            "elections": self._load_elections_config(),
-            "ipfs": self._load_ipfs_config(),
-            "sync": self._load_sync_config()
-        }
-        
-        # Load runtime-specific config if exists
-        runtime_config_file = self.runtime_dir / "runtime_config.json"
-        if runtime_config_file.exists():
-            try:
-                with open(runtime_config_file, 'r', encoding='utf-8') as f:
-                    runtime_config = json.load(f)
-                config["runtime"] = runtime_config
-            except Exception as e:
-                print(f"Warning: Could not load runtime config: {e}")
-        
-        return config
-    
-    def _load_system_config(self) -> Dict[str, Any]:
-        """Load system configuration"""
-        system_config_file = self.config_dir / "system_config.json"
-        
-        if system_config_file.exists():
-            try:
-                with open(system_config_file, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-            except Exception as e:
-                print(f"Warning: Could not load system config: {e}")
-        
-        # Default system configuration
-        return {
-            "mode": "development",
-            "logging_level": "INFO",
-            "enable_integrity_checks": True,
-            "auto_backup": True,
-            "backup_interval_hours": 24
-        }
-    
-    def _load_questions_config(self) -> Dict[str, Any]:
-        """Load questions configuration"""
-        questions_config_file = self.config_dir / "questions_config.json"
-        
-        if questions_config_file.exists():
-            try:
-                with open(questions_config_file, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-            except Exception as e:
-                print(f"Warning: Could not load questions config: {e}")
-        
-        # Default questions configuration
-        return {
-            "auto_sync_enabled": True,
-            "batch_size": 5,
-            "max_batch_size": 20,
-            "time_interval_hours": 24,
-            "active_question_rules": {
-                "min_rating": 800,
-                "min_comparisons": 5,
-                "min_votes": 3,
-                "max_questions": 15
-            },
-            "rating_calculation": {
-                "base_k_factor": 32,
-                "trust_multipliers": {
-                    "new_user": 0.5,
-                    "regular_user": 1.0,
-                    "trusted_user": 1.2,
-                    "validator": 1.5
-                }
-            }
-        }
-    
-    def _load_elections_config(self) -> Dict[str, Any]:
-        """Load elections configuration"""
-        elections_config_file = self.config_dir / "elections_config.json"
-        
-        if elections_config_file.exists():
-            try:
-                with open(elections_config_file, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-            except Exception as e:
-                print(f"Warning: Could not load elections config: {e}")
-        
-        # Default elections configuration
-        return {
-            "default_election_type": "municipal",
-            "supported_election_types": ["presidential", "municipal", "test"],
-            "default_phases": [
-                {
-                    "name": {"fi": "Kysymysten lähetys", "en": "Question submission", "sv": "Frågeinsändning"},
-                    "duration_days": 30
-                },
-                {
-                    "name": {"fi": "Äänestys", "en": "Voting", "sv": "Röstning"},
-                    "duration_days": 14
-                }
-            ]
-        }
-    
-    def _load_ipfs_config(self) -> Dict[str, Any]:
-        """Load IPFS configuration"""
-        ipfs_config_file = self.config_dir / "ipfs_config.json"
-        
-        if ipfs_config_file.exists():
-            try:
-                with open(ipfs_config_file, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-            except Exception as e:
-                print(f"Warning: Could not load IPFS config: {e}")
-        
-        # Default IPFS configuration
-        return {
-            "use_mock": True,
-            "real_ipfs_host": "localhost",
-            "real_ipfs_port": 5001,
-            "block_config": {
-                "buffer1": {"max_size": 100},
-                "urgent": {"max_size": 50},
-                "sync": {"max_size": 200},
-                "active": {"max_size": 150},
-                "buffer2": {"max_size": 100}
-            }
-        }
-    
-    def _load_sync_config(self) -> Dict[str, Any]:
-        """Load sync configuration"""
-        sync_config_file = self.config_dir / "sync_config.json"
-        
-        if sync_config_file.exists():
-            try:
-                with open(sync_config_file, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-            except Exception as e:
-                print(f"Warning: Could not load sync config: {e}")
-        
-        # Default sync configuration
-        return {
-            "use_schedule": True,
-            "schedule_priority_mapping": {
-                "emergency": "critical",
-                "high": "high",
-                "normal": "normal",
-                "low": "low"
-            },
-            "max_retries": 3,
-            "retry_delay_seconds": 60
-        }
-    
-    def get(self, key: str, default: Any = None) -> Any:
-        """Get configuration value by key (dot notation supported)"""
-        keys = key.split('.')
-        value = self._config
-        
-        for k in keys:
-            if isinstance(value, dict) and k in value:
-                value = value[k]
-            else:
-                return default
-        
-        return value
-    
-    def get_module_config(self, module: str) -> Dict[str, Any]:
-        """Get configuration for a specific module"""
-        return self._config.get(module, {})
-    
-    def update_config(self, updates: Dict[str, Any]) -> None:
-        """Update configuration with new values"""
-        self._deep_update(self._config, updates)
-        
-        # Save updated configuration to runtime
-        self._save_runtime_config()
-    
-    def _deep_update(self, original: Dict, updates: Dict) -> None:
-        """Deep update a dictionary"""
-        for key, value in updates.items():
-            if isinstance(value, dict) and key in original and isinstance(original[key], dict):
-                self._deep_update(original[key], value)
-            else:
-                original[key] = value
-    
-    def _save_runtime_config(self) -> None:
-        """Save current configuration to runtime file"""
-        runtime_config_file = self.runtime_dir / "runtime_config.json"
-        
+    def get_machine_info(self) -> Dict[str, Any]:
+        """Hae koneen tiedot"""
         try:
-            with open(runtime_config_file, 'w', encoding='utf-8') as f:
-                json.dump(self._config, f, indent=2, ensure_ascii=False)
+            machine_file = self.runtime_dir / "machine_id.json"
+            if machine_file.exists():
+                with open(machine_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            
+            # Luo uusi machine_id
+            return self._generate_machine_id()
         except Exception as e:
-            print(f"Warning: Could not save runtime config: {e}")
+            return {
+                "machine_id": "error_machine",
+                "error": str(e)
+            }
     
-    def verify_config_integrity(self) -> bool:
-        """Verify that all required configuration is present"""
-        required_sections = ["system", "questions", "elections", "ipfs"]
+    def _generate_machine_id(self) -> Dict[str, Any]:
+        """Luo uusi kone-ID"""
+        import uuid
+        machine_id = f"machine_{uuid.uuid4().hex[:16]}"
         
-        for section in required_sections:
-            if section not in self._config:
-                print(f"Missing configuration section: {section}")
-                return False
+        machine_data = {
+            "machine_id": machine_id,
+            "created": datetime.now(timezone.utc).isoformat(),
+            "version": "2.0.0",
+            "architecture": "modern"
+        }
         
-        # Check specific required values
-        required_values = [
-            "system.mode",
-            "questions.batch_size", 
-            "questions.auto_sync_enabled",
-            "ipfs.use_mock"
-        ]
+        # Tallenna
+        machine_file = self.runtime_dir / "machine_id.json"
+        with open(machine_file, 'w', encoding='utf-8') as f:
+            json.dump(machine_data, f, indent=2, ensure_ascii=False)
         
-        for key in required_values:
-            if self.get(key) is None:
-                print(f"Missing configuration value: {key}")
-                return False
-        
-        return True
+        return machine_data
     
-    def get_election_config(self, election_id: str) -> Dict[str, Any]:
-        """Get configuration for a specific election"""
-        election_config = self._config.get("elections", {}).copy()
-        
-        # Add election-specific overrides if they exist
-        election_specific_key = f"elections.{election_id}"
-        election_specific_config = self.get(election_specific_key)
-        
-        if election_specific_config:
-            election_config.update(election_specific_config)
-        
-        return election_config
+    def update_machine_info(self, updates: Dict[str, Any]) -> bool:
+        """Päivitä koneen tietoja"""
+        try:
+            current_info = self.get_machine_info()
+            current_info.update(updates)
+            current_info["last_updated"] = datetime.now(timezone.utc).isoformat()
+            
+            machine_file = self.runtime_dir / "machine_id.json"
+            with open(machine_file, 'w', encoding='utf-8') as f:
+                json.dump(current_info, f, indent=2, ensure_ascii=False)
+            
+            return True
+        except Exception as e:
+            print(f"❌ Virhe päivittäessä koneen tietoja: {e}")
+            return False
+    
+    def get_system_metadata(self) -> Dict[str, Any]:
+        """Hae järjestelmän metadata"""
+        try:
+            meta_file = self.runtime_dir / "system_metadata.json"
+            if meta_file.exists():
+                with open(meta_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            
+            # Luo oletusmetadata
+            default_meta = {
+                "system_id": "unknown_system",
+                "created": datetime.now(timezone.utc).isoformat(),
+                "version": "2.0.0"
+            }
+            
+            with open(meta_file, 'w', encoding='utf-8') as f:
+                json.dump(default_meta, f, indent=2, ensure_ascii=False)
+            
+            return default_meta
+        except Exception as e:
+            return {"error": str(e)}
+    
+    def update_system_metadata(self, updates: Dict[str, Any]) -> bool:
+        """Päivitä järjestelmän metadataa"""
+        try:
+            current_meta = self.get_system_metadata()
+            current_meta.update(updates)
+            current_meta["last_updated"] = datetime.now(timezone.utc).isoformat()
+            
+            meta_file = self.runtime_dir / "system_metadata.json"
+            with open(meta_file, 'w', encoding='utf-8') as f:
+                json.dump(current_meta, f, indent=2, ensure_ascii=False)
+            
+            return True
+        except Exception as e:
+            print(f"❌ Virhe päivittäessä metadataa: {e}")
+            return False
+    
+    def get_sync_config(self) -> Dict[str, Any]:
+        """Hae synkronointikonfiguraatio"""
+        try:
+            sync_file = self.runtime_dir / "sync_config.json"
+            if sync_file.exists():
+                with open(sync_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            
+            # Oletuskonfiguraatio
+            default_config = {
+                "batch_size": 5,
+                "max_batch_size": 20,
+                "time_interval_hours": 24,
+                "auto_sync_enabled": True
+            }
+            
+            with open(sync_file, 'w', encoding='utf-8') as f:
+                json.dump(default_config, f, indent=2, ensure_ascii=False)
+            
+            return default_config
+        except Exception as e:
+            return {"error": str(e)}
+    
+    def update_sync_config(self, updates: Dict[str, Any]) -> bool:
+        """Päivitä synkronointikonfiguraatiota"""
+        try:
+            current_config = self.get_sync_config()
+            current_config.update(updates)
+            
+            sync_file = self.runtime_dir / "sync_config.json"
+            with open(sync_file, 'w', encoding='utf-8') as f:
+                json.dump(current_config, f, indent=2, ensure_ascii=False)
+            
+            return True
+        except Exception as e:
+            print(f"❌ Virhe päivittäessä synkronointikonfiguraatiota: {e}")
+            return False
+    
+    def get_election_registry(self) -> Optional[Dict[str, Any]]:
+        """Hae vaalirekisteri"""
+        try:
+            registry_file = self.runtime_dir / "election_registry.json"
+            if registry_file.exists():
+                with open(registry_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            return None
+        except:
+            return None
+    
+    def update_election_registry(self, registry: Dict[str, Any]) -> bool:
+        """Päivitä vaalirekisteri"""
+        try:
+            registry_file = self.runtime_dir / "election_registry.json"
+            with open(registry_file, 'w', encoding='utf-8') as f:
+                json.dump(registry, f, indent=2, ensure_ascii=False)
+            return True
+        except Exception as e:
+            print(f"❌ Virhe päivittäessä vaalirekisteriä: {e}")
+            return False
+    
+    def get_namespace_info(self) -> Dict[str, str]:
+        """Hae nimiavaruuden tiedot"""
+        try:
+            meta = self.get_system_metadata()
+            election_specific = meta.get('election_specific', {})
+            
+            return {
+                "election_id": election_specific.get('election_id', 'unknown'),
+                "namespace": election_specific.get('namespace', 'unknown'),
+                "machine_id": self.get_machine_info().get('machine_id', 'unknown')
+            }
+        except:
+            return {
+                "election_id": "unknown",
+                "namespace": "unknown", 
+                "machine_id": "unknown"
+            }
+    
+    def verify_namespace_integrity(self) -> Dict[str, Any]:
+        """Tarkista nimiavaruuden eheys"""
+        try:
+            namespace_info = self.get_namespace_info()
+            machine_info = self.get_machine_info()
+            
+            # Yksinkertainen eheystarkistus
+            issues = []
+            
+            if namespace_info['election_id'] == 'unknown':
+                issues.append("Election ID not set")
+            
+            if machine_info.get('machine_id') == 'error_machine':
+                issues.append("Machine ID error")
+            
+            return {
+                "success": len(issues) == 0,
+                "namespace": namespace_info['namespace'],
+                "issues": issues,
+                "machine_id": machine_info.get('machine_id')
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e)
+            }

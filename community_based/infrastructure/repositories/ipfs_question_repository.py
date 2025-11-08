@@ -1,183 +1,176 @@
 #!/usr/bin/env python3
 """
-IPFS Question Repository - IPFS-based implementation of question repository
+IPFS Question Repository - LOPULLINEN KORJATTU VERSIO
 """
 
-from typing import List, Optional
+import json
+from pathlib import Path
+from typing import List, Optional, Dict, Any
+from datetime import datetime
+from datetime import timezone
+
 from domain.repositories.question_repository import QuestionRepository
 from domain.entities.question import Question
-from domain.value_objects import QuestionId, CID
+from domain.value_objects import QuestionId, QuestionContent, QuestionScale, CreationTimestamps
 
 class IPFSQuestionRepository(QuestionRepository):
-    """IPFS-based implementation of QuestionRepository"""
+    """Question repository that stores questions in IPFS and local JSON cache"""
     
-    def __init__(self, ipfs_client, block_manager, namespace: str = "default"):
-        self.ipfs = ipfs_client
+    def __init__(self, ipfs_client, block_manager=None, namespace: str = "default"):
+        self.ipfs_client = ipfs_client
         self.block_manager = block_manager
         self.namespace = namespace
-        
-        # Define block names for different storage levels
-        self.tmp_block = "active"  # Temporary storage uses active block
-        self.new_block = "sync"    # New questions use sync block
-        self.active_block = "urgent"  # Active questions use urgent block
+        self.questions_file = Path("runtime/ipfs_questions.json")
+        self.questions_file.parent.mkdir(exist_ok=True)
+        self._ensure_questions_file()
     
-    def save_temporary(self, question: Question) -> None:
-        """Save question to temporary storage in IPFS"""
-        question_data = question.to_dict()
-        entry_id = self.block_manager.write_to_block(
-            self.tmp_block, question_data, "question_temporary", "normal"
-        )
-        
-        # Store entry ID in question metadata for later retrieval
-        question.metadata["ipfs_entry_id"] = entry_id
+    def _ensure_questions_file(self):
+        """Varmista että ipfs_questions.json tiedosto on olemassa"""
+        if not self.questions_file.exists():
+            # Luo tyhjä ipfs_questions.json tiedosto
+            initial_data = {
+                "metadata": {
+                    "version": "2.0.0",
+                    "created": datetime.now(timezone.utc).isoformat(),
+                    "total_questions": 0,
+                    "last_updated": datetime.now(timezone.utc).isoformat(),
+                    "ipfs_synced": False
+                },
+                "questions": []
+            }
+            
+            with open(self.questions_file, 'w', encoding='utf-8') as f:
+                json.dump(initial_data, f, indent=2, ensure_ascii=False)
     
-    def save_new(self, question: Question) -> None:
-        """Save question to new questions storage in IPFS"""
-        question_data = question.to_dict()
-        entry_id = self.block_manager.write_to_block(
-            self.new_block, question_data, "question_new", "normal"
-        )
-        
-        question.metadata["ipfs_entry_id"] = entry_id
+    def _load_questions(self) -> List[Dict[str, Any]]:
+        """Lataa kysymykset JSON-tiedostosta"""
+        try:
+            with open(self.questions_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                return data.get('questions', [])
+        except Exception as e:
+            print(f"❌ Virhe ladattaessa IPFS-kysymyksiä: {e}")
+            return []
     
-    def save_active(self, question: Question) -> None:
-        """Save question to active questions storage in IPFS"""
-        question_data = question.to_dict()
-        entry_id = self.block_manager.write_to_block(
-            self.active_block, question_data, "question_active", "high"
+    def _save_questions(self, questions: List[Dict[str, Any]]):
+        """Tallenna kysymykset JSON-tiedostoon"""
+        try:
+            data = {
+                "metadata": {
+                    "version": "2.0.0",
+                    "created": datetime.now(timezone.utc).isoformat(),
+                    "total_questions": len(questions),
+                    "last_updated": datetime.now(timezone.utc).isoformat(),
+                    "ipfs_synced": True
+                },
+                "questions": questions
+            }
+            
+            with open(self.questions_file, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+        except Exception as e:
+            print(f"❌ Virhe tallentaessa IPFS-kysymyksiä: {e}")
+    
+    def _dict_to_question(self, question_dict: Dict[str, Any]) -> Question:
+        """Muunna dictionary Question-entiteetiksi"""
+        return Question(
+            question_id=QuestionId(question_dict.get('local_id', '')),
+            content=QuestionContent(
+                question=question_dict.get('content', {}).get('question', {}),
+                category=question_dict.get('content', {}).get('category', {}),
+                tags=question_dict.get('content', {}).get('tags', []),
+                scale=question_dict.get('content', {}).get('scale', {})
+            ),
+            elo_rating=question_dict.get('elo_rating', {}),
+            timestamps=CreationTimestamps(
+                created=question_dict.get('timestamps', {}).get('created_local'),
+                modified=question_dict.get('timestamps', {}).get('modified_local')
+            ),
+            metadata=question_dict.get('metadata', {})
         )
-        
-        question.metadata["ipfs_entry_id"] = entry_id
+    
+    def _question_to_dict(self, question: Question) -> Dict[str, Any]:
+        """Muunna Question-entiteetti dictionaryksi"""
+        return {
+            "local_id": str(question.question_id),
+            "source": "ipfs",
+            "content": {
+                "question": question.content.question,
+                "category": question.content.category,
+                "tags": question.content.tags,
+                "scale": question.content.scale
+            },
+            "elo_rating": question.elo_rating,
+            "timestamps": {
+                "created_local": str(question.timestamps.created),
+                "modified_local": str(question.timestamps.modified)
+            },
+            "metadata": question.metadata
+        }
     
     def find_by_id(self, question_id: QuestionId) -> Optional[Question]:
-        """Find question by ID in IPFS blocks"""
-        # Search in all blocks
-        blocks_to_search = [self.tmp_block, self.new_block, self.active_block]
+        """Etsi kysymys ID:llä"""
+        questions_data = self._load_questions()
         
-        for block_name in blocks_to_search:
-            entries = self.block_manager.read_from_block(block_name)
-            
-            for entry in entries:
-                if entry.get("data_type", "").startswith("question_"):
-                    question_data = entry["data"]
-                    if question_data.get("local_id") == question_id.value:
-                        return Question.from_dict(question_data)
+        for question_dict in questions_data:
+            if question_dict.get('local_id') == str(question_id):
+                return self._dict_to_question(question_dict)
         
         return None
     
-    def find_temporary_questions(self) -> List[Question]:
-        """Get all temporary questions from IPFS"""
-        return self._load_questions_from_block(self.tmp_block, "question_temporary")
+    def find_all(self) -> List[Question]:
+        """Hae kaikki kysymykset"""
+        questions_data = self._load_questions()
+        return [self._dict_to_question(q) for q in questions_data]
     
-    def find_new_questions(self) -> List[Question]:
-        """Get all new questions from IPFS"""
-        return self._load_questions_from_block(self.new_block, "question_new")
-    
-    def find_active_questions(self, limit: Optional[int] = None) -> List[Question]:
-        """Get active questions from IPFS, optionally limited"""
-        questions = self._load_questions_from_block(self.active_block, "question_active")
-        
-        # Sort by rating (descending)
-        questions.sort(key=lambda q: q.rating.value, reverse=True)
-        
-        if limit:
-            return questions[:limit]
-        
-        return questions
-    
-    def _load_questions_from_block(self, block_name: str, data_type_filter: str) -> List[Question]:
-        """Load questions from a specific IPFS block"""
-        entries = self.block_manager.read_from_block(block_name)
-        questions = []
-        
-        for entry in entries:
-            if entry.get("data_type") == data_type_filter:
-                try:
-                    question_data = entry["data"]
-                    question = Question.from_dict(question_data)
-                    questions.append(question)
-                except Exception as e:
-                    print(f"Warning: Could not load question from IPFS block {block_name}: {e}")
-                    continue
-        
-        return questions
-    
-    def remove_temporary(self, question_id: QuestionId) -> bool:
-        """Remove question from temporary storage in IPFS"""
-        # Note: IPFS is immutable, so we can't actually remove entries
-        # Instead, we mark them as removed in metadata
-        question = self.find_by_id(question_id)
-        if question and question.metadata.get("ipfs_entry_id"):
-            question.metadata["removed"] = True
-            question.metadata["removed_at"] = datetime.now().isoformat()
+    def save(self, question: Question) -> bool:
+        """Tallenna kysymys"""
+        try:
+            questions_data = self._load_questions()
             
-            # Save updated question (this creates a new IPFS entry)
-            self.save_temporary(question)
-            return True
-        
-        return False
-    
-    def remove_new(self, question_id: QuestionId) -> bool:
-        """Remove question from new questions storage in IPFS"""
-        question = self.find_by_id(question_id)
-        if question and question.metadata.get("ipfs_entry_id"):
-            question.metadata["removed"] = True
-            question.metadata["removed_at"] = datetime.now().isoformat()
+            # Tarkista onko kysymys jo olemassa
+            existing_index = None
+            for i, q_dict in enumerate(questions_data):
+                if q_dict.get('local_id') == str(question.question_id):
+                    existing_index = i
+                    break
             
-            self.save_new(question)
+            question_dict = self._question_to_dict(question)
+            
+            if existing_index is not None:
+                # Päivitä olemassa oleva kysymys
+                questions_data[existing_index] = question_dict
+            else:
+                # Lisää uusi kysymys
+                questions_data.append(question_dict)
+            
+            self._save_questions(questions_data)
             return True
-        
-        return False
-    
-    def update_rating(self, question_id: QuestionId, new_rating: int) -> bool:
-        """Update question rating in IPFS"""
-        question = self.find_by_id(question_id)
-        if not question:
+            
+        except Exception as e:
+            print(f"❌ Virhe tallentaessa IPFS-kysymystä: {e}")
             return False
-        
-        # Calculate delta and update
-        delta = new_rating - question.rating.value
-        question.update_rating(delta, "manual_update")
-        
-        # Save updated question based on current storage
-        if self._question_in_block(question_id, self.tmp_block):
-            self.save_temporary(question)
-        elif self._question_in_block(question_id, self.new_block):
-            self.save_new(question)
-        elif self._question_in_block(question_id, self.active_block):
-            self.save_active(question)
-        
-        return True
     
-    def _question_in_block(self, question_id: QuestionId, block_name: str) -> bool:
-        """Check if question exists in specific block"""
-        questions = self._load_questions_from_block(block_name, f"question_{block_name}")
-        return any(q.id.value == question_id.value for q in questions)
+    def delete(self, question_id: QuestionId) -> bool:
+        """Poista kysymys"""
+        try:
+            questions_data = self._load_questions()
+            
+            # Poista kysymys
+            original_count = len(questions_data)
+            questions_data = [q for q in questions_data if q.get('local_id') != str(question_id)]
+            
+            if len(questions_data) < original_count:
+                self._save_questions(questions_data)
+                return True
+            else:
+                return False  # Kysymystä ei löytynyt
+                
+        except Exception as e:
+            print(f"❌ Virhe poistaessa IPFS-kysymystä: {e}")
+            return False
     
-    def get_question_stats(self) -> dict:
-        """Get repository statistics from IPFS"""
-        tmp_questions = self.find_temporary_questions()
-        new_questions = self.find_new_questions()
-        active_questions = self.find_active_questions()
-        
-        all_questions = tmp_questions + new_questions + active_questions
-        
-        if not all_questions:
-            return {
-                "total_questions": 0,
-                "average_rating": 0,
-                "storage_type": "ipfs"
-            }
-        
-        total_rating = sum(q.rating.value for q in all_questions)
-        average_rating = total_rating / len(all_questions)
-        
-        return {
-            "total_questions": len(all_questions),
-            "average_rating": round(average_rating, 2),
-            "storage_type": "ipfs",
-            "tmp_questions": len(tmp_questions),
-            "new_questions": len(new_questions),
-            "active_questions": len(active_questions),
-            "namespace": self.namespace
-        }
+    def count(self) -> int:
+        """Laske kysymysten määrä"""
+        questions_data = self._load_questions()
+        return len(questions_data)

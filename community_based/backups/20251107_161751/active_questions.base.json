@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "election_id": "{{ELECTION_ID}}",
+    "created": "{{TIMESTAMP}}",
+    "last_updated": "{{TIMESTAMP}}",
+    "question_limit": 15,
+    "min_rating": 800,
+    "sync_enabled": true,
+    "submission_locked": false
+  },
+  "sync_rules": {
+    "auto_sync": true,
+    "sync_interval_hours": 24,
+    "max_questions": 15,
+    "min_comparisons": 5,
+    "min_votes": 3,
+    "rating_weight": 0.7,
+    "activity_weight": 0.3
+  },
+  "questions": []
+}
