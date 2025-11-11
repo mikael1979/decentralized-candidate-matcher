@@ -1,0 +1,21 @@
+{
+  "chain_id": "system_chain_{{ELECTION_ID}}",
+  "created_at": "{{TIMESTAMP}}",
+  "description": {
+    "fi": "Järjestelmän muutoshistoria",
+    "en": "System change history", 
+    "sv": "Systemets ändringshistorik"
+  },
+  "version": "2.0.0",
+  "blocks": [
+    {
+      "block_id": 0,
+      "timestamp": "{{TIMESTAMP}}",
+      "action_type": "system_initialization",
+      "description": "Järjestelmä alustettu",
+      "user_id": "system",
+      "previous_hash": null,
+      "block_hash": "{{INITIAL_HASH}}"
+    }
+  ]
+}

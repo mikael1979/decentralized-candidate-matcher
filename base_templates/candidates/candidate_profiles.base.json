@@ -1,0 +1,28 @@
+{
+  "metadata": {
+    "version": "2.0.0",
+    "created": "{{TIMESTAMP}}",
+    "election_id": "{{ELECTION_ID}}",
+    "description": {
+      "fi": "Ehdokkaiden profiilit ja perustelut",
+      "en": "Candidate profiles and explanations",
+      "sv": "Kandidatprofiler och förklaringar"
+    }
+  },
+  "candidates": [
+    {
+      "candidate_id": "{{CANDIDATE_ID}}",
+      "answers": [
+        {
+          "question_id": "{{QUESTION_ID}}",
+          "answer_value": "{{ANSWER_VALUE}}",
+          "explanation": {
+            "fi": "{{FI_EXPLANATION}}",
+            "en": "{{EN_EXPLANATION}}",
+            "sv": "{{SV_EXPLANATION}}"
+          }
+        }
+      ]
+    }
+  ]
+}

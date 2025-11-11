@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "version": "2.0.0",
+    "created": "{{TIMESTAMP}}",
+    "last_updated": "{{TIMESTAMP}}",
+    "election_id": "{{ELECTION_ID}}",
+    "node_id": "{{NODE_ID}}",
+    "system_locked": false,
+    "mode": "development",
+    "description": {
+      "fi": "Järjestelmän perusmetadata",
+      "en": "System basic metadata",
+      "sv": "Systemets grundmetadata"
+    }
+  }
+}

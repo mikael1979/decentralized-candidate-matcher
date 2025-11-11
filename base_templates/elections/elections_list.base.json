@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "created": "{{TIMESTAMP}}",
+    "description": {
+      "fi": "Käytössä olevien vaalien lista",
+      "en": "List of active elections",
+      "sv": "Lista över aktiva val"
+    }
+  },
+  "elections": [
+    {
+      "election_id": "Jumaltenvaalit2026",
+      "name": {
+        "fi": "Jumaltenvaalit 2026",
+        "en": "Gods Election 2026",
+        "sv": "Gudaval 2026"
+      },
+      "install_config_cid": "{{INSTALL_CONFIG_CID}}",
+      "type": "divine_council",
+      "status": "upcoming",
+      "master_node": "{{MASTER_NODE_ID}}",
+      "description": {
+        "fi": "Olimpian jumalten uuden hallituksen valinta",
+        "en": "Election for the new council of Olympian gods", 
+        "sv": "Val av nytt råd för Olympens gudar"
+      }
+    }
+  ]
+}
+

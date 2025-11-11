@@ -1,0 +1,24 @@
+{
+  "election": {
+    "id": "Jumaltenvaalit2026",
+    "name": {
+      "fi": "Jumaltenvaalit 2026",
+      "en": "Gods Election 2026", 
+      "sv": "Gudaval 2026"
+    },
+    "date": "2026-03-20",
+    "type": "divine_council",
+    "timelock_enabled": true,
+    "edit_deadline": "2026-02-28",
+    "description": {
+      "fi": "Olimpian jumalten uuden hallituksen valinta",
+      "en": "Election for the new council of Olympian gods",
+      "sv": "Val av nytt råd för Olympens gudar"
+    }
+  },
+  "system_info": {
+    "system_id": "system_Jumaltenvaalit2026",
+    "created": "2025-01-15T10:00:00Z",
+    "version": "2.0.0"
+  }
+}

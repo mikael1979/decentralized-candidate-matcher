@@ -1,0 +1,33 @@
+{
+  "metadata": {
+    "version": "2.0.0",
+    "created": "{{TIMESTAMP}}",
+    "election_id": "{{ELECTION_ID}}",
+    "description": {
+      "fi": "Kysymysten perusrakenteet",
+      "en": "Basic question structures",
+      "sv": "Grundläggande frågestrukturer"
+    }
+  },
+  "questions": [
+    {
+      "local_id": "{{QUESTION_ID}}",
+      "content": {
+        "category": "{{CATEGORY}}",
+        "question": {
+          "fi": "{{FI_QUESTION}}",
+          "en": "{{EN_QUESTION}}",
+          "sv": "{{SV_QUESTION}}"
+        },
+        "scale": {
+          "min": -5,
+          "max": 5
+        }
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "current_rating": 1000
+      }
+    }
+  ]
+}

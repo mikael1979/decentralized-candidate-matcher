@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "election_id": "{{ELECTION_ID}}",
+    "created": "{{TIMESTAMP}}",
+    "question_limit": 15,
+    "min_rating": 800,
+    "submission_locked": false,
+    "description": {
+      "fi": "Aktiivisten kysymysten konfiguraatio",
+      "en": "Active questions configuration",
+      "sv": "Aktiva frågors konfiguration"
+    }
+  },
+  "selection_criteria": {
+    "min_elo_rating": 800,
+    "min_comparisons": 5,
+    "min_votes": 3,
+    "max_questions": 15
+  },
+  "questions": []
+}

@@ -1,0 +1,22 @@
+{
+  "questions": [
+    {
+      "category": "governance",
+      "question": {
+        "fi": "Pitäisikö Olympos-hallituksen valtaa rajoittaa?",
+        "en": "Should the power of Olympus council be limited?",
+        "sv": "Bör Olympens råds makt begränsas?"
+      },
+      "tags": ["governance", "power"]
+    },
+    {
+      "category": "environment", 
+      "question": {
+        "fi": "Pitäisikö ihmisille lähettää enemmän varoitusmerkkejä?",
+        "en": "Should we send more warning signs to humans?",
+        "sv": "Bör vi skicka fler varningstecken till människor?"
+      },
+      "tags": ["environment", "humans"]
+    }
+  ]
+}

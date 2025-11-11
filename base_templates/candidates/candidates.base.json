@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "version": "2.0.0",
+    "created": "{{TIMESTAMP}}",
+    "election_id": "{{ELECTION_ID}}",
+    "description": {
+      "fi": "Ehdokkaiden perustiedot",
+      "en": "Candidate basic information",
+      "sv": "Kandidaters grundinformation"
+    }
+  },
+  "candidates": [
+    {
+      "candidate_id": "{{CANDIDATE_ID}}",
+      "basic_info": {
+        "name": {
+          "fi": "{{FI_NAME}}",
+          "en": "{{EN_NAME}}",
+          "sv": "{{SV_NAME}}"
+        },
+        "party": "{{PARTY}}",
+        "domain": "{{DOMAIN}}"
+      },
+      "answers": []
+    }
+  ]
+}

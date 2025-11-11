@@ -1,0 +1,19 @@
+{
+  "election": {
+    "id": "{{ELECTION_ID}}",
+    "name": {
+      "fi": "{{FI_ELECTION_NAME}}",
+      "en": "{{EN_ELECTION_NAME}}",
+      "sv": "{{SV_ELECTION_NAME}}"
+    },
+    "date": "{{ELECTION_DATE}}",
+    "type": "municipal",
+    "timelock_enabled": true,
+    "edit_deadline": "{{EDIT_DEADLINE}}"
+  },
+  "system_info": {
+    "system_id": "system_{{ELECTION_ID}}",
+    "created": "{{TIMESTAMP}}",
+    "version": "2.0.0"
+  }
+}

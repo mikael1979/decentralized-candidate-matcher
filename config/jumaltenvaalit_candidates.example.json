@@ -1,0 +1,37 @@
+{
+  "candidates": [
+    {
+      "candidate_id": "zeus",
+      "name": {
+        "fi": "Zeus",
+        "en": "Zeus",
+        "sv": "Zeus"
+      },
+      "party": "olympian_gods",
+      "domain": "sky_thunder",
+      "symbol": "⚡"
+    },
+    {
+      "candidate_id": "athena", 
+      "name": {
+        "fi": "Athena",
+        "en": "Athena",
+        "sv": "Athena"
+      },
+      "party": "olympian_gods", 
+      "domain": "wisdom_warfare",
+      "symbol": "🦉"
+    },
+    {
+      "candidate_id": "poseidon",
+      "name": {
+        "fi": "Poseidon",
+        "en": "Poseidon", 
+        "sv": "Poseidon"
+      },
+      "party": "olympian_gods",
+      "domain": "sea_earthquakes", 
+      "symbol": "🌊"
+    }
+  ]
+}
