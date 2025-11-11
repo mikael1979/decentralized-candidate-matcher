@@ -245,14 +245,4 @@ Tämä projekti on kehitysvaiheessa. Kaikki tiedot testausdataa varten.
 *"Demokratia koodiksi - yhteisö luo, äänestää ja moderoi kysymyksiä hajautetusti"*
 ```
 
-## 🎯 Nyt README.md:
 
-- ✅ **Kuvastaa nykyistä tilaa** - Mitä on valmista, mikä kehityksessä
-- ✅ **Käyttöohjeet** - Konkreettiset esimerkit kaikista toiminnoista
-- ✅ **Arkkitehtuuri** - Selkeä kuvaus rakenteesta
-- ✅ **ELO-järjestelmän kuvaus** - Miten kysymykset priorisoidaan
-- ✅ **Puoluevahvistuksen kuvaus** - Hajautettu kvoorumi-järjestelmä
-- ✅ **Testausohjeet** - Miten testata järjestelmää
-- ✅ **Tulevat ominaisuudet** - Selkeä roadmap eteenpäin
-
-Haluatko että aloitetaan nyt `manage_answers.py`:n kehittäminen? Se on seuraava looginen askel! 🎯
