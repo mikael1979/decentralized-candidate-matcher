@@ -1,9 +1,0 @@
-[
-  {
-    "name": "Testi Admin",
-    "username": "admin",
-    "email": "admin@example.com",
-    "role": "super_admin",
-    "admin_id": "admin_admin"
-  }
-]
