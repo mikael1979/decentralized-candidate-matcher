@@ -1,13 +1,5 @@
 import ipfshttpclient
-from typing import Optional
-
-class MockIPFSClient:
-    """Mock IPFS client for testing"""
-    def add_json(self, data):
-        return {'Hash': f'mock_cid_{hash(str(data))}'}
-    
-    def get_json(self, cid):
-        return {'mock': 'data'}
+from typing import Optional, Dict
 
 class IPFSClient:
     _instance: Optional['IPFSClient'] = None
@@ -17,10 +9,12 @@ class IPFSClient:
         self._connect()
     
     def _connect(self):
-        """Yhdistä IPFS:ään tai käytä mockia"""
+        """Yhdistä IPFS:ään"""
         try:
             self._client = ipfshttpclient.connect()
-        except Exception:
+            print("✅ IPFS-yhteys muodostettu")
+        except Exception as e:
+            print(f"❌ IPFS-yhteys epäonnistui: {e}")
             self._client = MockIPFSClient()
     
     @classmethod
@@ -37,3 +31,23 @@ class IPFSClient:
     def get_data(self, cid: str) -> dict:
         """Hae data IPFS:stä CID:llä"""
         return self._client.get_json(cid)
+
+class MockIPFSClient:
+    """Mock IPFS client for development"""
+    def __init__(self):
+        self._storage = {}
+        print("🔶 Käytetään mock IPFS-clientia")
+    
+    def add_json(self, data: Dict) -> Dict:
+        """Simuloi data-tallennus"""
+        import hashlib
+        content = json.dumps(data, sort_keys=True)
+        cid = f"mock_{hashlib.sha256(content.encode()).hexdigest()[:16]}"
+        self._storage[cid] = data
+        return {'Hash': cid}
+    
+    def get_json(self, cid: str) -> Dict:
+        """Simuloi data-haku"""
+        if cid in self._storage:
+            return self._storage[cid]
+        raise Exception(f"CID ei löydy: {cid}")
