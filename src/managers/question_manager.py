@@ -1,6 +1,18 @@
 from pathlib import Path
 from typing import Dict, List
-from src.core.file_utils import read_json_file, write_json_file
+import json
+import os
+
+def read_json_file(file_path):
+    """Lue JSON-tiedosto"""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+def write_json_file(file_path, data):
+    """Kirjoita JSON-tiedosto"""
+    Path(file_path).parent.mkdir(parents=True, exist_ok=True)
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
 
 class QuestionManager:
     def __init__(self, election_id: str, data_dir: str = "data/runtime"):
