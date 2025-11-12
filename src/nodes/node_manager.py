@@ -24,16 +24,12 @@ class NodeManager:
     
     def register_node(self, node_id: str, node_data: Dict) -> bool:
         """Rekisteröi uusi node"""
-        from src.managers.crypto_manager import CryptoManager
-        
-        crypto = CryptoManager()
-        
-        # Tarkista että node_data sisältää julkisen avaimen
+        # Yksinkertaistettu versio ilman crypto_manager riippuvuutta
         if "public_key" not in node_data:
             return False
         
-        # Laske julkisen avaimen tunniste
-        key_fingerprint = crypto.calculate_fingerprint(node_data["public_key"])
+        # Laske julkisen avaimen tunniste (yksinkertaistettu)
+        key_fingerprint = hashlib.sha256(node_data["public_key"].encode()).hexdigest()[:16]
         
         node_info = {
             "node_id": node_id,
@@ -45,7 +41,7 @@ class NodeManager:
             "registration_timestamp": datetime.now().isoformat(),
             "last_seen": datetime.now().isoformat(),
             "status": "active",
-            "trust_score": 10  # Perusluottamus
+            "trust_score": node_data.get("trust_score", 10)
         }
         
         self.nodes["nodes"][node_id] = node_info

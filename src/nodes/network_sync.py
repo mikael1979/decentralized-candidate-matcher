@@ -43,10 +43,6 @@ class NetworkSyncManager:
     
     def _sync_with_single_node(self, node: Dict) -> Dict:
         """Synkronoi yhden noden kanssa (mock-toteutus)"""
-        from src.core.ipfs_client import IPFSClient
-        
-        ipfs = IPFSClient.get_client(self.election_id)
-        
         try:
             # Mock-synkronointi - oikeassa järjestelmässä verrattaisiin IPFS-CID:itä
             node_result = {
