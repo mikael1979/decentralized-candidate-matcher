@@ -1,0 +1,116 @@
+{
+  "verification_process": {
+    "party_id": "party_quorum_test",
+    "party_name": "Kvoorumi-testipuolue",
+    "public_key_fingerprint": "test123456789abcd",
+    "verification_started": "2025-11-13T00:15:28.431963",
+    "verification_timeout": "2025-11-14T00:15:28.431974",
+    "current_phase": "quorum_voting",
+    "quorum_votes": [
+      {
+        "node_id": "node_zeus",
+        "vote": "approve",
+        "weight": 15,
+        "justification": "Hyv\u00e4 mediavahvistus",
+        "timestamp": "2025-11-13T00:15:28.432159",
+        "node_public_key_fingerprint": "43d95084ecc74dc8",
+        "vote_signature": "98fd6dcc379613fa815e8b4c25fd49e685c48f2a13b91c465fa81f2e34d1aa3c"
+      },
+      {
+        "node_id": "node_athena",
+        "vote": "approve",
+        "weight": 15,
+        "justification": "Vahva PKI-toteutus",
+        "timestamp": "2025-11-13T00:15:28.432228",
+        "node_public_key_fingerprint": "5990b33ae22c98c9",
+        "vote_signature": "aaf92d44b8af71c3f5070d2ee92c0c2a621d7ccfea3139e3255f792d3268287a"
+      },
+      {
+        "node_id": "node_poseidon",
+        "vote": "approve",
+        "weight": 10,
+        "justification": "Kaikki kriteerit t\u00e4ytetty",
+        "timestamp": "2025-11-13T00:15:28.432289",
+        "node_public_key_fingerprint": "eefd4f5dbe4b4aab",
+        "vote_signature": "ae6108252d7000a8ce3d4388806202f03aced063a1e3d6652f2fbef138e8e1e7"
+      },
+      {
+        "node_id": "node_ares",
+        "vote": "reject",
+        "weight": 10,
+        "justification": "Liian v\u00e4h\u00e4n tietoja",
+        "timestamp": "2025-11-13T00:15:28.432346",
+        "node_public_key_fingerprint": "d1079b9b6b7771d6",
+        "vote_signature": "f660aa1a4d717fe38080b7d6932a43a0a6820aa1f312df14c7bc231fa465787f"
+      },
+      {
+        "node_id": "node_aphrodite",
+        "vote": "abstain",
+        "weight": 10,
+        "justification": "Tarvitsen lis\u00e4tietoja",
+        "timestamp": "2025-11-13T00:15:28.432385",
+        "node_public_key_fingerprint": "436415520468e4cd",
+        "vote_signature": "853951055bffdfde4e7b9c9edcfd855ba21c2ded82b73efc2957d85f35d6970e"
+      }
+    ],
+    "media_verifications": [
+      {
+        "publication_id": "pub_79a74d0937c8",
+        "media_domain": "vaalit.fi",
+        "trust_score": 10,
+        "verified_by_node": "node_zeus",
+        "verification_timestamp": "2025-11-13T00:15:28.432101",
+        "evidence_url": "https://vaalit.fi/julkaisut/kvoorumi-testi"
+      },
+      {
+        "publication_id": "pub_79a74d0937c8",
+        "media_domain": "vaalit.fi",
+        "trust_score": 10,
+        "verified_by_node": "node_athena",
+        "verification_timestamp": "2025-11-13T00:15:28.432107",
+        "evidence_url": "https://vaalit.fi/julkaisut/kvoorumi-testi"
+      }
+    ],
+    "final_decision": "approved",
+    "decision_timestamp": "2025-11-13T00:15:28.432412"
+  },
+  "status": {
+    "party_id": "party_quorum_test",
+    "current_phase": "quorum_voting",
+    "total_votes": 5,
+    "approve_votes": 3,
+    "reject_votes": 1,
+    "abstain_votes": 1,
+    "media_verifications": 2,
+    "time_remaining_hours": 23.9999998725,
+    "final_decision": "approved",
+    "quorum_met": true
+  },
+  "test_votes": [
+    {
+      "node": "node_zeus",
+      "vote": "approve",
+      "justification": "Hyv\u00e4 mediavahvistus"
+    },
+    {
+      "node": "node_athena",
+      "vote": "approve",
+      "justification": "Vahva PKI-toteutus"
+    },
+    {
+      "node": "node_poseidon",
+      "vote": "approve",
+      "justification": "Kaikki kriteerit t\u00e4ytetty"
+    },
+    {
+      "node": "node_ares",
+      "vote": "reject",
+      "justification": "Liian v\u00e4h\u00e4n tietoja"
+    },
+    {
+      "node": "node_aphrodite",
+      "vote": "abstain",
+      "justification": "Tarvitsen lis\u00e4tietoja"
+    }
+  ]
+}
