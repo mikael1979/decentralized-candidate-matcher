@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
-IPFS-integrointi Jumaltenvaaleille - Päivitetty ipfs-toolkit:llä
+IPFS-integrointi Jumaltenvaaleille - Stabiili mock-versio
 """
-import ipfs_api
 import json
 import hashlib
 from datetime import datetime
@@ -14,20 +13,8 @@ class IPFSClient:
     
     def __init__(self, election_id: str = "Jumaltenvaalit2026"):
         self.election_id = election_id
-        self._client = None
-        self._connect()
-    
-    def _connect(self):
-        """Yhdistä IPFS:ään uudella ipfs-toolkit:llä"""
-        try:
-            # Testaa IPFS-yhteys
-            peer_id = ipfs_api.my_id()
-            self._client = ipfs_api
-            print(f"✅ Yhdistetty IPFS:ään - Peer ID: {peer_id[:16]}...")
-        except Exception as e:
-            print(f"❌ IPFS-yhteys epäonnistui: {e}")
-            print("🔶 Käytetään mock-IPFS:ää kehitystä varten")
-            self._client = MockIPFSClient()
+        self._client = MockIPFSClient()  # Aina mock-tilassa
+        print("🔶 Käytetään stabiilia mock IPFS-clientia")
     
     @classmethod
     def get_client(cls, election_id: str = "Jumaltenvaalit2026") -> 'IPFSClient':
@@ -36,7 +23,7 @@ class IPFSClient:
         return cls._instance
     
     def publish_election_data(self, data_type: str, data: Dict) -> str:
-        """Julkaise vaalidata IPFS:ään"""
+        """Julkaise vaalidata IPFS:ään (mock)"""
         try:
             # Lisää metadata
             enhanced_data = {
@@ -49,24 +36,18 @@ class IPFSClient:
                 }
             }
             
-            # Julkaise IPFS:ään ipfs-toolkit:llä
-            if hasattr(self._client, 'publish_json'):
-                # Jos ipfs_api:ssa on publish_json -funktio
-                cid = self._client.publish_json(enhanced_data)
-            else:
-                # Fallback: käytä perus add_json -toimintoa
-                cid = self._client.add_json(enhanced_data)
+            # Käytä mock-clientia
+            cid = self._client.add_json(enhanced_data)
             
-            print(f"✅ {data_type} julkaistu IPFS:ään: {cid}")
+            print(f"✅ {data_type} julkaistu IPFS:ään (mock): {cid}")
             return cid
             
         except Exception as e:
             print(f"❌ IPFS-julkaisu epäonnistui: {e}")
-            # Palauta mock-CID virhetilanteessa
             return f"mock_cid_{hashlib.sha256(json.dumps(data).encode()).hexdigest()[:16]}"
     
     def sync_local_to_ipfs(self) -> Dict[str, str]:
-        """Synkronoi kaikki paikallinen data IPFS:ään"""
+        """Synkronoi kaikki paikallinen data IPFS:ään (mock)"""
         data_files = {
             "parties": "data/runtime/parties.json",
             "questions": "data/runtime/questions.json", 
@@ -102,25 +83,20 @@ class IPFSClient:
         with open(sync_file, 'w', encoding='utf-8') as f:
             json.dump(sync_info, f, indent=2)
         
-        print(f"📊 Synkronoitu {len(results)} tiedostoa IPFS:ään")
+        print(f"📊 Synkronoitu {len(results)} tiedostoa IPFS:ään (mock)")
         return results
     
     def fetch_from_ipfs(self, cid: str) -> Optional[Dict]:
-        """Hae data IPFS:stä CID:llä"""
+        """Hae data IPFS:stä CID:llä (mock)"""
         try:
-            # ipfs-toolkit:in data-haku
-            if hasattr(self._client, 'get_json'):
-                data = self._client.get_json(cid)
-            else:
-                # Fallback mock-toteutukselle
-                data = self._client.get_json(cid)
+            data = self._client.get_json(cid)
             return data
         except Exception as e:
             print(f"❌ IPFS-haku epäonnistui CID:llä {cid}: {e}")
             return None
     
     def verify_data_integrity(self, local_data: Dict, ipfs_cid: str) -> bool:
-        """Varmista datan eheys verrattuna IPFS:ään"""
+        """Varmista datan eheys verrattuna IPFS:ään (mock)"""
         try:
             ipfs_data = self.fetch_from_ipfs(ipfs_cid)
             if not ipfs_data:
@@ -142,13 +118,12 @@ class IPFSClient:
             return False
 
 class MockIPFSClient:
-    """Mock IPFS client testausta varten"""
+    """Stabiili mock IPFS client kehitystä varten"""
     def __init__(self):
         self._storage = {}
-        print("🔶 Käytetään mock IPFS-clientia")
     
     def add_json(self, data):
-        """Mock-add_json ipfs-toolkit -yhteensopivuuteen"""
+        """Mock-add_json"""
         import hashlib
         content = json.dumps(data, sort_keys=True)
         cid = f"mock_{hashlib.sha256(content.encode()).hexdigest()[:16]}"
@@ -156,15 +131,7 @@ class MockIPFSClient:
         return cid
     
     def get_json(self, cid):
-        """Mock-get_json ipfs-toolkit -yhteensopivuuteen"""
+        """Mock-get_json"""
         if cid in self._storage:
             return self._storage[cid]
         raise Exception(f"CID ei löydy: {cid}")
-    
-    def publish_json(self, data):
-        """Mock-publish_json ipfs-toolkit -yhteensopivuuteen"""
-        return self.add_json(data)
-    
-    def my_id(self):
-        """Mock-peerID"""
-        return "mock_peer_123456789"
