@@ -1,5 +1,3 @@
-LISENSSI GPL3.0
-
 ## 📝 Päivitetty README.md
 
 **README.md**:
