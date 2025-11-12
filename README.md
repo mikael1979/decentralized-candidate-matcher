@@ -244,3 +244,17 @@ Tämä projekti on kehitysvaiheessa. Kaikki tiedot testausdataa varten.
 ```
 
 
+
+## 📄 Lisenssi
+
+Tämä projekti on lisensoitu **Apache License 2.0** -lisenssillä. 
+
+Apache License 2.0 tarjoaa:
+- 🛡️ **Patent protection** - Suojaa kehittäjiä ja käyttäjiä patenttivaateilta
+- 💼 **Yritysystävällinen** - Sallii kaupallisen käytön
+- 🔄 **Heikko copyleft** - Ei vaadi johdannaisten avoimuutta
+- 🌍 **Laaja hyväksyntä** - Käytössä mm. Apache Foundationilla
+
+Katso [LICENSE](LICENSE) tiedosto täydellistä lisenssitekstiä varten.
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
