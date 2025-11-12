@@ -1,0 +1,419 @@
+Selitän tässä nyt vielä mitä olin itse ajatellut, jos onnistun selittämään. 
+1. base versioista olisi kloonattu käyttöversiot json-tiedostoille, eli base tiedosto on taustamalli josta rakenne luodaan ja sitten luotua rakennetta käytetään ohjelmassa. 
+2. lista alunperin suunnittelemista tiedostoista
+"files": {
+        "questions.json": ",
+        "new_questions.json",
+        "active_questions.json":,
+        "ipfs_questions.json":,
+        "parties.json":,
+        "party_profiles.json"
+        "candidates.json": ,
+        "candidate_profiles.json":,
+        "meta.json": 
+
+jossa kysymykset lisätään new_questions.json, niin että tiedosta luodaan väliaikainen tmp_new_questions.json, johon lähetetyt kysymykset tallennetaan. Tästä kysymykset synkronoidaan -> questions.json ja questions.json synkronoidaan <--> ipfs_questions.json synkronoidaan <--> ipfs-verkko
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+# Vaalikonejärjestelmä - Tekninen Kuvaus
+
+## 🎯 Järjestelmän Ydinkonsepti
+
+**Hajautettu, yhteisöohjattu vaalikone joka käyttää ELO-luokitusjärjestelmää kysymysten priorisointiin ja automoderaatioon.**
+
+## 🏗️ Arkkitehtuuri
+
+### Tiedostopohjainen Data Pipeline
+```
+Base Templates → Runtime Instances → IPFS Synkronointi
+    ↓               ↓                     ↓
+*.base.json     *.json (käyttö)      IPFS Verkko
+```
+
+### Modulaariset Komponentit
+1. **Metadata Manager** - Koneiden identiteetit & allekirjoitukset
+2. **Installation Engine** - Vaalien asennus & konfiguraatio
+3. **Question Pipeline** - Kysymysten elinkaari
+4. **IPFS Sync Engine** - Hajautettu datajako
+5. **Candidate Manager** - Ehdokkaat & vastaukset
+
+## 🔄 Kysymysten Elinkaari
+
+```
+Uusi Kysymys
+    ↓
+tmp_new_questions.json (väliaikainen)
+    ↓  
+new_questions.json (odotusaika)
+    ↓
+questions.json (pääkanta)
+    ↓
+ipfs_questions.json (paikallinen IPFS-mirror)
+    ↓
+IPFS Verkko (hajautettu jakelu)
+```
+
+## 🎲 ELO-Luokitusmekanismi
+
+### Kaksitasoinen Rating-järjestelmä
+```python
+current_rating = 1000 + comparison_delta + vote_delta
+```
+
+**comparison_delta** (-900 max):
+- Perinteinen ELO pareittaisissa vertailuissa
+- Laadullinen feedback
+- Lasketaan: `k_factor * (actual - expected)`
+
+**vote_delta** (-1000 max):
+- Yksinkertainen ±1 per ääni
+- Määrällinen suosio
+- Suora demokratia
+
+### Automaattinen Moderaatio
+```python
+if (current_rating <= 0 and 
+    comparison_delta < 0 and 
+    vote_delta < 0):
+    BLOCK_QUESTION
+```
+**Estää:** 
+- Pelkät bot-vertailut (max -900)
+- Pelkät bot-äänet (vaatii myös negatiivisen comparison_delta:n)
+- Vaatii yhteisön konsensuksen molemmilla mekanismeilla
+
+## 🌐 IPFS Integraatio
+
+### Synkronointitilat
+1. **Mock-only** - Testaus (nykyinen)
+2. **Hybrid** - Molemmat (siirtymä)
+3. **Real-only** - Tuotanto
+
+### Data Flow
+```
+Paikallinen Kone → Mock-IPFS → Real-IPFS
+      ↓                ↓           ↓
+  JSON-tiedot     Testidata   Hajautettu
+                                verkko
+```
+
+## 💻 Koneiden Hallinta
+
+### Master-Työasema -malli
+- **Master-kone**: Ensimmäinen asennus, luo vaalirekisterin
+- **Työasemat**: Liittyvät olemassa olevaan vaaliin
+- **Yksilölliset machine_id:t** - Estää konfliktit
+- **Vaalikohtaiset allekirjoitukset** - Varmistaa integriteetin
+
+## 📊 Data Model
+
+### Kysymysrakenne
+```json
+{
+  "local_id": "uuid",
+  "ipfs_cid": "Qm...",
+  "source": "local|ipfs_imported",
+  "content": {
+    "category": {"fi", "en", "sv"},
+    "question": {"fi", "en", "sv"},
+    "tags": [],
+    "scale": {"min": -5, "max": 5}
+  },
+  "elo_rating": {
+    "base_rating": 1000,
+    "comparison_delta": 0,
+    "vote_delta": 0,
+    "current_rating": 1000
+  }
+}
+```
+
+### Ehdokasrakenne
+```json
+{
+  "candidate_id": "uuid",
+  "answers": [
+    {
+      "question_id": "uuid",
+      "answer_value": -5 to 5,
+      "explanation": {"fi", "en", "sv"},
+      "confidence": 1-5
+    }
+  ]
+}
+```
+---------------------------------------------------------------------------------------------------------------------------
+## 🔐 Tietoturva & Eheys
+
+### System Chain - Muutoshistoria
+- Kaikki muutokset lokitetaan `system_chain.json`:ään
+- Hash-pohjainen eheystarkistus
+- Palautumismekanismi vikatilanteisiin
+
+### Konfliktien Hallinta
+1. **Timestamp-pohjainen** - Uudempi voittaa
+2. **Manual intervention** - Admin-päätös
+3. **Community voting** - Yhteisöratkaisu
+
+## 🚀 Käyttöönotto
+
+### Asennusprosessi
+```bash
+# 1. Luo konfiguraatio
+python create_install_config.py
+
+# 2. Asenna master-kone
+python install.py --config-file=config.json --election-id=vaali_2024 --first-install
+
+# 3. Lisää työasemia
+python install.py --config-file=config.json --election-id=vaali_2024
+
+# 4. Hallinnoi kysymyksiä
+python manage_questions.py --add --category "Aihe" --question "Kysymys?"
+```
+
+### Testaus & Kehitys
+```bash
+# Mock-IPFS testaus
+python ipfs_sync_manager.py status
+python simple_sync.py --sync
+
+# Data-eheyden tarkistus
+python install.py --verify --election-id=vaali_2024
+```
+
+## 🎯 Yksilölliset Ominaisuudet
+
+### 1. **Älykäs Moderaatio**
+- ELO-pohjainen autoblokkaus
+- Estää manipulation molemmilta tahoilta
+- Yhteisön konsensus vaadittu
+
+### 2. **Hajautettu Arkkitehtuuri**
+- Ei single point of failure
+- IPFS varmistaa datan saatavuuden
+- Monen koneen tuki samalle vaalille
+
+### 3. **Kaksikielinen Käyttöliittymä**
+- Suora komentorivityökalu
+- Graafinen käyttöliittymä (tuleva)
+- Monikielisyys sisäänrakennettuna
+
+### 4. **Laajennettavuus**
+- Modulaarinen rakenne
+- Helppo lisätä uusia vaalityyppejä
+- Plugin-arkkitehtuuri (tuleva)
+
+## 🔮 Tulevat Kehityssuunnat
+
+### Lyhytaikaiset
+- [ ] Graafinen käyttöliittymä
+- [ ] Ehdokkaiden hallintatyökalu
+- [ ] Reaaliaikainen synkronointi
+- [ ] Konfliktien hallintatyökalu
+
+### Pitkäaikaiset
+- [ ] Mobile-sovellus
+- [ ] AI-pohjainen kysymysten generointi
+- [ ] Blockchain-integrointi
+- [ ] Kansainvälinen skaalaus
+
+## 💡 Ydinajatus
+
+**"Demokratia koodiksi - yhteisö luo, äänestää ja moderoi kysymyksiä hajautetusti, kun ELO-luokitus varmistaa laadun ja estää väärinkäytöt."**
+
+Tämä järjestelmä yhdistää:
+- **Yhteisödemokratian** (äänestys & vertailu)
+- **Teknisen robustiuden** (hajautus & eheys)
+- **Käytettävyyden** (yksinkertaiset työkalut)
+- **Laajennettavuuden** (modulaarisuus)
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+**Käynnistä uusi keskustelu aiheesta:** "Miten parantaisit tätä arkkitehtuuria?" tai "Mitä ominaisuuksia näet tärkeimpinä vaalikoneelle?"
+
+okei kaikki json rakenteen kohdat ovat ainakin tällä hetkellä sielä, mutta base tiedostoissa ei pitäisi olla esimerkki dataa noin paljoa, vain selitys mitä kenttään kirjoitetaan, jotkin oletetut config numeeriset arvot on hyvä olla niissä.
+
+esimerkki base tiedostosta:
+{
+  "metadata": {
+    "version": "2.0.0",
+    "created": "2025-01-15T10:00:00Z",
+    "last_updated": "2025-01-15T10:00:00Z",
+    "election_id": "{{ELECTION_ID}}",
+    "description": {
+      "fi": "Kysymysten perusrakenteet",
+      "en": "Basic question structures",
+      "sv": "Grundläggande frågestrukturer"
+    }
+  },
+  "questions": [
+    {
+      "local_id": "{{QUESTION_ID}}",
+      "ipfs_cid": "{{IPFS_CID}}",
+      "source": "local",
+      "content": {
+        "category": {
+          "fi": "{{FI_CATEGORY}}",
+          "en": "{{EN_CATEGORY}}",
+          "sv": "{{SV_CATEGORY}}"
+        },
+        "question": {
+          "fi": "{{FI_QUESTION}}",
+          "en": "{{EN_QUESTION}}",
+          "sv": "{{SV_QUESTION}}"
+        },
+        "tags": ["{{TAG1}}", "{{TAG2}}"],
+        "scale": {
+          "min": -5,
+          "max": 5,
+          "labels": {
+            "fi": {
+              "min": "Täysin eri mieltä",
+              "neutral": "Neutraali",
+              "max": "Täysin samaa mieltä"
+            },
+            "en": {
+              "min": "Strongly disagree",
+              "neutral": "Neutral",
+              "max": "Strongly agree"
+            },
+            "sv": {
+              "min": "Helt avig",
+              "neutral": "Neutral",
+              "max": "Helt enig"
+            }
+          }
+        }
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "current_rating": 1000,
+        "comparison_delta": 0,
+        "vote_delta": 0,
+        "total_comparisons": 0,
+        "total_votes": 0,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "{{TIMESTAMP}}",
+        "modified_local": "{{TIMESTAMP}}"
+      }
+    }
+  ]
+}
+---------------------------------------------------------------------------------------------------------------------------
+*ehdokasprofiilissa pitäisi myös muuten olla paikka perusteluille, eli jokaisen kysymyksen id:n mukaan vastaava perustelu kenttä
+*Ehdokkaiden ja puolueiden vastauksien oikeallisuus ja vahvistettavuus on silti tärkeä luotettavuuden kannalta.
+*tämä järjeslmä on kuitenkin vain parhaan ehdokkaan löytämiseksi.
+*elections_list.json:ssa pitäisi olla kohta jossa on cid-osoite vaalienmukaiselle install_config.json tiedostolle
+*tehdään listaus mitä moduuleja mikäkin ohjelma käyttää
+*tarvitaan active_questions.base.json, josta generoidaan active_questions.json. Tähän tiedostoon synkronoidaan korkeimman elo luokituksen kysymykset, kun kysymysten    lähettäminen on lukittu, jos joku ei lukitse vaaleja, niin tämä järjestelmä käyttää koko kysymyslistaa vaalikoneessa.
+*varsinainen vaalikone tuossa vielä puuttuu, missä käyttäjä vertaa vastauksiansa ehdokkaiden vastauksiin ja laittaa ehdokkaat paremmuusjärjestykseen. Toisaalta tämä on todennäköisemmin gui tyylinen syvellus
+*system chainin päivityksen pitäisi varmaankin olla moduuli, jota jokainen ohjelma kutsuu lopussa.
+-----------------------------------------------------------------------------------------------------------------------
+💡 YDINPARANNUKSET
+✅ Ehdokasprofiileihin perustelukentät - Jokaiselle vastaukselle
+
+✅ Elections_list CID-tuki - IPFS-linkitys konfiguraatioihin
+
+✅ Active questions -logiikka - Lukitustila määrää käytetyn kysymyslistan
+
+✅ System chain standardointi - Yhdenmukainen lokitus kaikille moduuleille
+
+✅ Base-template minimalisointi - Placeholderit esimerkkidatan sijaan
+
+🔮 SEURAAVAT VAIHEET
+Toteuta voting_engine.py - Vaalikoneen ydin
+
+Luo question_manager.py - Kysymysten elinkaaren hallinta
+
+Kehitä candidate_verifier.py - Vastausten vahvistus
+
+Tee GUI-käyttöliittymä - Visualisointi tuloksille
+
+Paranna IPFS-synkronointia - Reaaliaikainen datajako
+
+pidetään nuo todo-listalla. Tuli itselläkin tuossa idea mieleen, joten analysoi onnistuuko sen toteutus.
+---------------------------------------------------------------------------------------------------------------------
+*eli järjestelmällä on kehitys-tila ja käyttö-tila, jossa käyttö tilaa varten järjestelmä lukitaan ottamalla jokaisesta aktiivisesta tiedostosta fingerprint aikaleimalla ja nämä tallenetaan ipfs:ään menevään listaan aktiivisista ohjelmatiedostoista. Tämä myös tarkoittaa, että jokainen ohjelma käyttää moduulia, alussa ja tarkistaa listan fingerprinttien avulla, ettei ohjelmatiedostoja ole "käpälöity"
+*Joo ajattelin tuossa, että synkronoitaisiin useampi kysymys tmp tiedostosta -> new_questions, joko niin että tietty kysymysmäärä on saavutettu tmp tiedostossa, tai aikaväli tulee täyteen
+*Itse ajattelin varsinaisen listan organisointia usean "noden" käyttäessä samaa listaa ipfs:ssä.
+
+eli miten listaa täytetään lohkoissa, jokainen varaus sisältää nämä lohkot. Jokainen lohko on oma aikaikkunansa
+1. lohko bufferi, eli tyhjää tilaa 
+2. lohko tila kiireellisille varauksille. aikaisemmin puhuttiin hätävarauksista, mutta tämä on jyrkkä termi, joten käytetään kiireellistä.
+3. lohko varaus, eli paikka synkronoidaan data.
+4. lohko tila varausten tekemiseen
+5. lohko bufferi
+
+-----------------------------------------------------------------------------------------------------------------------------
+Analyysi Idean ToteutettavuudestaKiitos ideastasi! Se on looginen jatkokehitys nykyiselle järjestelmälle, joka yhdistää kehitys- ja käyttötilat, automaattisen synkronoinnin sekä IPFS-pohjaisen lohkotallennuksen usean noden ympäristössä. Analysoin alla toteutettavuuden vaiheittain nykyisen koodin (esim. enhanced_integrity_manager.py, question_manager.py, ipfs_block_manager.py jne.) perusteella. Käyn läpi jokaisen osan: mitä se tarkoittaa, onko se toteutettavissa, mahdolliset haasteet ja miten se voisi integroitua olemassa olevaan koodiin. Yleisesti ottaen idea on toteutettavissa korkealla todennäköisyydellä, koska se rakentuu suoraan nykyisten moduulien päälle (esim. fingerprintit, synkronointi ja IPFS-lohkot). Se parantaa järjestelmän turvallisuutta, skaalautuvuutta ja hajautettua yhteistyötä, mutta vaatii joitakin lisäyksiä koodiin.1. Kehitys-tila vs. Käyttö-tila ja Fingerprint-lukitusIdean kuvaus: Järjestelmä lukitaan käyttötilaan ottamalla fingerprintit (esim. SHA-256-hash) kaikista aktiivisista ohjelmatiedostoista (moduuleista) aikaleimalla. Nämä tallennetaan IPFS:ään listana, ja jokainen ohjelma tarkistaa alussa fingerprintit varmistaakseen, ettei tiedostoja ole muutettu ("käpälöity").
+Toteutettavuus: Kyllä, täysin toteutettavissa – itse asiassa tämä on jo osittain implementoitu.Nykyinen enhanced_integrity_manager.py tekee juuri tätä: se generoi fingerprint-rekisterin (generate_fingerprint_registry()) vaadituista moduuleista (kuten integrity_manager.py, ipfs_block_manager.py jne.), vertailee niitä (verify_system_integrity()) ja tukee kehitys- (development) ja käyttötila (production). Se myös lukitsee järjestelmän (lock_system_for_production()) tallentamalla fingerprintit IPFS:ään "urgent"-lohkoon ja kirjaa sen system_chain.json:iin.
+Lisäys: Aikaleima on jo mukana (last_modified ja timestamp). IPFS-tallennus on valmis (IPFSBlockManager.write_to_block("urgent", lock_data, ...)). Jokainen ohjelma (esim. elo_manager.py, demo_comparisons.py) voi kutsua verify_system_integrity_enhanced() alussa – tämä on jo singleton-pohjainen (get_enhanced_integrity_manager()), joten se on helppo lisätä importilla.
+Parannusehdotukset toteutukseen:Lisää required_modules-listaan kaikki uudet moduulit (esim. question_manager.py).
+Tee lukitus automaattiseksi konfiguraation perusteella (esim. install.py --lock-production).
+Jos fingerprint ei täsmää käyttötilassa, heitä SecurityError ja pysäytä ohjelma (kuten nykyinen verify_system_integrity_enhanced() tekee production-tilassa).
+
+Haasteet:Kehitystilassa fingerprintit voivat muuttua usein, joten skippaa tarkistus (mode == "development" kuten nyt).
+IPFS-riippuvuus: Jos IPFS-client puuttuu, fallback mock-IPFS:ään (kuten nykyinen koodi tekee).
+Turvallisuus: Fingerprint poistaa kommentit ja tyhjät rivit (calculate_file_fingerprint()), mikä estää triviaalit muutokset, mutta ei suojaa runtime-muutoksilta (ratkaisu: periodic tarkistukset taustasäikeellä).
+
+2. Synkronointi tmp-tiedostosta new_questions.json:iin (määrä- tai aikapohjainen)Idean kuvaus: Synkronoi useampi kysymys tmp_new_questions.json:sta new_questions.json:iin, kun tietty kysymysmäärä täyttyy tai aikaväli umpeutuu.
+Toteutettavuus: Kyllä, jo toteutettu ja helppo laajentaa.Nykyinen question_manager.py tekee juuri tätä: sync_tmp_to_new() synkronoi batch-kokoisen erän (batch_size, default 5) tai force-synkronoi. Se tarkistaa automaattisesti taustasäikeellä (_start_background_sync() ja _check_auto_sync()) 5 minuutin välein, ja synkronoi jos määrä täyttyy tai aika umpeutuu (time_interval_hours, default 24h). Se kirjaa system_chain.json:iin ja päivittää next_sync_time.
+Lisäys: Koodi tukee jo max_batch_size (default 20) estääkseen liian suuret erät. submit_question() tarkistaa synkronoinnin heti lisäyksen jälkeen ja palauttaa estimoidun ajan.
+Parannusehdotukset toteutukseen:Lisää konfigurointi komentoriviltä (manage_questions.py --batch-size=10 --interval=12).
+Integroi ELO-tarkistus: Synkronoi vain kysymykset, joiden initial ELO on yli kynnyksen (esim. 1000).
+Tee synkronointi atomiseksi (lock-tiedosto estääkseen samanaikaiset kirjoitukset usealta nodelta).
+
+Haasteet:Usean noden ympäristö: Jos useampi node kirjoittaa samaan tmp_new_questions.json:iin (paikallinen tiedosto), tarvitaan jaettu tallennus (esim. IPFS-synkronointi ennen kirjoitusta). Ratkaisu: Käytä IPFS:ää tmp-tiedostollekin (ipfs_sync_manager.py voisi laajentua tähän).
+Aikavyöhykkeet: Käytä UTC-aikaa (datetime.now() → datetime.now(timezone.utc) kuten muualla koodissa).
+
+3. Listan Organisointi Usean Noden Käyttäessä Samaa Listaa IPFS:ssä LohkoissaIdean kuvaus: Organisoi lista (esim. kysymyslista) IPFS:ssä lohkoiksi, joissa jokainen varaus sisältää: 1) bufferi (tyhjää tilaa), 2) kiireelliset varaukset (ent. hätävaraukset), 3) synkronoitu data, 4) varauspaikka, 5) bufferi. Useat nodet käyttävät samaa listaa.
+Toteutettavuus: Kyllä, toteutettavissa – pohja on jo ipfs_block_manager.py:ssä (vaikka se ei ole tässä dokumentissa, se mainitaan muissa tiedostoissa).Nykyinen IPFSBlockManager hallitsee lohkoja (buffer1, urgent, sync, active, buffer2 – täsmää ehdotukseesi!). Se kirjoittaa (write_to_block()) ja lukee lohkoja, tarkistaa tilan (get_block_status()) ja varmistaa, etteivät lohkot ylitäytä (max_size). enhanced_integrity_manager.py tarkistaa lohkojen integriteetin (_verify_blocks_integrity()), esim. ettei lohko ole tyhjä tai ylitäytynyt.
+Usean noden tuki: Jokaisella nodella on oma node_id ja election_id, joten ne voivat kirjoittaa samaan IPFS-verkkoon ilman konflikteja (IPFS CID:t ovat uniikkeja). Synkronointi tapahtuu ipfs_sync_manager.py:n kautta (status ja sync).
+Lisäys: Lohkojen sekvenssi (expected_sequence = ["buffer1", "urgent", "sync", "active", "buffer2"]) varmistaa järjestyksen. Kiireelliset (urgent) sopivat "hätävarauksiin" – termi "kiireellinen" on parempi, kuten ehdotit; vaihda se koodissa.
+Parannusehdotukset toteutukseen:Tee lohkot dynaamisiksi: Bufferit kasvavat tarvittaessa (esim. jos entries > max_size * 0.8, laajenna buffer2).
+Usean noden koordinointi: Käytä system_chain.json:iä lokittamaan lohkovaraukset (log_action("block_reserve", ...)), jotta nodet näkevät, kuka varasi mitäkin. Konfliktit ratkaistaan timestampilla (uudempi voittaa, kuten promptissa ehdotettu).
+Integroi kysymys-synkronointiin: question_manager.sync_tmp_to_new() kirjoittaa IPFS:ään (block_manager.write_to_block("sync", questions_to_sync, ...)).
+Bufferien käyttö: Buffer1/2 varaa tilaa tuleville lisäyksille, urgent kiireellisille (esim. admin-muutos), sync normaaliin dataan, active aktiivisiin kysymyksiin (kuten active_questions.json promptissa).
+
+Haasteet:IPFS-viiveet: Kirjoitus/luku voi kestää sekunteja verkossa – käytä mock-IPFS:ää testaukseen (kuten nykyinen MockIPFS).
+Konfliktit usealta nodelta: Jos kaksi nodea kirjoittaa samaan lohkoon yhtä aikaa, IPFS luo uuden CID:n – ratkaisu: Atominen varaus (esim. ensin kirjoita "varaus"-lohkoon intent, sitten synkronoi).
+Skaalaus: Suuret lohkot voivat olla hitaita; rajoita lohkon kokoa (kuten nykyinen max_size) ja käytä merkle-puita monimutkaisemmille listoille.
+Turvallisuus: Tarkista lohkojen integriteetti jokaisella nodella (verify_system_with_blocks()), ja estä kirjoitus jos fingerprint ei täsmää.
+
+Yhteenveto ja SuosituksetOnnistumistodennäköisyys: Korkea (90%+). Nykyinen koodi tarjoaa vahvan pohjan – tarvitset vain pieniä lisäyksiä (esim. lohkojen integrointi question_manager.py:hen ja fingerprint-tarkistus kaikkiin ohjelmiin).
+Hyödyt: Parantaa turvallisuutta (anti-tampering), automaatiota (synkronointi) ja hajautettua yhteistyötä (useat nodet). Sopii promptin visioon (ELO, IPFS, community-driven).
+Seuraavat askeleet:Laajenna enhanced_integrity_manager.py: Lisää automaattinen lukitus ja taustatarkistukset.
+Testaa synkronointia: Käytä manage_questions.py lisätäksesi kysymyksiä ja katso automaattinen sync.
+Implementoi lohkotesti: Luo demo-skripti usealle "nodelle" (esim. multiprocessing) kirjoittamaan IPFS:ään.
+TODO-integraatio: Yhdistä promptin TODOihin, kuten voting_engine.py (vaalikoneen ydin) ja GUI.
+------------------------------------------------------------------------------------------------------------------------------------
+*Ei sisään koodata esimerkkidataa py tiedostoihin
+* Sitten IPFS:n synkronoinnin ajanvaraus systeemi, jossa ipfs:stä luettaessa voi synkronoida aina tarvittaessa. IPFS:ään kirjoitettaessa ajattelin tällaista, eli varauslistassa käytetään aikaikkunoita, jossa nodi merkkaa varauslistaan nämä kohdat.
+1. jätetään hiukan tyhjää tilaa jokaisen varauksen väliin. (tyhjä aikaikkuna)
+2. Aikaikkuna kiireellisille varauksille
+3. nodin oma varaus
+4.  jätetään hiukan tyhjää tilaa jokaisen varauksen väliin. (tyhjä aikaikkuna)
+
+kohtien kestot voisi luoda json konfiguraatio tiedostoon
+--------------------------------------------------------------------------------------------------------------------
+asennusprosessin voisi kyllä käydä läpi:
+1. --first-install on jo aika selkeä, joka luo ensimmäisen vaalikohtaisen master noden ja muuten pitää tarkistaa, että systeemi toimii vain yksille vaaleile ja nimet ja cid-osoitteet on luotu niin, ettei tule sekaannuksia toisten mahdollisesti samaan aikaan pyörivien vaalien nodejen kanssa.
+
+2. nodin luominen --first-installin tekemästä asennus konfiguraatiotiedostosta, eli tarkistaa että tämäkin luo tai hakee ipfs:stä tarvittavat json tiedostot ja toimii samassa nimiavaruudessa ja cid-osoitteissa, kuin master-node
+............................................................................................................................
+
+Etsitko päällekkäisyyksiä ja toistuvaa koodia? Jotkin py tiedostot alkavat olemaan tode
+lla pitkiä. Voisiko ohjelmia jakaa moduuleihin? 
+-------------------------------------------------------------------------------------------------------------------------------------
+Olen miettinyt miten puolueet rekisteröidään hajautetusti ja tulin tulokseen, että puolue rekisteröidään järjestelmään, niin että systeemi vahvistaa puolueen kollektiivisesti ja systeemi on minimissään kolme nodia ja tällöin kolme nodia yhdessä vahvistaa puolueen, Ja kun järjestelmä kasvaa enemmistö nodeista äänestää puolueiden vahvistamisesta. Tämän jälkeen puolueet lisäävät ja vahvistavat ehdokkaat
+
+---------------------------------------------------------------------------------------------
+--first-install flagilla luodut vaalit lisätään elections_list.json tiedostoon!!
+-------------------------------------------------------------------------------------
+poistetaan vanhentuneet esimerkit vaalilistalta elections_list.json tiedostosta. nyt on 11.11.2025
+Jumaltenvaalit_2026 on virallisesti testivaalit
+-------------------------------------------------------------------------------------
+huomioidaan myös IPNS tekniikan mahdollinen hyödyntäminen
