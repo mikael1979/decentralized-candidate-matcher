@@ -1,0 +1,57 @@
+{
+  "publication": {
+    "publication_id": "pub_eedd82281302",
+    "party_id": "party_olympos",
+    "party_name": "Olympos-jumalat",
+    "media_url": "https://yle.fi/uutiset/olympos-jumalat-vaalit",
+    "media_domain": "yle.fi",
+    "public_key_fingerprint": "bd3c031fd3272a67",
+    "publication_data": {
+      "title": "Olympos-jumalat osallistuvat Jumaltenvaaleihin",
+      "publication_date": "2025-01-15",
+      "content_hash": "a1b2c3d4e5f67890",
+      "verification_challenge": "jumalat-2026-verify-001"
+    },
+    "publication_timestamp": "2025-11-13T00:09:36.561138",
+    "verification_status": "pending",
+    "trust_score": 10,
+    "verified_by_nodes": [
+      "node_zeus"
+    ],
+    "verification_evidence": []
+  },
+  "verification": {
+    "publication_id": "pub_eedd82281302",
+    "node_id": "node_zeus",
+    "verification_method": "manual",
+    "verification_timestamp": "2025-11-13T00:09:36.561197",
+    "status": "verified",
+    "confidence_score": 0.85,
+    "evidence": {
+      "screenshot_url": "https://archive.org/pub_eedd82281302",
+      "archive_timestamp": "2025-11-13T00:09:36.561203",
+      "verification_notes": "Manual verification completed"
+    }
+  },
+  "trust_assessment": {
+    "trust_score": 105,
+    "trust_level": "high",
+    "media_trust": 10,
+    "verification_count": 1,
+    "recommendation": "accept"
+  },
+  "test_publications": [
+    {
+      "url": "https://vaalit.fi/julkaisut/ukosen-jumalat",
+      "expected_trust": 10
+    },
+    {
+      "url": "https://blogspot.com/test-julkaisu",
+      "expected_trust": 3
+    },
+    {
+      "url": "https://hs.fi/vaalit/jumalat",
+      "expected_trust": 9
+    }
+  ]
+}

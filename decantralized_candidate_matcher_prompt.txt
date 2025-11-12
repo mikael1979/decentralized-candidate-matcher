@@ -417,3 +417,12 @@ poistetaan vanhentuneet esimerkit vaalilistalta elections_list.json tiedostosta.
 Jumaltenvaalit_2026 on virallisesti testivaalit
 -------------------------------------------------------------------------------------
 huomioidaan myös IPNS tekniikan mahdollinen hyödyntäminen
+------------------------------------------------------------------------------
+Lisättiin toimintaan git workflow
+--------------------------------------------------
+lisätään toimintamalliksi iteratiivinen prosessi, jossa aina uuden ominaisuuden jälkeen, kun on saatu toimimaan ja testit ovat mennet läpi. Palataan vanhaan koodiin ja organisoidaan se paremmin moduuleihin erityisesti pitkiksi venyneet tiedostot.
+------------------------------------------------------------------------------------- 
+*Kun tiedostoja päivitetään, niin käännetään kaikki koodin sisäiset kommentit englannin kielisiksi sitä mukaa kun päivityksiä tehdään tiedostoihin.
+*itseasiassa kvoorumia, voi joutua vielä kehittämään esimerkiksi puolueet julkaisevat, jossain mediassa julkisen avaimen ja höydynnetään sitä, eli kvoorumilla äänestetään avainrekisteröinnin aitoudesta
+*tätä puolueen saamaa avainpari hyödynnetään, niin että puolueet luovat ehdokkailleen avainparit, joiden avulla ehdokkaat voivat lisätä ja muokata vastauksiaan järjestelmässä
+*Jos tarvitset aikaisempaa koodia koneelta, niin pyydä lukemaan ja kopoimaan se sinulle. 

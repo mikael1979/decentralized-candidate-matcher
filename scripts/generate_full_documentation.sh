@@ -39,7 +39,9 @@ chmod +x scripts/generate_template_overview.sh
 echo ""
 echo "📇 Luodaan pääindeksi..."
 
-INDEX_FILE="docs/documentation_index_$(date +%Y%m%d_%H%M%S).md"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+INDEX_FILE="docs/documentation_index_${TIMESTAMP}.md"
+CONVERSATION_STARTER="docs/conversation_starter_${TIMESTAMP}.md"
 
 cat > "$INDEX_FILE" << EOF
 # 🏛️ Hajautetun Vaalikoneen Dokumentaatio
@@ -50,6 +52,21 @@ cat > "$INDEX_FILE" << EOF
 
 - [Koodin Yleiskuva](./$(basename $(ls -t docs/code_overview_*.txt | head -1)))
 - [Template Listaus](./$(basename $(ls -t docs/template_overview_*.json | head -1)))
+- [Keskustelun Aloitus](./$(basename $CONVERSATION_STARTER))
+
+## 🏛️ PROJEKTIN TIEDOT
+
+- **Vaali-ID:** Jumaltenvaalit2026
+- **Data-hakemisto:** data/runtime/
+- **Tila:** $(grep -c '"verification_status": "verified"' data/runtime/parties.json 2>/dev/null || echo 0) vahvistettua puoluetta
+
+## 💾 DATA-TILANNE
+
+\`\`\`
+Kysymyksiä: $(jq '.questions | length' data/runtime/questions.json 2>/dev/null || echo 0)
+Ehdokkaita: $(jq '.candidates | length' data/runtime/candidates.json 2>/dev/null || echo 0)
+Puolueita: $(jq '.parties | length' data/runtime/parties.json 2>/dev/null || echo 0)
+\`\`\`
 
 ## 📊 Yhteenveto
 
@@ -65,22 +82,169 @@ $(find base_templates -name "*.json" | wc -l) JSON-templatea
 $(ls -d base_templates/*/ | wc -l) kategoriaa
 \`\`\`
 
-## 🗂️ Hakemistorakenne
+EOF
+
+# Lisää hakemistorakenne
+if command -v tree &> /dev/null; then
+    echo "## 🗂️ Hakemistorakenne" >> "$INDEX_FILE"
+    echo "\`\`\`" >> "$INDEX_FILE"
+    tree -I '__pycache__|*.pyc|docs|.git|venv' --dirsfirst >> "$INDEX_FILE"
+    echo "\`\`\`" >> "$INDEX_FILE"
+else
+    echo "## 🗂️ Hakemistorakenne (yksinkertaistettu)" >> "$INDEX_FILE"
+    echo "\`\`\`" >> "$INDEX_FILE"
+    find . -maxdepth 2 -type d -not -path "./.git/*" -not -path "./venv/*" -not -path "./docs/*" | sort >> "$INDEX_FILE"
+    echo "\`\`\`" >> "$INDEX_FILE"
+fi
+
+# Lisää git-historia jos saatavilla
+if command -v git &> /dev/null && [ -d ".git" ]; then
+    echo "" >> "$INDEX_FILE"
+    echo "## 🔄 VIIMEISIMMÄT MUUTOKSET" >> "$INDEX_FILE"
+    echo "\`\`\`" >> "$INDEX_FILE"
+    git log --oneline -5 2>/dev/null || echo "Git-historiaa ei saatavilla" >> "$INDEX_FILE"
+    echo "\`\`\`" >> "$INDEX_FILE"
+fi
+
+# Lisää nopeat linkit
+cat >> "$INDEX_FILE" << EOF
+
+## 🚪 NOPEAKÄYNNISTYS
+
+\`\`\`bash
+# Asenna ja käynnistä
+./scripts/setup_jumaltenvaalit.sh
+
+# Hallinnoi kysymyksiä
+python src/cli/manage_questions.py --election Jumaltenvaalit2026 --list
+
+# Hallinnoi ehdokkaita  
+python src/cli/manage_candidates.py --election Jumaltenvaalit2026 --list
+
+# Hallinnoi puolueita
+python src/cli/manage_parties.py --election Jumaltenvaalit2026 list
+\`\`\`
+
+## 📞 APU
+
+- [README.md](./README.md)
+- [TODO.md](./TODO.md)
+- [Skriptit](./scripts/)
+- [Keskustelun Aloitus](./$(basename $CONVERSATION_STARTER))
+EOF
+
+# LUO KESKUSTELUN ALOITUSDOKUMENTTI
+echo ""
+echo "💬 Luodaan keskustelun aloitusdokumentti..."
+
+cat > "$CONVERSATION_STARTER" << EOF
+# 🏛️ HAJAUTETTU VAALIKONEJÄRJESTELMÄ - KESKUSTELUN ALOITUS
+
+## 📅 Generoitu: $(date)
+
+## 🎯 PROJEKTIN KUVASSA
+
+EOF
+
+# Lisää prompt-tiedoston sisältö jos se on olemassa
+if [ -f "decantralized_candidate_matcher_prompt.txt" ]; then
+    echo "📝 Ladataan projektin kuvaus..."
+    cat "decantralized_candidate_matcher_prompt.txt" >> "$CONVERSATION_STARTER"
+else
+    echo "⚠️  Prompt-tiedostoa ei löydy, käytetään peruskuvausta" >> "$CONVERSATION_STARTER"
+    cat >> "$CONVERSATION_STARTER" << EOF
+
+Hajautettu vaalikonejärjestelmä joka yhdistää:
+- 🎯 ELO-luokituksen kysymysten priorisointiin
+- 🌐 IPFS-synkronoinnin hajautettuun datajakoon  
+- 🏛️ Hajautetun puoluevahvistuksen (3 noden kvoorumi)
+- 📊 Modulaarisen arkitehtuurin helppoa laajennettavuutta varten
+
+Testivaalina: **Jumaltenvaalit 2026**
+EOF
+fi
+
+# Lisää nykyinen tila
+cat >> "$CONVERSATION_STARTER" << EOF
+
+## 📊 NYKYINEN TILA
+
+### ✅ VALMISSA
+- Perusjärjestelmä (install.py, meta.json, system_chain.json)
+- Kysymysten hallinta + ELO-luokitusjärjestelmä
+- Ehdokkaiden ja puolueiden perushallinta
+- Hajautettu puoluevahvistus (3 noden kvoorumi)
+- Ehdokkaiden vastausten hallinta (manage_answers.py)
+
+### 🔨 KÄYNNISSÄ
+- Refaktorointi: data_manager.py ja base_cli.py
+- IPFS-synkronointi (seuraavaksi)
+
+### 🎯 SEURAAVAT VAIHEET
+1. IPFS-synkronointi (ipfs_sync.py)
+2. Vaalikoneen ydin (voting_engine.py)
+3. Web-käyttöliittymä
+
+## 💾 DATA-TILANNE
 
 \`\`\`
-$(tree -I '__pycache__|*.pyc|docs' --dirsfirst)
+Kysymyksiä: $(jq '.questions | length' data/runtime/questions.json 2>/dev/null || echo 0)
+Ehdokkaita: $(jq '.candidates | length' data/runtime/candidates.json 2>/dev/null || echo 0) 
+Puolueita: $(jq '.parties | length' data/runtime/parties.json 2>/dev/null || echo 0)
+Vahvistettuja puolueita: $(grep -c '"verification_status": "verified"' data/runtime/parties.json 2>/dev/null || echo 0)
 \`\`\`
 
-## 🚪 Nopeat Linkit
+## 🗂️ PROJEKTIN RAKENNE
 
-- [Asenna Järjestelmä](./scripts/setup_jumaltenvaalit.sh)
-- [Hallitse Kysymyksiä](./src/cli/manage_questions.py) 
-- [Hallitse Ehdokkaita](./src/cli/manage_candidates.py)
+\`\`\`
+$(find . -maxdepth 3 -type d -not -path "./.git/*" -not -path "./venv/*" -not -path "./docs/*" | sort | head -20)
+\`\`\`
+
+## 🚀 NOPEA ALOITUS
+
+\`\`\`bash
+# 1. Asenna järjestelmä
+./scripts/setup_jumaltenvaalit.sh
+
+# 2. Hallinnoi kysymyksiä
+python src/cli/manage_questions.py --election Jumaltenvaalit2026 --list
+
+# 3. Hallinnoi ehdokkaita
+python src/cli/manage_candidates.py --election Jumaltenvaalit2026 --list
+
+# 4. Hallinnoi puolueita  
+python src/cli/manage_parties.py --election Jumaltenvaalit2026 list
+
+# 5. Hallinnoi vastauksia
+python src/cli/manage_answers.py --election Jumaltenvaalit2026 --list
+\`\`\`
+
+## 📋 VILLEIMPIMMÄT TIEDOSTOT
+
+\`\`\`
+$(ls -la src/cli/manage_answers.py src/core/data_manager.py src/cli/base_cli.py 2>/dev/null | awk '{print $9, "(" $5 " tavua)"}' || echo "Tiedostoja ei saatavilla")
+\`\`\`
+
+## 💡 KESKUSTELUN JATKAMINEN
+
+**Kopioi tämä dokumentti uuteen keskusteluun ja lisää:**
+
+1. **Tärkeimmät uudet tiedostot** (manage_answers.py, data_manager.py, base_cli.py)
+2. **Spesifit kysymykset** seuraavista vaiheista
+3. **Ongelmakohteet** tai parannusehdotukset
+
+**Esimerkkikysymyksiä:**
+- "Miten parantaisit manage_answers.py toteutusta?"
+- "Autatko toteuttamaan IPFS-synkronoinnin?"
+- "Mitä mieltä olet nykyisestä refaktorointityöstä?"
 EOF
 
 echo "✅ Kaikki dokumentaatio generoitu!"
 echo ""
 echo "📁 Luodut tiedostot:"
-ls -la docs/*_$(date +%Y%m%d)*
+ls -la docs/*_${TIMESTAMP}*
 echo ""
 echo "🌐 Pääindeksi: $INDEX_FILE"
+echo "💬 Keskustelun aloitus: $CONVERSATION_STARTER"
+echo ""
+echo "💡 **Vinkki:** Käytä '$CONVERSATION_STARTER' tiedostoa uusien keskustelujen aloittamiseen!"

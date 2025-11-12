@@ -1,0 +1,51 @@
+{
+  "secure_answer": {
+    "answer_document": {
+      "election_id": "Jumaltenvaalit2026",
+      "candidate_id": "cand_secure_001",
+      "question_id": "q_test_001",
+      "answer_value": 5,
+      "confidence": 5,
+      "explanation": {
+        "fi": "T\u00e4ysin samaa mielt\u00e4 - t\u00e4m\u00e4 on t\u00e4rke\u00e4 kysymys",
+        "en": "Completely agree - this is an important question",
+        "sv": "Helt \u00f6verens - detta \u00e4r en viktig fr\u00e5ga"
+      },
+      "submission_timestamp": "2025-11-13T00:02:06.350985",
+      "document_version": "1.0",
+      "previous_answer_hash": "initial"
+    },
+    "answer_signature": "GhSWELFBX4dASkcxKmgKg3u6EvUkSGcS7xs8NlPN4z4wzuwOMw3nInPEExSgeI9dvFgZzSWcpjm0f3zyF47OCEpLwJVwL8jHa/AT/0mHs1wiruf60PwfLicHR7U2kWFMBWQpBamsBthojfmxgm6Gk/JAyMA1j5uUfVR5UFBzKbXc/tRu4pd8sYcaGk+GOZxFGgCRP5RhxhlUeGYXLytLxl1gx3LrigxSl62S1wqT/W1bM+JHXMFfY0PzQtwaudfmAdBzDJFKuyXv5QgEU24OmZC6bSnLmwqYtB5zYKS+szIbsEWKMfWS1RlYenHxNRJreJrvX7qkO71TAk1J4doErw==",
+    "delegation_chain": {
+      "delegation_document": {
+        "election_id": "Jumaltenvaalit2026",
+        "party_id": "party_secure_test",
+        "candidate_id": "cand_secure_001",
+        "delegated_powers": [
+          "submit_answers",
+          "modify_answers",
+          "view_own_data",
+          "update_profile"
+        ],
+        "valid_from": "2025-11-13T00:02:06.305622",
+        "valid_until": "2026-02-11T00:02:06.305633",
+        "candidate_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA429uQWmYqdwdEQAcsrVy\nQUMpKwzZrlVzRAn0aB6DVNhP7e2tFIdKHU6gdSwxkZr076gRAyDBOf6yrzBWawmF\njcv6VhHPqjwZPoFTCWbzcE1V5aVV7i2IOEdB42vawlttbh5RBt4Y5/Gyo2vwBK+X\n8tH9bSuQMMtXlRXGKKc4kexV4yEemAtIGV5EOwLAh5j04HvYrKTYtUV9S77wPR8K\nFKIOdovpTFXOL2wwXZy/aBMbM/plcyJVE5n0pNdd77utCO1GOar0XfaH0KJ0tuM7\nji9051eRZbcO42iZEXdqsg4yii7e1/b7Tkau178zuSiY1PLpjQBNBFmamuu+mA8T\n4wIDAQAB\n-----END PUBLIC KEY-----\n",
+        "candidate_key_fingerprint": "3fbaae68543c6cbf",
+        "document_version": "1.0"
+      },
+      "delegation_signature": "FilOk8YvICNTnRj9rZpeKAlrN0J+NkKDzBE+cggFNVNUPGMeMJLz0m8SwOmthh+PUVO5n27iWWN7ievIDT0PGCukhMD6WHw3WQvFUC+rgJuGA8hiQ6FGFfas7o1TuEz/tBe/bGZD6UxrvYcwt1l2ozmsFrpEKLiuZz5l29KeOpSO8H3+hx+kpIXU23krU3D8oaluhlyPOStg0pLq2Heer2VAJL/R5kePLcZKGht0hjCefnetWxJbcTjQ6SPbPGrOataMvqIDtk6dIwIMnB4zXFWrE4DQBEcSqcNoZGvwMNOUVzzuiAYNqEF6+HCuiQdE2S/MpxGdrSeu3p07Ren+oQ==",
+      "party_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsZAV/24MJTrrWCRa9Mlu\nwHqdb/RTE08OiwYFn5IK5WaJ5NCZKlPkbRjy4vj+YuGCZeNtPlzzWOH9VAi57Hgy\nbDHphYxZ+Bwo7nTh1q7+OADFhJ6QMynajI/HFgoNzpfKr5QrBQn5ZP444qxUXfhB\npEOu728LuF5HScPTekbqwDvTwgJ/QwYbTVx6fP3FRHN8kgV8YPGMnSrGJWK1cFXj\nZD2rgN5VXxs6SSuSbcpWsIfeS6gY+PZHIpIQSWzxx5Ub5OZCfrGmh+8v7HGD4mRk\n5s7x0/mtVZR9xydtC2egYKmV2hiPZlItFn82nZlPhbS2scM9m+YclAM9jEveZ1+R\nfwIDAQAB\n-----END PUBLIC KEY-----\n"
+    },
+    "metadata": {
+      "submission_id": "ans_718cae8c8dd11382",
+      "integrity_verified": true,
+      "verification_timestamp": "2025-11-13T00:02:06.408286",
+      "hash_chain": "8cccbb7be1369df8c945bcb523f5ee6158a3250f2fbdf34996b0339963ec1153"
+    }
+  },
+  "test_info": {
+    "candidate_id": "cand_secure_001",
+    "question_id": "q_test_001",
+    "generated_at": "2025-11-13T00:02:06.350985"
+  }
+}

@@ -1,4 +1,20 @@
 click>=8.0.0
-# Dokumentaation aputyökalut:
-# jq (JSON processing)
-# tree (directory listing)
+cryptography>=41.0.0  # PKI-avainten hallinta ja allekirjoitukset
+requests>=2.31.0      # HTTP-pyynnöt media-verifikaatioon
+pytest>=7.4.0         # Testauskehys
+pytest-cov>=4.1.0     # Testikattavuus
+python-dotenv>=1.0.0  # Ympäristömuuttujat
+pyyaml>=6.0           # YAML-tuki konfiguraatioille
+colorama>=0.4.6       # Värit CLI-tulostuksissa
+tqdm>=4.66.0          # Edistymispalkit
+
+# Kehitysriippuvuudet
+ipython>=8.15.0       # Interaktiivinen kehitys
+black>=23.0.0         # Koodin muotoilu
+flake8>=6.0.0         # Linttaus
+mypy>=1.5.0           # Tyypitystarkistus
+
+# Vaihtoehtoiset (kommentoidut)
+# ipfshttpclient>=0.8.0  # IPFS-integraatio
+# web3>=6.0.0           # Blockchain-integraatio
+ipfshttpclient>=0.8.0a2
