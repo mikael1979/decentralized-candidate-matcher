@@ -1,0 +1,51 @@
+name: Python Application Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: pip install click
+      
+    - name: Test Python syntax
+      run: |
+        echo "Testing Python file syntax..."
+        for file in src/cli/*.py; do
+          python -m py_compile "$file"
+        done
+        echo "✅ All Python files are syntactically correct"
+        
+    - name: Test basic functionality
+      run: |
+        echo "Testing basic CLI commands..."
+        python src/cli/install.py --help
+        python src/cli/manage_questions.py --help
+        python src/cli/manage_candidates.py --help
+        python src/cli/manage_parties.py --help
+        echo "✅ All CLI commands work"
+        
+    - name: Validate data files
+      run: |
+        echo "Validating JSON files..."
+        find . -name "*.json" -not -path "./.git/*" -exec echo "Validating {}" \; -exec python -c "import json; json.load(open('{}'))" \;
+        echo "✅ All JSON files are valid"
+        
+    - name: Run documentation generation
+      run: |
+        chmod +x scripts/generate_code_overview.sh
+        ./scripts/generate_code_overview.sh
+        echo "✅ Documentation generated successfully"
