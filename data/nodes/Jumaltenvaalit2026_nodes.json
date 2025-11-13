@@ -1,0 +1,84 @@
+{
+  "nodes": {
+    "node_zeus": {
+      "node_id": "node_zeus",
+      "public_key": "mock_public_key_node_zeus",
+      "key_fingerprint": "cbacc7120d3cf843",
+      "node_name": "Zeus",
+      "domain": "sky_thunder",
+      "capabilities": [
+        "voting",
+        "verification",
+        "leadership"
+      ],
+      "registration_timestamp": "2025-11-13T01:55:44.664337",
+      "last_seen": "2025-11-13T01:55:44.664351",
+      "status": "active",
+      "trust_score": 15
+    },
+    "node_athena": {
+      "node_id": "node_athena",
+      "public_key": "mock_public_key_node_athena",
+      "key_fingerprint": "00db0e5f0aff1204",
+      "node_name": "Athena",
+      "domain": "wisdom_warfare",
+      "capabilities": [
+        "voting",
+        "verification",
+        "strategy"
+      ],
+      "registration_timestamp": "2025-11-13T01:55:44.664538",
+      "last_seen": "2025-11-13T01:55:44.664543",
+      "status": "active",
+      "trust_score": 15
+    },
+    "node_poseidon": {
+      "node_id": "node_poseidon",
+      "public_key": "mock_public_key_node_poseidon",
+      "key_fingerprint": "260046efee2966a4",
+      "node_name": "Poseidon",
+      "domain": "sea_earthquakes",
+      "capabilities": [
+        "voting",
+        "verification"
+      ],
+      "registration_timestamp": "2025-11-13T01:55:44.664782",
+      "last_seen": "2025-11-13T01:55:44.664789",
+      "status": "active",
+      "trust_score": 12
+    },
+    "node_aphrodite": {
+      "node_id": "node_aphrodite",
+      "public_key": "mock_public_key_node_aphrodite",
+      "key_fingerprint": "f48f2c7bc802103b",
+      "node_name": "Aphrodite",
+      "domain": "love_beauty",
+      "capabilities": [
+        "voting",
+        "verification"
+      ],
+      "registration_timestamp": "2025-11-13T01:55:44.665018",
+      "last_seen": "2025-11-13T01:55:44.665025",
+      "status": "active",
+      "trust_score": 10
+    },
+    "node_ares": {
+      "node_id": "node_ares",
+      "public_key": "mock_public_key_node_ares",
+      "key_fingerprint": "f033dcc2cc3a333c",
+      "node_name": "Ares",
+      "domain": "war_strategy",
+      "capabilities": [
+        "voting",
+        "verification"
+      ],
+      "registration_timestamp": "2025-11-13T01:55:44.665268",
+      "last_seen": "2025-11-13T01:55:44.665273",
+      "status": "active",
+      "trust_score": 8
+    }
+  },
+  "metadata": {
+    "election_id": "Jumaltenvaalit2026"
+  }
+}

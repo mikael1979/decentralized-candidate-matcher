@@ -1,0 +1,251 @@
+{
+  "metadata": {
+    "election_id": "Jumaltenvaalit2026",
+    "generated_at": "2025-11-13T02:51:20.964919",
+    "version": "1.0.0",
+    "description": "Jumaltenvaalit 2026 - Base data kaikista resursseista"
+  },
+  "links": {
+    "parties_json": "/data/runtime/parties.json",
+    "candidates_json": "/data/runtime/candidates.json",
+    "questions_json": "/data/runtime/questions.json",
+    "meta_json": "/data/runtime/meta.json",
+    "ipfs_sync_json": "/data/runtime/ipfs_sync.json",
+    "profiles_metadata": "/data/runtime/profiles_metadata.json"
+  },
+  "ipfs_cids": {
+    "parties": "mock_9fbb78593baba6bc",
+    "questions": "mock_7a7aa1d207e23672",
+    "candidates": "mock_d522f790f295a7ce",
+    "meta": "mock_eb4c88f80a2cacff"
+  },
+  "profiles": {
+    "party_party_001": {
+      "profile_id": "party_party_001_20251113_024420",
+      "entity_id": "party_001",
+      "entity_type": "party",
+      "entity_name": "Testipuolue",
+      "filepath": "output/profiles/party_party_001.html",
+      "filename": "party_party_001.html",
+      "ipfs_cid": "mock_cid_party_party_001",
+      "ipfs_gateway_url": null,
+      "generated_at": "2025-11-13T02:44:20.511260",
+      "election_id": "Jumaltenvaalit2026",
+      "color_theme": {
+        "primary": "#2c3e50",
+        "secondary": "#3498db",
+        "accent": "#e74c3c",
+        "background": "#ecf0f1"
+      }
+    },
+    "party_test_party_fixed": {
+      "profile_id": "party_test_party_fixed_20251113_022913",
+      "entity_id": "test_party_fixed",
+      "entity_type": "party",
+      "entity_name": "Korjattu Testi Puolue",
+      "filepath": "output/profiles/party_test_party_fixed.html",
+      "filename": "party_test_party_fixed.html",
+      "ipfs_cid": "mock_e09858d289eabbc8",
+      "ipfs_gateway_url": null,
+      "generated_at": "2025-11-13T02:29:13.254015",
+      "election_id": "Jumaltenvaalit2026",
+      "color_theme": {
+        "primary": "#2c3e50",
+        "secondary": "#3498db",
+        "accent": "#e74c3c",
+        "background": "#ecf0f1"
+      }
+    },
+    "party_party_002": {
+      "profile_id": "party_party_002_20251113_024420",
+      "entity_id": "party_002",
+      "entity_type": "party",
+      "entity_name": "Meren Jumalat",
+      "filepath": "output/profiles/party_party_002.html",
+      "filename": "party_party_002.html",
+      "ipfs_cid": "mock_cid_party_party_002",
+      "ipfs_gateway_url": null,
+      "generated_at": "2025-11-13T02:44:20.513149",
+      "election_id": "Jumaltenvaalit2026",
+      "color_theme": {
+        "primary": "#1a5276",
+        "secondary": "#3498db",
+        "accent": "#2980b9",
+        "background": "#ebf5fb"
+      }
+    },
+    "party_party_003": {
+      "profile_id": "party_party_003_20251113_024420",
+      "entity_id": "party_003",
+      "entity_type": "party",
+      "entity_name": "Alamaailman Hallitsijat",
+      "filepath": "output/profiles/party_party_003.html",
+      "filename": "party_party_003.html",
+      "ipfs_cid": "mock_cid_party_party_003",
+      "ipfs_gateway_url": null,
+      "generated_at": "2025-11-13T02:44:20.517482",
+      "election_id": "Jumaltenvaalit2026",
+      "color_theme": {
+        "primary": "#186a3b",
+        "secondary": "#27ae60",
+        "accent": "#229954",
+        "background": "#eafaf1"
+      }
+    },
+    "party_party_test_001": {
+      "profile_id": "party_party_test_001_20251113_024420",
+      "entity_id": "party_test_001",
+      "entity_type": "party",
+      "entity_name": "Testi Ukosen Jumalat",
+      "filepath": "output/profiles/party_party_test_001.html",
+      "filename": "party_party_test_001.html",
+      "ipfs_cid": "mock_cid_party_party_test_001",
+      "ipfs_gateway_url": null,
+      "generated_at": "2025-11-13T02:44:20.523690",
+      "election_id": "Jumaltenvaalit2026",
+      "color_theme": {
+        "primary": "#922b21",
+        "secondary": "#e74c3c",
+        "accent": "#cb4335",
+        "background": "#fdedec"
+      }
+    },
+    "party_party_20251112_233903": {
+      "profile_id": "party_party_20251112_233903_20251113_024420",
+      "entity_id": "party_20251112_233903",
+      "entity_type": "party",
+      "entity_name": "Olympos-jumalat",
+      "filepath": "output/profiles/party_party_20251112_233903.html",
+      "filename": "party_party_20251112_233903.html",
+      "ipfs_cid": "mock_cid_party_party_20251112_233903",
+      "ipfs_gateway_url": null,
+      "generated_at": "2025-11-13T02:44:20.526658",
+      "election_id": "Jumaltenvaalit2026",
+      "color_theme": {
+        "primary": "#4a235a",
+        "secondary": "#8e44ad",
+        "accent": "#7d3c98",
+        "background": "#f4ecf7"
+      }
+    },
+    "candidate_cand_1": {
+      "profile_id": "candidate_cand_1_20251113_024420",
+      "entity_id": "cand_1",
+      "entity_type": "candidate",
+      "entity_name": "Zeus",
+      "filepath": "output/profiles/candidate_cand_1.html",
+      "filename": "candidate_cand_1.html",
+      "ipfs_cid": "mock_cid_candidate_cand_1",
+      "ipfs_gateway_url": null,
+      "generated_at": "2025-11-13T02:44:20.528972",
+      "election_id": "Jumaltenvaalit2026",
+      "party_id": "party_001",
+      "color_theme": {
+        "primary": "#2c3e50",
+        "secondary": "#3498db",
+        "accent": "#e74c3c",
+        "background": "#ecf0f1"
+      }
+    },
+    "candidate_cand_2": {
+      "profile_id": "candidate_cand_2_20251113_024420",
+      "entity_id": "cand_2",
+      "entity_type": "candidate",
+      "entity_name": "Athena",
+      "filepath": "output/profiles/candidate_cand_2.html",
+      "filename": "candidate_cand_2.html",
+      "ipfs_cid": "mock_cid_candidate_cand_2",
+      "ipfs_gateway_url": null,
+      "generated_at": "2025-11-13T02:44:20.530864",
+      "election_id": "Jumaltenvaalit2026",
+      "party_id": "party_001",
+      "color_theme": {
+        "primary": "#2c3e50",
+        "secondary": "#3498db",
+        "accent": "#e74c3c",
+        "background": "#ecf0f1"
+      }
+    },
+    "candidate_cand_3": {
+      "profile_id": "candidate_cand_3_20251113_024420",
+      "entity_id": "cand_3",
+      "entity_type": "candidate",
+      "entity_name": "Poseidon",
+      "filepath": "output/profiles/candidate_cand_3.html",
+      "filename": "candidate_cand_3.html",
+      "ipfs_cid": "mock_cid_candidate_cand_3",
+      "ipfs_gateway_url": null,
+      "generated_at": "2025-11-13T02:44:20.534383",
+      "election_id": "Jumaltenvaalit2026",
+      "party_id": "party_001",
+      "color_theme": {
+        "primary": "#2c3e50",
+        "secondary": "#3498db",
+        "accent": "#e74c3c",
+        "background": "#ecf0f1"
+      }
+    },
+    "candidate_cand_4": {
+      "profile_id": "candidate_cand_4_20251113_024420",
+      "entity_id": "cand_4",
+      "entity_type": "candidate",
+      "entity_name": "Hades",
+      "filepath": "output/profiles/candidate_cand_4.html",
+      "filename": "candidate_cand_4.html",
+      "ipfs_cid": "mock_cid_candidate_cand_4",
+      "ipfs_gateway_url": null,
+      "generated_at": "2025-11-13T02:44:20.538421",
+      "election_id": "Jumaltenvaalit2026",
+      "party_id": "party_001",
+      "color_theme": {
+        "primary": "#2c3e50",
+        "secondary": "#3498db",
+        "accent": "#e74c3c",
+        "background": "#ecf0f1"
+      }
+    },
+    "candidate_cand_001": {
+      "profile_id": "candidate_cand_001_20251113_024420",
+      "entity_id": "cand_001",
+      "entity_type": "candidate",
+      "entity_name": "Zeus",
+      "filepath": "output/profiles/candidate_cand_001.html",
+      "filename": "candidate_cand_001.html",
+      "ipfs_cid": "mock_cid_candidate_cand_001",
+      "ipfs_gateway_url": null,
+      "generated_at": "2025-11-13T02:44:20.557390",
+      "election_id": "Jumaltenvaalit2026",
+      "party_id": "party_001",
+      "color_theme": {
+        "primary": "#2c3e50",
+        "secondary": "#3498db",
+        "accent": "#e74c3c",
+        "background": "#ecf0f1"
+      }
+    },
+    "candidate_cand_002": {
+      "profile_id": "candidate_cand_002_20251113_024420",
+      "entity_id": "cand_002",
+      "entity_type": "candidate",
+      "entity_name": "Athena",
+      "filepath": "output/profiles/candidate_cand_002.html",
+      "filename": "candidate_cand_002.html",
+      "ipfs_cid": "mock_cid_candidate_cand_002",
+      "ipfs_gateway_url": null,
+      "generated_at": "2025-11-13T02:44:20.560043",
+      "election_id": "Jumaltenvaalit2026",
+      "party_id": "party_001",
+      "color_theme": {
+        "primary": "#2c3e50",
+        "secondary": "#3498db",
+        "accent": "#e74c3c",
+        "background": "#ecf0f1"
+      }
+    }
+  },
+  "statistics": {
+    "total_profiles": 12,
+    "party_profiles": 6,
+    "candidate_profiles": 6
+  }
+}

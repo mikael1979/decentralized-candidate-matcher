@@ -426,3 +426,4 @@ lisätään toimintamalliksi iteratiivinen prosessi, jossa aina uuden ominaisuud
 *itseasiassa kvoorumia, voi joutua vielä kehittämään esimerkiksi puolueet julkaisevat, jossain mediassa julkisen avaimen ja höydynnetään sitä, eli kvoorumilla äänestetään avainrekisteröinnin aitoudesta
 *tätä puolueen saamaa avainpari hyödynnetään, niin että puolueet luovat ehdokkailleen avainparit, joiden avulla ehdokkaat voivat lisätä ja muokata vastauksiaan järjestelmässä
 *Jos tarvitset aikaisempaa koodia koneelta, niin pyydä lukemaan ja kopoimaan se sinulle. 
+*web käyttöliittymää varten voisi luoda vielä python ohjelman joka generoi staattisen html profiilisivun puolueelle ja ehdokkaalle. Sivu tallennetaan ipfs:ään. Sitten olisi css-tyylisivu template, jota muokkaamalla puolue saisi itselleen ja ehdokkailleen omissa tunnusväreissään olevan sivun. 
