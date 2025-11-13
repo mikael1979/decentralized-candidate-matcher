@@ -1,9 +1,3 @@
-Totta! Luodaan TODO.md tiedosto joka listaa kaikki tekemättömät osat ja nykyisen tilanteen:
-
-## 📝 TODO.md
-
-**TODO.md**:
-```markdown
 # 🏛️ Hajautetun Vaalikoneen Kehitys - TODO Lista
 
 ## 📊 NYKYINEN TILA (✅ VALMIS)
@@ -32,25 +26,51 @@ Totta! Luodaan TODO.md tiedosto joka listaa kaikki tekemättömät osat ja nykyi
 - [x] Hajautettu vahvistus (3/3 kvoorumi)
 - [x] `link_candidate_to_party.py` - Ehdokkaiden linkitys
 
-### 🧪 Testaus ja Dokumentaatio
-- [x] Testiskriptit puolueille ja ELO:lle
-- [x] Järjestelmän tilaraportit
+### 📝 Ehdokkaiden Vastausten Hallinta
+- [x] `manage_answers.py` - Ehdokkaiden vastausten hallinta
+- [x] Vastausten validointi (-5 - +5 asteikolla)
+- [x] Perustelut monikielisinä
+- [x] Luottamustasot (1-5)
+
+### 🔐 PKI Turvajärjestelmä
+- [x] `candidate_credentials.py` - Ehdokkaiden identiteetin varmennus
+- [x] `enhanced_party_verification.py` - Puolueiden vahvistus
+- [x] Hajautettu allekirjoitusjärjestelmä
+- [x] Tietoturva-avaimet ja sertifikaatit
+
+### 🌐 IPFS Hajautettu Tallenus
+- [x] `ipfs_client.py` - IPFS-integrointi (Kubo 0.38.2 yhteensopiva)
+- [x] `ipfs_sync.py` - Hajautettu datajako
+- [x] Mock-IPFS testausta varten
+- [x] Synkronointiprotokolla
+
+### 📊 Analytics ja Raportointi
+- [x] `analytics.py` - Vaalitilastot ja analyysit
+- [x] `party_stats.py` - Puoluetilastot
+- [x] Tulosten analysointi
+- [x] Raporttien generointi
+
+### 🎨 HTML Profiilien Generointi
+- [x] `generate_profiles.py` - Profiilisivujen CLI
+- [x] `html_generator.py` - HTML-template-järjestelmä
+- [x] Väriteemat puolueille
+- [x] IPFS-julkaisu profiileista
+- [x] Base.json metadata-järjestelmä
+
+### 🔧 Data Validointi
+- [x] `validate_data.py` - Data-eheyden tarkistus
+- [x] JSON-skeemat ja validointi
+- [x] Eheystarkistukset
 
 ---
 
 ## 🚧 TEKIJÄLLÄ (🔨 KEHItyksessä)
 
-### 📝 Ehdokkaiden Vastausten Hallinta
-- [ ] `manage_answers.py` - Ehdokkaiden vastausten hallinta
-- [ ] Vastausten validointi (-5 - +5 asteikolla)
-- [ ] Perustelut monikielisinä
-- [ ] Luottamustasot (1-5)
-
-### 🌐 IPFS-Synkronointi
-- [ ] `ipfs_sync.py` - Hajautettu datajako
-- [ ] IPFS-client integraatio
-- [ ] Mock-IPFS testausta varten
-- [ ] Synkronointiprotokolla
+### 🖥️ Moninode-järjestelmä
+- [ ] `node_management.py` - Solmujen hallinta
+- [ ] `network_sync.py` - Verkon synkronointi
+- [ ] `quorum_voting.py` - Hajautettu äänestys
+- [ ] Täysin hajautettu arkkitehtuuri
 
 ---
 
@@ -67,144 +87,134 @@ Totta! Luodaan TODO.md tiedosto joka listaa kaikki tekemättömät osat ja nykyi
 - [ ] CLI-käyttöliittymä (rich/click)
 - [ ] Tulosten visualisointi
 
-### 🔐 Tietoturva ja Integriteetti
-- [ ] `integrity_manager.py` - Fingerprint-tarkistus
-- [ ] Data-validointi
-- [ ] Hajautettu varmennus
-
-### 📈 Analytics ja Raportointi
-- [ ] `election_analytics.py` - Vaalitilastot
-- [ ] Tulosten analysointi
-- [ ] Raporttien generointi
+### 📱 Käyttäjäkokemus
+- [ ] React/Vue frontend
+- [ ] Mobiiliystävällisyys
+- [ ] Reaaliaikainen tulospalvelu
 
 ---
 
 ## 🎯 PRIORITEETIT
 
 ### 🥇 PRIORITEETTI 1 (Seuraavaksi)
-1. **`manage_answers.py`** - Ehdokkaiden vastaukset
-2. **`ipfs_sync.py`** - Hajautettu datajako
+1. **Moninode-järjestelmän viimeistely** - Hajautettu arkkitehtuuri
+2. **`voting_engine.py`** - Vaalikoneen ydin
 
 ### 🥈 PRIORITEETTI 2 
-3. **`voting_engine.py`** - Vaalikoneen ydin
-4. **Web-käyttöliittymä** - Graafinen käyttöliittymä
+3. **Web-käyttöliittymä** - Graafinen käyttöliittymä
+4. **Tulosten visualisointi** - Käyttäjäystävälliset raportit
 
 ### 🥉 PRIORITEETTI 3
-5. **Tietoturva** - Integrity management
-6. **Analytics** - Tilastot ja raportit
+5. **Laajamittainen testaus** - Skaalautuvuustestit
+6. **Dokumentaatio** - Käyttöohjeet ja API-dokumentaatio
 
 ---
 
-## 🏗️ TEKNISET TODET
+## 🏗️ TEKNISET TIEDOT
 
 ### Tiedostorakenne
-```
-src/cli/
-├── ✅ install.py              # Järjestelmän asennus
-├── ✅ manage_questions.py     # Kysymysten hallinta  
-├── ✅ manage_candidates.py    # Ehdokkaiden hallinta
-├── ✅ manage_parties.py       # Puolueiden hallinta
-├── ✅ compare_questions.py    # ELO-vertailu
-├── ✅ elo_admin.py           # ELO-hallinta
-├── ✅ link_candidate_to_party.py
-├── 🔨 manage_answers.py      # EHDOKKAIDEN VASTAUKSET (SEURAAVA)
-├── ⏳ ipfs_sync.py           # IPFS-synkronointi
-├── ⏳ voting_engine.py       # Vaalikoneen ydin
-└── ⏳ integrity_manager.py   # Tietoturva
-```
+
+src/
+├── cli/
+│ ├── ✅ install.py # Järjestelmän asennus
+│ ├── ✅ manage_questions.py # Kysymysten hallinta
+│ ├── ✅ manage_candidates.py # Ehdokkaiden hallinta
+│ ├── ✅ manage_parties.py # Puolueiden hallinta
+│ ├── ✅ compare_questions.py # ELO-vertailu
+│ ├── ✅ elo_admin.py # ELO-hallinta
+│ ├── ✅ link_candidate_to_party.py
+│ ├── ✅ manage_answers.py # Ehdokkaiden vastaukset
+│ ├── ✅ ipfs_sync.py # IPFS-synkronointi
+│ ├── ✅ analytics.py # Analytics
+│ ├── ✅ generate_profiles.py # HTML-profiilit
+│ ├── 🔨 node_management.py # Moninode-hallinta
+│ └── ⏳ voting_engine.py # Vaalikoneen ydin
+├── core/
+│ ├── ✅ ipfs_client.py # IPFS-integrointi
+│ └── ✅ pki_manager.py # PKI-turvajärjestelmä
+├── nodes/
+│ ├── 🔨 network_sync.py # Verkon synkronointi
+│ ├── 🔨 node_manager.py # Solmujen hallinta
+│ └── 🔨 quorum_voting.py # Hajautettu äänestys
+└── templates/
+├── ✅ html_generator.py # HTML-generaattori
+└── ✅ base_template.css # CSS-tyylit
+
 
 ### Data-tiedostot
-```
-data/runtime/
-├── ✅ meta.json              # Järjestelmän metadata
-├── ✅ system_chain.json      # Muutoshistoria
-├── ✅ questions.json         # Kysymykset + ELO-luokitukset
-├── ✅ candidates.json        # Ehdokkaat
-├── ✅ parties.json           # Puolueet
-├── 🔨 candidate_answers.json # EHDOKKAIDEN VASTAUKSET (SEURAAVA)
-└── ⏳ ipfs_sync.json        # IPFS-synkronointitila
-```
+
+data/
+├── runtime/
+│ ├── ✅ meta.json # Järjestelmän metadata
+│ ├── ✅ system_chain.json # Muutoshistoria
+│ ├── ✅ questions.json # Kysymykset + ELO-luokitukset
+│ ├── ✅ candidates.json # Ehdokkaat
+│ ├── ✅ parties.json # Puolueet
+│ ├── ✅ candidate_answers.json # Ehdokkaiden vastaukset
+│ └── ✅ ipfs_sync.json # IPFS-synkronointitila
+├── nodes/
+│ ├── 🔨 Jumaltenvaalit2026_nodes.json
+│ ├── 🔨 Jumaltenvaalit2026_network_sync.json
+│ └── 🔨 Jumaltenvaalit2026_votes.json
+└── credentials/
+├── ✅ candidate_certs/ # Ehdokkaiden sertifikaatit
+└── ✅ party_certs/ # Puolueiden sertifikaatit
+
 
 ---
 
-## 🎉 VIIMEISIMMÄT SAavutukset
+## 🎉 VIIMEISIMMÄT SAAVUTUKSET (TÄMÄN PÄIVÄN)
 
-### ✅ Just Valmistuneet
-- **Puolueiden hajautettu hallinta** - Kvoorumi-järjestelmä
-- **ELO-luokitus täysin toimiva** - Dynaaminen priorisointi
-- **Ehdokkaat liitetty puolueisiin** - Täydellinen data-malli
+### 🌟 TÄRKEIMMÄT SAAVUTUKSET
+- **✅ HTML Profiilien Generointi** - Kaikki puolueet ja ehdokkaat saatavilla IPFS:stä
+- **✅ IPFS-Integrointi Korjattu** - Täysi yhteensopivuus IPFS Kubo 0.38.2:n kanssa
+- **✅ Oikeat IPFS-CID:t** - Kaikki profiilit julkaistu oikeaan IPFS-verkkoon
+- **✅ Release v1.0.0** - Ensimmäinen tuotantovalmissa versio
 
-### 🔄 Testaus Onnistui
-- 3 noden vahvistus kvoorumi
-- ELO-luokitukset muuttuvat vertailujen perusteella  
-- Puolueiden tilastot ja raportointi
-- Kaikki ehdokkaat linkitetty puolueeseen
+### 🔧 Tekniset Parannukset
+- **Korvattu `ipfshttpclient`** suoralla HTTP API:lla
+- **UTF-8 tuki** suomen kielelle IPFS:ässä
+- **Väriteemat** puolueille
+- **Base.json metadata-järjestelmä**
+
+### 📊 Tuotantovalmiudet
+- **12 profiilia** saatavilla IPFS-verkossa
+- **5 puoluetta** ja **12 ehdokasta** julkaistu
+- **Kaikki testit menevät läpi**
+- **Koodi päähaarassa** ja tagattu v1.0.0
 
 ---
 
-## 🚀 NOPEA KÄYNNISTYS
+## 🚀 TUOTANTOVALMIS JÄRJESTELMÄ
 
+### 📦 Mitä on Valmiina
 ```bash
-# 1. Asenna järjestelmä
-./scripts/setup_jumaltenvaalit.sh
+# 1. Generoi kaikki profiilit IPFS:ään
+python src/cli/generate_profiles.py publish-all-to-ipfs --election Jumaltenvaalit2026
 
-# 2. Hallitse kysymyksiä
-python src/cli/manage_questions.py --election Jumaltenvaalit2026 --add --category "aihe" --question-fi "Kysymys?"
+# 2. Tarkista profiilien tila
+python src/cli/generate_profiles.py status --election Jumaltenvaalit2026
 
-# 3. Hallitse ehdokkaita
-python src/cli/manage_candidates.py --election Jumaltenvaalit2026 --add --name "Ehdokas"
+# 3. HTML-profiilit saatavilla
+#    https://ipfs.io/ipfs/QmVAPCMdMbYdsD... (Testipuolue)
+#    https://ipfs.io/ipfs/QmYR3WTKdcphx... (Zeus)
 
-# 4. Hallitse puolueita
-python src/cli/manage_parties.py propose --election Jumaltenvaalit2026 --name-fi "Puolue"
+🌐 IPFS-Linkit
+Testipuolue: QmVAPCMdMbYdsDvPeXUJZ9MZ1UpsdNNhgDvZSs7dsPkAYf
 
-# 5. Testaa ELO-järjestelmää
-python src/cli/compare_questions.py --election Jumaltenvaalit2026 --choice a
-```
+Zeus: QmYR3WTKdcphxBuk6zB5mCsK2X9bZv6TcUSoLkhpZrNQvX
 
----
+Athena: QmXXbqpiJyVRvZLXYNg1Hqns2Mnd8f9iJWhF8gyKsmKgKd
 
-## 💡 IDEoITA SEURAAVIIN OSAISIIN
+💡 SEURAAVAT ASKELEET
+🔨 Välitavoitteet
+Viimeistele moninode-järjestelmä - Hajautettu arkkitehtuuri
 
-### Ehdokkaiden Vastausten Rakenne
-```json
-{
-  "candidate_id": "zeus",
-  "answers": [
-    {
-      "question_id": "q_1",
-      "answer_value": 5,
-      "confidence": 5,
-      "explanation": {
-        "fi": "Salamat kuuluvat minulle!",
-        "en": "Lightning bolts belong to me!",
-        "sv": "Åskviggar tillhör mig!"
-      }
-    }
-  ]
-}
-```
+Toteuta voting_engine.py - Vaalikoneen ydinlogiikka
 
-### IPFS-Synkronointi
-- Mock-IPFS kehitystä varten
-- Real-IPFS tuotantoon
-- Hybrid-tila siirtymäajan
+🎯 Pitkän tähtäimen tavoitteet
+Web-käyttöliittymä - Moderni React-sovellus
 
-*Päivitetty: $(date)*
-```
+Skaalautuvuus - Suurten vaalien tuki
 
-## 🎯 Nyt on selkeä suunnitelma eteenpäin!
-
-### Seuraavat Vaiheet:
-
-1. **`manage_answers.py`** - Ehdokkaiden vastaukset
-2. **`ipfs_sync.py`** - Hajautettu datajako  
-3. **`voting_engine.py`** - Vaalikoneen ydin
-
-### Haluatko että aloitetaan nyt ehdokkaiden vastausten hallinnasta?
-
-Se on loogisin seuraava askel koska:
-- Sinulla on jo kysymykset, ehdokkaat ja puolueet
-- Tarvitset vastaukset ennen kuin vaalikone voi toimia
-- Se täydentää nykyistä data-mallia
-
-Shall we create `manage_answers.py`? 🎯
+13.11.2025
