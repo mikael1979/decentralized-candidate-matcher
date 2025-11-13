@@ -1,0 +1,48 @@
+Jumaltenvaalit 2026 - IPFS Profiililinkit
+=========================================
+
+PUOLUEET:
+---------
+Testipuolue:
+https://ipfs.io/ipfs/QmVAPCMdMbYdsDvPeXUJZ9MZ1UpsdNNhgDvZSs7dsPkAYf
+
+Meren Jumalat:
+https://ipfs.io/ipfs/QmPSENzMBWJraubzmtNWTKvPjL3fa1FuoW4VjemXR5Bp7r
+
+Alamaailman Hallitsijat:
+https://ipfs.io/ipfs/QmNsrnNc5PLRcvhA3gY6Ycas7w59dh4dGSKd4nRkhMRtf3
+
+Testi Ukosen Jumalat:
+https://ipfs.io/ipfs/Qme7CQ4sQobmQbCgA2TyRY1cZ1nmLSnikxSfEuknJH8hxG
+
+Olympos-jumalat:
+https://ipfs.io/ipfs/QmVR8qo68JSwRWnWYwv12RUaLdPYqiuUoRVJd7ciLKsW5H
+
+EHDOKKAAT:
+----------
+Zeus:
+https://ipfs.io/ipfs/QmYR3WTKdcphxBuk6zB5mCsK2X9bZv6TcUSoLkhpZrNQvX
+
+Athena:
+https://ipfs.io/ipfs/QmXXbqpiJyVRvZLXYNg1Hqns2Mnd8f9iJWhF8gyKsmKgKd
+
+Poseidon:
+https://ipfs.io/ipfs/QmdEiVtJkqZvsrWi6poJedMJi49CNiRXfKAnNEmRzq9KxG
+
+Hades:
+https://ipfs.io/ipfs/QmeifbJb7odx9mDMEQaFXsLe1t26ZM8MRVBVgYgGaD6Qum
+
+Muut Zeus/Athena profiilit (duplikaatit testauksesta):
+https://ipfs.io/ipfs/QmSoynQxHNXVZX5QKwMjyTsYvyLCZwprr5W6s8tTttSrPj
+https://ipfs.io/ipfs/QmWLv7pqrbhxRrMofjHtWTM5QUFzhxQN2JwhmrRMyqHShN
+https://ipfs.io/ipfs/QmcNaFYbrTJpQutFvm61nyRoEvSqQcgF2EDBzjbTaQnxH5
+https://ipfs.io/ipfs/QmaQL3cQAiHreZz3vCrdvnLDbyEqVyRj3hveq9ChUbScz1
+https://ipfs.io/ipfs/QmTEUiydoVYHPCZ2bG9a23uVH1x8EhSwGXaqe8QLD4BB5G
+https://ipfs.io/ipfs/QmRHmFUdXbmWR4R8M67KCgeCCFYEvVR6fsjLuauuxQfHdg
+https://ipfs.io/ipfs/Qmau4esJ1HW3dcDQdhrs5QuwdCiZQ1DXHNBLcLtmsGM8M5
+https://ipfs.io/ipfs/QmdDvLR5Jx4ZP6iw7E1uyepFt6N6NMy5EHsVkCU188ECB2
+
+BASE.JSON (kaikkien profiilien metadata):
+https://ipfs.io/ipfs/QmUC6xA2u7dVodbhFuJLAWyULwKyCkY8WYo9hpHt8mu8v8
+
+Generoitu: $(date +"%d.%m.%Y %H:%M")
