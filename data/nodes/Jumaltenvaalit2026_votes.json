@@ -1,0 +1,14 @@
+{
+  "new_party_proposal": {
+    "proposal_id": "new_party_proposal",
+    "proposal_data": {
+      "party_name": "Testi Puolue",
+      "contact": "test@example.com"
+    },
+    "min_approvals": 3,
+    "timeout": "2025-11-14T01:55:44.665784",
+    "votes": {},
+    "status": "active",
+    "created": "2025-11-13T01:55:44.665800"
+  }
+}

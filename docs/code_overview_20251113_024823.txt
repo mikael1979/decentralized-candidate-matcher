@@ -1,0 +1,4685 @@
+# Koodin Yleiskuva - to 13.11.2025 02.48.23 +0200
+## src/templates/html_generator.py
+```python
+#!/usr/bin/env python3
+"""
+Staattisen HTML-profiilisivujen generaattori puolueille ja ehdokkaille
+IPFS-tallennuksella
+"""
+import json
+import os
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional
+
+# Esimääritellyt väriteemat eri puolueille
+PARTY_COLOR_THEMES = {
+    "default": {
+        "primary": "#2c3e50",
+        "secondary": "#3498db", 
+        "accent": "#e74c3c",
+        "background": "#ecf0f1"
+    },
+    "blue_theme": {
+        "primary": "#1a5276",
+        "secondary": "#3498db",
+        "accent": "#2980b9", 
+        "background": "#ebf5fb"
+    },
+    "green_theme": {
+        "primary": "#186a3b",
+        "secondary": "#27ae60",
+        "accent": "#229954",
+        "background": "#eafaf1"
+    },
+    "red_theme": {
+        "primary": "#922b21", 
+        "secondary": "#e74c3c",
+        "accent": "#cb4335",
+        "background": "#fdedec"
+    },
+    "purple_theme": {
+        "primary": "#4a235a",
+        "secondary": "#8e44ad",
+        "accent": "#7d3c98",
+        "background": "#f4ecf7"
+    }
+}
+
+class HTMLProfileGenerator:
+    def __init__(self, election_id: str = "Jumaltenvaalit2026"):
+        self.election_id = election_id
+        self.output_dir = Path("output/profiles")
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.metadata_file = Path("data/runtime/profiles_metadata.json")
+        
+        # IPFS-client
+        try:
+            from src.core.ipfs_client import IPFSClient
+            self.ipfs_client = IPFSClient.get_client(election_id)
+            self.ipfs_available = True
+        except Exception:
+            self.ipfs_available = False
+            print("🔶 IPFS ei saatavilla, käytetään paikallista tallennusta")
+    
+    def generate_and_publish_party_profile(self, party_data: Dict, custom_colors: Dict = None) -> Dict:
+        """Generoi ja julkaise puolueen profiili IPFS:ään"""
+        
+        # 1. Generoi HTML
+        html_content = self.generate_party_profile(party_data, custom_colors)
+        
+        # 2. Tallenna paikallisesti
+        filename = f"party_{party_data['party_id']}.html"
+        filepath = self.output_dir / filename
+        
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+        
+        # 3. Julkaise IPFS:ään
+        ipfs_cid = None
+        if self.ipfs_available:
+            try:
+                # Julkaise HTML-sivu IPFS:ään
+                profile_data = {
+                    "content": html_content,
+                    "metadata": {
+                        "type": "party_profile",
+                        "party_id": party_data["party_id"],
+                        "election_id": self.election_id,
+                        "generated_at": datetime.now().isoformat(),
+                        "filename": filename
+                    }
+                }
+                ipfs_cid = self.ipfs_client.publish_election_data("party_profile", profile_data)
+                print(f"🌐 Puolueen profiili julkaistu IPFS:ään: {ipfs_cid}")
+            except Exception as e:
+                print(f"❌ IPFS-julkaisu epäonnistui: {e}")
+                ipfs_cid = f"mock_cid_party_{party_data['party_id']}"
+        else:
+            ipfs_cid = f"mock_cid_party_{party_data['party_id']}"
+        
+        # 4. Päivitä metadata
+        profile_id = f"party_{party_data['party_id']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        metadata = {
+            "profile_id": profile_id,
+            "entity_id": party_data["party_id"],
+            "entity_type": "party",
+            "entity_name": party_data["name"]["fi"],
+            "filepath": str(filepath),
+            "filename": filename,
+            "ipfs_cid": ipfs_cid,
+            "ipfs_gateway_url": f"https://ipfs.io/ipfs/{ipfs_cid}" if ipfs_cid and not ipfs_cid.startswith("mock_") else None,
+            "generated_at": datetime.now().isoformat(),
+            "election_id": self.election_id,
+            "color_theme": custom_colors or PARTY_COLOR_THEMES["default"]
+        }
+        
+        self._update_profile_metadata(metadata)
+        
+        print(f"✅ Puolueen profiili tallennettu: {filepath}")
+        if ipfs_cid:
+            print(f"🌐 IPFS-CID: {ipfs_cid}")
+        
+        return metadata
+    
+    def generate_and_publish_candidate_profile(self, candidate_data: Dict, party_data: Dict = None, 
+                                             custom_colors: Dict = None) -> Dict:
+        """Generoi ja julkaise ehdokkaan profiili IPFS:ään"""
+        
+        # 1. Generoi HTML
+        html_content = self.generate_candidate_profile(candidate_data, party_data, custom_colors)
+        
+        # 2. Tallenna paikallisesti
+        filename = f"candidate_{candidate_data['candidate_id']}.html"
+        filepath = self.output_dir / filename
+        
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+        
+        # 3. Julkaise IPFS:ään
+        ipfs_cid = None
+        if self.ipfs_available:
+            try:
+                profile_data = {
+                    "content": html_content,
+                    "metadata": {
+                        "type": "candidate_profile",
+                        "candidate_id": candidate_data["candidate_id"],
+                        "party_id": candidate_data["basic_info"].get("party"),
+                        "election_id": self.election_id,
+                        "generated_at": datetime.now().isoformat(),
+                        "filename": filename
+                    }
+                }
+                ipfs_cid = self.ipfs_client.publish_election_data("candidate_profile", profile_data)
+                print(f"🌐 Ehdokkaan profiili julkaistu IPFS:ään: {ipfs_cid}")
+            except Exception as e:
+                print(f"❌ IPFS-julkaisu epäonnistui: {e}")
+                ipfs_cid = f"mock_cid_candidate_{candidate_data['candidate_id']}"
+        else:
+            ipfs_cid = f"mock_cid_candidate_{candidate_data['candidate_id']}"
+        
+        # 4. Päivitä metadata
+        profile_id = f"candidate_{candidate_data['candidate_id']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        metadata = {
+            "profile_id": profile_id,
+            "entity_id": candidate_data["candidate_id"],
+            "entity_type": "candidate",
+            "entity_name": candidate_data["basic_info"]["name"]["fi"],
+            "filepath": str(filepath),
+            "filename": filename,
+            "ipfs_cid": ipfs_cid,
+            "ipfs_gateway_url": f"https://ipfs.io/ipfs/{ipfs_cid}" if ipfs_cid and not ipfs_cid.startswith("mock_") else None,
+            "generated_at": datetime.now().isoformat(),
+            "election_id": self.election_id,
+            "party_id": candidate_data["basic_info"].get("party"),
+            "color_theme": custom_colors or PARTY_COLOR_THEMES["default"]
+        }
+        
+        self._update_profile_metadata(metadata)
+        
+        print(f"✅ Ehdokkaan profiili tallennettu: {filepath}")
+        if ipfs_cid:
+            print(f"🌐 IPFS-CID: {ipfs_cid}")
+        
+        return metadata
+
+    def generate_party_profile(self, party_data: Dict, custom_colors: Dict = None) -> str:
+        """Generoi HTML-profiilisivun puolueelle"""
+        
+        # Oletusvärit jos custom_colors ei annettu
+        colors = custom_colors or PARTY_COLOR_THEMES["default"]
+        
+        # Hae puolueen ehdokkaat
+        candidates = self._get_party_candidates(party_data.get("party_id"))
+        
+        # Generoi sivulle uniikki ID
+        page_id = f"party_{party_data['party_id']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        
+        # Hae IPFS-CID:t datatiedostoille
+        ipfs_cids = self._get_ipfs_cids()
+        
+        html = f"""
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{party_data['name']['fi']} - Jumaltenvaalit 2026</title>
+    <meta name="profile-id" content="{page_id}">
+    <meta name="profile-type" content="party">
+    <meta name="party-id" content="{party_data['party_id']}">
+    <meta name="election-id" content="{self.election_id}">
+    <meta name="generated-at" content="{datetime.now().isoformat()}">
+    <style>
+        /* Perustyylit */
+        {self._get_base_css()}
+        
+        /* Puoluekohtaiset värit */
+        :root {{
+            --primary-color: {colors['primary']};
+            --secondary-color: {colors['secondary']};
+            --accent-color: {colors['accent']};
+            --background-color: {colors['background']};
+        }}
+    </style>
+</head>
+<body>
+    <header class="profile-header">
+        <div class="container">
+            <h1>{party_data['name']['fi']}</h1>
+            <p class="profile-subtitle">{party_data['description']['fi']}</p>
+            <div class="profile-meta">
+                <small>Profiili ID: {page_id} | Puolue ID: {party_data['party_id']}</small>
+            </div>
+        </div>
+    </header>
+
+    <nav class="profile-nav">
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="#tietoa">Tietoa Puolueesta</a></li>
+                <li><a href="#ehdokkaat">Ehdokkaat</a></li>
+                <li><a href="#data">Data & IPFS</a></li>
+                <li><a href="#yhteys">Yhteystiedot</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="profile-content">
+        <div class="container">
+            <!-- Tietoa Puolueesta -->
+            <section id="tietoa" class="section">
+                <h2>Tietoa Puolueesta</h2>
+                <p><strong>Perustamisvuosi:</strong> {party_data['metadata'].get('founding_year', 'Ei määritelty')}</p>
+                <p><strong>Sähköposti:</strong> {party_data['metadata'].get('contact_email', 'Ei määritelty')}</p>
+                <p><strong>Verkkosivu:</strong> {party_data['metadata'].get('website', 'Ei määritelty')}</p>
+                
+                <div class="color-swatches mt-2">
+                    <div class="color-swatch" style="background-color: {colors['primary']}">Pääväri</div>
+                    <div class="color-swatch" style="background-color: {colors['secondary']}">Toissijainen</div>
+                    <div class="color-swatch" style="background-color: {colors['accent']}">Korostus</div>
+                </div>
+            </section>
+
+            <!-- Ehdokkaat -->
+            <section id="ehdokkaat" class="section">
+                <h2>Ehdokkaat ({len(candidates)})</h2>
+                <div class="members-grid">
+                    {self._generate_candidate_cards(candidates)}
+                </div>
+            </section>
+
+            <!-- Data & IPFS -->
+            <section id="data" class="section">
+                <h2>Data & IPFS Linkit</h2>
+                <div class="data-links">
+                    <h3>Hajautetut Resurssit</h3>
+                    
+                    <div class="link-grid">
+                        <a href="https://ipfs.io/ipfs/{ipfs_cids.get('parties', '')}" class="data-link" target="_blank">
+                            📄 Puolueet IPFS:ässä
+                        </a>
+                        <a href="https://ipfs.io/ipfs/{ipfs_cids.get('candidates', '')}" class="data-link" target="_blank">
+                            👑 Ehdokkaat IPFS:ässä
+                        </a>
+                        <a href="https://ipfs.io/ipfs/{ipfs_cids.get('questions', '')}" class="data-link" target="_blank">
+                            ❓ Kysymykset IPFS:ässä
+                        </a>
+                    </div>
+                    
+                    <h3>Paikalliset Resurssit</h3>
+                    <ul>
+                        <li><strong>Profiili ID:</strong> {page_id}</li>
+                        <li><strong>Puolue ID:</strong> {party_data['party_id']}</li>
+                        <li><strong>Vaali ID:</strong> {self.election_id}</li>
+                        <li><strong>Generoitu:</strong> {datetime.now().strftime('%d.%m.%Y %H:%M')}</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Yhteys -->
+            <section id="yhteys" class="section">
+                <h2>Yhteystiedot</h2>
+                <p>Ota meihin yhteyttä, jos haluat lisätietoja puolueestamme tai ehdottaa yhteistyötä!</p>
+            </section>
+        </div>
+    </main>
+
+    <footer class="profile-footer">
+        <div class="container">
+            <p>&copy; 2026 {party_data['name']['fi']} - Jumaltenvaalit</p>
+            <p>Sivu generoitu {datetime.now().strftime('%d.%m.%Y %H:%M')} | Profiili ID: {page_id}</p>
+            <p>📦 Tämä sivu on tallennettu hajautettuun IPFS-verkkoon</p>
+        </div>
+    </footer>
+
+    <!-- Piilotettu data JSON-muodossa -->
+    <script type="application/json" id="party-data">
+        {json.dumps({
+            "profile_id": page_id,
+            "profile_type": "party",
+            "party_data": party_data,
+            "generated_at": datetime.now().isoformat(),
+            "election_id": self.election_id,
+            "color_theme": colors,
+            "candidate_count": len(candidates),
+            "ipfs_cids": ipfs_cids
+        }, ensure_ascii=False)}
+    </script>
+</body>
+</html>
+        """
+        
+        return html
+    
+    def generate_candidate_profile(self, candidate_data: Dict, party_data: Dict = None, 
+                                 custom_colors: Dict = None) -> str:
+        """Generoi HTML-profiilisivun ehdokkaalle"""
+        
+        colors = custom_colors or PARTY_COLOR_THEMES["default"]
+        answers = candidate_data.get("answers", [])
+        page_id = f"candidate_{candidate_data['candidate_id']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        ipfs_cids = self._get_ipfs_cids()
+        
+        html = f"""
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{candidate_data['basic_info']['name']['fi']} - Jumaltenvaalit 2026</title>
+    <meta name="profile-id" content="{page_id}">
+    <meta name="profile-type" content="candidate">
+    <meta name="candidate-id" content="{candidate_data['candidate_id']}">
+    <meta name="election-id" content="{self.election_id}">
+    <meta name="generated-at" content="{datetime.now().isoformat()}">
+    <style>
+        {self._get_base_css()}
+        
+        :root {{
+            --primary-color: {colors['primary']};
+            --secondary-color: {colors['secondary']};
+            --accent-color: {colors['accent']};
+            --background-color: {colors['background']};
+        }}
+    </style>
+</head>
+<body>
+    <header class="profile-header">
+        <div class="container">
+            <h1>{candidate_data['basic_info']['name']['fi']}</h1>
+            <p class="profile-subtitle">{candidate_data['basic_info'].get('party', 'Sitoutumaton')}</p>
+            {f'<p class="profile-subtitle">{party_data["name"]["fi"]}</p>' if party_data else ''}
+            <div class="profile-meta">
+                <small>Profiili ID: {page_id} | Ehdokas ID: {candidate_data['candidate_id']}</small>
+            </div>
+        </div>
+    </header>
+
+    <nav class="profile-nav">
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="#tietoa">Tietoa Ehdokkaasta</a></li>
+                <li><a href="#vastaukset">Vastaukset</a></li>
+                <li><a href="#data">Data & IPFS</a></li>
+                <li><a href="#yhteys">Yhteys</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="profile-content">
+        <div class="container">
+            <!-- Tietoa Ehdokkaasta -->
+            <section id="tietoa" class="section">
+                <h2>Tietoa Ehdokkaasta</h2>
+                <p><strong>Puolue:</strong> {candidate_data['basic_info'].get('party', 'Sitoutumaton')}</p>
+                <p><strong>Alue:</strong> {candidate_data['basic_info'].get('domain', 'Ei määritelty')}</p>
+            </section>
+
+            <!-- Vastaukset -->
+            <section id="vastaukset" class="section">
+                <h2>Vastaukset Kysymyksiin ({len(answers)})</h2>
+                <div class="answers-grid">
+                    {self._generate_answer_cards(answers)}
+                </div>
+            </section>
+
+            <!-- Data & IPFS -->
+            <section id="data" class="section">
+                <h2>Data & IPFS Linkit</h2>
+                <div class="data-links">
+                    <h3>Hajautetut Resurssit</h3>
+                    
+                    <div class="link-grid">
+                        <a href="https://ipfs.io/ipfs/{ipfs_cids.get('candidates', '')}" class="data-link" target="_blank">
+                            👑 Ehdokkaat IPFS:ässä
+                        </a>
+                        <a href="https://ipfs.io/ipfs/{ipfs_cids.get('parties', '')}" class="data-link" target="_blank">
+                            📄 Puolueet IPFS:ässä
+                        </a>
+                        <a href="https://ipfs.io/ipfs/{ipfs_cids.get('questions', '')}" class="data-link" target="_blank">
+                            ❓ Kysymykset IPFS:ässä
+                        </a>
+                    </div>
+                    
+                    <h3>Ehdokkaan Tiedot</h3>
+                    <ul>
+                        <li><strong>Profiili ID:</strong> {page_id}</li>
+                        <li><strong>Ehdokas ID:</strong> {candidate_data['candidate_id']}</li>
+                        <li><strong>Vaali ID:</strong> {self.election_id}</li>
+                        <li><strong>Generoitu:</strong> {datetime.now().strftime('%d.%m.%Y %H:%M')}</li>
+                        <li><strong>Vastauksia:</strong> {len(answers)}</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="profile-footer">
+        <div class="container">
+            <p>&copy; 2026 {candidate_data['basic_info']['name']['fi']} - Jumaltenvaalit</p>
+            <p>Sivu generoitu {datetime.now().strftime('%d.%m.%Y %H:%M')} | Profiili ID: {page_id}</p>
+            <p>📦 Tämä sivu on tallennettu hajautettuun IPFS-verkkoon</p>
+        </div>
+    </footer>
+
+    <!-- Piilotettu data JSON-muodossa -->
+    <script type="application/json" id="candidate-data">
+        {json.dumps({
+            "profile_id": page_id,
+            "profile_type": "candidate", 
+            "candidate_data": candidate_data,
+            "party_data": party_data,
+            "generated_at": datetime.now().isoformat(),
+            "election_id": self.election_id,
+            "color_theme": colors,
+            "answer_count": len(answers),
+            "ipfs_cids": ipfs_cids
+        }, ensure_ascii=False)}
+    </script>
+</body>
+</html>
+        """
+        
+        return html
+
+    def _get_ipfs_cids(self) -> Dict:
+        """Hae IPFS-CID:t datatiedostoille"""
+        ipfs_sync_file = Path("data/runtime/ipfs_sync.json")
+        if ipfs_sync_file.exists():
+            with open(ipfs_sync_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                return data.get("ipfs_cids", {})
+        return {}
+    
+    def _update_profile_metadata(self, profile_metadata: Dict):
+        """Päivitä profiilien metadatatiedosto"""
+        metadata = self._load_metadata()
+        
+        profile_key = f"{profile_metadata['entity_type']}_{profile_metadata['entity_id']}"
+        metadata["profiles"][profile_key] = profile_metadata
+        metadata["last_updated"] = datetime.now().isoformat()
+        
+        with open(self.metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(metadata, f, indent=2, ensure_ascii=False)
+
+    def _load_metadata(self) -> Dict:
+        """Lataa profiilien metadata"""
+        if self.metadata_file.exists():
+            with open(self.metadata_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        
+        # Alusta uusi metadata
+        return {
+            "metadata": {
+                "version": "1.0.0",
+                "created": datetime.now().isoformat(),
+                "election_id": self.election_id,
+                "description": "Profiilisivujen metadata ja linkit"
+            },
+            "profiles": {},
+            "last_updated": datetime.now().isoformat()
+        }
+    
+    def get_base_json(self) -> Dict:
+        """Hae base.json data kaikista profiileista ja linkeistä"""
+        metadata = self._load_metadata()
+        
+        # Lataa IPFS-synkronointitiedot
+        ipfs_sync_file = Path("data/runtime/ipfs_sync.json")
+        ipfs_cids = {}
+        if ipfs_sync_file.exists():
+            with open(ipfs_sync_file, 'r', encoding='utf-8') as f:
+                ipfs_data = json.load(f)
+                ipfs_cids = ipfs_data.get("ipfs_cids", {})
+        
+        base_data = {
+            "metadata": {
+                "election_id": self.election_id,
+                "generated_at": datetime.now().isoformat(),
+                "version": "1.0.0",
+                "description": "Jumaltenvaalit 2026 - Base data kaikista resursseista"
+            },
+            "links": {
+                "parties_json": "/data/runtime/parties.json",
+                "candidates_json": "/data/runtime/candidates.json", 
+                "questions_json": "/data/runtime/questions.json",
+                "meta_json": "/data/runtime/meta.json",
+                "ipfs_sync_json": "/data/runtime/ipfs_sync.json",
+                "profiles_metadata": "/data/runtime/profiles_metadata.json"
+            },
+            "ipfs_cids": ipfs_cids,
+            "profiles": metadata["profiles"],
+            "statistics": {
+                "total_profiles": len(metadata["profiles"]),
+                "party_profiles": len([p for p in metadata["profiles"].values() if p["entity_type"] == "party"]),
+                "candidate_profiles": len([p for p in metadata["profiles"].values() if p["entity_type"] == "candidate"])
+            }
+        }
+        
+        return base_data
+    
+    def save_base_json(self) -> str:
+        """Tallenna base.json tiedosto"""
+        base_data = self.get_base_json()
+        base_file = Path("output/base.json")
+        
+        with open(base_file, 'w', encoding='utf-8') as f:
+            json.dump(base_data, f, indent=2, ensure_ascii=False)
+        
+        print(f"✅ base.json tallennettu: {base_file}")
+        return str(base_file)
+
+    def _get_base_css(self) -> str:
+        """Hae perus-CSS tyylit"""
+        css_file = Path("src/templates/base_template.css")
+        if css_file.exists():
+            with open(css_file, 'r', encoding='utf-8') as f:
+                return f.read()
+        return "/* CSS tyylit */"
+    
+    def _get_party_candidates(self, party_id: str) -> List[Dict]:
+        """Hae puolueen ehdokkaat"""
+        candidates_file = Path("data/runtime/candidates.json")
+        if candidates_file.exists():
+            with open(candidates_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                return [c for c in data.get("candidates", []) 
+                       if c["basic_info"].get("party") == party_id]
+        return []
+    
+    def _generate_candidate_cards(self, candidates: List[Dict]) -> str:
+        """Generoi ehdokaskortit"""
+        if not candidates:
+            return '<p class="text-center">Ei ehdokkaita</p>'
+        
+        cards = []
+        for candidate in candidates:
+            card = f"""
+            <div class="member-card">
+                <div class="member-name">{candidate['basic_info']['name']['fi']}</div>
+                <div class="member-domain">{candidate['basic_info'].get('domain', 'Ei aluetta')}</div>
+                <div class="member-answers">{len(candidate.get('answers', []))} vastausta</div>
+                <a href="/output/profiles/candidate_{candidate['candidate_id']}.html" class="data-link" style="margin-top: 0.5rem; padding: 0.5rem;">
+                    👤 Näytä profiili
+                </a>
+            </div>
+            """
+            cards.append(card)
+        
+        return '\n'.join(cards)
+    
+    def _generate_answer_cards(self, answers: List[Dict]) -> str:
+        """Generoi vastauskortit"""
+        if not answers:
+            return '<p class="text-center">Ei vastauksia</p>'
+        
+        # Lataa kysymykset nimeä varten
+        questions = self._load_questions()
+        question_map = {q["local_id"]: q["content"]["question"]["fi"] for q in questions}
+        
+        answer_cards = []
+        for answer in answers:
+            question_text = question_map.get(answer["question_id"], answer["question_id"])
+            explanation = answer.get("explanation", {}).get("fi", "")
+            confidence = answer.get("confidence", 3)
+            
+            card = f"""
+            <div class="answer-item">
+                <div class="answer-value">{answer['answer_value']}/5</div>
+                <div class="answer-question">{question_text}</div>
+                {f'<div class="answer-explanation">{explanation}</div>' if explanation else ''}
+                <div class="confidence">Varmuus: {confidence}/5</div>
+            </div>
+            """
+            answer_cards.append(card)
+        
+        return '\n'.join(answer_cards)
+    
+    def _load_questions(self) -> List[Dict]:
+        """Lataa kysymykset"""
+        questions_file = Path("data/runtime/questions.json")
+        if questions_file.exists():
+            with open(questions_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                return data.get("questions", [])
+        return []
+```
+
+## src/managers/ipfs_sync_manager.py
+```python
+#!/usr/bin/env python3
+"""
+IPFS-synkronoinnin hallinta Jumaltenvaaleille
+"""
+import json
+import hashlib
+from datetime import datetime
+from typing import Dict, List, Optional
+from pathlib import Path
+
+# KORJATTU: Käytetään absoluuttisia importteja
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from core.ipfs_client import IPFSClient
+
+class IPFSSyncManager:
+    def __init__(self, election_id: str = "Jumaltenvaalit2026"):
+        self.election_id = election_id
+        self.ipfs = IPFSClient.get_client(election_id)
+        self.sync_file = Path("data/runtime/ipfs_sync.json")
+    
+    def full_sync(self) -> Dict:
+        """Suorita täysi synkronointi IPFS:ään"""
+        print("🔄 Synkronoidaan Jumaltenvaalit IPFS:ään...")
+        
+        # Synkronoi kaikki data
+        ipfs_cids = self.ipfs.sync_local_to_ipfs()
+        
+        # Luo synkronointiraportti
+        sync_report = {
+            "election_id": self.election_id,
+            "sync_type": "full",
+            "timestamp": datetime.now().isoformat(),
+            "ipfs_cids": ipfs_cids,
+            "files_synced": len([cid for cid in ipfs_cids.values() if cid]),
+            "status": "completed"
+        }
+        
+        # Tallenna raportti
+        self._save_sync_report(sync_report)
+        
+        print(f"✅ Synkronointi valmis! {sync_report['files_synced']} tiedostoa IPFS:ään")
+        return sync_report
+    
+    def incremental_sync(self) -> Dict:
+        """Suorita inkrementaalinen synkronointi"""
+        print("🔄 Suoritetaan inkrementaalinen IPFS-synkronointi...")
+        
+        # Lataa edellinen synkronointitila
+        last_sync = self._load_last_sync()
+        
+        # Tarkista muuttuneet tiedostot
+        changed_files = self._get_changed_files(last_sync)
+        
+        if not changed_files:
+            print("✅ Ei muutoksia synkronoitavaksi")
+            return {"status": "no_changes"}
+        
+        # Synkronoi muuttuneet tiedostot
+        results = {}
+        for file_type in changed_files:
+            file_path = f"data/runtime/{file_type}.json"
+            if Path(file_path).exists():
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                
+                cid = self.ipfs.publish_election_data(file_type, data)
+                results[file_type] = cid
+        
+        # Päivitä synkronointitila
+        sync_report = {
+            "election_id": self.election_id,
+            "sync_type": "incremental",
+            "timestamp": datetime.now().isoformat(),
+            "changed_files": changed_files,
+            "ipfs_cids": results,
+            "status": "completed"
+        }
+        
+        self._save_sync_report(sync_report)
+        print(f"✅ Inkrementaalinen synkronointi valmis! {len(results)} tiedostoa päivitetty")
+        return sync_report
+    
+    def verify_sync_integrity(self) -> Dict:
+        """Varmista synkronoidun datan eheys"""
+        print("🔍 Tarkistetaan IPFS-synkronoinnin eheys...")
+        
+        last_sync = self._load_last_sync()
+        if not last_sync or 'ipfs_cids' not in last_sync:
+            return {"status": "no_sync_data"}
+        
+        verification_results = {}
+        
+        for file_type, cid in last_sync['ipfs_cids'].items():
+            if not cid or cid.startswith('mock_'):
+                verification_results[file_type] = "skipped_mock"
+                continue
+            
+            file_path = f"data/runtime/{file_type}.json"
+            if Path(file_path).exists():
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    local_data = json.load(f)
+                
+                is_valid = self.ipfs.verify_data_integrity(local_data, cid)
+                verification_results[file_type] = "valid" if is_valid else "invalid"
+            else:
+                verification_results[file_type] = "file_missing"
+        
+        valid_count = sum(1 for result in verification_results.values() if result == "valid")
+        
+        report = {
+            "election_id": self.election_id,
+            "verification_timestamp": datetime.now().isoformat(),
+            "results": verification_results,
+            "valid_files": valid_count,
+            "total_files": len(verification_results),
+            "status": "completed"
+        }
+        
+        print(f"✅ Eheystarkistus valmis! {valid_count}/{len(verification_results)} tiedostoa validi")
+        return report
+    
+    def _get_changed_files(self, last_sync: Optional[Dict]) -> List[str]:
+        """Hae muuttuneet tiedostot"""
+        if not last_sync or 'ipfs_cids' not in last_sync:
+            return ['parties', 'questions', 'candidates', 'meta']
+        
+        changed = []
+        data_files = {
+            'parties': 'data/runtime/parties.json',
+            'questions': 'data/runtime/questions.json',
+            'candidates': 'data/runtime/candidates.json', 
+            'meta': 'data/runtime/meta.json'
+        }
+        
+        for file_type, file_path in data_files.items():
+            if not Path(file_path).exists():
+                continue
+            
+            # Tarkista onko tiedosto muuttunut
+            current_hash = self._calculate_file_hash(file_path)
+            last_hash = last_sync.get('file_hashes', {}).get(file_type)
+            
+            if current_hash != last_hash:
+                changed.append(file_type)
+        
+        return changed
+    
+    def _calculate_file_hash(self, file_path: str) -> str:
+        """Laske tiedoston tiiviste"""
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return hashlib.sha256(content.encode()).hexdigest()
+    
+    def _load_last_sync(self) -> Optional[Dict]:
+        """Lataa edellinen synkronointitila"""
+        if self.sync_file.exists():
+            with open(self.sync_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return None
+    
+    def _save_sync_report(self, report: Dict):
+        """Tallenna synkronointiraportti"""
+        # Lisää tiedostojen tiivisteet
+        file_hashes = {}
+        data_files = ['parties', 'questions', 'candidates', 'meta']
+        
+        for file_type in data_files:
+            file_path = f"data/runtime/{file_type}.json"
+            if Path(file_path).exists():
+                file_hashes[file_type] = self._calculate_file_hash(file_path)
+        
+        report['file_hashes'] = file_hashes
+        
+        # Tallenna
+        with open(self.sync_file, 'w', encoding='utf-8') as f:
+            json.dump(report, f, indent=2)
+```
+
+## src/managers/candidate_key_manager.py
+```python
+#!/usr/bin/env python3
+"""
+Ehdokkaiden PKI-valtuutusten hallinta
+"""
+import hashlib
+import json
+from datetime import datetime, timedelta
+from typing import Dict
+from .crypto_manager import CryptoManager
+
+class CandidateKeyManager:
+    def __init__(self, election_id: str):
+        self.election_id = election_id
+        self.crypto = CryptoManager()
+    
+    def issue_candidate_credentials(self, party_id: str, candidate_id: str, 
+                                  party_private_key: str, validity_days: int = 180) -> Dict:
+        """Luo ehdokkaalle PKI-valtuutus"""
+        
+        # 1. Luo ehdokkaalle avainpari
+        candidate_keys = self.crypto.generate_key_pair()
+        
+        # 2. Luo valtuutusasiakirja
+        delegation_document = {
+            "election_id": self.election_id,
+            "party_id": party_id,
+            "candidate_id": candidate_id,
+            "delegated_powers": [
+                "submit_answers", 
+                "modify_answers", 
+                "view_own_data",
+                "update_profile"
+            ],
+            "valid_from": datetime.now().isoformat(),
+            "valid_until": (datetime.now() + timedelta(days=validity_days)).isoformat(),
+            "candidate_public_key": candidate_keys["public_key"],
+            "candidate_key_fingerprint": candidate_keys["key_fingerprint"],
+            "document_version": "1.0"
+        }
+        
+        # 3. Allekirjoita valtuutus puolueen avaimella
+        delegation_signature = self.crypto.sign_data(
+            party_private_key,
+            delegation_document
+        )
+        
+        credentials = {
+            "candidate_keys": candidate_keys,
+            "delegation_document": delegation_document,
+            "delegation_signature": delegation_signature,
+            "party_verification": {
+                "party_id": party_id,
+                "verification_timestamp": datetime.now().isoformat(),
+                "validity_days": validity_days
+            }
+        }
+        
+        return credentials
+    
+    def verify_candidate_authorization(self, candidate_id: str, 
+                                    delegation_document: Dict, 
+                                    delegation_signature: str,
+                                    party_public_key: str) -> bool:
+        """Varmista ehdokkaan valtuutus"""
+        
+        try:
+            # 1. Tarkista puolueen allekirjoitus
+            if not self.crypto.verify_signature(
+                party_public_key, delegation_document, delegation_signature
+            ):
+                print("❌ Puolueen allekirjoitus epävalidi")
+                return False
+            
+            # 2. Tarkista voimassaolo
+            valid_until = datetime.fromisoformat(delegation_document["valid_until"])
+            if datetime.now() > valid_until:
+                print("❌ Valitus vanhentunut")
+                return False
+            
+            # 3. Tarkista ehdokas-id
+            if delegation_document["candidate_id"] != candidate_id:
+                print("❌ Ehdokas-id ei täsmää")
+                return False
+            
+            print("✅ Valituus validi")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Valituuden tarkistusvirhe: {e}")
+            return False
+```
+
+## src/managers/secure_answer_manager.py
+```python
+# src/managers/secure_answer_manager.py
+#!/usr/bin/env python3
+"""
+Turvallinen vastausjärjestelmä PKI-allekirjoituksilla
+"""
+import json
+import hashlib
+from datetime import datetime
+from typing import Dict, List
+from .candidate_key_manager import CandidateKeyManager
+from .crypto_manager import CryptoManager
+
+class SecureAnswerManager:
+    def __init__(self, election_id: str):
+        self.election_id = election_id
+        self.crypto = CryptoManager()
+        self.key_manager = CandidateKeyManager(election_id)
+    
+    def submit_signed_answer(self, candidate_id: str, question_id: str,
+                           answer_data: Dict, candidate_private_key: str,
+                           delegation_document: Dict, delegation_signature: str,
+                           party_public_key: str) -> Dict:
+        """Lähetä ehdokkaan allekirjoitettu vastaus"""
+        
+        # 1. Varmista valtuutus
+        if not self.key_manager.verify_candidate_authorization(
+            candidate_id, delegation_document, delegation_signature, party_public_key
+        ):
+            raise PermissionError("Ehdokkaalla ei ole voimassa olevaa valtuutusta")
+        
+        # 2. Validoi vastaus
+        if not self._validate_answer_data(answer_data):
+            raise ValueError("Virheellinen vastausdata")
+        
+        # 3. Luo vastausdokumentti
+        answer_document = {
+            "election_id": self.election_id,
+            "candidate_id": candidate_id,
+            "question_id": question_id,
+            "answer_value": answer_data["answer_value"],
+            "confidence": answer_data.get("confidence", 3),
+            "explanation": answer_data.get("explanation", {}),
+            "submission_timestamp": datetime.now().isoformat(),
+            "document_version": "1.0",
+            "previous_answer_hash": self._get_previous_answer_hash(candidate_id, question_id)
+        }
+        
+        # 4. Allekirjoita vastaus
+        answer_signature = self.crypto.sign_data(
+            candidate_private_key,
+            answer_document
+        )
+        
+        # 5. Tallenna turvallisesti
+        secure_answer = {
+            "answer_document": answer_document,
+            "answer_signature": answer_signature,
+            "delegation_chain": {
+                "delegation_document": delegation_document,
+                "delegation_signature": delegation_signature,
+                "party_public_key": party_public_key
+            },
+            "metadata": {
+                "submission_id": self._generate_submission_id(candidate_id, question_id),
+                "integrity_verified": True,
+                "verification_timestamp": datetime.now().isoformat(),
+                "hash_chain": self._calculate_hash_chain(answer_document, answer_signature)
+            }
+        }
+        
+        return secure_answer
+    
+    def verify_answer_integrity(self, secure_answer: Dict) -> bool:
+        """Tarkista vastauksen eheys koko ketjussa"""
+        
+        try:
+            answer_doc = secure_answer["answer_document"]
+            delegation = secure_answer["delegation_chain"]
+            
+            # 1. Tarkista ehdokkaan allekirjoitus
+            candidate_public_key = delegation["delegation_document"]["candidate_public_key"]
+            if not self.crypto.verify_signature(
+                candidate_public_key,
+                answer_doc,
+                secure_answer["answer_signature"]
+            ):
+                print("❌ Ehdokkaan allekirjoitus epävalidi")
+                return False
+            
+            # 2. Tarkista puolueen valtuutus
+            if not self.key_manager.verify_candidate_authorization(
+                answer_doc["candidate_id"],
+                delegation["delegation_document"],
+                delegation["delegation_signature"],
+                delegation["party_public_key"]
+            ):
+                print("❌ Puolueen valtuutus epävalidi")
+                return False
+            
+            # 3. Tarkista hash-ketju
+            expected_hash = self._calculate_hash_chain(
+                answer_doc, secure_answer["answer_signature"]
+            )
+            if secure_answer["metadata"]["hash_chain"] != expected_hash:
+                print("❌ Hash-ketju epävalidi")
+                return False
+            
+            print("✅ Vastauksen eheys varmistettu")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Vastauksen eheystarkistusvirhe: {e}")
+            return False
+    
+    def _validate_answer_data(self, answer_data: Dict) -> bool:
+        """Validoi vastausdata"""
+        if "answer_value" not in answer_data:
+            return False
+        
+        if not (-5 <= answer_data["answer_value"] <= 5):
+            return False
+        
+        if "confidence" in answer_data and not (1 <= answer_data["confidence"] <= 5):
+            return False
+        
+        return True
+    
+    def _generate_submission_id(self, candidate_id: str, question_id: str) -> str:
+        """Generoi yksilöllinen vastaus-ID"""
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        content = f"{candidate_id}_{question_id}_{timestamp}"
+        return f"ans_{hashlib.sha256(content.encode()).hexdigest()[:16]}"
+    
+    def _calculate_hash_chain(self, answer_document: Dict, signature: str) -> str:
+        """Laske vastauksen hash-ketju"""
+        content = json.dumps(answer_document, sort_keys=True) + signature
+        return hashlib.sha256(content.encode()).hexdigest()
+    
+    def _get_previous_answer_hash(self, candidate_id: str, question_id: str) -> str:
+        """Hae edellisen vastauksen tiiviste (yksinkertaistettu)"""
+        # Toteutus riippuu data-tallennuksesta
+        return "initial"
+```
+
+## src/managers/question_manager.py
+```python
+from pathlib import Path
+from typing import Dict, List
+import json
+import os
+
+def read_json_file(file_path):
+    """Lue JSON-tiedosto"""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+def write_json_file(file_path, data):
+    """Kirjoita JSON-tiedosto"""
+    Path(file_path).parent.mkdir(parents=True, exist_ok=True)
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+class QuestionManager:
+    def __init__(self, election_id: str, data_dir: str = "data/runtime"):
+        self.election_id = election_id
+        self.data_dir = Path(data_dir)
+        self.data_dir.mkdir(parents=True, exist_ok=True)
+    
+    def submit_question(self, question_data: Dict) -> str:
+        """Lähetä uusi kysymys järjestelmään"""
+        tmp_file = self.data_dir / "tmp_new_questions.json"
+        
+        # Lue nykyinen data tai alusta uusi
+        if tmp_file.exists():
+            data = read_json_file(str(tmp_file))
+        else:
+            data = {"questions": [], "metadata": {"election_id": self.election_id}}
+        
+        # Lisää uusi kysymys
+        question_id = f"q_{len(data['questions']) + 1}"
+        question_data["local_id"] = question_id
+        data["questions"].append(question_data)
+        
+        # Tallenna
+        write_json_file(str(tmp_file), data)
+        return question_id
+    
+    def sync_tmp_to_new(self) -> List[str]:
+        """Synkronoi tmp kysymykset new_questions.json:ään"""
+        tmp_file = self.data_dir / "tmp_new_questions.json"
+        new_file = self.data_dir / "new_questions.json"
+        
+        if not tmp_file.exists():
+            return []
+        
+        tmp_data = read_json_file(str(tmp_file))
+        new_data = read_json_file(str(new_file)) if new_file.exists() else {"questions": []}
+        
+        # Siirrä kysymykset
+        synced_questions = []
+        for question in tmp_data["questions"]:
+            new_data["questions"].append(question)
+            synced_questions.append(question["local_id"])
+        
+        # Tallenna ja tyhjennä tmp
+        write_json_file(str(new_file), new_data)
+        write_json_file(str(tmp_file), {"questions": []})
+        
+        return synced_questions
+```
+
+## src/managers/elo_manager.py
+```python
+#!/usr/bin/env python3
+import json
+from datetime import datetime
+
+class ELOManager:
+    def __init__(self, election_id: str):
+        self.election_id = election_id
+        self.k_factor = 32
+    
+    def calculate_expected(self, rating_a: int, rating_b: int) -> float:
+        """Laske odotettu tulos kahden kysymyksen välillä"""
+        return 1 / (1 + 10 ** ((rating_b - rating_a) / 400))
+    
+    def update_ratings(self, question_a: str, question_b: str, winner: str):
+        """Päivitä ELO-luokitukset vertailun perusteella"""
+        try:
+            # Lataa kysymykset
+            with open("data/runtime/questions.json", "r", encoding='utf-8') as f:
+                data = json.load(f)
+            
+            # Etsi kysymykset
+            q_a = next((q for q in data["questions"] if q["local_id"] == question_a), None)
+            q_b = next((q for q in data["questions"] if q["local_id"] == question_b), None)
+            
+            if not q_a or not q_b:
+                raise ValueError("Kysymyksiä ei löydy")
+            
+            rating_a = q_a["elo_rating"]["current_rating"]
+            rating_b = q_b["elo_rating"]["current_rating"]
+            
+            # Laske odotetut tulokset
+            expected_a = self.calculate_expected(rating_a, rating_b)
+            expected_b = self.calculate_expected(rating_b, rating_a)
+            
+            # Päivitä ratingit voittajan mukaan
+            if winner == "a":
+                actual_a, actual_b = 1.0, 0.0
+            elif winner == "b":
+                actual_a, actual_b = 0.0, 1.0
+            else:  # tasapeli
+                actual_a, actual_b = 0.5, 0.5
+            
+            # Laske uudet ratingit
+            new_rating_a = rating_a + self.k_factor * (actual_a - expected_a)
+            new_rating_b = rating_b + self.k_factor * (actual_b - expected_b)
+            
+            # Päivitä data
+            q_a["elo_rating"]["current_rating"] = int(new_rating_a)
+            q_a["elo_rating"]["comparison_delta"] = int(new_rating_a - rating_a)
+            q_b["elo_rating"]["current_rating"] = int(new_rating_b)
+            q_b["elo_rating"]["comparison_delta"] = int(new_rating_b - rating_b)
+            
+            # Tallenna
+            with open("data/runtime/questions.json", "w", encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+            
+            return {
+                "question_a": {"old": rating_a, "new": new_rating_a, "delta": new_rating_a - rating_a},
+                "question_b": {"old": rating_b, "new": new_rating_b, "delta": new_rating_b - rating_b}
+            }
+            
+        except Exception as e:
+            print(f"ELO-päivitysvirhe: {e}")
+            raise
+```
+
+## src/managers/crypto_manager.py
+```python
+# src/managers/crypto_manager.py
+import hashlib
+import json
+import base64
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import padding
+from typing import Dict
+
+class CryptoManager:
+    def __init__(self):
+        self.key_size = 2048
+    
+    def generate_key_pair(self) -> Dict:
+        """Luo RSA-avainparin"""
+        private_key = rsa.generate_private_key(
+            public_exponent=65537,
+            key_size=self.key_size
+        )
+        
+        public_key = private_key.public_key()
+        
+        # Serialisoi avaimet PEM-muotoon
+        private_pem = private_key.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.PKCS8,
+            encryption_algorithm=serialization.NoEncryption()
+        ).decode('utf-8')
+        
+        public_pem = public_key.public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo
+        ).decode('utf-8')
+        
+        return {
+            "private_key": private_pem,
+            "public_key": public_pem,
+            "key_fingerprint": self.calculate_fingerprint(public_pem)
+        }
+    
+    def calculate_fingerprint(self, public_key_pem: str) -> str:
+        """Laske julkisen avaimen tunniste"""
+        return hashlib.sha256(public_key_pem.encode()).hexdigest()[:16]
+    
+    def sign_data(self, private_key_pem: str, data: Dict) -> str:
+        """Allekirjoita data yksityisellä avaimella"""
+        private_key = serialization.load_pem_private_key(
+            private_key_pem.encode(),
+            password=None
+        )
+        
+        signature = private_key.sign(
+            json.dumps(data, sort_keys=True, ensure_ascii=False).encode('utf-8'),
+            padding.PSS(
+                mgf=padding.MGF1(hashes.SHA256()),
+                salt_length=padding.PSS.MAX_LENGTH
+            ),
+            hashes.SHA256()
+        )
+        
+        return base64.b64encode(signature).decode('utf-8')
+    
+    def verify_signature(self, public_key_pem: str, data: Dict, signature: str) -> bool:
+        """Varmista allekirjoitus"""
+        try:
+            public_key = serialization.load_pem_public_key(
+                public_key_pem.encode()
+            )
+            
+            public_key.verify(
+                base64.b64decode(signature),
+                json.dumps(data, sort_keys=True, ensure_ascii=False).encode('utf-8'),
+                padding.PSS(
+                    mgf=padding.MGF1(hashes.SHA256()),
+                    salt_length=padding.PSS.MAX_LENGTH
+                ),
+                hashes.SHA256()
+            )
+            return True
+        except Exception as e:
+            print(f"Allekirjoituksen varmistusvirhe: {e}")
+            return False
+```
+
+## src/managers/init.py
+```python
+"""
+Manager modules for different system components
+"""
+```
+
+## src/managers/analytics_manager.py
+```python
+#!/usr/bin/env python3
+"""
+Analytics ja tilastojen hallinta - testausversio
+"""
+import json
+import os
+from datetime import datetime
+from typing import Dict, List, Any
+from pathlib import Path
+
+class AnalyticsManager:
+    def __init__(self, election_id: str):
+        self.election_id = election_id
+        self.data_dir = Path("data/runtime")
+    
+    def get_system_stats(self) -> Dict[str, Any]:
+        """Hae järjestelmän tilastot"""
+        stats = {
+            "election_id": self.election_id,
+            "generated_at": datetime.now().isoformat(),
+            "file_stats": {},
+            "content_stats": {}
+        }
+        
+        # Tiedostotilastot
+        files = [
+            "meta.json", "questions.json", "candidates.json", "parties.json"
+        ]
+        
+        for file in files:
+            file_path = self.data_dir / file
+            if file_path.exists():
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    
+                    stats["file_stats"][file] = {
+                        "exists": True,
+                        "size_kb": round(file_path.stat().st_size / 1024, 2)
+                    }
+                    
+                    # Sisältötilastot
+                    if file == "questions.json":
+                        stats["content_stats"]["questions"] = len(data.get("questions", []))
+                    
+                    elif file == "candidates.json":
+                        candidates = data.get("candidates", [])
+                        stats["content_stats"]["candidates"] = len(candidates)
+                        
+                        # Vastaustilastot
+                        total_answers = sum(len(c.get("answers", [])) for c in candidates)
+                        candidates_with_answers = sum(1 for c in candidates if c.get("answers"))
+                        stats["content_stats"]["total_answers"] = total_answers
+                        stats["content_stats"]["candidates_with_answers"] = candidates_with_answers
+                    
+                    elif file == "parties.json":
+                        parties = data.get("parties", [])
+                        stats["content_stats"]["parties"] = len(parties)
+                        
+                except Exception as e:
+                    stats["file_stats"][file] = {"exists": True, "error": str(e)}
+            else:
+                stats["file_stats"][file] = {"exists": False}
+        
+        return stats
+    
+    def get_question_analytics(self) -> Dict[str, Any]:
+        """Hae kysymysten analytics-tiedot"""
+        questions_file = self.data_dir / "questions.json"
+        if not questions_file.exists():
+            return {}
+        
+        try:
+            with open(questions_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            questions = data.get("questions", [])
+            if not questions:
+                return {}
+            
+            # Kysymysten analytics
+            analytics = {
+                "total_questions": len(questions),
+                "categories": {},
+                "elo_distribution": {
+                    "top_5": [],
+                    "bottom_5": []
+                }
+            }
+            
+            # Kategoriat
+            for question in questions:
+                category = question.get("content", {}).get("category", "unknown")
+                analytics["categories"][category] = analytics["categories"].get(category, 0) + 1
+            
+            return analytics
+            
+        except Exception as e:
+            print(f"Analytics-virhe: {e}")
+            return {}
+    
+    def generate_health_report(self) -> Dict[str, Any]:
+        """Luo järjestelmän terveysraportti"""
+        stats = self.get_system_stats()
+        question_analytics = self.get_question_analytics()
+        
+        report = {
+            "election_id": self.election_id,
+            "report_generated": datetime.now().isoformat(),
+            "system_health": "healthy",
+            "issues": [],
+            "recommendations": []
+        }
+        
+        # Tarkista ongelmat
+        if stats["content_stats"].get("candidates", 0) == 0:
+            report["issues"].append("Ei ehdokkaita")
+            report["recommendations"].append("Lisää ehdokkaita")
+        
+        if stats["content_stats"].get("questions", 0) < 2:
+            report["issues"].append("Liian vähän kysymyksiä")
+            report["recommendations"].append("Lisää vähintään 2 kysymystä")
+        
+        if report["issues"]:
+            report["system_health"] = "needs_attention"
+        
+        report["stats"] = stats
+        report["question_analytics"] = question_analytics
+        
+        return report
+```
+
+## src/managers/__init__.py
+```python
+"""
+Manager modules for different system components
+"""
+
+from .question_manager import QuestionManager
+from .elo_manager import ELOManager
+from .analytics_manager import AnalyticsManager
+from .crypto_manager import CryptoManager
+
+__all__ = [
+    'QuestionManager',
+    'ELOManager', 
+    'AnalyticsManager',
+    'CryptoManager'
+]
+```
+
+## src/managers/divine_manager.py
+```python
+"""
+Erikoistoiminnallisuus Jumaltenvaaleille
+"""
+from typing import List, Dict
+
+class DivineManager:
+    def __init__(self, election_id: str):
+        self.election_id = election_id
+        self.divine_domains = [
+            "sky_thunder", "sea_earthquakes", "wisdom_warfare", 
+            "love_beauty", "war_strategy", "hunting_nature"
+        ]
+    
+    def validate_divine_candidate(self, candidate_data: Dict) -> bool:
+        """Varmista että ehdokas on kelvollinen jumala"""
+        required_fields = ["domain", "symbol", "divine_power_level"]
+        
+        for field in required_fields:
+            if field not in candidate_data:
+                return False
+        
+        if candidate_data["domain"] not in self.divine_domains:
+            return False
+            
+        return True
+    
+    def get_olympian_quorum(self) -> int:
+        """Laske tarvittava Olympos-kvoorumi"""
+        return 12  # Perinteinen Olympolaisten lukumäärä
+```
+
+## src/managers/ipfs_manager.py
+```python
+#!/usr/bin/env python3
+"""
+IPFS-integrointi hajautettuun data-tallennukseen
+"""
+import json
+from typing import Dict, Optional
+from src.core.ipfs_client import IPFSClient
+
+class IPFSManager:
+    def __init__(self, election_id: str):
+        self.election_id = election_id
+        self.ipfs_client = IPFSClient.get_client()
+    
+    def store_question(self, question_data: Dict) -> str:
+        """Tallenna kysymys IPFS:ään"""
+        cid = self.ipfs_client.add_data({
+            "type": "question",
+            "election_id": self.election_id,
+            "data": question_data,
+            "timestamp": self._get_timestamp()
+        })
+        return cid
+    
+    def store_candidate_answer(self, secure_answer: Dict) -> str:
+        """Tallenna ehdokkaan allekirjoitettu vastaus IPFS:ään"""
+        cid = self.ipfs_client.add_data({
+            "type": "candidate_answer",
+            "election_id": self.election_id,
+            "data": secure_answer,
+            "timestamp": self._get_timestamp()
+        })
+        return cid
+    
+    def store_party_registration(self, party_data: Dict) -> str:
+        """Tallenna puolueen PKI-rekisteröinti IPFS:ään"""
+        cid = self.ipfs_client.add_data({
+            "type": "party_registration",
+            "election_id": self.election_id,
+            "data": party_data,
+            "timestamp": self._get_timestamp()
+        })
+        return cid
+    
+    def retrieve_data(self, cid: str) -> Optional[Dict]:
+        """Hae data IPFS:stä CID:llä"""
+        try:
+            return self.ipfs_client.get_data(cid)
+        except Exception as e:
+            print(f"IPFS-haku epäonnistui: {e}")
+            return None
+    
+    def _get_timestamp(self) -> str:
+        from datetime import datetime
+        return datetime.now().isoformat()
+```
+
+## src/managers/media_registry.py
+```python
+# src/managers/media_registry.py
+#!/usr/bin/env python3
+"""
+Julkisten avainten mediavahvistusjärjestelmä
+"""
+import hashlib
+import json
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional
+import requests
+
+class MediaRegistry:
+    def __init__(self, election_id: str):
+        self.election_id = election_id
+        self.trusted_media = {
+            "yle.fi": {"trust_score": 10, "verification_api": None},
+            "hsl.fi": {"trust_score": 10, "verification_api": None},
+            "vaalit.fi": {"trust_score": 10, "verification_api": "https://vaalit.fi/api/verify"},
+            "hs.fi": {"trust_score": 9, "verification_api": None},
+            "mtv.fi": {"trust_score": 8, "verification_api": None}
+        }
+    
+    def register_media_publication(self, party_id: str, party_name: str,
+                                 public_key_fingerprint: str, media_url: str,
+                                 publication_data: Dict) -> Dict:
+        """Rekisteröi mediassa julkaistu julkisen avaimen tiedote"""
+        
+        # Tarkista media-domain
+        domain = self._extract_domain(media_url)
+        trust_info = self.trusted_media.get(domain, {"trust_score": 3})
+        
+        publication_id = f"pub_{hashlib.sha256(media_url.encode()).hexdigest()[:12]}"
+        
+        publication_record = {
+            "publication_id": publication_id,
+            "party_id": party_id,
+            "party_name": party_name,
+            "media_url": media_url,
+            "media_domain": domain,
+            "public_key_fingerprint": public_key_fingerprint,
+            "publication_data": publication_data,
+            "publication_timestamp": datetime.now().isoformat(),
+            "verification_status": "pending",
+            "trust_score": trust_info["trust_score"],
+            "verified_by_nodes": [],
+            "verification_evidence": []
+        }
+        
+        return publication_record
+    
+    def verify_publication(self, publication_id: str, node_id: str,
+                          verification_method: str = "manual") -> Dict:
+        """Vahvista mediassa julkaistu tiedote"""
+        
+        # Simuloi media-verifikaatio (oikeassa järjestelmässä API-kutsu)
+        verification_result = {
+            "publication_id": publication_id,
+            "node_id": node_id,
+            "verification_method": verification_method,
+            "verification_timestamp": datetime.now().isoformat(),
+            "status": "verified",  # simulated
+            "confidence_score": 0.85,
+            "evidence": {
+                "screenshot_url": f"https://archive.org/{publication_id}",
+                "archive_timestamp": datetime.now().isoformat(),
+                "verification_notes": "Manual verification completed"
+            }
+        }
+        
+        return verification_result
+    
+    def check_publication_trust(self, publication_record: Dict) -> Dict:
+        """Arvioi julkaisun luotettavuus"""
+        trust_score = publication_record["trust_score"]
+        verifications = len(publication_record["verified_by_nodes"])
+        
+        # Laske luotettavuuspisteet
+        base_trust = trust_score * 10  # Media luotettavuus
+        verification_bonus = verifications * 5  # Vahvistusten bonus
+        total_score = base_trust + verification_bonus
+        
+        trust_level = "high" if total_score >= 80 else "medium" if total_score >= 50 else "low"
+        
+        return {
+            "trust_score": total_score,
+            "trust_level": trust_level,
+            "media_trust": trust_score,
+            "verification_count": verifications,
+            "recommendation": "accept" if trust_level == "high" else "review"
+        }
+    
+    def _extract_domain(self, url: str) -> str:
+        """Poimi domain URL:stä"""
+        return url.split('//')[-1].split('/')[0].lower()
+```
+
+## src/managers/enhanced_party_manager.py
+```python
+# src/managers/enhanced_party_manager.py
+#!/usr/bin/env python3
+"""
+Erikoistoiminnallisuus Jumaltenvaaleille - Täysi PKI-toteutus
+"""
+from datetime import datetime, timedelta
+from typing import Dict, List
+import json
+from .crypto_manager import CryptoManager
+
+class EnhancedPartyManager:
+    def __init__(self, election_id: str):
+        self.election_id = election_id
+        self.crypto = CryptoManager()
+    
+    def propose_party_with_keys(self, party_data: Dict) -> Dict:
+        """Ehdotta uutta puoluetta täydellä PKI-tuella"""
+        
+        # 1. Luo avainpari
+        key_pair = self.crypto.generate_key_pair()
+        
+        # 2. Luo perustamisdokumentti
+        foundation_doc = {
+            "party_name": party_data["name"]["fi"],
+            "founding_date": datetime.now().isoformat(),
+            "election_id": self.election_id,
+            "principles": party_data.get("principles", ""),
+            "domain": party_data.get("domain", "general")
+        }
+        
+        # 3. Allekirjoita dokumentti
+        signature = self.crypto.sign_data(
+            key_pair["private_key"], 
+            foundation_doc
+        )
+        
+        # 4. Luo puolue
+        party_id = f"party_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        
+        enhanced_party = {
+            "party_id": party_id,
+            "name": party_data["name"],
+            "description": party_data["description"],
+            "crypto_identity": {
+                "public_key": key_pair["public_key"],
+                "key_fingerprint": key_pair["key_fingerprint"],
+                "foundation_document": foundation_doc,
+                "foundation_signature": signature,
+                "key_algorithm": "RSA-2048",
+                "signature_algorithm": "RSA-PSS-SHA256"
+            },
+            "media_publications": [],
+            "registration": {
+                "proposed_by": "system",
+                "proposed_at": datetime.now().isoformat(),
+                "verification_status": "pending",
+                "verification_phase": "key_publication",
+                "verified_by_nodes": [],
+                "media_verifications": [],
+                "quorum_votes": [],
+                "rejection_reason": None
+            },
+            "candidates": [],
+            "metadata": party_data.get("metadata", {})
+        }
+        
+        return enhanced_party
+    
+    def verify_party_signature(self, party_data: Dict) -> bool:
+        """Varmista puolueen perustamisdokumentin allekirjoitus"""
+        try:
+            crypto_id = party_data["crypto_identity"]
+            return self.crypto.verify_signature(
+                crypto_id["public_key"],
+                crypto_id["foundation_document"],
+                crypto_id["foundation_signature"]
+            )
+        except Exception as e:
+            print(f"Puolueen allekirjoituksen varmistusvirhe: {e}")
+            return False
+
+    def publish_party_key_to_media(self, party_data: Dict, media_url: str) -> Dict:
+        """Julkaise puolueen julkinen avain mediaan"""
+        from .media_registry import MediaRegistry
+        
+        media_registry = MediaRegistry(self.election_id)
+        
+        publication = media_registry.register_media_publication(
+            party_id=party_data["party_id"],
+            party_name=party_data["name"]["fi"],
+            public_key_fingerprint=party_data["crypto_identity"]["key_fingerprint"],
+            media_url=media_url,
+            publication_data={
+                "party_name": party_data["name"]["fi"],
+                "election": self.election_id,
+                "public_key_fingerprint": party_data["crypto_identity"]["key_fingerprint"],
+                "publication_date": datetime.now().strftime("%Y-%m-%d"),
+                "verification_challenge": f"verify-{party_data['party_id']}"
+            }
+        )
+        
+        # Lisää julkaisu puolueen tietoihin
+        if "media_publications" not in party_data:
+            party_data["media_publications"] = []
+        
+        party_data["media_publications"].append(publication)
+        
+        return publication
+
+    def complete_party_registration(self, party_data: Dict) -> Dict:
+        """Suorita täydellinen puoluerekisteröinti PKI:llä"""
+        from .quorum_manager import QuorumManager
+        
+        quorum_manager = QuorumManager(self.election_id)
+        
+        # 1. Alusta kvoorumivahvistus
+        verification = quorum_manager.initialize_party_verification(party_data)
+        
+        # 2. Lisää puolueen tiedot
+        party_data["registration"] = {
+            "verification_process": verification,
+            "status": "pending_quorum",
+            "registration_timestamp": datetime.now().isoformat()
+        }
+        
+        return party_data
+
+    def get_party_verification_status(self, party_data: Dict) -> Dict:
+        """Hae puolueen vahvistustila"""
+        if "registration" not in party_data or "verification_process" not in party_data["registration"]:
+            return {"status": "not_started"}
+        
+        from .quorum_manager import QuorumManager
+        quorum_manager = QuorumManager(self.election_id)
+        
+        verification = party_data["registration"]["verification_process"]
+        return quorum_manager.get_verification_status(verification)
+
+    def add_media_verification_to_party(self, party_data: Dict, publication_record: Dict, node_id: str) -> bool:
+        """Lisää mediavahvistus puolueelle"""
+        if "registration" not in party_data or "verification_process" not in party_data["registration"]:
+            return False
+        
+        from .quorum_manager import QuorumManager
+        quorum_manager = QuorumManager(self.election_id)
+        
+        verification = party_data["registration"]["verification_process"]
+        return quorum_manager.add_media_verification(verification, publication_record, node_id)
+
+    def cast_vote_for_party(self, party_data: Dict, node_id: str, vote: str, 
+                           node_public_key: str, justification: str = "") -> bool:
+        """Äänestä puolueen hyväksymisestä"""
+        if "registration" not in party_data or "verification_process" not in party_data["registration"]:
+            return False
+        
+        from .quorum_manager import QuorumManager
+        quorum_manager = QuorumManager(self.election_id)
+        
+        verification = party_data["registration"]["verification_process"]
+        return quorum_manager.cast_vote(verification, node_id, vote, node_public_key, justification)
+```
+
+## src/managers/quorum_manager.py
+```python
+# src/managers/quorum_manager.py
+#!/usr/bin/env python3
+"""
+Hajautettu kvoorumi-pohjainen puoluevahvistusjärjestelmä
+"""
+import hashlib
+import json
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional
+from .crypto_manager import CryptoManager
+
+class QuorumManager:
+    def __init__(self, election_id: str):
+        self.election_id = election_id
+        self.crypto = CryptoManager()
+        
+        # Kvoorumikonfiguraatio
+        self.quorum_config = {
+            "min_nodes_for_verification": 3,
+            "approval_threshold_percent": 60,
+            "verification_timeout_hours": 24,
+            "rejection_quorum_percent": 40,
+            "node_weight_calculation": "based_on_history"
+        }
+    
+    def initialize_party_verification(self, party_data: Dict) -> Dict:
+        """Alusta puolueen kvoorumivahvistus"""
+        
+        verification_process = {
+            "party_id": party_data["party_id"],
+            "party_name": party_data["name"]["fi"],
+            "public_key_fingerprint": party_data["crypto_identity"]["key_fingerprint"],
+            "verification_started": datetime.now().isoformat(),
+            "verification_timeout": (datetime.now() + timedelta(hours=24)).isoformat(),
+            "current_phase": "media_verification",
+            "quorum_votes": [],
+            "media_verifications": [],
+            "final_decision": None,
+            "decision_timestamp": None
+        }
+        
+        return verification_process
+    
+    def cast_vote(self, verification_process: Dict, node_id: str, 
+                 vote: str, node_public_key: str, justification: str = "") -> bool:
+        """Äänestä puolueen vahvistamisesta"""
+        
+        if vote not in ["approve", "reject", "abstain"]:
+            return False
+        
+        # Tarkista että node ei ole jo äänestänyt
+        existing_vote = next((v for v in verification_process["quorum_votes"] 
+                            if v["node_id"] == node_id), None)
+        if existing_vote:
+            return False
+        
+        # Tarkista aikaraja
+        timeout = datetime.fromisoformat(verification_process["verification_timeout"])
+        if datetime.now() > timeout:
+            return False
+        
+        # Laske noden painoarvo
+        node_weight = self._calculate_node_weight(node_id, node_public_key)
+        
+        # Luo äänirakenne
+        vote_record = {
+            "node_id": node_id,
+            "vote": vote,
+            "weight": node_weight,
+            "justification": justification,
+            "timestamp": datetime.now().isoformat(),
+            "node_public_key_fingerprint": self.crypto.calculate_fingerprint(node_public_key),
+            "vote_signature": self._sign_vote(node_id, vote, node_public_key)
+        }
+        
+        verification_process["quorum_votes"].append(vote_record)
+        
+        # Tarkista onko päätös saavutettu
+        return self._check_quorum_decision(verification_process)
+    
+    def add_media_verification(self, verification_process: Dict, 
+                             publication_record: Dict, node_id: str) -> bool:
+        """Lisää mediavahvistus kvoorumiprosessiin"""
+        
+        media_verification = {
+            "publication_id": publication_record["publication_id"],
+            "media_domain": publication_record["media_domain"],
+            "trust_score": publication_record["trust_score"],
+            "verified_by_node": node_id,
+            "verification_timestamp": datetime.now().isoformat(),
+            "evidence_url": publication_record.get("media_url", "")
+        }
+        
+        verification_process["media_verifications"].append(media_verification)
+        
+        # Siirrä seuraavaan vaiheeseen jos mediavahvistukset saavutettu
+        media_verifications = len(verification_process["media_verifications"])
+        if (media_verifications >= 2 and 
+            verification_process["current_phase"] == "media_verification"):
+            verification_process["current_phase"] = "quorum_voting"
+        
+        return True
+    
+    def _check_quorum_decision(self, verification_process: Dict) -> bool:
+        """Tarkista onko kvoorumipäätös saavutettu"""
+        
+        votes = verification_process["quorum_votes"]
+        if not votes:
+            return False
+        
+        total_weight = sum(vote["weight"] for vote in votes)
+        approve_weight = sum(vote["weight"] for vote in votes if vote["vote"] == "approve")
+        reject_weight = sum(vote["weight"] for vote in votes if vote["vote"] == "reject")
+        
+        approval_ratio = (approve_weight / total_weight) * 100 if total_weight > 0 else 0
+        rejection_ratio = (reject_weight / total_weight) * 100 if total_weight > 0 else 0
+        
+        min_votes = self.quorum_config["min_nodes_for_verification"]
+        approval_threshold = self.quorum_config["approval_threshold_percent"]
+        rejection_threshold = self.quorum_config["rejection_quorum_percent"]
+        
+        # Tarkista ehdot
+        has_min_votes = len(votes) >= min_votes
+        has_approval_quorum = approval_ratio >= approval_threshold
+        has_rejection_quorum = rejection_ratio >= rejection_threshold
+        
+        if has_min_votes and has_approval_quorum:
+            verification_process["final_decision"] = "approved"
+            verification_process["decision_timestamp"] = datetime.now().isoformat()
+            return True
+        
+        elif has_min_votes and has_rejection_quorum:
+            verification_process["final_decision"] = "rejected" 
+            verification_process["decision_timestamp"] = datetime.now().isoformat()
+            return True
+        
+        return False
+    
+    def _calculate_node_weight(self, node_id: str, node_public_key: str) -> int:
+        """Laske noden painoarvo äänestyksessä"""
+        # Yksinkertaistettu - oikeassa järjestelmässä perustuisi historiaan
+        base_weight = 10
+        
+        # Lisää painoa jos node on vanha ja luotettu
+        if node_id.startswith("node_zeus") or node_id.startswith("node_athena"):
+            base_weight += 5
+        
+        return base_weight
+    
+    def _sign_vote(self, node_id: str, vote: str, node_public_key: str) -> str:
+        """Allekirjoita ääni (yksinkertaistettu)"""
+        vote_data = f"{node_id}:{vote}:{datetime.now().isoformat()}"
+        return hashlib.sha256(vote_data.encode()).hexdigest()
+    
+    def get_verification_status(self, verification_process: Dict) -> Dict:
+        """Hae vahvistusprosessin tila"""
+        
+        votes = verification_process["quorum_votes"]
+        total_votes = len(votes)
+        
+        status = {
+            "party_id": verification_process["party_id"],
+            "current_phase": verification_process["current_phase"],
+            "total_votes": total_votes,
+            "approve_votes": len([v for v in votes if v["vote"] == "approve"]),
+            "reject_votes": len([v for v in votes if v["vote"] == "reject"]),
+            "abstain_votes": len([v for v in votes if v["vote"] == "abstain"]),
+            "media_verifications": len(verification_process["media_verifications"]),
+            "time_remaining_hours": self._calculate_time_remaining(verification_process),
+            "final_decision": verification_process.get("final_decision"),
+            "quorum_met": verification_process.get("final_decision") is not None
+        }
+        
+        return status
+    
+    def _calculate_time_remaining(self, verification_process: Dict) -> float:
+        """Laske jäljellä oleva aika tunneissa"""
+        timeout = datetime.fromisoformat(verification_process["verification_timeout"])
+        remaining = timeout - datetime.now()
+        return max(0, remaining.total_seconds() / 3600)
+```
+
+## src/core/file_utils.py
+```python
+import json
+from pathlib import Path
+
+def read_json_file(file_path):
+    """Lue JSON-tiedosto"""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+def write_json_file(file_path, data):
+    """Kirjoita JSON-tiedosto"""
+    Path(file_path).parent.mkdir(parents=True, exist_ok=True)
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+```
+
+## src/core/election_validator.py
+```python
+"""Vaalidien validointi ja tarkistus"""
+from .error_handling import validate_election_exists, validate_answer_value, validate_confidence_level
+
+class ElectionValidator:
+    @staticmethod
+    def validate_candidate_exists(candidate_id: str, data_manager):
+        """Tarkista että ehdokas on olemassa"""
+        candidates = data_manager.get_candidates()
+        return any(c["candidate_id"] == candidate_id for c in candidates.get("candidates", []))
+    
+    @staticmethod
+    def validate_question_exists(question_id: str, data_manager):
+        """Tarkista että kysymys on olemassa"""
+        questions = data_manager.get_questions()
+        return any(q["local_id"] == question_id for q in questions.get("questions", []))
+
+```
+
+## src/core/init.py
+```python
+"""
+Core utilities for decentralized candidate matcher
+"""
+from .file_utils import read_json_file, write_json_file, calculate_fingerprint
+from .ipfs_client import IPFSClient
+from .config_manager import ConfigManager
+
+__all__ = [
+    'read_json_file', 
+    'write_json_file', 
+    'calculate_fingerprint',
+    'IPFSClient',
+    'ConfigManager'
+]
+```
+
+## src/core/__init__.py
+```python
+```
+
+## src/core/data_manager.py
+```python
+"""Keskitetty data-hallinta kaikille moduuleille"""
+import json
+from pathlib import Path
+from typing import Dict, Any
+from .error_handling import safe_json_read, safe_json_write
+
+class DataManager:
+    def __init__(self, election_id: str):
+        self.election_id = election_id
+        self.data_dir = Path(f"data/runtime/{election_id}")
+        self.data_dir.mkdir(parents=True, exist_ok=True)
+    
+    def load_data(self, filename: str) -> Dict[str, Any]:
+        """Lataa data-tiedosto"""
+        file_path = self.data_dir / filename
+        return safe_json_read(str(file_path))
+    
+    def save_data(self, filename: str, data: Dict[str, Any]):
+        """Tallenna data-tiedosto"""
+        file_path = self.data_dir / filename
+        safe_json_write(str(file_path), data)
+    
+    def get_questions(self):
+        return self.load_data("questions.json")
+    
+    def get_candidates(self):
+        return self.load_data("candidates.json")
+    
+    def get_parties(self):
+        return self.load_data("parties.json")
+```
+
+## src/core/ipfs_client.py
+```python
+#!/usr/bin/env python3
+"""
+IPFS-integrointi Jumaltenvaaleille - Stabiili mock-versio
+"""
+import json
+import hashlib
+from datetime import datetime
+from typing import Optional, Dict, List
+from pathlib import Path
+
+class IPFSClient:
+    _instance: Optional['IPFSClient'] = None
+    
+    def __init__(self, election_id: str = "Jumaltenvaalit2026"):
+        self.election_id = election_id
+        self._client = MockIPFSClient()  # Aina mock-tilassa
+        print("🔶 Käytetään stabiilia mock IPFS-clientia")
+    
+    @classmethod
+    def get_client(cls, election_id: str = "Jumaltenvaalit2026") -> 'IPFSClient':
+        if cls._instance is None:
+            cls._instance = IPFSClient(election_id=election_id)
+        return cls._instance
+    
+    def publish_election_data(self, data_type: str, data: Dict) -> str:
+        """Julkaise vaalidata IPFS:ään (mock)"""
+        try:
+            # Lisää metadata
+            enhanced_data = {
+                "data": data,
+                "metadata": {
+                    "election_id": self.election_id,
+                    "data_type": data_type,
+                    "timestamp": datetime.now().isoformat(),
+                    "version": "1.0"
+                }
+            }
+            
+            # Käytä mock-clientia
+            cid = self._client.add_json(enhanced_data)
+            
+            print(f"✅ {data_type} julkaistu IPFS:ään (mock): {cid}")
+            return cid
+            
+        except Exception as e:
+            print(f"❌ IPFS-julkaisu epäonnistui: {e}")
+            return f"mock_cid_{hashlib.sha256(json.dumps(data).encode()).hexdigest()[:16]}"
+    
+    def sync_local_to_ipfs(self) -> Dict[str, str]:
+        """Synkronoi kaikki paikallinen data IPFS:ään (mock)"""
+        data_files = {
+            "parties": "data/runtime/parties.json",
+            "questions": "data/runtime/questions.json", 
+            "candidates": "data/runtime/candidates.json",
+            "meta": "data/runtime/meta.json"
+        }
+        
+        results = {}
+        
+        for data_type, file_path in data_files.items():
+            if Path(file_path).exists():
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    
+                    cid = self.publish_election_data(data_type, data)
+                    results[data_type] = cid
+                    
+                except Exception as e:
+                    print(f"❌ {data_type} synkronointi epäonnistui: {e}")
+                    results[data_type] = None
+        
+        # Tallenna CID:t
+        sync_info = {
+            "election_id": self.election_id,
+            "sync_timestamp": datetime.now().isoformat(),
+            "ipfs_cids": results,
+            "synced_files": list(results.keys())
+        }
+        
+        sync_file = "data/runtime/ipfs_sync.json"
+        Path(sync_file).parent.mkdir(parents=True, exist_ok=True)
+        with open(sync_file, 'w', encoding='utf-8') as f:
+            json.dump(sync_info, f, indent=2)
+        
+        print(f"📊 Synkronoitu {len(results)} tiedostoa IPFS:ään (mock)")
+        return results
+    
+    def fetch_from_ipfs(self, cid: str) -> Optional[Dict]:
+        """Hae data IPFS:stä CID:llä (mock)"""
+        try:
+            data = self._client.get_json(cid)
+            return data
+        except Exception as e:
+            print(f"❌ IPFS-haku epäonnistui CID:llä {cid}: {e}")
+            return None
+    
+    def verify_data_integrity(self, local_data: Dict, ipfs_cid: str) -> bool:
+        """Varmista datan eheys verrattuna IPFS:ään (mock)"""
+        try:
+            ipfs_data = self.fetch_from_ipfs(ipfs_cid)
+            if not ipfs_data:
+                return False
+            
+            # Vertaa dataa (huomioi metadata)
+            local_hash = hashlib.sha256(
+                json.dumps(local_data, sort_keys=True).encode()
+            ).hexdigest()
+            
+            ipfs_hash = hashlib.sha256(
+                json.dumps(ipfs_data.get('data', {}), sort_keys=True).encode()
+            ).hexdigest()
+            
+            return local_hash == ipfs_hash
+            
+        except Exception as e:
+            print(f"❌ Eheystarkistus epäonnistui: {e}")
+            return False
+
+class MockIPFSClient:
+    """Stabiili mock IPFS client kehitystä varten"""
+    def __init__(self):
+        self._storage = {}
+    
+    def add_json(self, data):
+        """Mock-add_json"""
+        import hashlib
+        content = json.dumps(data, sort_keys=True)
+        cid = f"mock_{hashlib.sha256(content.encode()).hexdigest()[:16]}"
+        self._storage[cid] = data
+        return cid
+    
+    def get_json(self, cid):
+        """Mock-get_json"""
+        if cid in self._storage:
+            return self._storage[cid]
+        raise Exception(f"CID ei löydy: {cid}")
+```
+
+## src/core/config_manager.py
+```python
+```
+
+## src/core/error_handling.py
+```python
+#!/usr/bin/env python3
+"""
+Yhteiset virheenkäsittelyfunktiot
+"""
+import sys
+import json
+import click
+from pathlib import Path
+
+class ElectionSystemError(Exception):
+    """Perusvirheluokka vaalijärjestelmälle"""
+    pass
+
+class FileNotFoundError(ElectionSystemError):
+    """Tiedostoa ei löydy"""
+    pass
+
+class DataValidationError(ElectionSystemError):
+    """Data validointivirhe"""
+    pass
+
+class ElectionNotFoundError(ElectionSystemError):
+    """Vaalia ei löydy"""
+    pass
+
+def handle_file_errors(func):
+    """Decorator tiedostokäsittelyvirheille"""
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except FileNotFoundError as e:
+            click.echo(f"❌ Tiedostovirhe: {e}")
+            sys.exit(1)
+        except json.JSONDecodeError as e:
+            click.echo(f"❌ JSON-virhe tiedostossa: {e}")
+            sys.exit(1)
+        except PermissionError as e:
+            click.echo(f"❌ Käyttöoikeusvirhe: {e}")
+            sys.exit(1)
+        except Exception as e:
+            click.echo(f"❌ Odottamaton virhe: {e}")
+            sys.exit(1)
+    return wrapper
+
+def validate_election_exists(election_id: str):
+    """Varmista että vaali on olemassa"""
+    meta_file = Path(f"data/runtime/meta.json")
+    if not meta_file.exists():
+        raise ElectionNotFoundError(f"Järjestelmää ei ole asennettu vaaliin: {election_id}")
+    
+    with open(meta_file, 'r', encoding='utf-8') as f:
+        meta_data = json.load(f)
+    
+    if meta_data.get("metadata", {}).get("election_id") != election_id:
+        raise ElectionNotFoundError(f"Vaalia ei löydy: {election_id}")
+
+def safe_json_read(file_path: str) -> dict:
+    """Turvallinen JSON-tiedoston lukeminen"""
+    path = Path(file_path)
+    if not path.exists():
+        raise FileNotFoundError(f"Tiedostoa ei löydy: {file_path}")
+    
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except json.JSONDecodeError as e:
+        raise DataValidationError(f"Virheellinen JSON tiedostossa {file_path}: {e}")
+
+def safe_json_write(file_path: str, data: dict):
+    """Turvallinen JSON-tiedoston kirjoitus"""
+    path = Path(file_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    
+    try:
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        raise DataValidationError(f"Kirjoitusvirhe tiedostoon {file_path}: {e}")
+
+def validate_answer_value(value: int) -> bool:
+    """Varmista että vastaus on validi"""
+    return -5 <= value <= 5
+
+def validate_confidence_level(confidence: int) -> bool:
+    """Varmista että luottamustaso on validi"""
+    return 1 <= confidence <= 5
+```
+
+## src/__init__.py
+```python
+# src/__init__.py - Korjattu versio
+"""
+Decentralized Candidate Matcher - Jumaltenvaalit 2026
+"""
+
+__version__ = "2.1.0"
+__author__ = "Jumaltenvaalit Development Team"
+
+```
+
+## src/nodes/node_manager.py
+```python
+#!/usr/bin/env python3
+"""
+Multi-node hallinta Jumaltenvaaleille
+"""
+import json
+import hashlib
+from datetime import datetime
+from typing import Dict, List, Optional
+from pathlib import Path
+
+class NodeManager:
+    def __init__(self, election_id: str = "Jumaltenvaalit2026"):
+        self.election_id = election_id
+        self.nodes_file = Path(f"data/nodes/{election_id}_nodes.json")
+        self.nodes_file.parent.mkdir(parents=True, exist_ok=True)
+        self.nodes = self._load_nodes()
+    
+    def _load_nodes(self) -> Dict:
+        """Lataa nodejen tiedot"""
+        if self.nodes_file.exists():
+            with open(self.nodes_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {"nodes": {}, "metadata": {"election_id": self.election_id}}
+    
+    def register_node(self, node_id: str, node_data: Dict) -> bool:
+        """Rekisteröi uusi node"""
+        # Yksinkertaistettu versio ilman crypto_manager riippuvuutta
+        if "public_key" not in node_data:
+            return False
+        
+        # Laske julkisen avaimen tunniste (yksinkertaistettu)
+        key_fingerprint = hashlib.sha256(node_data["public_key"].encode()).hexdigest()[:16]
+        
+        node_info = {
+            "node_id": node_id,
+            "public_key": node_data["public_key"],
+            "key_fingerprint": key_fingerprint,
+            "node_name": node_data.get("node_name", f"Node_{node_id}"),
+            "domain": node_data.get("domain", "general"),
+            "capabilities": node_data.get("capabilities", ["voting", "verification"]),
+            "registration_timestamp": datetime.now().isoformat(),
+            "last_seen": datetime.now().isoformat(),
+            "status": "active",
+            "trust_score": node_data.get("trust_score", 10)
+        }
+        
+        self.nodes["nodes"][node_id] = node_info
+        self._save_nodes()
+        
+        print(f"✅ Node rekisteröity: {node_id} ({node_info['node_name']})")
+        return True
+    
+    def get_active_nodes(self) -> List[Dict]:
+        """Hae aktiiviset nodet"""
+        active_nodes = []
+        for node_id, node_info in self.nodes["nodes"].items():
+            if node_info.get("status") == "active":
+                active_nodes.append(node_info)
+        return active_nodes
+    
+    def update_node_status(self, node_id: str, status: str) -> bool:
+        """Päivitä noden tila"""
+        if node_id in self.nodes["nodes"]:
+            self.nodes["nodes"][node_id]["status"] = status
+            self.nodes["nodes"][node_id]["last_seen"] = datetime.now().isoformat()
+            self._save_nodes()
+            return True
+        return False
+    
+    def _save_nodes(self):
+        """Tallenna nodejen tiedot"""
+        with open(self.nodes_file, 'w', encoding='utf-8') as f:
+            json.dump(self.nodes, f, indent=2, ensure_ascii=False)
+    
+    def get_quorum_nodes(self, min_trust_score: int = 5) -> List[Dict]:
+        """Hae nodet jotka kelpaavat kvoorumiin"""
+        quorum_nodes = []
+        for node_info in self.get_active_nodes():
+            if node_info.get("trust_score", 0) >= min_trust_score:
+                quorum_nodes.append(node_info)
+        return quorum_nodes
+    
+    def calculate_quorum_threshold(self) -> int:
+        """Laske kvoorumin kynnysarvo"""
+        quorum_nodes = self.get_quorum_nodes()
+        return max(2, len(quorum_nodes) // 2 + 1)  # Vähintään 2, yli puolet
+
+# Esimääritellyt Olympolaiset
+OLYMPIAN_NODES = {
+    "node_zeus": {
+        "node_name": "Zeus",
+        "domain": "sky_thunder",
+        "capabilities": ["voting", "verification", "leadership"],
+        "trust_score": 15
+    },
+    "node_athena": {
+        "node_name": "Athena", 
+        "domain": "wisdom_warfare",
+        "capabilities": ["voting", "verification", "strategy"],
+        "trust_score": 15
+    },
+    "node_poseidon": {
+        "node_name": "Poseidon",
+        "domain": "sea_earthquakes", 
+        "capabilities": ["voting", "verification"],
+        "trust_score": 12
+    },
+    "node_aphrodite": {
+        "node_name": "Aphrodite",
+        "domain": "love_beauty",
+        "capabilities": ["voting", "verification"],
+        "trust_score": 10
+    },
+    "node_ares": {
+        "node_name": "Ares",
+        "domain": "war_strategy", 
+        "capabilities": ["voting", "verification"],
+        "trust_score": 8
+    }
+}
+```
+
+## src/nodes/network_sync.py
+```python
+#!/usr/bin/env python3
+"""
+Nodejen välinen data-synkronointi
+"""
+import json
+from datetime import datetime
+from typing import Dict, List, Optional
+from pathlib import Path
+
+class NetworkSyncManager:
+    def __init__(self, election_id: str = "Jumaltenvaalit2026"):
+        self.election_id = election_id
+        self.sync_file = Path(f"data/nodes/{election_id}_network_sync.json")
+        self.sync_file.parent.mkdir(parents=True, exist_ok=True)
+    
+    def sync_with_nodes(self, target_nodes: List[Dict]) -> Dict:
+        """Synkronoi data muiden nodejen kanssa"""
+        print(f"🔄 Synkronoidaan {len(target_nodes)} noden kanssa...")
+        
+        sync_results = {
+            "election_id": self.election_id,
+            "sync_timestamp": datetime.now().isoformat(),
+            "target_nodes": len(target_nodes),
+            "successful_syncs": 0,
+            "failed_syncs": 0,
+            "node_results": []
+        }
+        
+        for node in target_nodes:
+            node_result = self._sync_with_single_node(node)
+            sync_results["node_results"].append(node_result)
+            
+            if node_result["status"] == "success":
+                sync_results["successful_syncs"] += 1
+            else:
+                sync_results["failed_syncs"] += 1
+        
+        # Tallenna synkronointitulokset
+        self._save_sync_results(sync_results)
+        
+        print(f"✅ Synkronointi valmis: {sync_results['successful_syncs']}/{sync_results['target_nodes']}")
+        return sync_results
+    
+    def _sync_with_single_node(self, node: Dict) -> Dict:
+        """Synkronoi yhden noden kanssa (mock-toteutus)"""
+        try:
+            # Mock-synkronointi - oikeassa järjestelmässä verrattaisiin IPFS-CID:itä
+            node_result = {
+                "node_id": node["node_id"],
+                "node_name": node["node_name"],
+                "sync_timestamp": datetime.now().isoformat(),
+                "status": "success",
+                "data_consistent": True,
+                "message": "Mock sync completed successfully"
+            }
+            
+            # Simuloi data-vertailu
+            if node["node_id"] in ["node_zeus", "node_athena"]:
+                node_result["data_consistent"] = True
+                node_result["message"] = "Data consistent with trusted node"
+            else:
+                node_result["data_consistent"] = True  # Oletus mock-tilassa
+                node_result["message"] = "Data verification completed"
+            
+            return node_result
+            
+        except Exception as e:
+            return {
+                "node_id": node["node_id"],
+                "node_name": node["node_name"], 
+                "sync_timestamp": datetime.now().isoformat(),
+                "status": "failed",
+                "error": str(e),
+                "message": f"Sync failed: {e}"
+            }
+    
+    def _save_sync_results(self, sync_results: Dict):
+        """Tallenna synkronointitulokset"""
+        with open(self.sync_file, 'w', encoding='utf-8') as f:
+            json.dump(sync_results, f, indent=2, ensure_ascii=False)
+    
+    def get_sync_status(self) -> Optional[Dict]:
+        """Hae viimeisin synkronointitila"""
+        if self.sync_file.exists():
+            with open(self.sync_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return None
+```
+
+## src/nodes/quorum_voting.py
+```python
+#!/usr/bin/env python3
+"""
+Hajautettu kvoorumi-äänestys multi-node järjestelmässä
+"""
+import json
+import hashlib
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional
+from pathlib import Path
+
+class QuorumVoting:
+    def __init__(self, election_id: str = "Jumaltenvaalit2026"):
+        self.election_id = election_id
+        self.votes_file = Path(f"data/nodes/{election_id}_votes.json")
+        self.votes_file.parent.mkdir(parents=True, exist_ok=True)
+    
+    def start_vote(self, proposal_id: str, proposal_data: Dict, 
+                   min_approvals: int = 3, timeout_hours: int = 24) -> Dict:
+        """Aloita uusi kvoorumi-äänestys"""
+        
+        vote_session = {
+            "proposal_id": proposal_id,
+            "proposal_data": proposal_data,
+            "min_approvals": min_approvals,
+            "timeout": (datetime.now() + timedelta(hours=timeout_hours)).isoformat(),
+            "votes": {},
+            "status": "active",
+            "created": datetime.now().isoformat()
+        }
+        
+        # Lataa nykyiset äänestykset
+        votes_data = self._load_votes()
+        votes_data[proposal_id] = vote_session
+        self._save_votes(votes_data)
+        
+        print(f"✅ Äänestys aloitettu: {proposal_id}")
+        print(f"📊 Vaadittuja hyväksymisiä: {min_approvals}")
+        print(f"⏰ Aikaraja: {timeout_hours}h")
+        
+        return vote_session
+    
+    def cast_vote(self, proposal_id: str, node_id: str, 
+                  vote: str, node_public_key: str, justification: str = "") -> bool:
+        """Äänestä proposalin puolesta tai vastaan"""
+        
+        votes_data = self._load_votes()
+        
+        if proposal_id not in votes_data:
+            print(f"❌ Äänestystä ei löydy: {proposal_id}")
+            return False
+        
+        vote_session = votes_data[proposal_id]
+        
+        # Tarkista aikaraja
+        timeout = datetime.fromisoformat(vote_session["timeout"])
+        if datetime.now() > timeout:
+            print("❌ Äänestys on päättynyt")
+            vote_session["status"] = "timeout"
+            self._save_votes(votes_data)
+            return False
+        
+        # Tarkista onko node jo äänestänyt
+        if node_id in vote_session["votes"]:
+            print(f"❌ Node {node_id} on jo äänestänyt")
+            return False
+        
+        # Tallenna ääni
+        vote_record = {
+            "node_id": node_id,
+            "vote": vote,  # "approve", "reject", "abstain"
+            "justification": justification,
+            "timestamp": datetime.now().isoformat(),
+            "public_key_fingerprint": self._calculate_key_fingerprint(node_public_key)
+        }
+        
+        vote_session["votes"][node_id] = vote_record
+        
+        # Tarkista onko kvoorumi saavutettu
+        self._check_quorum(vote_session)
+        
+        self._save_votes(votes_data)
+        
+        print(f"✅ Ääni annettu: {node_id} → {vote}")
+        return True
+    
+    def _check_quorum(self, vote_session: Dict) -> bool:
+        """Tarkista onko kvoorumi saavutettu"""
+        approve_count = sum(1 for vote in vote_session["votes"].values() 
+                          if vote["vote"] == "approve")
+        
+        if approve_count >= vote_session["min_approvals"]:
+            vote_session["status"] = "approved"
+            vote_session["decided_at"] = datetime.now().isoformat()
+            print(f"🎉 Proposal hyväksytty! {approve_count}/{vote_session['min_approvals']} ääntä")
+            return True
+        
+        # Tarkista hylkäys (yli puolet hylkää)
+        total_votes = len(vote_session["votes"])
+        reject_count = sum(1 for vote in vote_session["votes"].values() 
+                         if vote["vote"] == "reject")
+        
+        if reject_count > total_votes / 2 and total_votes >= 3:
+            vote_session["status"] = "rejected"
+            vote_session["decided_at"] = datetime.now().isoformat()
+            print(f"❌ Proposal hylätty! {reject_count}/{total_votes} ääntä")
+            return True
+        
+        return False
+    
+    def get_vote_status(self, proposal_id: str) -> Optional[Dict]:
+        """Hae äänestyksen tila"""
+        votes_data = self._load_votes()
+        return votes_data.get(proposal_id)
+    
+    def _calculate_key_fingerprint(self, public_key: str) -> str:
+        """Laske julkisen avaimen tunniste"""
+        return hashlib.sha256(public_key.encode()).hexdigest()[:16]
+    
+    def _load_votes(self) -> Dict:
+        """Lataa äänestystiedot"""
+        if self.votes_file.exists():
+            with open(self.votes_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {}
+    
+    def _save_votes(self, votes_data: Dict):
+        """Tallenna äänestystiedot"""
+        with open(self.votes_file, 'w', encoding='utf-8') as f:
+            json.dump(votes_data, f, indent=2, ensure_ascii=False)
+```
+
+## src/nodes/__init__.py
+```python
+"""
+Multi-node modules for decentralized candidate matcher
+"""
+
+from .node_manager import NodeManager, OLYMPIAN_NODES
+from .network_sync import NetworkSyncManager
+from .quorum_voting import QuorumVoting
+
+__all__ = [
+    'NodeManager',
+    'OLYMPIAN_NODES', 
+    'NetworkSyncManager',
+    'QuorumVoting'
+]
+```
+
+## src/cli/elo_admin.py
+```python
+#!/usr/bin/env python3
+import click
+import sys
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from managers.elo_manager import ELOManager
+
+@click.group()
+def elo_admin():
+    """ELO-luokituksen hallintatyökalu"""
+    pass
+
+@elo_admin.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+def stats(election):
+    """Näytä ELO-tilastot"""
+    elo = ELOManager(election)
+    stats = elo.get_question_stats()
+    
+    click.echo("📊 ELO-LUOKITUSTILASTOT")
+    click.echo("=" * 50)
+    click.echo(f"Kysymyksiä yhteensä: {stats['total_questions']}")
+    click.echo(f"Keskimääräinen luokitus: {stats['average_rating']}")
+    click.echo(f"Korkein luokitus: {stats['max_rating']}")
+    click.echo(f"Matalin luokitus: {stats['min_rating']}")
+    
+    click.echo()
+    click.echo("🏆 TOP 10 KYSYMYS:")
+    for i, question in enumerate(stats['questions'][:10], 1):
+        delta_str = f" ({question['delta']:+.0f})" if question['delta'] != 0 else ""
+        click.echo(f"{i:2d}. [{question['rating']:4d}{delta_str}] {question['question']}")
+
+@elo_admin.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+def leaderboard(election):
+    """Näytä ranking-lista"""
+    elo = ELOManager(election)
+    leaderboard = elo.get_leaderboard()
+    
+    click.echo("🏆 ELO-RANKINGLISTA")
+    click.echo("=" * 50)
+    
+    for i, question in enumerate(leaderboard, 1):
+        delta_str = f" ({question['delta']:+.0f})" if question['delta'] != 0 else ""
+        click.echo(f"{i:2d}. ⭐ {question['rating']:4d}{delta_str} | {question['category']:12} | {question['question']}")
+
+@elo_admin.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.confirmation_option(prompt='Haluatko varmasti nollata kaikki ELO-luokitukset?')
+def reset(election):
+    """Nollaa kaikki ELO-luokitukset"""
+    elo = ELOManager(election)
+    count = elo.reset_ratings()
+    
+    click.echo(f"✅ ELO-luokitukset nollattu {count} kysymykselle")
+    click.echo("📊 Kaikki kysymykset palautettu 1000 pisteen luokitukseen")
+
+if __name__ == '__main__':
+    elo_admin()
+```
+
+## src/cli/validate_data.py
+```python
+#!/usr/bin/env python3
+"""
+Data validointityökalu
+"""
+import click
+import json
+import os
+from pathlib import Path
+
+@click.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--fix', is_flag=True, help='Korjaa automaattisesti löydetyt ongelmat')
+def validate_data(election, fix):
+    """Validoi kaikki data-tiedostot"""
+    
+    click.echo("🔍 DATA VALIDOINTI")
+    click.echo("=" * 50)
+    
+    files_to_check = [
+        f"data/runtime/meta.json",
+        f"data/runtime/system_chain.json", 
+        f"data/runtime/questions.json",
+        f"data/runtime/candidates.json",
+        f"data/runtime/parties.json"
+    ]
+    
+    issues_found = 0
+    fixed_issues = 0
+    
+    for file_path in files_to_check:
+        if not os.path.exists(file_path):
+            click.echo(f"❌ Tiedostoa puuttuu: {file_path}")
+            issues_found += 1
+            continue
+        
+        try:
+            # Yritä lukea JSON
+            with open(file_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            # Tarkista perusrakenteet
+            if "metadata" not in data and file_path != "data/runtime/system_chain.json":
+                click.echo(f"⚠️  Puuttuu metadata: {file_path}")
+                issues_found += 1
+                
+                if fix and file_path == "data/runtime/questions.json":
+                    data["metadata"] = {"election_id": election}
+                    with open(file_path, 'w', encoding='utf-8') as f:
+                        json.dump(data, f, indent=2, ensure_ascii=False)
+                    click.echo(f"✅ Korjattu: {file_path}")
+                    fixed_issues += 1
+            
+            click.echo(f"✅ {file_path} - OK")
+            
+        except json.JSONDecodeError as e:
+            click.echo(f"❌ Virheellinen JSON: {file_path} - {e}")
+            issues_found += 1
+    
+    click.echo()
+    click.echo("📊 VALIDOINTITULOKSET:")
+    click.echo(f"   Tarkistetut tiedostot: {len(files_to_check)}")
+    click.echo(f"   Ongelmia löydetty: {issues_found}")
+    if fix:
+        click.echo(f"   Korjattuja ongelmia: {fixed_issues}")
+    
+    if issues_found == 0:
+        click.echo("🎉 Kaikki data-tiedostot ovat validit!")
+    else:
+        click.echo("💡 Käytä --fix yrittääksesi korjata ongelmat automaattisesti")
+
+if __name__ == '__main__':
+    validate_data()
+```
+
+## src/cli/enhanced_party_verification.py
+```python
+# src/cli/enhanced_party_verification.py
+import click
+import json
+from datetime import datetime
+
+@click.group()
+def party_verification():
+    """Parannettu puoluevahvistus julkisilla avaimilla"""
+    pass
+
+@party_verification.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--name-fi', required=True, help='Puolueen nimi suomeksi')
+@click.option('--contact-email', required=True, help='Yhteysemail')
+@click.option('--principles', help='Puolueen periaatteet')
+def propose_with_keys(election, name_fi, contact_email, principles):
+    """Ehdotta uutta puoluetta julkisella avaimella"""
+    
+    from managers.enhanced_party_manager import EnhancedPartyManager
+    
+    manager = EnhancedPartyManager(election)
+    
+    party_data = {
+        "name": {
+            "fi": name_fi,
+            "en": f"[EN] {name_fi}",
+            "sv": f"[SV] {name_fi}"
+        },
+        "description": {
+            "fi": f"{name_fi} - puolue",
+            "en": f"{name_fi} - party",
+            "sv": f"{name_fi} - parti"
+        },
+        "metadata": {
+            "contact_email": contact_email,
+            "founding_year": datetime.now().year
+        },
+        "principles": principles or "Ei periaatteita määritelty"
+    }
+    
+    new_party = manager.propose_party_with_keys(party_data)
+    
+    click.echo(f"✅ Puolue ehdotettu: {name_fi}")
+    click.echo(f"🔑 Julkinen avain luotu: {new_party['crypto_identity']['key_fingerprint']}")
+    click.echo("💡 Seuraava vaihe: Julkaise julkisen avaimen tiedote mediassa")
+    click.echo("   Käytä: python src/cli/enhanced_party_verification.py publish-media")
+
+@party_verification.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--party-id', required=True, help='Puolueen tunniste')
+@click.option('--media-url', required=True, help='Median URL jossa avain julkaistu')
+def publish_media(election, party_id, media_url):
+    """Rekisteröi mediassa julkaistu julkisen avaimen tiedote"""
+    
+    from managers.enhanced_party_manager import EnhancedPartyManager
+    
+    manager = EnhancedPartyManager(election)
+    publication_id = manager.publish_public_key_to_media(party_id, media_url)
+    
+    click.echo(f"✅ Mediajulkaisu rekisteröity: {publication_id}")
+    click.echo(f"📰 Media: {media_url}")
+    click.echo("💡 Odota nyt että muut nodet vahvistavat julkaisun")
+
+@party_verification.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--party-id', required=True, help='Puolueen tunniste')
+@click.option('--publication-id', required=True, help='Julkaisun tunniste')
+@click.option('--node-id', required=True, help='Noden tunniste')
+def verify_media(election, party_id, publication_id, node_id):
+    """Vahvista mediassa julkaistu julkisen avaimen tiedote"""
+    
+    from managers.enhanced_party_manager import EnhancedPartyManager
+    
+    manager = EnhancedPartyManager(election)
+    
+    # Oikeassa järjestelmässä haettaisiin todisteet media-API:sta
+    verification_proof = {
+        "screenshot_url": "https://example.com/screenshot.jpg",
+        "archive_url": "https://archive.org/example",
+        "verification_timestamp": datetime.now().isoformat()
+    }
+    
+    success = manager.verify_media_publication(
+        party_id, publication_id, node_id, verification_proof
+    )
+    
+    if success:
+        click.echo("✅ Mediajulkaisu vahvistettu!")
+    else:
+        click.echo("❌ Mediajulkaisun vahvistus epäonnistui")
+
+@party_verification.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--party-id', required=True, help='Puolueen tunniste')
+@click.option('--node-id', required=True, help='Noden tunniste')
+@click.option('--vote', type=click.Choice(['approve', 'reject']), required=True)
+@click.option('--node-public-key-file', required=True, help='Noden julkinen avaintiedosto')
+def quorum_vote(election, party_id, node_id, vote, node_public_key_file):
+    """Äänestä puolueen hyväksymisestä kvoorumissa"""
+    
+    from managers.enhanced_party_manager import EnhancedPartyManager
+    
+    # Lataa noden julkinen avain
+    with open(node_public_key_file, 'r') as f:
+        node_public_key = f.read()
+    
+    manager = EnhancedPartyManager(election)
+    success = manager.vote_on_party_verification(
+        party_id, node_id, vote, node_public_key
+    )
+    
+    if success:
+        click.echo(f"✅ Ääni annettu: {vote}")
+        click.echo("🎉 Puolue VAHVISTETTU kvoorumin toimesta!")
+    else:
+        click.echo(f"✅ Ääni annettu: {vote}")
+        click.echo("⏳ Odotetaan lisää ääniä...")
+```
+
+## src/cli/node_management.py
+```python
+#!/usr/bin/env python3
+"""
+Multi-node hallinnan CLI-työkalu
+"""
+import click
+import json
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+@click.group()
+def node_management():
+    """Multi-node järjestelmän hallinta"""
+    pass
+
+@node_management.command()
+@click.option('--election', default='Jumaltenvaalit2026', help='Vaalin tunniste')
+def list_nodes(election):
+    """Listaa kaikki aktiiviset nodet"""
+    from nodes.node_manager import NodeManager
+    
+    manager = NodeManager(election)
+    active_nodes = manager.get_active_nodes()
+    
+    click.echo("🖥️  AKTIIVISET NODET:")
+    click.echo("=" * 50)
+    
+    for node in active_nodes:
+        click.echo(f"🏛️  {node['node_name']} ({node['node_id']})")
+        click.echo(f"   🌐 Domain: {node['domain']}")
+        click.echo(f"   ⭐ Trust: {node['trust_score']}")
+        click.echo(f"   📍 Status: {node['status']}")
+        click.echo()
+
+@node_management.command()
+@click.option('--election', default='Jumaltenvaalit2026', help='Vaalin tunniste')
+def quorum_info(election):
+    """Näytä kvoorumin tiedot"""
+    from nodes.node_manager import NodeManager
+    
+    manager = NodeManager(election)
+    quorum_nodes = manager.get_quorum_nodes()
+    threshold = manager.calculate_quorum_threshold()
+    
+    click.echo("📊 KVOORUMI-TIEDOT:")
+    click.echo("=" * 50)
+    click.echo(f"🖥️  Kvoorumi-nodeja: {len(quorum_nodes)}")
+    click.echo(f"🎯 Vaadittu hyväksymisiä: {threshold}")
+    
+    click.echo("\n🏛️  KVOORUMI-NODET:")
+    for node in quorum_nodes:
+        click.echo(f"   ✅ {node['node_name']} (trust: {node['trust_score']})")
+
+if __name__ == '__main__':
+    node_management()
+```
+
+## src/cli/manage_answers.py
+```python
+#!/usr/bin/env python3
+import click
+import json
+import sys
+import os
+from datetime import datetime
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+@click.group()
+def manage_answers():
+    """Ehdokkaiden vastausten hallinta"""
+    pass
+
+@manage_answers.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--candidate-id', required=True, help='Ehdokkaan tunniste')
+@click.option('--question-id', required=True, help='Kysymyksen tunniste')
+@click.option('--answer', type=click.IntRange(-5, 5), required=True, help='Vastaus (-5 - +5)')
+@click.option('--confidence', type=click.IntRange(1, 5), default=3, help='Varmuus taso (1-5)')
+@click.option('--explanation-fi', help='Perustelu suomeksi')
+@click.option('--explanation-en', help='Perustelu englanniksi')
+@click.option('--explanation-sv', help='Perustelu ruotsiksi')
+def add(election, candidate_id, question_id, answer, confidence, explanation_fi, explanation_en, explanation_sv):
+    """Lisää ehdokkaan vastaus kysymykseen"""
+    
+    # Tarkista että ehdokas on olemassa
+    candidates_file = f"data/runtime/candidates.json"
+    if not os.path.exists(candidates_file):
+        click.echo("❌ Ehdokasrekisteriä ei ole vielä luotu")
+        return
+    
+    with open(candidates_file, 'r', encoding='utf-8') as f:
+        candidates_data = json.load(f)
+    
+    candidate = next((c for c in candidates_data["candidates"] if c["candidate_id"] == candidate_id), None)
+    if not candidate:
+        click.echo(f"❌ Ehdokasta '{candidate_id}' ei löydy")
+        click.echo("💡 Käytä: python src/cli/manage_candidates.py --election Jumaltenvaalit2026 --list")
+        return
+    
+    # Tarkista että kysymys on olemassa
+    questions_file = f"data/runtime/questions.json"
+    if not os.path.exists(questions_file):
+        click.echo("❌ Kysymysrekisteriä ei ole vielä luotu")
+        return
+    
+    with open(questions_file, 'r', encoding='utf-8') as f:
+        questions_data = json.load(f)
+    
+    question = next((q for q in questions_data["questions"] if q["local_id"] == question_id), None)
+    if not question:
+        click.echo(f"❌ Kysymystä '{question_id}' ei löydy")
+        click.echo("💡 Käytä: python src/cli/manage_questions.py --election Jumaltenvaalit2026 --list")
+        return
+    
+    # Luo tai päivitä vastaus
+    if "answers" not in candidate:
+        candidate["answers"] = []
+    
+    # Tarkista onko vastaus jo olemassa
+    existing_answer = next((a for a in candidate["answers"] if a["question_id"] == question_id), None)
+    
+    if existing_answer:
+        # Päivitä olemassa oleva vastaus
+        existing_answer["answer_value"] = answer
+        existing_answer["confidence"] = confidence
+        existing_answer["last_updated"] = datetime.now().isoformat()
+        
+        if explanation_fi:
+            existing_answer["explanation"]["fi"] = explanation_fi
+        if explanation_en:
+            existing_answer["explanation"]["en"] = explanation_en
+        if explanation_sv:
+            existing_answer["explanation"]["sv"] = explanation_sv
+            
+        action = "päivitetty"
+    else:
+        # Luo uusi vastaus
+        new_answer = {
+            "question_id": question_id,
+            "answer_value": answer,
+            "confidence": confidence,
+            "explanation": {
+                "fi": explanation_fi or "",
+                "en": explanation_en or "",
+                "sv": explanation_sv or ""
+            },
+            "created": datetime.now().isoformat(),
+            "last_updated": datetime.now().isoformat()
+        }
+        candidate["answers"].append(new_answer)
+        action = "lisätty"
+    
+    # Tallenna
+    with open(candidates_file, 'w', encoding='utf-8') as f:
+        json.dump(candidates_data, f, indent=2, ensure_ascii=False)
+    
+    click.echo(f"✅ Vastaus {action}: {candidate_id} → {question_id}")
+    click.echo(f"📊 Arvo: {answer}/5, Varmuus: {confidence}/5")
+    if explanation_fi:
+        click.echo(f"💬 Perustelu: {explanation_fi}")
+
+@manage_answers.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--candidate-id', help='Näytä tietyn ehdokkaan vastaukset')
+@click.option('--question-id', help='Näytä tietyn kysymyksen vastaukset')
+def list(election, candidate_id, question_id):
+    """Listaa ehdokkaiden vastaukset"""
+    
+    candidates_file = f"data/runtime/candidates.json"
+    questions_file = f"data/runtime/questions.json"
+    
+    if not os.path.exists(candidates_file):
+        click.echo("❌ Ehdokasrekisteriä ei ole vielä luotu")
+        return
+    
+    with open(candidates_file, 'r', encoding='utf-8') as f:
+        candidates_data = json.load(f)
+    
+    # Lataa kysymykset nimeä varten
+    questions_map = {}
+    if os.path.exists(questions_file):
+        with open(questions_file, 'r', encoding='utf-8') as f:
+            questions_data = json.load(f)
+        questions_map = {q["local_id"]: q["content"]["question"]["fi"] for q in questions_data["questions"]}
+    
+    if candidate_id:
+        # Näytä tietyn ehdokkaan vastaukset
+        candidate = next((c for c in candidates_data["candidates"] if c["candidate_id"] == candidate_id), None)
+        if not candidate:
+            click.echo(f"❌ Ehdokasta '{candidate_id}' ei löydy")
+            return
+        
+        click.echo(f"📝 EHDOKKAAN {candidate_id} VASTAUKSET")
+        click.echo("=" * 50)
+        
+        if "answers" not in candidate or not candidate["answers"]:
+            click.echo("❌ Ei vastauksia")
+            return
+        
+        for answer in candidate["answers"]:
+            question_text = questions_map.get(answer["question_id"], answer["question_id"])
+            click.echo(f"❓ {question_text}")
+            click.echo(f"   📊 Vastaus: {answer['answer_value']}/5")
+            click.echo(f"   🎯 Varmuus: {answer['confidence']}/5")
+            if answer["explanation"]["fi"]:
+                click.echo(f"   💬 Perustelu: {answer['explanation']['fi']}")
+            click.echo()
+    
+    elif question_id:
+        # Näytä tietyn kysymyksen vastaukset
+        click.echo(f"📝 KYSYMYKSEN {question_id} VASTAUKSET")
+        click.echo("=" * 50)
+        
+        question_text = questions_map.get(question_id, question_id)
+        click.echo(f"Kysymys: {question_text}")
+        click.echo()
+        
+        found_answers = False
+        for candidate in candidates_data["candidates"]:
+            if "answers" in candidate:
+                answer = next((a for a in candidate["answers"] if a["question_id"] == question_id), None)
+                if answer:
+                    found_answers = True
+                    click.echo(f"👤 {candidate['basic_info']['name']['fi']} ({candidate['candidate_id']})")
+                    click.echo(f"   📊 Vastaus: {answer['answer_value']}/5")
+                    click.echo(f"   🎯 Varmuus: {answer['confidence']}/5")
+                    if answer["explanation"]["fi"]:
+                        click.echo(f"   💬 Perustelu: {answer['explanation']['fi']}")
+                    click.echo()
+        
+        if not found_answers:
+            click.echo("❌ Ei vastauksia tähän kysymykseen")
+    
+    else:
+        # Näytä kaikkien ehdokkaiden yhteenveto
+        click.echo("📊 EHDOKKAIDEN VASTAUSYHTEENVETO")
+        click.echo("=" * 50)
+        
+        total_answers = 0
+        candidates_with_answers = 0
+        
+        for candidate in candidates_data["candidates"]:
+            answer_count = len(candidate.get("answers", []))
+            total_answers += answer_count
+            if answer_count > 0:
+                candidates_with_answers += 1
+            
+            candidate_name = candidate["basic_info"]["name"]["fi"]
+            click.echo(f"👤 {candidate_name} ({candidate['candidate_id']}): {answer_count} vastausta")
+        
+        click.echo()
+        click.echo(f"📈 YHTEENVETO:")
+        click.echo(f"   Ehdokkaita: {len(candidates_data['candidates'])}")
+        click.echo(f"   Vastanneita: {candidates_with_answers}")
+        click.echo(f"   Vastauksia yhteensä: {total_answers}")
+        
+        if len(candidates_data["candidates"]) > 0:
+            coverage = (candidates_with_answers / len(candidates_data["candidates"])) * 100
+            click.echo(f"   Vastauskattavuus: {coverage:.1f}%")
+
+@manage_answers.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--candidate-id', required=True, help='Ehdokkaan tunniste')
+@click.option('--question-id', required=True, help='Kysymyksen tunniste')
+def remove(election, candidate_id, question_id):
+    """Poista ehdokkaan vastaus"""
+    
+    candidates_file = f"data/runtime/candidates.json"
+    if not os.path.exists(candidates_file):
+        click.echo("❌ Ehdokasrekisteriä ei ole vielä luotu")
+        return
+    
+    with open(candidates_file, 'r', encoding='utf-8') as f:
+        candidates_data = json.load(f)
+    
+    candidate = next((c for c in candidates_data["candidates"] if c["candidate_id"] == candidate_id), None)
+    if not candidate:
+        click.echo(f"❌ Ehdokasta '{candidate_id}' ei löydy")
+        return
+    
+    if "answers" not in candidate:
+        click.echo("❌ Ehdokkaalla ei ole vastauksia")
+        return
+    
+    # Etsi ja poista vastaus
+    initial_count = len(candidate["answers"])
+    candidate["answers"] = [a for a in candidate["answers"] if a["question_id"] != question_id]
+    
+    if len(candidate["answers"]) == initial_count:
+        click.echo(f"❌ Vastausta ei löytynyt: {candidate_id} → {question_id}")
+        return
+    
+    # Tallenna
+    with open(candidates_file, 'w', encoding='utf-8') as f:
+        json.dump(candidates_data, f, indent=2, ensure_ascii=False)
+    
+    click.echo(f"✅ Vastaus poistettu: {candidate_id} → {question_id}")
+    click.echo(f"📊 Ehdokkaalla on nyt {len(candidate['answers'])} vastausta")
+
+if __name__ == '__main__':
+    manage_answers()
+```
+
+## src/cli/manage_candidates.py
+```python
+#!/usr/bin/env python3
+import click
+import json
+from datetime import datetime
+import os
+
+@click.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--add', is_flag=True, help='Lisää uusi ehdokas')
+@click.option('--name', help='Ehdokkaan nimi')
+@click.option('--party', help='Puolue')
+def manage_candidates(election, add, name, party):
+    """Hallinnoi vaaliehdokkaita"""
+    
+    if add:
+        if not name:
+            click.echo("❌ Anna --name")
+            return
+        
+        # Lataa nykyiset ehdokkaat
+        candidates_file = f"data/runtime/candidates.json"
+        if os.path.exists(candidates_file):
+            with open(candidates_file, 'r') as f:
+                data = json.load(f)
+        else:
+            data = {"candidates": [], "metadata": {"election_id": election}}
+        
+        # Lisää uusi ehdokas
+        new_candidate = {
+            "candidate_id": f"cand_{len(data['candidates']) + 1}",
+            "basic_info": {
+                "name": {
+                    "fi": name,
+                    "en": f"[EN] {name}",
+                    "sv": f"[SV] {name}"
+                },
+                "party": party or "sitoutumaton",
+                "domain": "divine_power"  # Jumaltenvaalien erikoisala
+            },
+            "answers": []
+        }
+        
+        data["candidates"].append(new_candidate)
+        
+        # Tallenna
+        with open(candidates_file, 'w') as f:
+            json.dump(data, f, indent=2)
+        
+        click.echo(f"✅ Ehdokas lisätty: {name}")
+        click.echo(f"👑 Ehdokkaita yhteensä: {len(data['candidates'])}")
+
+if __name__ == '__main__':
+    manage_candidates()
+```
+
+## src/cli/compare_questions.py
+```python
+#!/usr/bin/env python3
+import click
+import random
+import json
+import sys
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+try:
+    from managers.elo_manager import ELOManager
+except ImportError:
+    # Fallback simple implementation
+    class ELOManager:
+        def __init__(self, election_id: str):
+            self.election_id = election_id
+            self.k_factor = 32
+        
+        def calculate_expected(self, rating_a: int, rating_b: int) -> float:
+            return 1 / (1 + 10 ** ((rating_b - rating_a) / 400))
+        
+        def update_ratings(self, question_a: str, question_b: str, winner: str):
+            with open("data/runtime/questions.json", "r") as f:
+                data = json.load(f)
+            
+            q_a = next((q for q in data["questions"] if q["local_id"] == question_a), None)
+            q_b = next((q for q in data["questions"] if q["local_id"] == question_b), None)
+            
+            if not q_a or not q_b:
+                raise ValueError("Kysymyksiä ei löydy")
+            
+            rating_a = q_a["elo_rating"]["current_rating"]
+            rating_b = q_b["elo_rating"]["current_rating"]
+            
+            expected_a = self.calculate_expected(rating_a, rating_b)
+            expected_b = self.calculate_expected(rating_b, rating_a)
+            
+            if winner == "a":
+                actual_a, actual_b = 1.0, 0.0
+            elif winner == "b":
+                actual_a, actual_b = 0.0, 1.0
+            else:
+                actual_a, actual_b = 0.5, 0.5
+            
+            new_rating_a = rating_a + self.k_factor * (actual_a - expected_a)
+            new_rating_b = rating_b + self.k_factor * (actual_b - expected_b)
+            
+            q_a["elo_rating"]["current_rating"] = int(new_rating_a)
+            q_a["elo_rating"]["comparison_delta"] = int(new_rating_a - rating_a)
+            q_b["elo_rating"]["current_rating"] = int(new_rating_b)
+            q_b["elo_rating"]["comparison_delta"] = int(new_rating_b - rating_b)
+            
+            with open("data/runtime/questions.json", "w") as f:
+                json.dump(data, f, indent=2)
+            
+            return {
+                "question_a": {"old": rating_a, "new": new_rating_a, "delta": new_rating_a - rating_a},
+                "question_b": {"old": rating_b, "new": new_rating_b, "delta": new_rating_b - rating_b}
+            }
+
+@click.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--choice', help='Valinta (a/b/t) - jos annettu, ei kysy interaktiivisesti')
+def compare_questions(election, choice):
+    """Vertaa kahta satunnaista kysymystä keskenään"""
+    
+    # Lataa kysymykset
+    with open("data/runtime/questions.json", "r") as f:
+        data = json.load(f)
+    
+    if len(data["questions"]) < 2:
+        click.echo("❌ Tarvitaan vähintään 2 kysymystä vertailuun")
+        return
+    
+    # Valitse kaksi satunnaista kysymystä
+    q1, q2 = random.sample(data["questions"], 2)
+    
+    click.echo("🔍 VERTAA KYSYMYKSIÄ")
+    click.echo("=" * 50)
+    click.echo(f"A) {q1['content']['question']['fi']}")
+    click.echo(f"   Luokitus: {q1['elo_rating']['current_rating']}")
+    click.echo("")
+    click.echo(f"B) {q2['content']['question']['fi']}") 
+    click.echo(f"   Luokitus: {q2['elo_rating']['current_rating']}")
+    click.echo("")
+    
+    # Hae valinta joko parametrista tai interaktiivisesti
+    if choice:
+        if choice.lower() in ['a', 'b', 't']:
+            user_choice = choice.lower()
+            click.echo(f"Automaattinen valinta: {user_choice}")
+        else:
+            click.echo("❌ Virheellinen valinta parametrissa, käytetään interaktiivista")
+            user_choice = click.prompt("Kumpi on tärkeämpi? (a/b/tasapeli)", type=click.Choice(['a', 'b', 't']))
+    else:
+        user_choice = click.prompt("Kumpi on tärkeämpi? (a/b/tasapeli)", type=click.Choice(['a', 'b', 't']))
+    
+    # Päivitä ELO-luokitukset
+    elo_manager = ELOManager(election)
+    result = elo_manager.update_ratings(q1["local_id"], q2["local_id"], user_choice)
+    
+    click.echo("")
+    click.echo("✅ Luokitukset päivitetty!")
+    click.echo(f"📊 A: {result['question_a']['old']} → {result['question_a']['new']} ({result['question_a']['delta']:+.0f})")
+    click.echo(f"📊 B: {result['question_b']['old']} → {result['question_b']['new']} ({result['question_b']['delta']:+.0f})")
+
+if __name__ == '__main__':
+    compare_questions()
+```
+
+## src/cli/__init__.py
+```python
+```
+
+## src/cli/candidate_credentials.py
+```python
+# src/cli/candidate_credentials.py
+import click
+import json
+from datetime import datetime
+
+@click.group()
+def candidate_credentials():
+    """Ehdokkaiden PKI-valtuutusten hallinta"""
+    pass
+
+@candidate_credentials.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--party-id', required=True, help='Puolueen tunniste')
+@click.option('--candidate-id', required=True, help='Ehdokkaan tunniste')
+@click.option('--party-private-key-file', required=True, help='Puolueen yksityisen avaimen tiedosto')
+def issue_credentials(election, party_id, candidate_id, party_private_key_file):
+    """Luo ehdokkaalle PKI-valtuutus"""
+    from src.managers.candidate_key_manager import CandidateKeyManager
+    
+    # Lataa puolueen avain
+    with open(party_private_key_file, 'r') as f:
+        party_private_key = f.read()
+    
+    manager = CandidateKeyManager(election)
+    credentials = manager.issue_candidate_credentials(
+        party_id, candidate_id, party_private_key
+    )
+    
+    # Tallenna credentialit
+    credential_file = f"credentials_{candidate_id}.json"
+    with open(credential_file, 'w') as f:
+        json.dump(credentials, f, indent=2)
+    
+    click.echo(f"✅ PKI-valtuutus luotu: {credential_file}")
+    click.echo(f"🔑 Julkinen avain: {credentials['candidate_keys']['key_fingerprint']}")
+    click.echo(f"⏰ Voimassa: {credentials['delegation_document']['valid_until'][:10]}")
+```
+
+## src/cli/link_candidate_to_party.py
+```python
+#!/usr/bin/env python3
+import click
+import json
+import sys
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+@click.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--candidate-id', required=True, help='Ehdokkaan tunniste')
+@click.option('--party-id', required=True, help='Puolueen tunniste')
+def link_candidate(election, candidate_id, party_id):
+    """Liitä ehdokas puolueeseen"""
+    
+    # Tarkista että puolue on olemassa ja vahvistettu
+    parties_file = f"data/runtime/parties.json"
+    if not os.path.exists(parties_file):
+        click.echo("❌ Puoluerekisteriä ei ole vielä luotu")
+        return
+    
+    with open(parties_file, 'r') as f:
+        parties_data = json.load(f)
+    
+    party = next((p for p in parties_data["parties"] if p["party_id"] == party_id), None)
+    if not party:
+        click.echo(f"❌ Puoluetta '{party_id}' ei löydy")
+        click.echo("💡 Käytä: python src/cli/manage_parties.py list --election Jumaltenvaalit2026")
+        return
+    
+    if party["registration"]["verification_status"] != "verified":
+        click.echo(f"❌ Puolue '{party_id}' ei ole vahvistettu")
+        click.echo(f"💡 Tila: {party['registration']['verification_status']}")
+        if party["registration"]["verification_status"] == "pending":
+            verified_count = len(party["registration"]["verified_by"])
+            needed = parties_data["quorum_config"]["min_nodes_for_verification"]
+            click.echo(f"💡 Vahvistuksia: {verified_count}/{needed}")
+        return
+    
+    # Tarkista että ehdokas on olemassa
+    candidates_file = f"data/runtime/candidates.json"
+    if not os.path.exists(candidates_file):
+        click.echo("❌ Ehdokasrekisteriä ei ole vielä luotu")
+        return
+    
+    with open(candidates_file, 'r') as f:
+        candidates_data = json.load(f)
+    
+    candidate = next((c for c in candidates_data["candidates"] if c["candidate_id"] == candidate_id), None)
+    if not candidate:
+        click.echo(f"❌ Ehdokasta '{candidate_id}' ei löydy")
+        click.echo("💡 Käytä: python src/cli/manage_candidates.py --election Jumaltenvaalit2026 --add")
+        return
+    
+    # Päivitä ehdokkaan puolue
+    old_party = candidate["basic_info"].get("party", "ei puoluetta")
+    candidate["basic_info"]["party"] = party_id
+    
+    # Lisää ehdokas puolueen listalle
+    if candidate_id not in party["candidates"]:
+        party["candidates"].append(candidate_id)
+    
+    # Tallenna molemmat tiedostot
+    with open(candidates_file, 'w') as f:
+        json.dump(candidates_data, f, indent=2)
+    
+    with open(parties_file, 'w') as f:
+        json.dump(parties_data, f, indent=2)
+    
+    click.echo(f"✅ Ehdokas {candidate_id} liitetty puolueeseen {party_id}")
+    click.echo(f"📝 Aiempi puolue: {old_party}")
+    click.echo(f"👑 Puolueessa nyt {len(party['candidates'])} ehdokasta")
+
+if __name__ == '__main__':
+    link_candidate()
+```
+
+## src/cli/party_stats.py
+```python
+#!/usr/bin/env python3
+import click
+import json
+import os
+
+@click.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+def party_stats(election):
+    """Näytä puolueiden tilastot"""
+    
+    parties_file = f"data/runtime/parties.json"
+    candidates_file = f"data/runtime/candidates.json"
+    
+    if not os.path.exists(parties_file):
+        click.echo("❌ Puoluerekisteriä ei löydy")
+        return
+    
+    with open(parties_file, 'r') as f:
+        parties_data = json.load(f)
+    
+    # Lataa ehdokkaat jos saatavilla
+    candidates_data = {}
+    if os.path.exists(candidates_file):
+        with open(candidates_file, 'r') as f:
+            candidates_data = json.load(f)
+    
+    click.echo("📊 PUOLUETILASTOT")
+    click.echo("=" * 50)
+    
+    verified_parties = [p for p in parties_data["parties"] if p["registration"]["verification_status"] == "verified"]
+    
+    if not verified_parties:
+        click.echo("❌ Ei vahvistettuja puolueita")
+        return
+    
+    for party in verified_parties:
+        click.echo(f"🏛️  {party['name']['fi']} ({party['party_id']})")
+        click.echo(f"   📧 {party['metadata'].get('contact_email', 'Ei sähköpostia')}")
+        click.echo(f"   🌐 {party['metadata'].get('website', 'Ei verkkosivua')}")
+        click.echo(f"   👑 Ehdokkaita: {len(party['candidates'])}")
+        
+        # Näytä ehdokkaat
+        if candidates_data and "candidates" in candidates_data:
+            party_candidates = [c for c in candidates_data["candidates"] if c["candidate_id"] in party["candidates"]]
+            for cand in party_candidates:
+                click.echo(f"     • {cand['basic_info']['name']['fi']}")
+        
+        click.echo()
+
+if __name__ == '__main__':
+    party_stats()
+```
+
+## src/cli/base_cli.py
+```python
+"""Perusluokka kaikille CLI-komennoille"""
+import click
+from src.core.data_manager import DataManager
+from src.core.election_validator import ElectionValidator
+from src.core.error_handling import handle_file_errors, validate_election_exists
+
+class BaseCLI:
+    def __init__(self, election_id: str):
+        self.election_id = election_id
+        self.data_manager = DataManager(election_id)
+        self.validator = ElectionValidator()
+    
+    def validate_election(self):
+        """Varmista että vaali on olemassa"""
+        validate_election_exists(self.election_id)
+```
+
+## src/cli/manage_questions.py
+```python
+#!/usr/bin/env python3
+import click
+import json
+import sys
+import os
+from datetime import datetime
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from core.error_handling import (
+    handle_file_errors, validate_election_exists, 
+    safe_json_read, safe_json_write, ElectionSystemError
+)
+
+@click.group()
+def manage_questions():
+    """Kysymysten hallinta parannetulla virheenkäsittelyllä"""
+    pass
+
+@manage_questions.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--add', is_flag=True, help='Lisää uusi kysymys')
+@click.option('--category', help='Kysymyksen kategoria')
+@click.option('--question-fi', help='Kysymys suomeksi')
+@click.option('--list', 'list_questions', is_flag=True, help='Listaa kaikki kysymykset')
+@handle_file_errors
+def main(election, add, category, question_fi, list_questions):
+    """Pääkomento parannetulla virheenkäsittelyllä"""
+    
+    # Varmista että vaali on olemassa
+    validate_election_exists(election)
+    
+    if add:
+        if not category or not question_fi:
+            raise click.UsageError("Anna --category ja --question-fi lisätäksesi kysymyksen")
+        _add_question(election, category, question_fi)
+    elif list_questions:
+        _list_questions(election)
+    else:
+        click.echo("💡 Käytä --add lisätäksesi kysymyksen tai --list listataksesi kysymykset")
+
+def _add_question(election_id: str, category: str, question_fi: str):
+    """Lisää uusi kysymys"""
+    questions_file = f"data/runtime/questions.json"
+    
+    # Lataa nykyiset kysymykset turvallisesti
+    if os.path.exists(questions_file):
+        data = safe_json_read(questions_file)
+    else:
+        data = {
+            "questions": [],
+            "metadata": {"election_id": election_id}
+        }
+    
+    # Tarkista duplikaatit
+    existing_question = next(
+        (q for q in data["questions"] 
+         if q["content"]["question"]["fi"].lower() == question_fi.lower()),
+        None
+    )
+    
+    if existing_question:
+        raise ElectionSystemError(f"Kysymys on jo olemassa: {question_fi}")
+    
+    # Luo uusi kysymys
+    new_question = {
+        "local_id": f"q_{len(data['questions']) + 1}",
+        "content": {
+            "category": category,
+            "question": {
+                "fi": question_fi,
+                "en": f"[EN] {question_fi}",
+                "sv": f"[SV] {question_fi}"
+            },
+            "scale": {"min": -5, "max": 5}
+        },
+        "elo_rating": {
+            "base_rating": 1000,
+            "current_rating": 1000,
+            "comparison_delta": 0,
+            "vote_delta": 0
+        },
+        "timestamps": {
+            "created_local": datetime.now().isoformat(),
+            "modified_local": datetime.now().isoformat()
+        }
+    }
+    
+    data["questions"].append(new_question)
+    
+    # Tallenna turvallisesti
+    safe_json_write(questions_file, data)
+    
+    click.echo(f"✅ Kysymys lisätty: {question_fi}")
+    click.echo(f"📊 Kysymyksiä yhteensä: {len(data['questions'])}")
+
+def _list_questions(election_id: str):
+    """Listaa kaikki kysymykset"""
+    questions_file = f"data/runtime/questions.json"
+    
+    if not os.path.exists(questions_file):
+        click.echo("ℹ️ Ei kysymyksiä vielä lisätty")
+        return
+    
+    data = safe_json_read(questions_file)
+    
+    click.echo("📝 KYSYMYSLISTA")
+    click.echo("=" * 50)
+    
+    for i, question in enumerate(data["questions"], 1):
+        click.echo(f"{i}. [{question['local_id']}] {question['content']['question']['fi']}")
+        click.echo(f"   Kategoria: {question['content']['category']}")
+        click.echo(f"   ELO-luokitus: {question['elo_rating']['current_rating']}")
+        click.echo()
+
+if __name__ == '__main__':
+    main()
+```
+
+## src/cli/ipfs_sync.py
+```python
+#!/usr/bin/env python3
+"""
+IPFS-synkronoinnin CLI-työkalu Jumaltenvaaleille
+"""
+import click
+import json
+import sys
+import os
+from datetime import datetime
+
+# Lisää src-hakemisto Python-polkuun
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+@click.group()
+def ipfs_sync():
+    """IPFS-synkronoinnin hallinta Jumaltenvaaleille"""
+    pass
+
+@ipfs_sync.command()
+@click.option('--election', default='Jumaltenvaalit2026', help='Vaalin tunniste')
+def full_sync(election):
+    """Suorita täysi IPFS-synkronointi"""
+    from managers.ipfs_sync_manager import IPFSSyncManager
+    
+    sync_manager = IPFSSyncManager(election)
+    report = sync_manager.full_sync()
+    
+    click.echo("📊 IPFS-SYNKRONOINTIRAPORTTI:")
+    click.echo(f"   Vaali: {report['election_id']}")
+    click.echo(f"   Tyyppi: {report['sync_type']}")
+    click.echo(f"   Aikaleima: {report['timestamp'][:19]}")
+    click.echo(f"   Synkronoidut tiedostot: {report['files_synced']}")
+    
+    click.echo("\n🔗 IPFS-CID:t:")
+    for file_type, cid in report['ipfs_cids'].items():
+        click.echo(f"   {file_type}: {cid}")
+
+@ipfs_sync.command() 
+@click.option('--election', default='Jumaltenvaalit2026', help='Vaalin tunniste')
+def incremental(election):
+    """Suorita inkrementaalinen IPFS-synkronointi"""
+    from managers.ipfs_sync_manager import IPFSSyncManager
+    
+    sync_manager = IPFSSyncManager(election)
+    report = sync_manager.incremental_sync()
+    
+    if report['status'] == 'no_changes':
+        click.echo("✅ Ei muutoksia synkronoitavaksi")
+        return
+    
+    click.echo("📊 INKREMENTAALINEN SYNKRONOINTI:")
+    click.echo(f"   Muuttuneet tiedostot: {len(report['changed_files'])}")
+    click.echo(f"   Päivitetyt CID:t: {len(report['ipfs_cids'])}")
+
+@ipfs_sync.command()
+@click.option('--election', default='Jumaltenvaalit2026', help='Vaalin tunniste')  
+def verify(election):
+    """Varmista IPFS-synkronoinnin eheys"""
+    from managers.ipfs_sync_manager import IPFSSyncManager
+    
+    sync_manager = IPFSSyncManager(election)
+    report = sync_manager.verify_sync_integrity()
+    
+    click.echo("🔍 IPFS-EHEYSTARKISTUS:")
+    click.echo(f"   Tarkistetut tiedostot: {report['total_files']}")
+    click.echo(f"   Valideja tiedostoja: {report['valid_files']}")
+    
+    click.echo("\n📋 Yksityiskohtaiset tulokset:")
+    for file_type, result in report['results'].items():
+        status_icon = "✅" if result == "valid" else "❌" if result == "invalid" else "⚠️"
+        click.echo(f"   {status_icon} {file_type}: {result}")
+
+@ipfs_sync.command()
+@click.option('--election', default='Jumaltenvaalit2026', help='Vaalin tunniste')
+def status(election):
+    """Näytä IPFS-synkronoinnin tila"""
+    sync_file = f"data/runtime/ipfs_sync.json"
+    
+    try:
+        with open(sync_file, 'r') as f:
+            sync_data = json.load(f)
+        
+        click.echo("📡 IPFS-SYNKRONOINTITILA:")
+        click.echo(f"   Vaali: {sync_data['election_id']}")
+        click.echo(f"   Viimeisin synkronointi: {sync_data['timestamp'][:19]}")
+        click.echo(f"   Synkronointityyppi: {sync_data['sync_type']}")
+        
+        click.echo("\n🔗 Julkaistut CID:t:")
+        for file_type, cid in sync_data.get('ipfs_cids', {}).items():
+            click.echo(f"   {file_type}: {cid}")
+            
+    except FileNotFoundError:
+        click.echo("❌ IPFS-synkronointitietoja ei löytynyt")
+        click.echo("💡 Suorita ensin: python src/cli/ipfs_sync.py full-sync")
+
+if __name__ == '__main__':
+    ipfs_sync()
+```
+
+## src/cli/manage_parties.py
+```python
+#!/usr/bin/env python3
+import click
+import json
+import sys
+import os
+from datetime import datetime
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+@click.group()
+def manage_parties():
+    """Puolueiden hajautettu hallinta"""
+    pass
+
+@manage_parties.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--name-fi', required=True, help='Puolueen nimi suomeksi')
+@click.option('--name-en', help='Puolueen nimi englanniksi')
+@click.option('--name-sv', help='Puolueen nimi ruotsiksi')
+@click.option('--description-fi', help='Puolueen kuvaus suomeksi')
+@click.option('--email', help='Yhteysemail')
+@click.option('--website', help='Verkkosivusto')
+@click.option('--founding-year', default='2024', help='Perustamisvuosi')
+def propose(election, name_fi, name_en, name_sv, description_fi, email, website, founding_year):
+    """Ehdotta uutta puoluetta"""
+    
+    # Lataa nykyiset puolueet
+    parties_file = f"data/runtime/parties.json"
+    if os.path.exists(parties_file):
+        with open(parties_file, 'r') as f:
+            data = json.load(f)
+    else:
+        # Luo uusi puoluerekisteri base templatesta
+        data = {
+            "metadata": {
+                "version": "1.0.0",
+                "created": datetime.now().isoformat(),
+                "last_updated": datetime.now().isoformat(),
+                "election_id": election,
+                "description": {
+                    "fi": "Puolueiden hajautettu rekisteri",
+                    "en": "Decentralized party registry",
+                    "sv": "Decentraliserat partiregister"
+                }
+            },
+            "quorum_config": {
+                "min_nodes_for_verification": 3,
+                "approval_threshold_percent": 60,
+                "verification_timeout_hours": 24,
+                "rejection_quorum_percent": 40
+            },
+            "parties": [],
+            "verification_history": []
+        }
+    
+    # Tarkista onko puoluetta jo olemassa
+    existing_party = next((p for p in data["parties"] if p["name"]["fi"].lower() == name_fi.lower()), None)
+    if existing_party:
+        click.echo(f"❌ Puolue '{name_fi}' on jo olemassa! (ID: {existing_party['party_id']})")
+        return
+    
+    # Luo uusi puolue
+    party_id = f"party_{len(data['parties']) + 1:03d}"
+    new_party = {
+        "party_id": party_id,
+        "name": {
+            "fi": name_fi,
+            "en": name_en or f"[EN] {name_fi}",
+            "sv": name_sv or f"[SV] {name_fi}"
+        },
+        "description": {
+            "fi": description_fi or f"{name_fi} - puolue",
+            "en": description_fi or f"{name_fi} - party", 
+            "sv": description_fi or f"{name_fi} - parti"
+        },
+        "registration": {
+            "proposed_by": "system",  # Aluksi järjestelmä, nodet korvaavat
+            "proposed_at": datetime.now().isoformat(),
+            "verification_status": "pending",
+            "verified_by": [],
+            "verification_timestamp": None,
+            "rejection_reason": None
+        },
+        "candidates": [],
+        "metadata": {
+            "official_registration": False,
+            "contact_email": email,
+            "website": website,
+            "founding_year": founding_year
+        }
+    }
+    
+    data["parties"].append(new_party)
+    data["metadata"]["last_updated"] = datetime.now().isoformat()
+    
+    # Lisää historiaan
+    data["verification_history"].append({
+        "party_id": party_id,
+        "timestamp": datetime.now().isoformat(),
+        "action": "proposed",
+        "by_node": "system",
+        "reason": "Uusi puolue ehdotettu"
+    })
+    
+    # Tallenna
+    os.makedirs(os.path.dirname(parties_file), exist_ok=True)
+    with open(parties_file, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+    
+    click.echo(f"✅ Puolue ehdotettu: {name_fi} ({party_id})")
+    click.echo(f"📋 Tila: Odottaa vahvistusta ({data['quorum_config']['min_nodes_for_verification']} nodelta)")
+
+@manage_parties.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--show-pending', is_flag=True, help='Näytä myös odottavat puolueet')
+@click.option('--show-rejected', is_flag=True, help='Näytä myös hylätyt puolueet')
+def list(election, show_pending, show_rejected):
+    """Listaa kaikki puolueet"""
+    
+    parties_file = f"data/runtime/parties.json"
+    if not os.path.exists(parties_file):
+        click.echo("❌ Puoluerekisteriä ei ole vielä luotu")
+        click.echo("💡 Käytä: python src/cli/manage_parties.py propose --election Jumaltenvaalit2026 --name-fi 'Nimi'")
+        return
+    
+    with open(parties_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    click.echo("🏛️  REKISTERÖIDYT PUOLUEET")
+    click.echo("=" * 60)
+    
+    verified_parties = [p for p in data["parties"] if p["registration"]["verification_status"] == "verified"]
+    pending_parties = [p for p in data["parties"] if p["registration"]["verification_status"] == "pending"]
+    rejected_parties = [p for p in data["parties"] if p["registration"]["verification_status"] == "rejected"]
+    
+    # Näytä vahvistetut puolueet
+    if verified_parties:
+        click.echo("\n✅ VAHVISTETUT PUOLUEET:")
+        for party in verified_parties:
+            click.echo(f"  🏛️  {party['name']['fi']} ({party['party_id']})")
+            click.echo(f"     📧 {party['metadata'].get('contact_email', 'Ei sähköpostia')}")
+            click.echo(f"     👑 Ehdokkaita: {len(party['candidates'])}")
+            click.echo(f"     🕒 Vahvistettu: {party['registration']['verification_timestamp'][:16]}")
+            click.echo(f"     ✅ Vahvistajat: {', '.join(party['registration']['verified_by'])}")
+    
+    # Näytä odottavat puolueet
+    if pending_parties and show_pending:
+        click.echo("\n⏳ ODOTTAA VAHVISTUSTA:")
+        for party in pending_parties:
+            verified_count = len(party["registration"]["verified_by"])
+            needed = data["quorum_config"]["min_nodes_for_verification"]
+            click.echo(f"  ⏳ {party['name']['fi']} ({party['party_id']})")
+            click.echo(f"     📧 {party['metadata'].get('contact_email', 'Ei sähköpostia')}")
+            click.echo(f"     👑 Ehdokkaita: {len(party['candidates'])}")
+            click.echo(f"     ✅ Vahvistuksia: {verified_count}/{needed}")
+    
+    elif pending_parties:
+        click.echo(f"\n⏳ {len(pending_parties)} puoluetta odottaa vahvistusta")
+        click.echo("💡 Näytä kaikki: --show-pending")
+    
+    # Näytä hylätyt puolueet
+    if rejected_parties and show_rejected:
+        click.echo("\n❌ HYLÄTYT PUOLUEET:")
+        for party in rejected_parties:
+            click.echo(f"  ❌ {party['name']['fi']} ({party['party_id']})")
+            click.echo(f"     📧 {party['metadata'].get('contact_email', 'Ei sähköpostia')}")
+            click.echo(f"     💬 Syy: {party['registration']['rejection_reason']}")
+    
+    elif rejected_parties:
+        click.echo(f"\n❌ {len(rejected_parties)} puoluetta hylätty")
+        click.echo("💡 Näytä kaikki: --show-rejected")
+    
+    if not verified_parties and not pending_parties and not rejected_parties:
+        click.echo("❌ Ei puolueita rekisterissä")
+
+@manage_parties.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--party-id', required=True, help='Puolueen tunniste')
+@click.option('--node-id', required=True, help='Vahvistavan noden tunniste')
+@click.option('--verify', is_flag=True, help='Vahvista puolue')
+@click.option('--reject', is_flag=True, help='Hylkää puolue')
+@click.option('--reason', help='Syy vahvistukseen/hylkäämiseen')
+def verify(election, party_id, node_id, verify, reject, reason):
+    """Vahvista tai hylkää puolue"""
+    
+    if verify and reject:
+        click.echo("❌ Valitse joko --verify tai --reject, ei molempia")
+        return
+    
+    if not verify and not reject:
+        click.echo("❌ Valitse joko --verify tai --reject")
+        return
+    
+    parties_file = f"data/runtime/parties.json"
+    if not os.path.exists(parties_file):
+        click.echo("❌ Puoluerekisteriä ei ole vielä luotu")
+        return
+    
+    with open(parties_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    # Etsi puolue
+    party = next((p for p in data["parties"] if p["party_id"] == party_id), None)
+    if not party:
+        click.echo(f"❌ Puoluetta '{party_id}' ei löydy")
+        click.echo("💡 Käytä: python src/cli/manage_parties.py list --election Jumaltenvaalit2026")
+        return
+    
+    # Tarkista että node_id on annettu
+    if not node_id:
+        click.echo("❌ Anna --node-id parametri")
+        return
+    
+    if verify:
+        # Tarkista onko jo vahvistettu
+        if party["registration"]["verification_status"] == "verified":
+            click.echo("❌ Puolue on jo vahvistettu")
+            return
+        
+        # Tarkista onko jo vahvistanut
+        if node_id in party["registration"]["verified_by"]:
+            click.echo("❌ Olet jo vahvistanut tämän puolueen")
+            return
+        
+        # Lisää vahvistus
+        party["registration"]["verified_by"].append(node_id)
+        
+        # Tarkista saadaanko kvoorumi
+        verified_count = len(party["registration"]["verified_by"])
+        needed = data["quorum_config"]["min_nodes_for_verification"]
+        
+        if verified_count >= needed:
+            party["registration"]["verification_status"] = "verified"
+            party["registration"]["verification_timestamp"] = datetime.now().isoformat()
+            party["metadata"]["official_registration"] = True
+            message = f"🎉 PUOLUE VAHVISTETTU! ({verified_count}/{needed} kvoorumi saavutettu)"
+        else:
+            message = f"✅ Puolue vahvistettu ({verified_count}/{needed})"
+        
+        action = "verified"
+        
+    else:  # reject
+        if party["registration"]["verification_status"] == "rejected":
+            click.echo("❌ Puolue on jo hylätty")
+            return
+            
+        party["registration"]["verification_status"] = "rejected"
+        party["registration"]["rejection_reason"] = reason or "Ei syytä annettu"
+        action = "rejected"
+        message = f"❌ Puolue hylätty: {reason}"
+    
+    # Päivitä viimeisin muokkausaika
+    data["metadata"]["last_updated"] = datetime.now().isoformat()
+    
+    # Lisää historiaan
+    data["verification_history"].append({
+        "party_id": party_id,
+        "timestamp": datetime.now().isoformat(),
+        "action": action,
+        "by_node": node_id,
+        "reason": reason or "Ei syytä annettu"
+    })
+    
+    # Tallenna
+    with open(parties_file, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+    
+    click.echo(message)
+
+@manage_parties.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--party-id', required=True, help='Puolueen tunniste')
+def info(election, party_id):
+    """Näytä yksittäisen puolueen tiedot"""
+    
+    parties_file = f"data/runtime/parties.json"
+    if not os.path.exists(parties_file):
+        click.echo("❌ Puoluerekisteriä ei ole vielä luotu")
+        return
+    
+    with open(parties_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    # Etsi puolue
+    party = next((p for p in data["parties"] if p["party_id"] == party_id), None)
+    if not party:
+        click.echo(f"❌ Puoluetta '{party_id}' ei löydy")
+        return
+    
+    click.echo(f"🏛️  PUOLUETIEDOT: {party['name']['fi']}")
+    click.echo("=" * 50)
+    
+    # Perustiedot
+    click.echo(f"📛 Nimi:")
+    click.echo(f"   🇫🇮 {party['name']['fi']}")
+    click.echo(f"   🇬🇧 {party['name']['en']}")
+    click.echo(f"   🇸🇪 {party['name']['sv']}")
+    
+    click.echo(f"📝 Kuvaus:")
+    click.echo(f"   🇫🇮 {party['description']['fi']}")
+    click.echo(f"   🇬🇧 {party['description']['en']}")
+    click.echo(f"   🇸🇪 {party['description']['sv']}")
+    
+    # Yhteystiedot
+    click.echo(f"📧 Yhteystiedot:")
+    click.echo(f"   Sähköposti: {party['metadata'].get('contact_email', 'Ei asetettu')}")
+    click.echo(f"   Verkkosivu: {party['metadata'].get('website', 'Ei asetettu')}")
+    click.echo(f"   Perustamisvuosi: {party['metadata'].get('founding_year', 'Ei asetettu')}")
+    
+    # Rekisteröintitiedot
+    status = party["registration"]["verification_status"]
+    status_icon = "✅" if status == "verified" else "⏳" if status == "pending" else "❌"
+    
+    click.echo(f"📋 Rekisteröinti:")
+    click.echo(f"   Tila: {status_icon} {status}")
+    click.echo(f"   Ehdotettu: {party['registration']['proposed_at'][:16]}")
+    click.echo(f"   Ehdottaja: {party['registration']['proposed_by']}")
+    
+    if status == "verified":
+        click.echo(f"   Vahvistettu: {party['registration']['verification_timestamp'][:16]}")
+        click.echo(f"   Vahvistajat: {', '.join(party['registration']['verified_by'])}")
+    elif status == "rejected":
+        click.echo(f"   Hylkäyssyyt: {party['registration']['rejection_reason']}")
+    else:  # pending
+        verified_count = len(party["registration"]["verified_by"])
+        needed = data["quorum_config"]["min_nodes_for_verification"]
+        click.echo(f"   Vahvistuksia: {verified_count}/{needed}")
+        if party["registration"]["verified_by"]:
+            click.echo(f"   Vahvistaneet: {', '.join(party['registration']['verified_by'])}")
+    
+    # Ehdokkaat
+    click.echo(f"👑 Ehdokkaat ({len(party['candidates'])}):")
+    if party["candidates"]:
+        for cand_id in party["candidates"]:
+            click.echo(f"   • {cand_id}")
+    else:
+        click.echo("   Ei ehdokkaita")
+
+@manage_parties.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+def stats(election):
+    """Näytä puolueiden tilastot"""
+    
+    parties_file = f"data/runtime/parties.json"
+    if not os.path.exists(parties_file):
+        click.echo("❌ Puoluerekisteriä ei ole vielä luotu")
+        return
+    
+    with open(parties_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    click.echo("📊 PUOLUETILASTOT")
+    click.echo("=" * 50)
+    
+    total_parties = len(data["parties"])
+    verified_parties = [p for p in data["parties"] if p["registration"]["verification_status"] == "verified"]
+    pending_parties = [p for p in data["parties"] if p["registration"]["verification_status"] == "pending"]
+    rejected_parties = [p for p in data["parties"] if p["registration"]["verification_status"] == "rejected"]
+    
+    click.echo(f"🏛️  Puolueita yhteensä: {total_parties}")
+    click.echo(f"✅  Vahvistettuja: {len(verified_parties)}")
+    click.echo(f"⏳  Odottaa vahvistusta: {len(pending_parties)}")
+    click.echo(f"❌  Hylättyjä: {len(rejected_parties)}")
+    
+    # Ehdokastilastot
+    total_candidates = sum(len(p["candidates"]) for p in data["parties"])
+    click.echo(f"👑  Ehdokkaita yhteensä: {total_candidates}")
+    
+    if verified_parties:
+        click.echo(f"📈  Keskimäärin ehdokkaita/vahvistettu puolue: {total_candidates/len(verified_parties):.1f}")
+    
+    # Kvoorumitilanne
+    click.echo(f"🔢  Vahvistus kvoorumi: {data['quorum_config']['min_nodes_for_verification']} nodea")
+    
+    # Viimeisimmät tapahtumat
+    click.echo(f"\n📜 Viimeisimmät tapahtumat:")
+    recent_events = data["verification_history"][-5:]
+    for event in reversed(recent_events):
+        action_icon = "✅" if event["action"] == "verified" else "❌" if event["action"] == "rejected" else "📝"
+        click.echo(f"   {action_icon} {event['timestamp'][11:16]} - {event['party_id']}: {event['action']} ({event['by_node']})")
+
+@manage_parties.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--party-id', required=True, help='Puolueen tunniste')
+@click.confirmation_option(prompt='Haluatko varmasti poistaa tämän puolueen?')
+def remove(election, party_id):
+    """Poista puolue rekisteristä"""
+    
+    parties_file = f"data/runtime/parties.json"
+    if not os.path.exists(parties_file):
+        click.echo("❌ Puoluerekisteriä ei ole vielä luotu")
+        return
+    
+    with open(parties_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    # Etsi puolue
+    party_index = next((i for i, p in enumerate(data["parties"]) if p["party_id"] == party_id), None)
+    if party_index is None:
+        click.echo(f"❌ Puoluetta '{party_id}' ei löydy")
+        return
+    
+    party = data["parties"][party_index]
+    
+    # Poista puolue
+    removed_party = data["parties"].pop(party_index)
+    data["metadata"]["last_updated"] = datetime.now().isoformat()
+    
+    # Lisää historiaan
+    data["verification_history"].append({
+        "party_id": party_id,
+        "timestamp": datetime.now().isoformat(),
+        "action": "removed",
+        "by_node": "system",
+        "reason": "Puolue poistettu manuaalisesti"
+    })
+    
+    # Tallenna
+    with open(parties_file, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+    
+    click.echo(f"✅ Puolue poistettu: {removed_party['name']['fi']} ({party_id})")
+    click.echo(f"📝 Puolueessa oli {len(removed_party['candidates'])} ehdokasta")
+
+if __name__ == '__main__':
+    manage_parties()
+```
+
+## src/cli/generate_profiles.py
+```python
+#!/usr/bin/env python3
+"""
+CLI-työkalu profiilisivujen generointiin ja IPFS-julkaisuun
+"""
+import json
+import os
+import click
+from pathlib import Path
+from typing import Dict, List, Optional
+
+# Lisää nykyinen hakemisto Python-polkuun
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from src.templates.html_generator import HTMLProfileGenerator, PARTY_COLOR_THEMES
+
+def load_parties() -> List[Dict]:
+    """Lataa puolueet JSON-tiedostosta"""
+    parties_file = Path("data/runtime/parties.json")
+    if parties_file.exists():
+        with open(parties_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            return data.get("parties", [])
+    return []
+
+def load_candidates() -> List[Dict]:
+    """Lataa ehdokkaat JSON-tiedostosta"""
+    candidates_file = Path("data/runtime/candidates.json")
+    if candidates_file.exists():
+        with open(candidates_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            return data.get("candidates", [])
+    return []
+
+def load_theme(theme_name: str) -> Optional[Dict]:
+    """Lataa väriteema"""
+    return PARTY_COLOR_THEMES.get(theme_name)
+
+@click.group()
+def profile_generator():
+    """Profiilisivujen generointi- ja julkaisutyökalu"""
+    pass
+
+@profile_generator.command()
+def list_themes():
+    """Listaa kaikki saatavilla olevat väriteemat"""
+    click.echo("✅ Käytettävissä olevat teemat:")
+    for theme_name in PARTY_COLOR_THEMES.keys():
+        click.echo(f"- {theme_name}")
+
+@profile_generator.command()
+@click.option('--party-id', help='Yksittäisen puolueen ID')
+@click.option('--all-parties', is_flag=True, help='Generoi kaikkien puolueiden profiilit')
+@click.option('--theme', default='default', help='Väriteeman nimi')
+def generate_party_profiles(party_id, all_parties, theme):
+    """Generoi puolueiden profiilit HTML-muodossa"""
+    generator = HTMLProfileGenerator()
+    
+    # Hae väriteema
+    colors = load_theme(theme)
+    if not colors:
+        click.echo(f"❌ Teemaa '{theme}' ei löytynyt")
+        return
+    
+    if all_parties:
+        # Generoi kaikkien puolueiden profiilit
+        parties = load_parties()
+        for party in parties:
+            # Käytä generate_and_publish_party_profile metodia
+            metadata = generator.generate_and_publish_party_profile(party, custom_colors=colors)
+            click.echo(f"   ✅ {party['name']['fi']}: {metadata['ipfs_cid']}")
+            
+    elif party_id:
+        # Generoi yhden puolueen profiili
+        party = next((p for p in load_parties() if p['party_id'] == party_id), None)
+        if party:
+            metadata = generator.generate_and_publish_party_profile(party, custom_colors=colors)
+            click.echo(f"   ✅ {party['name']['fi']}: {metadata['ipfs_cid']}")
+        else:
+            click.echo(f"❌ Puoluetta ID:llä '{party_id}' ei löytynyt")
+    else:
+        click.echo("❌ Valitse joko --party-id tai --all-parties")
+
+@profile_generator.command()
+@click.option('--candidate-id', help='Yksittäisen ehdokkaan ID')
+@click.option('--all-candidates', is_flag=True, help='Generoi kaikkien ehdokkaiden profiilit')
+@click.option('--theme', default='default', help='Väriteeman nimi')
+def generate_candidate_profiles(candidate_id, all_candidates, theme):
+    """Generoi ehdokkaiden profiilit HTML-muodossa"""
+    generator = HTMLProfileGenerator()
+    
+    # Hae väriteema
+    colors = load_theme(theme)
+    if not colors:
+        click.echo(f"❌ Teemaa '{theme}' ei löytynyt")
+        return
+    
+    # Lataa puolueet ehdokkaiden yhteyttä varten
+    parties = {p['party_id']: p for p in load_parties()}
+    
+    if all_candidates:
+        # Generoi kaikkien ehdokkaiden profiilit
+        candidates = load_candidates()
+        for candidate in candidates:
+            party_data = parties.get(candidate['basic_info'].get('party'))
+            metadata = generator.generate_and_publish_candidate_profile(
+                candidate, party_data, custom_colors=colors
+            )
+            click.echo(f"   ✅ {candidate['basic_info']['name']['fi']}: {metadata['ipfs_cid']}")
+            
+    elif candidate_id:
+        # Generoi yhden ehdokkaan profiili
+        candidate = next((c for c in load_candidates() if c['candidate_id'] == candidate_id), None)
+        if candidate:
+            party_data = parties.get(candidate['basic_info'].get('party'))
+            metadata = generator.generate_and_publish_candidate_profile(
+                candidate, party_data, custom_colors=colors
+            )
+            click.echo(f"   ✅ {candidate['basic_info']['name']['fi']}: {metadata['ipfs_cid']}")
+        else:
+            click.echo(f"❌ Ehdokasta ID:llä '{candidate_id}' ei löytynyt")
+    else:
+        click.echo("❌ Valitse joko --candidate-id tai --all-candidates")
+
+@profile_generator.command()
+@click.option('--election', default='Jumaltenvaalit2026', help='Vaalin tunniste')
+def publish_all_to_ipfs(election):
+    """Generoi ja julkaise kaikki profiilit IPFS:ään"""
+    generator = HTMLProfileGenerator(election_id=election)
+    
+    click.echo("🚀 GENEROIDAAN JA JULKAISTAAN KAIKKI PROFIILIT IPFS:ÄÄN")
+    click.echo("=" * 50)
+    
+    # Lataa data
+    parties = load_parties()
+    candidates = load_candidates()
+    party_map = {p['party_id']: p for p in parties}
+    
+    # Julkaise puolueet
+    click.echo(f"📄 Julkaistaan {len(parties)} puoluetta...")
+    party_metadata = []
+    for party in parties:
+        metadata = generator.generate_and_publish_party_profile(party)
+        party_metadata.append(metadata)
+        click.echo(f"   ✅ {party['name']['fi']}: {metadata['ipfs_cid']}")
+    
+    # Julkaise ehdokkaat
+    click.echo(f"👑 Julkaistaan {len(candidates)} ehdokasta...")
+    candidate_metadata = []
+    for candidate in candidates:
+        party_data = party_map.get(candidate['basic_info'].get('party'))
+        metadata = generator.generate_and_publish_candidate_profile(candidate, party_data)
+        candidate_metadata.append(metadata)
+        click.echo(f"   ✅ {candidate['basic_info']['name']['fi']}: {metadata['ipfs_cid']}")
+    
+    # Generoi base.json
+    base_file = generator.save_base_json()
+    click.echo(f"📊 base.json generoitu: {base_file}")
+    
+    click.echo("🎉 KAIKKI PROFIILIT JULKAISTU IPFS:ÄÄN!")
+
+@profile_generator.command()
+@click.option('--election', default='Jumaltenvaalit2026', help='Vaalin tunniste')
+def generate_base_json(election):
+    """Generoi base.json tiedosto kaikista resursseista"""
+    generator = HTMLProfileGenerator(election_id=election)
+    base_file = generator.save_base_json()
+    click.echo(f"✅ base.json tallennettu: {base_file}")
+
+@profile_generator.command()
+@click.option('--election', default='Jumaltenvaalit2026', help='Vaalin tunniste')
+def status(election):
+    """Näytä profiilien nykyinen tila"""
+    generator = HTMLProfileGenerator(election_id=election)
+    base_data = generator.get_base_json()
+    
+    stats = base_data['statistics']
+    click.echo(f"📊 Profiilien tila: {stats['total_profiles']} profiilia, "
+               f"{stats['party_profiles']} puoluetta, "
+               f"{stats['candidate_profiles']} ehdokasta")
+    
+    # Näytä viimeisimmät profiilit
+    profiles = base_data['profiles']
+    if profiles:
+        click.echo("📋 Viimeisimmät profiilit:")
+        for profile_id, profile in list(profiles.items())[-5:]:  # Viimeiset 5
+            click.echo(f"  • {profile['entity_name']} ({profile['entity_type']}) - {profile['ipfs_cid']}")
+
+if __name__ == '__main__':
+    profile_generator()
+```
+
+## src/cli/manage_answers_refactored.py
+```python
+#!/usr/bin/env python3
+import click
+from datetime import datetime
+from src.cli.base_cli import BaseCLI
+
+@click.group()
+def manage_answers():
+    """Ehdokkaiden vastausten hallinta (refaktoroitu)"""
+    pass
+
+class AnswerManagerCLI(BaseCLI):
+    def add_answer(self, candidate_id, question_id, answer_value, confidence, explanations):
+        """Lisää vastaus (refaktoroitu)"""
+        # Käytä data_manager ja validator -ei toistuvaa koodia
+        if not self.validator.validate_candidate_exists(candidate_id, self.data_manager):
+            raise ValueError(f"Ehdokas {candidate_id} ei ole olemassa")
+        
+        # ... lyhennetty refaktoroitu logiikka
+        pass
+
+@manage_answers.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--candidate-id', required=True, help='Ehdokkaan tunniste')
+def list_answers(election, candidate_id):
+    """Listaa vastaukset (refaktoroitu)"""
+    cli = AnswerManagerCLI(election)
+    cli.validate_election()
+    
+    # Käytä yhteisiä metodeja
+    answers = cli.list_answers(candidate_id)
+    # ... näytä tulokset
+```
+
+## src/cli/install.py
+```python
+#!/usr/bin/env python3
+import click
+import json
+from datetime import datetime
+import os
+
+@click.command()
+@click.option('--election-id', required=True, help='Vaalin tunniste')
+@click.option('--first-install', is_flag=True, help='Ensimmäinen asennus')
+def install_system(election_id, first_install):
+    """Asenna vaalijärjestelmä"""
+    click.echo(f"🏛️ Asennetaan Jumaltenvaalit: {election_id}")
+    
+    # Luo data-hakemisto
+    os.makedirs("data/runtime", exist_ok=True)
+    
+    # Luo system_chain.json
+    system_chain = {
+        "chain_id": f"system_chain_{election_id}",
+        "created_at": datetime.now().isoformat(),
+        "description": f"Jumaltenvaalit 2026 - {election_id}",
+        "version": "2.0.0",
+        "blocks": [
+            {
+                "block_id": 0,
+                "timestamp": datetime.now().isoformat(),
+                "action_type": "divine_installation",
+                "description": f"Jumaltenvaalit asennettu: {election_id}",
+                "user_id": "zeus",
+                "previous_hash": None,
+                "block_hash": "initial_olympus_hash"
+            }
+        ]
+    }
+    
+    with open("data/runtime/system_chain.json", "w") as f:
+        json.dump(system_chain, f, indent=2)
+    
+    # Luo meta.json
+    meta_data = {
+        "metadata": {
+            "version": "2.0.0", 
+            "created": datetime.now().isoformat(),
+            "election_id": election_id,
+            "node_id": "olympus_master",
+            "system_locked": False,
+            "mode": "development",
+            "divine_council": True
+        }
+    }
+    
+    with open("data/runtime/meta.json", "w") as f:
+        json.dump(meta_data, f, indent=2)
+    
+    click.echo("✅ Jumaltenvaalit asennettu onnistuneesti!")
+    click.echo("⚡ Olympos on valmis vaaleille!")
+
+if __name__ == '__main__':
+    install_system()
+```
+
+## src/cli/analytics.py
+```python
+#!/usr/bin/env python3
+"""
+Analytics ja tilastotyökalu
+"""
+import click
+import json
+import sys
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from managers.analytics_manager import AnalyticsManager
+from core.error_handling import handle_file_errors, validate_election_exists
+
+@click.group()
+def analytics():
+    """Analytics ja tilastotyökalut"""
+    pass
+
+@analytics.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@handle_file_errors
+def stats(election):
+    """Näytä järjestelmän tilastot"""
+    validate_election_exists(election)
+    
+    manager = AnalyticsManager(election)
+    stats = manager.get_system_stats()
+    
+    click.echo("📊 JÄRJESTELMÄTILASTOT")
+    click.echo("=" * 60)
+    
+    click.echo(f"🏛️  Vaali: {stats['election_id']}")
+    click.echo(f"🕒 Luotu: {stats['generated_at'][:16]}")
+    click.echo()
+    
+    # Sisältötilastot
+    content = stats['content_stats']
+    click.echo("📈 SISÄLLÖN TILASTOT:")
+    click.echo(f"   ❓ Kysymyksiä: {content.get('questions', 0)}")
+    if 'avg_elo_rating' in content:
+        click.echo(f"   ⭐ Keskim. ELO: {content['avg_elo_rating']} ({content['min_elo_rating']}-{content['max_elo_rating']})")
+    
+    click.echo(f"   👑 Ehdokkaita: {content.get('candidates', 0)}")
+    click.echo(f"   📝 Vastauksia: {content.get('total_answers', 0)}")
+    if 'answer_coverage_percent' in content:
+        click.echo(f"   🎯 Vastauskattavuus: {content['answer_coverage_percent']}%")
+    
+    click.echo(f"   🏛️  Puolueita: {content.get('parties', 0)}")
+    click.echo(f"   ✅ Vahvistettuja: {content.get('verified_parties', 0)}")
+    click.echo(f"   ⏳ Odottavia: {content.get('pending_parties', 0)}")
+
+@analytics.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@handle_file_errors
+def health(election):
+    """Näytä järjestelmän terveysraportti"""
+    validate_election_exists(election)
+    
+    manager = AnalyticsManager(election)
+    report = manager.generate_health_report()
+    
+    click.echo("🏥 JÄRJESTELMÄN TERVEYSRAPORTTI")
+    click.echo("=" * 60)
+    
+    health_icon = "✅" if report["system_health"] == "healthy" else "⚠️"
+    click.echo(f"{health_icon} Tila: {report['system_health']}")
+    click.echo()
+    
+    if report["issues"]:
+        click.echo("🚨 LÖYDETYT ONGELMAT:")
+        for issue in report["issues"]:
+            click.echo(f"   • {issue}")
+        click.echo()
+    
+    if report["recommendations"]:
+        click.echo("💡 SUOSITUKSET:")
+        for recommendation in report["recommendations"]:
+            click.echo(f"   • {recommendation}")
+        click.echo()
+    
+    # Näytä kysymysten analytics
+    if report.get("question_analytics"):
+        qa = report["question_analytics"]
+        click.echo("📊 KYSYMYSTEN ANALYTICS:")
+        click.echo(f"   Yhteensä: {qa['total_questions']} kysymystä")
+        
+        click.echo("   🏷️  Kategoriat:")
+        for category, count in qa["categories"].items():
+            click.echo(f"      • {category}: {count} kysymystä")
+        
+        click.echo("   🏆 TOP 5 KYSYMYSTÄ:")
+        for q in qa["elo_distribution"]["top_5"]:
+            click.echo(f"      ⭐ {q['rating']} - {q['question']}")
+
+@analytics.command()
+@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--output', help='Tallenna raportti tiedostoon')
+@handle_file_errors
+def report(election, output):
+    """Luo kattava analytics-raportti"""
+    validate_election_exists(election)
+    
+    manager = AnalyticsManager(election)
+    stats = manager.get_system_stats()
+    question_analytics = manager.get_question_analytics()
+    health_report = manager.generate_health_report()
+    
+    full_report = {
+        "metadata": {
+            "election_id": election,
+            "generated_at": stats["generated_at"],
+            "report_type": "full_analytics"
+        },
+        "system_stats": stats,
+        "question_analytics": question_analytics,
+        "health_report": health_report
+    }
+    
+    if output:
+        with open(output, 'w', encoding='utf-8') as f:
+            json.dump(full_report, f, indent=2, ensure_ascii=False)
+        click.echo(f"✅ Raportti tallennettu: {output}")
+    else:
+        click.echo(json.dumps(full_report, indent=2, ensure_ascii=False))
+
+if __name__ == '__main__':
+    analytics()
+```
+

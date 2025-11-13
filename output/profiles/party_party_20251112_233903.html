@@ -1,0 +1,447 @@
+
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olympos-jumalat - Jumaltenvaalit 2026</title>
+    <meta name="profile-id" content="party_party_20251112_233903_20251113_030213">
+    <meta name="profile-type" content="party">
+    <meta name="party-id" content="party_20251112_233903">
+    <meta name="election-id" content="Jumaltenvaalit2026">
+    <meta name="generated-at" content="2025-11-13T03:02:13.971222">
+    <style>
+        /* Perustyylit */
+        /* Jumaltenvaalit 2026 - Perustyylipohja */
+:root {
+  /* Oletusvärit - nämä ylikirjoitetaan puoluekohtaisilla väreillä */
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --accent-color: #e74c3c;
+  --background-color: #ecf0f1;
+  --text-color: #2c3e50;
+  --card-background: #ffffff;
+  --border-color: #bdc3c7;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--background-color);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header */
+.profile-header {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  padding: 3rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.1);
+}
+
+.profile-header h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  position: relative;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.profile-subtitle {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  position: relative;
+}
+
+/* Navigation */
+.profile-nav {
+  background-color: var(--primary-color);
+  padding: 1rem 0;
+}
+
+.nav-links {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  gap: 2rem;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: var(--accent-color);
+}
+
+/* Content Sections */
+.profile-content {
+  padding: 3rem 0;
+}
+
+.section {
+  background: var(--card-background);
+  margin-bottom: 2rem;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border-left: 4px solid var(--accent-color);
+}
+
+.section h2 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+/* Answer Grid */
+.answers-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.answer-item {
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--card-background);
+}
+
+.answer-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent-color);
+  margin-bottom: 0.5rem;
+}
+
+.answer-question {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.answer-explanation {
+  color: #666;
+  font-style: italic;
+}
+
+/* Confidence Indicator */
+.confidence {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: var(--secondary-color);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+/* Party Members Grid */
+.members-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.member-card {
+  background: var(--card-background);
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.member-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.member-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+}
+
+/* Footer */
+.profile-footer {
+  background-color: var(--primary-color);
+  color: white;
+  text-align: center;
+  padding: 2rem 0;
+  margin-top: 3rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .profile-header h1 {
+    font-size: 2rem;
+  }
+  
+  .nav-links {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .members-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.mb-1 { margin-bottom: 1rem; }
+.mb-2 { margin-bottom: 2rem; }
+.mt-1 { margin-top: 1rem; }
+.mt-2 { margin-top: 2rem; }
+
+/* Color Swatches for Preview */
+.color-swatches {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+}
+
+.color-swatch {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 0.8rem;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Data Link Styles */
+.data-links {
+    display: grid;
+    gap: 1rem;
+}
+
+.link-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.data-link {
+    display: block;
+    padding: 1rem;
+    background: var(--secondary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.data-link:hover {
+    background: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.profile-meta {
+    margin-top: 1rem;
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+/* JSON Data Section */
+.json-data {
+    background: #f8f9fa;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+/* Data Link Styles */
+.data-links {
+    display: grid;
+    gap: 1rem;
+}
+
+.link-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.data-link {
+    display: block;
+    padding: 1rem;
+    background: var(--secondary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.data-link:hover {
+    background: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.profile-meta {
+    margin-top: 1rem;
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+/* JSON Data Section */
+.json-data {
+    background: #f8f9fa;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+        
+        /* Puoluekohtaiset värit */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --background-color: #ecf0f1;
+        }
+    </style>
+</head>
+<body>
+    <header class="profile-header">
+        <div class="container">
+            <h1>Olympos-jumalat</h1>
+            <p class="profile-subtitle">Kreikkalaisten olympolaisten jumalten liitto</p>
+            <div class="profile-meta">
+                <small>Profiili ID: party_party_20251112_233903_20251113_030213 | Puolue ID: party_20251112_233903</small>
+            </div>
+        </div>
+    </header>
+
+    <nav class="profile-nav">
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="#tietoa">Tietoa Puolueesta</a></li>
+                <li><a href="#ehdokkaat">Ehdokkaat</a></li>
+                <li><a href="#data">Data & IPFS</a></li>
+                <li><a href="#yhteys">Yhteystiedot</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="profile-content">
+        <div class="container">
+            <!-- Tietoa Puolueesta -->
+            <section id="tietoa" class="section">
+                <h2>Tietoa Puolueesta</h2>
+                <p><strong>Perustamisvuosi:</strong> 2025</p>
+                <p><strong>Sähköposti:</strong> olympos@divine.fi</p>
+                <p><strong>Verkkosivu:</strong> https://olympos.divine.fi</p>
+                
+                <div class="color-swatches mt-2">
+                    <div class="color-swatch" style="background-color: #2c3e50">Pääväri</div>
+                    <div class="color-swatch" style="background-color: #3498db">Toissijainen</div>
+                    <div class="color-swatch" style="background-color: #e74c3c">Korostus</div>
+                </div>
+            </section>
+
+            <!-- Ehdokkaat -->
+            <section id="ehdokkaat" class="section">
+                <h2>Ehdokkaat (0)</h2>
+                <div class="members-grid">
+                    <p class="text-center">Ei ehdokkaita</p>
+                </div>
+            </section>
+
+            <!-- Data & IPFS -->
+            <section id="data" class="section">
+                <h2>Data & IPFS Linkit</h2>
+                <div class="data-links">
+                    <h3>Hajautetut Resurssit</h3>
+                    
+                    <div class="link-grid">
+                        <a href="https://ipfs.io/ipfs/mock_9fbb78593baba6bc" class="data-link" target="_blank">
+                            📄 Puolueet IPFS:ässä
+                        </a>
+                        <a href="https://ipfs.io/ipfs/mock_d522f790f295a7ce" class="data-link" target="_blank">
+                            👑 Ehdokkaat IPFS:ässä
+                        </a>
+                        <a href="https://ipfs.io/ipfs/mock_7a7aa1d207e23672" class="data-link" target="_blank">
+                            ❓ Kysymykset IPFS:ässä
+                        </a>
+                    </div>
+                    
+                    <h3>Paikalliset Resurssit</h3>
+                    <ul>
+                        <li><strong>Profiili ID:</strong> party_party_20251112_233903_20251113_030213</li>
+                        <li><strong>Puolue ID:</strong> party_20251112_233903</li>
+                        <li><strong>Vaali ID:</strong> Jumaltenvaalit2026</li>
+                        <li><strong>Generoitu:</strong> 13.11.2025 03:02</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Yhteys -->
+            <section id="yhteys" class="section">
+                <h2>Yhteystiedot</h2>
+                <p>Ota meihin yhteyttä, jos haluat lisätietoja puolueestamme tai ehdottaa yhteistyötä!</p>
+            </section>
+        </div>
+    </main>
+
+    <footer class="profile-footer">
+        <div class="container">
+            <p>&copy; 2026 Olympos-jumalat - Jumaltenvaalit</p>
+            <p>Sivu generoitu 13.11.2025 03:02 | Profiili ID: party_party_20251112_233903_20251113_030213</p>
+            <p>📦 Tämä sivu on tallennettu hajautettuun IPFS-verkkoon</p>
+        </div>
+    </footer>
+
+    <!-- Piilotettu data JSON-muodossa -->
+    <script type="application/json" id="party-data">
+        {"profile_id": "party_party_20251112_233903_20251113_030213", "profile_type": "party", "party_data": {"party_id": "party_20251112_233903", "name": {"fi": "Olympos-jumalat", "en": "Olympian Gods", "sv": "Olympiska gudar"}, "description": {"fi": "Kreikkalaisten olympolaisten jumalten liitto", "en": "Alliance of Greek Olympian gods", "sv": "Allians av grekiska olympiska gudar"}, "crypto_identity": {"public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5BXKbhNKPBgOx8XMKU6R\n0js4P/XLfGn494FIRfi6Uszan0mmovCKnoas4pBZFcGJegJH8GxhWDBzIGEC0dNB\n7IpcdPE58d0GcM2K+KlOrCitcGZr2u4c1d1NBAdV5PvlELFVPiDzj9lSx8nuPx0Y\nNGHTSic1xwrU92gbjCeic9LpvcvqpL3ExQ6SPr9d0XCry3D9VMRnJiMuev+pOs7F\nveG3Wg9p85Yq+I3VLnvfQtlh27OCsGljkfxyZoMsLNIRYfOiOYHBVGkOVTqKXnkT\nxFmxr7f7GjPsMGvBplKq+J788oY4wXLMmrMBrIrgV9fP9zDBBslhI9zRf/y2ea0P\nBwIDAQAB\n-----END PUBLIC KEY-----\n", "key_fingerprint": "bd3c031fd3272a67", "foundation_document": {"party_name": "Olympos-jumalat", "founding_date": "2025-11-12T23:39:03.243305", "election_id": "Jumaltenvaalit2026", "principles": "Jumalallisen vallan käyttö viisaasti ja vastuullisesti", "domain": "divine_power"}, "foundation_signature": "rVFjjAJjdz9S1Miz3GeSUwOsIsjLG6x77RlFHHYi2Wj4IlecJmzOLGD/8hdgEioBMYBK/u7wHs+VzwbiuvB+PjpUZRQhjx4nd8paVoCBaWJ+AWa6llangGRuQK4vGDQdSsdDLD2th5fJKXSM+15+4dmtitFDMANMMJUJcuue3/Tjy1qnRtu3AtWwRFVeEtd4Cjz7IRmIZFNv2gzWGUHOalUvDeqDCuoyAAyGI0IPc65DNUbcWGt5KzNgi+mR2Dk1LoikXgAWPMg9PngyX49xYYaktSGrBK6g6fcEbzoi2Oz1NfXC+FEl2qyG3fjVA5JhJ68scjHdUMtDqzTzs/z/jg==", "key_algorithm": "RSA-2048", "signature_algorithm": "RSA-PSS-SHA256"}, "media_publications": [], "registration": {"proposed_by": "system", "proposed_at": "2025-11-12T23:39:03.288387", "verification_status": "pending", "verification_phase": "key_publication", "verified_by_nodes": [], "media_verifications": [], "quorum_votes": [], "rejection_reason": null}, "candidates": [], "metadata": {"contact_email": "olympos@divine.fi", "website": "https://olympos.divine.fi", "founding_year": "2025"}}, "generated_at": "2025-11-13T03:02:13.971472", "election_id": "Jumaltenvaalit2026", "color_theme": {"primary": "#2c3e50", "secondary": "#3498db", "accent": "#e74c3c", "background": "#ecf0f1"}, "candidate_count": 0, "ipfs_cids": {"parties": "mock_9fbb78593baba6bc", "questions": "mock_7a7aa1d207e23672", "candidates": "mock_d522f790f295a7ce", "meta": "mock_eb4c88f80a2cacff"}}
+    </script>
+</body>
+</html>
+        

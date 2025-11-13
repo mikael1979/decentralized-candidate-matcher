@@ -1,0 +1,25 @@
+{
+  "election_id": "Jumaltenvaalit2026",
+  "sync_timestamp": "2025-11-13T01:55:44.666201",
+  "target_nodes": 2,
+  "successful_syncs": 2,
+  "failed_syncs": 0,
+  "node_results": [
+    {
+      "node_id": "node_zeus",
+      "node_name": "Zeus",
+      "sync_timestamp": "2025-11-13T01:55:44.666223",
+      "status": "success",
+      "data_consistent": true,
+      "message": "Data consistent with trusted node"
+    },
+    {
+      "node_id": "node_athena",
+      "node_name": "Athena",
+      "sync_timestamp": "2025-11-13T01:55:44.666232",
+      "status": "success",
+      "data_consistent": true,
+      "message": "Data consistent with trusted node"
+    }
+  ]
+}
