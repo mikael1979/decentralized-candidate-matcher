@@ -1,3 +1,5 @@
+decantralized_candidate_matcher
+
 Selitän tässä nyt vielä mitä olin itse ajatellut, jos onnistun selittämään. 
 1. base versioista olisi kloonattu käyttöversiot json-tiedostoille, eli base tiedosto on taustamalli josta rakenne luodaan ja sitten luotua rakennetta käytetään ohjelmassa. 
 2. lista alunperin suunnittelemista tiedostoista
