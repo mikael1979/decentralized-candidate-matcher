@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "type": "worker_config",
+    "version": "1.0.0",
+    "created": "2024-01-01T00:00:00Z",
+    "description": "Worker node configuration for decentralized elections"
+  },
+  "worker_settings": {
+    "elections_base_path": "data/elections",
+    "ipfs_gateway": "https://ipfs.io/ipfs",
+    "sync_interval": 3600,
+    "max_concurrent_downloads": 5
+  },
+  "election_registry": {
+    "jumaltenvaalit2026": {
+      "name": "Jumaltenvaalit 2026",
+      "config_cid": "QmTestElectionConfig123456789",
+      "enabled": true,
+      "description": "Kreikkalaisten jumalten vaalit 2026"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "metadata": {
+    "type": "election_config",
+    "election_id": "jumaltenvaalit2026",
+    "version": "1.0.0",
+    "created": "2024-01-01T00:00:00Z",
+    "description": "Jumaltenvaalit 2026 configuration"
+  },
+  "election_info": {
+    "name": {
+      "fi": "Jumaltenvaalit 2026",
+      "en": "God Elections 2026", 
+      "sv": "Gudaval 2026"
+    },
+    "description": {
+      "fi": "Kreikkalaisten jumalten vaalit 2026 - kuka hallitsee Olympos-vuorta?",
+      "en": "Greek gods elections 2026 - who will rule Mount Olympus?",
+      "sv": "Grekiska gudar val 2026 - vem kommer att regera Mount Olympus?"
+    },
+    "dates": {
+      "registration_start": "2025-12-01",
+      "registration_end": "2026-02-28", 
+      "voting_start": "2026-03-01",
+      "voting_end": "2026-03-31",
+      "results_publish": "2026-04-01"
+    }
+  },
+  "data_sources": {
+    "parties": {
+      "cid": "QmPartiesCID123456789",
+      "filename": "parties.json",
+      "type": "parties_data"
+    },
+    "candidates": {
+      "cid": "QmCandidatesCID123456789", 
+      "filename": "candidates.json",
+      "type": "candidates_data"
+    },
+    "questions": {
+      "cid": "QmQuestionsCID123456789",
+      "filename": "questions.json", 
+      "type": "questions_data"
+    },
+    "profiles": {
+      "cid": "QmProfilesCID123456789",
+      "filename": "profiles_metadata.json",
+      "type": "profiles_metadata"
+    }
+  },
+  "installation": {
+    "required_directories": ["data", "data/runtime", "data/elections/jumaltenvaalit2026", "output/profiles"],
+    "required_files": ["parties.json", "candidates.json", "questions.json", "meta.json"],
+    "setup_script": "setup_jumaltenvaalit.sh"
+  }
+}

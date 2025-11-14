@@ -1,0 +1,196 @@
+# 📋 Pitkät tiedostot ja bugit
+
+## 📊 Pitkät tiedostot (yli 300 riviä)
+
+### 🚨 Erittäin pitkät (>500 riviä)
+1. **`src/templates/html_generator.py`** - ~600 riviä
+   - Sisältää HTML-generoinnin, IPFS-julkaisun, CSS-tyylit, metadata-hallinnan
+   - **Jakoehdotus**: 
+     - `html_templates.py` - HTML-pohjat
+     - `profile_manager.py` - Profiilien hallinta
+     - `ipfs_publisher.py` - IPFS-julkaisu
+
+2. **`src/cli/manage_parties.py`** - ~400 riviä
+   - Sisältää kaikki puoluehallinnan komennot
+   - **Jakoehdotus**:
+     - `party_commands.py` - Peruskomentot
+     - `party_verification.py` - Vahvistuslogiikka
+     - `party_analytics.py` - Tilastot ja raportit
+
+### 📏 Pitkät (300-500 riviä)
+3. **`src/cli/manage_answers.py`** - ~350 riviä
+   - Vastausten hallinta kaikilla komennoilla
+   - **Jakoehdotus**:
+     - `answer_commands.py` - Peruskomentot
+     - `answer_validation.py` - Validointi
+     - `answer_reports.py` - Raportointi
+
+4. **`src/core/ipfs_client.py`** - ~300 riviä
+   - IPFS-integrointi mock- ja real-toteutuksilla
+   - **Jakoehdotus**:
+     - `ipfs_base.py` - Perusrajapinta
+     - `ipfs_real.py` - Oikea IPFS-client
+     - `ipfs_mock.py` - Mock-client
+
+## 🐛 Löydetyt bugit
+
+### 🔴 Kriittiset bugit
+
+1. **Import-ongelma `ipfs_sync_manager.py`:**
+```python
+# LINJA 12: Virheellinen import
+from core.ipfs_client import IPFSClient  # ❌ Ei toimi
+# Pitäisi olla:
+from src.core.ipfs_client import IPFSClient  # ✅
+```
+
+2. **Hakemiston luonti puuttuu:**
+```python
+# src/cli/manage_parties.py - LINJA ~180
+with open(parties_file, 'w', encoding='utf-8') as f:
+    json.dump(data, f, indent=2, ensure_ascii=False)
+# ❌ Hakemistoa data/runtime/ ei välttämättä ole
+```
+
+3. **Kysymyksen olemassaolon tarkistus puuttuu:**
+```python
+# src/cli/manage_answers.py - LINJA ~80
+# Lisää vastaus, mutta ei tarkista onko kysymys olemassa
+question = next((q for q in questions_data["questions"] if q["local_id"] == question_id), None)
+if not question:
+    click.echo(f"❌ Kysymystä '{question_id}' ei löydy")
+    return  # ✅ Tämä on olemassa, mutta...
+# ❌ Ei tarkisteta onko vastaus jo olemassa samalle kysymykselle
+```
+
+4. **JSON encoding puuttuu:**
+```python
+# Useissa tiedostoissa, esim. src/cli/manage_candidates.py - LINJA ~30
+with open(candidates_file, 'r') as f:  # ❌ Puuttuu encoding
+    data = json.load(f)
+# Pitäisi olla:
+with open(candidates_file, 'r', encoding='utf-8') as f:  # ✅
+```
+
+### 🟡 Vakavat bugit
+
+5. **Tiedostopolkujen kovakoodaus:**
+```python
+# src/managers/elo_manager.py - LINJA 13
+with open("data/runtime/questions.json", "r", encoding='utf-8') as f:
+# ❌ Oletetaan että suoritetaan projektin juuresta
+```
+
+6. **Virheenkäsittely puuttuu:**
+```python
+# src/cli/compare_questions.py - LINJA ~70
+result = elo_manager.update_ratings(q1["local_id"], q2["local_id"], user_choice)
+# ❌ Ei käsitellä poikkeuksia jos ELO-päivitys epäonnistuu
+```
+
+7. **Data-validointi puuttuu:**
+```python
+# src/cli/link_candidate_to_party.py - LINJA ~40
+# Tarkistetaan että puolue on olemassa, mutta...
+# ❌ Ei tarkisteta että ehdokas on olemassa ennen linkitystä
+```
+
+8. **Toistuva koodi:**
+```python
+# Useissa CLI-tiedostoissa sama tiedostonluku/kirjoituslogiikka
+# Esim. src/cli/manage_questions.py, manage_candidates.py, jne.
+```
+
+### 🔵 Kevyet bugit
+
+9. **IPFS mock-tilan tiedotus:**
+```python
+# src/core/ipfs_client.py - LINJA ~40
+self._client = MockIPFSClient()
+print(f"🔶 Mock IPFS-client käytössä vaalille: {election_id}")
+# ✅ Tämä on hyvä, mutta...
+# ❌ Ei kerrota selkeästi mitkä toiminnot eivät toimi mock-tilassa
+```
+
+10. **Käyttäjän syötteen validointi:**
+```python
+# src/cli/enhanced_party_verification.py - Useita kohtia
+# ❌ Ei validoida tarpeeksi tarkasti sähköpostiosoitteita, URL-osoitteita, jne.
+```
+
+## 🛠️ Korjausehdotukset
+
+### 1. **Luo yhteiset apufunktiot**
+```python
+# src/core/file_utils.py
+import json
+from pathlib import Path
+
+def read_json_file(file_path: str) -> dict:
+    """Turvallinen JSON-tiedoston lukeminen"""
+    path = Path(file_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+def write_json_file(file_path: str, data: dict):
+    """Turvallinen JSON-tiedoston kirjoitus"""
+    path = Path(file_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+```
+
+### 2. **Korjaa import-ongelmat**
+```python
+# Kaikissa manager-tiedostoissa
+try:
+    from src.core.ipfs_client import IPFSClient
+except ImportError:
+    # Fallback kehitystilaan
+    from core.ipfs_client import IPFSClient
+```
+
+### 3. **Paranna validointia**
+```python
+# src/core/validators.py
+class DataValidator:
+    @staticmethod
+    def validate_candidate_exists(candidate_id: str) -> bool:
+        # Toteutus
+        
+    @staticmethod  
+    def validate_question_exists(question_id: str) -> bool:
+        # Toteutus
+        
+    @staticmethod
+    def validate_party_exists(party_id: str) -> bool:
+        # Toteutus
+```
+
+### 4. **Yksinkertaista HTML-generaattoria**
+```python
+# Jakaminen kolmeen tiedostoon:
+# - html_templates.py: HTML-pohjat ja CSS
+# - profile_manager.py: Profiilien luonti ja hallinta  
+# - ipfs_publisher.py: IPFS-julkaisu ja metadata
+```
+
+## 📈 Priorisoidut toimenpiteet
+
+### 🥇 PRIORITEETTI 1 (Kriittiset)
+1. Korjaa import-ongelmat `ipfs_sync_manager.py`
+2. Lisää hakemiston luonti kaikkiin tiedostoonkirjoituksiin
+3. Korjaa encoding-ongelmat JSON-tiedostoissa
+
+### 🥈 PRIORITEETTI 2 (Tärkeät)  
+4. Paranna data-validointia (kysymykset, ehdokkaat, puolueet)
+5. Yhdenmukaista tiedostopolkujen käsittely
+6. Luo yhteiset apufunktiot tiedostonkäsittelyyn
+
+### 🥉 PRIORITEETTI 3 (Hyvät)
+7. Jaa pitkät tiedostot pienempiin moduuleihin
+8. Paranna virheenkäsittelyä kaikissa CLI-komennoissa
+9. Lisää testaus refaktoroituihin komponentteihin
+
+Näiden korjausten jälkeen koodikanta olisi paljon helpommin ylläpidettävä ja vähemmän altis bugeille! 🚀

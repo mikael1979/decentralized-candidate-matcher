@@ -26,7 +26,7 @@ class MockIPFSClient:
     def get_json(self, cid: str) -> Dict:
         return self.mock_data.get(cid, {"error": "Data not found"})
     
-    def add_bytes(self, data: bytes) -> Dict[str, str]:
+    def add_bytes(self, data: bytes, content_type: str = 'application/octet-stream') -> Dict[str, str]:
         import hashlib
         cid = f"mock_{hashlib.md5(data).hexdigest()[:16]}"
         self.mock_data[cid] = data
@@ -92,11 +92,11 @@ class RealIPFSClient:
         except Exception as e:
             raise Exception(f"IPFS haku epäonnistui: {e}")
     
-    def add_bytes(self, data: bytes) -> Dict[str, str]:
+    def add_bytes(self, data: bytes, content_type: str = 'application/octet-stream') -> Dict[str, str]:
         """Lisää raakadata IPFS:ään"""
         try:
             files = {
-                'file': ('data.bin', data, 'application/octet-stream')
+                'file': ('content.html', data, content_type)
             }
             
             response = self.session.post(
@@ -169,6 +169,22 @@ class IPFSClient:
             print(f"❌ IPFS-julkaisu epäonnistui: {e}")
             # Fallback mock-CID:lle
             return f"mock_fallback_{data_type}_{int(time.time())}"
+
+    def publish_html_content(self, content: str, filename: str = "profile.html") -> str:
+        """Julkaise suoraan HTML-sisältö IPFS:ään"""
+        try:
+            # Muunna HTML-sisältö bytes-muotoon
+            html_bytes = content.encode('utf-8')
+            
+            # Julkaise suoraan HTML-sisältö
+            result = self._client.add_bytes(html_bytes, 'text/html; charset=utf-8')
+            cid = result['Hash']
+            print(f"✅ HTML-sisältö julkaistu IPFS:ään: {cid}")
+            return cid
+            
+        except Exception as e:
+            print(f"❌ HTML-julkaisu epäonnistui: {e}")
+            return f"mock_html_{int(time.time())}"
     
     def retrieve_election_data(self, cid: str) -> Dict:
         """Hae vaalidata IPFS:stä"""
@@ -178,7 +194,16 @@ class IPFSClient:
         except Exception as e:
             print(f"❌ IPFS-haku epäonnistui: {e}")
             return {"error": str(e)}
-    
+
+    def retrieve_html_content(self, cid: str) -> str:
+        """Hae HTML-sisältö IPFS:stä"""
+        try:
+            content = self._client.cat(cid)
+            return content.decode('utf-8')
+        except Exception as e:
+            print(f"❌ HTML-haku epäonnistui: {e}")
+            return f"<html><body>Error: {e}</body></html>"
+
     def add_file(self, file_path: Path) -> str:
         """Lisää tiedosto IPFS:ään"""
         try:
