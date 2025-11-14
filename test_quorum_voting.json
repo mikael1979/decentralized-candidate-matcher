@@ -3,8 +3,8 @@
     "party_id": "party_quorum_test",
     "party_name": "Kvoorumi-testipuolue",
     "public_key_fingerprint": "test123456789abcd",
-    "verification_started": "2025-11-13T00:15:28.431963",
-    "verification_timeout": "2025-11-14T00:15:28.431974",
+    "verification_started": "2025-11-14T10:21:47.774009",
+    "verification_timeout": "2025-11-15T10:21:47.774028",
     "current_phase": "quorum_voting",
     "quorum_votes": [
       {
@@ -12,45 +12,45 @@
         "vote": "approve",
         "weight": 15,
         "justification": "Hyv\u00e4 mediavahvistus",
-        "timestamp": "2025-11-13T00:15:28.432159",
+        "timestamp": "2025-11-14T10:21:47.774120",
         "node_public_key_fingerprint": "43d95084ecc74dc8",
-        "vote_signature": "98fd6dcc379613fa815e8b4c25fd49e685c48f2a13b91c465fa81f2e34d1aa3c"
+        "vote_signature": "0dcac8b3da5ed4ea438c45839dfe13b5c1235cd52bdb034a3eab497593497910"
       },
       {
         "node_id": "node_athena",
         "vote": "approve",
         "weight": 15,
         "justification": "Vahva PKI-toteutus",
-        "timestamp": "2025-11-13T00:15:28.432228",
+        "timestamp": "2025-11-14T10:21:47.774156",
         "node_public_key_fingerprint": "5990b33ae22c98c9",
-        "vote_signature": "aaf92d44b8af71c3f5070d2ee92c0c2a621d7ccfea3139e3255f792d3268287a"
+        "vote_signature": "a5b55b2daafa989e9b188da387f18211c2ebab6d1229f4bf7ea422d92c8d80a7"
       },
       {
         "node_id": "node_poseidon",
         "vote": "approve",
         "weight": 10,
         "justification": "Kaikki kriteerit t\u00e4ytetty",
-        "timestamp": "2025-11-13T00:15:28.432289",
+        "timestamp": "2025-11-14T10:21:47.774225",
         "node_public_key_fingerprint": "eefd4f5dbe4b4aab",
-        "vote_signature": "ae6108252d7000a8ce3d4388806202f03aced063a1e3d6652f2fbef138e8e1e7"
+        "vote_signature": "1378262f8ba360e54e648079784476c6c2aee1d6f1ebd5c1347624da09a9d529"
       },
       {
         "node_id": "node_ares",
         "vote": "reject",
         "weight": 10,
         "justification": "Liian v\u00e4h\u00e4n tietoja",
-        "timestamp": "2025-11-13T00:15:28.432346",
+        "timestamp": "2025-11-14T10:21:47.774252",
         "node_public_key_fingerprint": "d1079b9b6b7771d6",
-        "vote_signature": "f660aa1a4d717fe38080b7d6932a43a0a6820aa1f312df14c7bc231fa465787f"
+        "vote_signature": "1aa4c9115180c911e42d1575f0a5bea7c4ad055fff3048de4fb82fe45dde2428"
       },
       {
         "node_id": "node_aphrodite",
         "vote": "abstain",
         "weight": 10,
         "justification": "Tarvitsen lis\u00e4tietoja",
-        "timestamp": "2025-11-13T00:15:28.432385",
+        "timestamp": "2025-11-14T10:21:47.774275",
         "node_public_key_fingerprint": "436415520468e4cd",
-        "vote_signature": "853951055bffdfde4e7b9c9edcfd855ba21c2ded82b73efc2957d85f35d6970e"
+        "vote_signature": "b1b36073c8aca1ca7706a791709e2a3df2a0af5080555768bbd4011ffd975590"
       }
     ],
     "media_verifications": [
@@ -59,7 +59,7 @@
         "media_domain": "vaalit.fi",
         "trust_score": 10,
         "verified_by_node": "node_zeus",
-        "verification_timestamp": "2025-11-13T00:15:28.432101",
+        "verification_timestamp": "2025-11-14T10:21:47.774085",
         "evidence_url": "https://vaalit.fi/julkaisut/kvoorumi-testi"
       },
       {
@@ -67,12 +67,12 @@
         "media_domain": "vaalit.fi",
         "trust_score": 10,
         "verified_by_node": "node_athena",
-        "verification_timestamp": "2025-11-13T00:15:28.432107",
+        "verification_timestamp": "2025-11-14T10:21:47.774090",
         "evidence_url": "https://vaalit.fi/julkaisut/kvoorumi-testi"
       }
     ],
     "final_decision": "approved",
-    "decision_timestamp": "2025-11-13T00:15:28.432412"
+    "decision_timestamp": "2025-11-14T10:21:47.774285"
   },
   "status": {
     "party_id": "party_quorum_test",
@@ -82,7 +82,7 @@
     "reject_votes": 1,
     "abstain_votes": 1,
     "media_verifications": 2,
-    "time_remaining_hours": 23.9999998725,
+    "time_remaining_hours": 23.99999992472222,
     "final_decision": "approved",
     "quorum_met": true
   },

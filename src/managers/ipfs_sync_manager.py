@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-IPFS-synkronoinnin hallinta Jumaltenvaaleille
+IPFS-synkronoinnin hallinta Jumaltenvaaleille - KORJATTU VERSIO
 """
 import json
 import hashlib
@@ -8,18 +8,20 @@ from datetime import datetime
 from typing import Dict, List, Optional
 from pathlib import Path
 
-# KORJATTU: Käytetään absoluuttisia importteja
-import sys
-import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
-from core.ipfs_client import IPFSClient
+# KORJATTU: Absoluuttiset importit
+try:
+    from src.core.ipfs_client import IPFSClient
+except ImportError:
+    # Fallback kehitystilaan
+    from core.ipfs_client import IPFSClient
 
 class IPFSSyncManager:
     def __init__(self, election_id: str = "Jumaltenvaalit2026"):
         self.election_id = election_id
         self.ipfs = IPFSClient.get_client(election_id)
         self.sync_file = Path("data/runtime/ipfs_sync.json")
+        # KORJATTU: Varmistetaan että hakemisto on olemassa
+        self.sync_file.parent.mkdir(parents=True, exist_ok=True)
     
     def full_sync(self) -> Dict:
         """Suorita täysi synkronointi IPFS:ään"""
@@ -63,11 +65,18 @@ class IPFSSyncManager:
         for file_type in changed_files:
             file_path = f"data/runtime/{file_type}.json"
             if Path(file_path).exists():
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    data = json.load(f)
-                
-                cid = self.ipfs.publish_election_data(file_type, data)
-                results[file_type] = cid
+                try:
+                    # KORJATTU: Käytetään turvallista tiedostonlukua
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    
+                    cid = self.ipfs.publish_election_data(file_type, data)
+                    results[file_type] = cid
+                    print(f"✅ Synkronoitu {file_type}: {cid}")
+                    
+                except Exception as e:
+                    print(f"❌ {file_type} synkronointi epäonnistui: {e}")
+                    results[file_type] = None
         
         # Päivitä synkronointitila
         sync_report = {
@@ -80,7 +89,7 @@ class IPFSSyncManager:
         }
         
         self._save_sync_report(sync_report)
-        print(f"✅ Inkrementaalinen synkronointi valmis! {len(results)} tiedostoa päivitetty")
+        print(f"✅ Inkrementaalinen synkronointi valmis! {len([r for r in results.values() if r])} tiedostoa päivitetty")
         return sync_report
     
     def verify_sync_integrity(self) -> Dict:
@@ -100,11 +109,15 @@ class IPFSSyncManager:
             
             file_path = f"data/runtime/{file_type}.json"
             if Path(file_path).exists():
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    local_data = json.load(f)
-                
-                is_valid = self.ipfs.verify_data_integrity(local_data, cid)
-                verification_results[file_type] = "valid" if is_valid else "invalid"
+                try:
+                    # KORJATTU: Turvallinen tiedostonluku
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        local_data = json.load(f)
+                    
+                    is_valid = self.ipfs.verify_data_integrity(local_data, cid)
+                    verification_results[file_type] = "valid" if is_valid else "invalid"
+                except Exception as e:
+                    verification_results[file_type] = f"error: {str(e)}"
             else:
                 verification_results[file_type] = "file_missing"
         
@@ -150,15 +163,22 @@ class IPFSSyncManager:
     
     def _calculate_file_hash(self, file_path: str) -> str:
         """Laske tiedoston tiiviste"""
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        return hashlib.sha256(content.encode()).hexdigest()
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            return hashlib.sha256(content.encode()).hexdigest()
+        except Exception:
+            return "error"
     
     def _load_last_sync(self) -> Optional[Dict]:
         """Lataa edellinen synkronointitila"""
         if self.sync_file.exists():
-            with open(self.sync_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
+            try:
+                with open(self.sync_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception as e:
+                print(f"❌ Synkronointitiedoston lukuvirhe: {e}")
+                return None
         return None
     
     def _save_sync_report(self, report: Dict):
@@ -175,5 +195,9 @@ class IPFSSyncManager:
         report['file_hashes'] = file_hashes
         
         # Tallenna
-        with open(self.sync_file, 'w', encoding='utf-8') as f:
-            json.dump(report, f, indent=2)
+        try:
+            with open(self.sync_file, 'w', encoding='utf-8') as f:
+                json.dump(report, f, indent=2, ensure_ascii=False)
+            print(f"✅ Synkronointiraportti tallennettu: {self.sync_file}")
+        except Exception as e:
+            print(f"❌ Synkronointiraportin tallennus epäonnistui: {e}")

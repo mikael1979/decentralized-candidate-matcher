@@ -12,7 +12,7 @@
       "content_hash": "a1b2c3d4e5f67890",
       "verification_challenge": "jumalat-2026-verify-001"
     },
-    "publication_timestamp": "2025-11-13T00:09:36.561138",
+    "publication_timestamp": "2025-11-14T10:21:47.535548",
     "verification_status": "pending",
     "trust_score": 10,
     "verified_by_nodes": [
@@ -24,12 +24,12 @@
     "publication_id": "pub_eedd82281302",
     "node_id": "node_zeus",
     "verification_method": "manual",
-    "verification_timestamp": "2025-11-13T00:09:36.561197",
+    "verification_timestamp": "2025-11-14T10:21:47.535586",
     "status": "verified",
     "confidence_score": 0.85,
     "evidence": {
       "screenshot_url": "https://archive.org/pub_eedd82281302",
-      "archive_timestamp": "2025-11-13T00:09:36.561203",
+      "archive_timestamp": "2025-11-14T10:21:47.535590",
       "verification_notes": "Manual verification completed"
     }
   },

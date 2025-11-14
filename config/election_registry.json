@@ -1,0 +1,28 @@
+{
+  "metadata": {
+    "type": "election_registry",
+    "version": "1.0.0",
+    "created": "2024-01-01T00:00:00Z",
+    "description": "Registry of all available elections in IPFS"
+  },
+  "elections": {
+    "jumaltenvaalit2026": {
+      "election_id": "jumaltenvaalit2026",
+      "name": {
+        "fi": "Jumaltenvaalit 2026",
+        "en": "God Elections 2026",
+        "sv": "Gudaval 2026"
+      },
+      "description": {
+        "fi": "Kreikkalaisten jumalten vaalit 2026 - kuka hallitsee Olympos-vuorta?",
+        "en": "Greek gods elections 2026 - who will rule Mount Olympus?",
+        "sv": "Grekiska gudar val 2026 - vem kommer att regera Mount Olympus?"
+      },
+      "config_cid": "QmTestElectionConfig123456789",
+      "status": "active",
+      "start_date": "2026-01-01",
+      "end_date": "2026-12-31",
+      "categories": ["jumalat", "olympia", "mytologia"]
+    }
+  }
+}

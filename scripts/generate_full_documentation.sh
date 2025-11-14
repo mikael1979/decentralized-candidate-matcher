@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Master-skripti joka generoi sekä koodin että templatejen dokumentaation
-# Käyttö: ./scripts/generate_full_documentation.sh
+# PÄIVITETTY VERSIO - huomioi uudet modulaariset komponentit
 
 set -e
 
@@ -97,6 +97,28 @@ else
     echo "\`\`\`" >> "$INDEX_FILE"
 fi
 
+# Lisää uudet modulaariset komponentit
+echo "" >> "$INDEX_FILE"
+echo "## 🧩 MODULAARISET KOMPONENTIT" >> "$INDEX_FILE"
+echo "" >> "$INDEX_FILE"
+echo "### 📋 HTML Generaattori" >> "$INDEX_FILE"
+echo "- \`html_templates.py\` - HTML-pohjat ja CSS" >> "$INDEX_FILE"  
+echo "- \`profile_manager.py\` - Profiilien hallinta" >> "$INDEX_FILE"
+echo "- \`ipfs_publisher.py\` - IPFS-julkaisu" >> "$INDEX_FILE"
+echo "- \`html_generator.py\` - Pääluokka (120 riviä)" >> "$INDEX_FILE"
+echo "" >> "$INDEX_FILE"
+echo "### 🏛️ Puolueiden Hallinta" >> "$INDEX_FILE"
+echo "- \`party_commands.py\` - Peruskomentot" >> "$INDEX_FILE"
+echo "- \`party_verification.py\` - Vahvistuslogiikka" >> "$INDEX_FILE"
+echo "- \`party_analytics.py\` - Tilastot ja analytiikka" >> "$INDEX_FILE"
+echo "- \`manage_parties.py\` - Pääkomento (50 riviä)" >> "$INDEX_FILE"
+echo "" >> "$INDEX_FILE"
+echo "### 📝 Vastausten Hallinta" >> "$INDEX_FILE"
+echo "- \`answer_commands.py\` - Lisää/poista komennot" >> "$INDEX_FILE"
+echo "- \`answer_reports.py\` - Listaus ja raportointi" >> "$INDEX_FILE"
+echo "- \`answer_validation.py\` - Validointi ja tarkistus" >> "$INDEX_FILE"
+echo "- \`manage_answers.py\` - Pääkomento (50 riviä)" >> "$INDEX_FILE"
+
 # Lisää git-historia jos saatavilla
 if command -v git &> /dev/null && [ -d ".git" ]; then
     echo "" >> "$INDEX_FILE"
@@ -123,6 +145,9 @@ python src/cli/manage_candidates.py --election Jumaltenvaalit2026 --list
 
 # Hallinnoi puolueita
 python src/cli/manage_parties.py --election Jumaltenvaalit2026 list
+
+# Hallinnoi vastauksia
+python src/cli/manage_answers.py --election Jumaltenvaalit2026 --list
 \`\`\`
 
 ## 📞 APU
@@ -159,6 +184,7 @@ Hajautettu vaalikonejärjestelmä joka yhdistää:
 - 🌐 IPFS-synkronoinnin hajautettuun datajakoon  
 - 🏛️ Hajautetun puoluevahvistuksen (3 noden kvoorumi)
 - 📊 Modulaarisen arkitehtuurin helppoa laajennettavuutta varten
+- 🧩 Jakautuneet komponentit: HTML generaattori, puolueiden hallinta, vastausten hallinta
 
 Testivaalina: **Jumaltenvaalit 2026**
 EOF
@@ -175,14 +201,18 @@ cat >> "$CONVERSATION_STARTER" << EOF
 - Ehdokkaiden ja puolueiden perushallinta
 - Hajautettu puoluevahvistus (3 noden kvoorumi)
 - Ehdokkaiden vastausten hallinta (manage_answers.py)
+- **MODULAARINEN REFAKTOROINTI VALMIS:**
+  - HTML generaattori jaettu 4 tiedostoon
+  - Puolueiden hallinta jaettu 4 tiedostoon
+  - Vastausten hallinta jaettu 4 tiedostoon
 
 ### 🔨 KÄYNNISSÄ
-- Refaktorointi: data_manager.py ja base_cli.py
 - IPFS-synkronointi (seuraavaksi)
+- Testien kirjoittaminen uusille moduuleille
 
 ### 🎯 SEURAAVAT VAIHEET
 1. IPFS-synkronointi (ipfs_sync.py)
-2. Vaalikoneen ydin (voting_engine.py)
+2. Vaalikoneen ydin (voting_engine.py) 
 3. Web-käyttöliittymä
 
 ## 💾 DATA-TILANNE
@@ -199,6 +229,26 @@ Vahvistettuja puolueita: $(grep -c '"verification_status": "verified"' data/runt
 \`\`\`
 $(find . -maxdepth 3 -type d -not -path "./.git/*" -not -path "./venv/*" -not -path "./docs/*" | sort | head -20)
 \`\`\`
+
+## 🧩 UUDET MODULAARISET KOMPONENTIT
+
+### 📋 HTML Generaattori (4 tiedostoa)
+- \`html_templates.py\` - HTML-pohjat ja CSS
+- \`profile_manager.py\` - Profiilien hallinta  
+- \`ipfs_publisher.py\` - IPFS-julkaisu
+- \`html_generator.py\` - Pääluokka (120 riviä)
+
+### 🏛️ Puolueiden Hallinta (4 tiedostoa)
+- \`party_commands.py\` - Peruskomentot
+- \`party_verification.py\` - Vahvistuslogiikka
+- \`party_analytics.py\` - Tilastot ja analytiikka
+- \`manage_parties.py\` - Pääkomento (50 riviä)
+
+### 📝 Vastausten Hallinta (4 tiedostoa)  
+- \`answer_commands.py\` - Lisää/poista komennot
+- \`answer_reports.py\` - Listaus ja raportointi
+- \`answer_validation.py\` - Validointi ja tarkistus
+- \`manage_answers.py\` - Pääkomento (50 riviä)
 
 ## 🚀 NOPEA ALOITUS
 
@@ -219,24 +269,27 @@ python src/cli/manage_parties.py --election Jumaltenvaalit2026 list
 python src/cli/manage_answers.py --election Jumaltenvaalit2026 --list
 \`\`\`
 
-## 📋 VILLEIMPIMMÄT TIEDOSTOT
+## 📋 REFAKTOROINNIN HYÖDYT
 
-\`\`\`
-$(ls -la src/cli/manage_answers.py src/core/data_manager.py src/cli/base_cli.py 2>/dev/null | awk '{print $9, "(" $5 " tavua)"}' || echo "Tiedostoja ei saatavilla")
-\`\`\`
+✅ **Parempi ylläpidettävyys** - Jokaisella moduulilla on selkeä vastuualue  
+✅ **Uudelleenkäytettävyys** - Komponentteja voi käyttää muualla  
+✅ **Testattavuus** - Pienempiä moduuleja on helpompi testata  
+✅ **Vähemmän konflikteja** - Useat kehittäjät voivat työskennellä eri moduuleissa  
+✅ **Selkeämpi koodirakenne** - Koodi on helpompi lukea ja ymmärtää
 
 ## 💡 KESKUSTELUN JATKAMINEN
 
 **Kopioi tämä dokumentti uuteen keskusteluun ja lisää:**
 
-1. **Tärkeimmät uudet tiedostot** (manage_answers.py, data_manager.py, base_cli.py)
+1. **Uudet modulaariset komponentit** (HTML generaattori, puolueiden hallinta, vastausten hallinta)
 2. **Spesifit kysymykset** seuraavista vaiheista
-3. **Ongelmakohteet** tai parannusehdotukset
+3. **Testaus- tai laajennusehdotukset** uusille moduuleille
 
 **Esimerkkikysymyksiä:**
-- "Miten parantaisit manage_answers.py toteutusta?"
-- "Autatko toteuttamaan IPFS-synkronoinnin?"
-- "Mitä mieltä olet nykyisestä refaktorointityöstä?"
+- "Miten testaisit uusia modulaarisia komponentteja?"
+- "Autatko toteuttamaan IPFS-synkronoinnin modulaarisella tavalla?"
+- "Mitä muita moduuleja voitaisiin jakaa?"
+- "Miten parantaisit modulaarisen arkitehtuurin yhtenäisyyttä?"
 EOF
 
 echo "✅ Kaikki dokumentaatio generoitu!"
