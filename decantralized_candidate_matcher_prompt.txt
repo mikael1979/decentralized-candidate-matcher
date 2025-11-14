@@ -428,7 +428,11 @@ lisätään toimintamalliksi iteratiivinen prosessi, jossa aina uuden ominaisuud
 *Jos tarvitset aikaisempaa koodia koneelta, niin pyydä lukemaan ja kopoimaan se sinulle. 
 *web käyttöliittymää varten voisi luoda vielä python ohjelman joka generoi staattisen html profiilisivun puolueelle ja ehdokkaalle. Sivu tallennetaan ipfs:ään. Sitten olisi css-tyylisivu template, jota muokkaamalla puolue saisi itselleen ja ehdokkailleen omissa tunnusväreissään olevan sivun. 
 *TÄRKEÄ HUOMIO! - tämä on täsmälleen se yhteensopivuusongelma.. ipfshttpclient ei tue IPFS Kubo 0.38.2:ta. Toteutetaan IPFSClient uudelleen käyttämään suoraan IPFS:n REST-APIa requests-kirjaston kautta.
-
-
+-------------------------------------------------------------------------------------------------
+*jos kokeillaan worker donen luontia niin että ladataan asetustiedosto ja vaalilista ipfs:ään, josta asennusohjelma lukee vaalilista tiedoston ja lataa vaalien asennustiedoston ja sitten luo tiedostossa kuvatut vaalit
+*Ensin tehdään master, joka simuloi ensimmäistä nodea ja luo vaalikohtaisen vaalikoneen asetukset ja lataa ne ipfs:ään ja lisää uudet vaalit vaalilistaan myös tarkistaa onko vaalilistaan jo lisätty vastaavat vaalit. Tämän jälkeen master luo vaalikohtaiset asetukset ja lataa ne ipfs:ään worker-nodeja varten. Master on myös vaalikoneen toimiessa tasa-arvoinen muiden nodien kanssa, eli kyse on käytännössä ensimmäisestä nodesta.
+* worker-nodi taas lukee luataessa vaalilistan ja, kun halutut vaalit valitaan lataa worker-node vaalien asetukset ipfs:stä ja luo paikallisen asennuksen. Asetukset ovat suurimmaksi osaksi samat kuin master-node on asettanut toisinsanoen kaikki vaaleihin liittyvät asetukset tulevat masterilta. Tietenkin nodelle luodaan yksilöllinen ID ja yhteys asetukset jne, jotka eivät liity vaalien asetukseiin voidaan määrittää nodelle konekohtaisesti.
+Testivaaleina käytetään aina Jumaltenvaaleja2026 kunnes koneeseen aletaan syöttämään virallisia vaaleja.
+----------------------------------------------------------------------------------------------------------------------------
 
 
