@@ -1,0 +1,313 @@
+{
+  "generated_at": "2025-11-15T02:40:53.808059",
+  "git_status": "Post-merge analysis",
+  "codebase_overview": {
+    "total_python_files": 65,
+    "total_lines_of_code": 6273,
+    "average_file_size": 96.50769230769231
+  },
+  "module_structure": {
+    "templates": {
+      "files": [
+        "ipfs_publisher.py",
+        "candidate_templates.py",
+        "html_generator.py",
+        "template_utils.py",
+        "css_generator.py",
+        "html_templates.py",
+        "base_templates.py",
+        "profile_manager.py",
+        "party_templates.py"
+      ],
+      "file_count": 9
+    },
+    "managers": {
+      "files": [
+        "ipfs_sync_manager.py",
+        "candidate_key_manager.py",
+        "secure_answer_manager.py",
+        "question_manager.py",
+        "elo_manager.py",
+        "crypto_manager.py",
+        "init.py",
+        "analytics_manager.py",
+        "divine_manager.py",
+        "ipfs_manager.py",
+        "media_registry.py",
+        "enhanced_party_manager.py",
+        "quorum_manager.py"
+      ],
+      "file_count": 13
+    },
+    "core": {
+      "files": [
+        "validators.py",
+        "file_utils.py",
+        "election_validator.py",
+        "init.py",
+        "data_manager.py",
+        "ipfs_client.py",
+        "config_manager.py",
+        "error_handling.py"
+      ],
+      "file_count": 8
+    },
+    "nodes": {
+      "files": [
+        "node_manager.py",
+        "network_sync.py",
+        "quorum_voting.py"
+      ],
+      "file_count": 3
+    },
+    "nodes.worker": {
+      "files": [
+        "election_installer.py"
+      ],
+      "file_count": 1
+    },
+    "cli": {
+      "files": [
+        "party_verification.py",
+        "elo_admin.py",
+        "party_analytics.py",
+        "answer_validation.py",
+        "validate_data.py",
+        "enhanced_party_verification.py",
+        "node_management.py",
+        "manage_answers.py",
+        "manage_candidates.py",
+        "compare_questions.py",
+        "answer_reports.py",
+        "publish_election_configs.py",
+        "candidate_credentials.py",
+        "link_candidate_to_party.py",
+        "party_stats.py",
+        "base_cli.py",
+        "answer_commands.py",
+        "manage_questions.py",
+        "ipfs_sync.py",
+        "party_commands.py",
+        "manage_parties.py",
+        "generate_profiles.py",
+        "manage_answers_refactored.py",
+        "install.py",
+        "analytics.py"
+      ],
+      "file_count": 25
+    }
+  },
+  "test_coverage": {
+    "total_test_files": 28,
+    "unit_tests": 9,
+    "integration_tests": 19,
+    "test_files": [
+      {
+        "path": "tests/run_tests.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/__init__.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/run_integration_tests.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/unit/test_file_utils.py",
+        "type": "unit"
+      },
+      {
+        "path": "tests/unit/test_answer_commands.py",
+        "type": "unit"
+      },
+      {
+        "path": "tests/unit/test_crypto_manager.py",
+        "type": "unit"
+      },
+      {
+        "path": "tests/unit/test_html_templates.py",
+        "type": "unit"
+      },
+      {
+        "path": "tests/unit/__init__.py",
+        "type": "unit"
+      },
+      {
+        "path": "tests/unit/test_ipfs_publisher.py",
+        "type": "unit"
+      },
+      {
+        "path": "tests/unit/test_profile_manager.py",
+        "type": "unit"
+      },
+      {
+        "path": "tests/unit/test_answer_validation.py",
+        "type": "unit"
+      },
+      {
+        "path": "tests/unit/test_party_commands.py",
+        "type": "unit"
+      },
+      {
+        "path": "tests/integration/test_party_creation.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/integration/test_media_registry.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/integration/test_html_generation_integration.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/integration/test_analytics.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/integration/test_analytics_simple.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/integration/test_quorum_voting.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/integration/__init__.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/integration/test_elo_comparison_simple.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/integration/test_party_creation_pki.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/integration/test_answers.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/integration/test_elo_comparison.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/integration/test_candidate_delegation.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/integration/test_candidates.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/integration/test_party_creation_simple.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/integration/test_secure_answers.py",
+        "type": "integration"
+      },
+      {
+        "path": "tests/integration/test_questions.py",
+        "type": "integration"
+      }
+    ]
+  },
+  "largest_files": [
+    {
+      "path": "src/templates/html_templates.py",
+      "lines": 451,
+      "module": "templates"
+    },
+    {
+      "path": "src/templates/css_generator.py",
+      "lines": 354,
+      "module": "templates"
+    },
+    {
+      "path": "src/cli/party_commands.py",
+      "lines": 270,
+      "module": "cli"
+    },
+    {
+      "path": "src/core/ipfs_client.py",
+      "lines": 250,
+      "module": "core"
+    },
+    {
+      "path": "src/managers/ipfs_sync_manager.py",
+      "lines": 203,
+      "module": "managers"
+    },
+    {
+      "path": "src/nodes/worker/election_installer.py",
+      "lines": 202,
+      "module": "worker"
+    },
+    {
+      "path": "src/cli/generate_profiles.py",
+      "lines": 191,
+      "module": "cli"
+    },
+    {
+      "path": "src/managers/quorum_manager.py",
+      "lines": 180,
+      "module": "managers"
+    },
+    {
+      "path": "src/templates/profile_manager.py",
+      "lines": 168,
+      "module": "templates"
+    },
+    {
+      "path": "src/managers/enhanced_party_manager.py",
+      "lines": 160,
+      "module": "managers"
+    },
+    {
+      "path": "src/templates/html_generator.py",
+      "lines": 156,
+      "module": "templates"
+    },
+    {
+      "path": "src/cli/answer_commands.py",
+      "lines": 155,
+      "module": "cli"
+    },
+    {
+      "path": "src/cli/party_verification.py",
+      "lines": 150,
+      "module": "cli"
+    },
+    {
+      "path": "src/cli/answer_reports.py",
+      "lines": 149,
+      "module": "cli"
+    },
+    {
+      "path": "src/managers/secure_answer_manager.py",
+      "lines": 142,
+      "module": "managers"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "refactoring",
+      "priority": "high",
+      "description": "2 tiedostoa yli 300 riviä - harkitse jakamista",
+      "files": [
+        "src/templates/html_templates.py",
+        "src/templates/css_generator.py"
+      ]
+    },
+    {
+      "type": "organization",
+      "priority": "medium",
+      "description": "managers-moduuli sisältää yli 10 tiedostoa - harkitse alimoduuleja",
+      "details": "Tiedostoja: 13"
+    }
+  ]
+}

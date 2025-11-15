@@ -56,6 +56,7 @@
 - [x] Väriteemat puolueille
 - [x] IPFS-julkaisu profiileista
 - [x] Base.json metadata-järjestelmä
+- [x] **Template-modulaarisuus** - Refaktoroitu html_templates.py erikoistuneisiin moduuleihin
 
 ### 🔧 Data Validointi
 - [x] `validate_data.py` - Data-eheyden tarkistus
@@ -65,6 +66,11 @@
 ---
 
 ## 🚧 TEKIJÄLLÄ (🔨 KEHItyksessä)
+
+### 🌐 IPNS & Dynaamiset Osoitteet
+- [ ] **IPNSManager-luokan luonti** - `src/managers/ipns_manager.py`
+- [ ] **Profiilipohjien päivitys IPNS-linkeillä** - Dynaamiset osoitteet staattisten sijaan
+- [ ] **Automaattinen IPNS-päivitys** - Triggeri uusien profiilien generoinnin yhteydessä
 
 ### 🖥️ Moninode-järjestelmä
 - [ ] `node_management.py` - Solmujen hallinta
@@ -92,129 +98,77 @@
 - [ ] Mobiiliystävällisyys
 - [ ] Reaaliaikainen tulospalvelu
 
+### 🔄 Päivitettävyys & Versionhallinta
+- [ ] **Profiiliversiointi** - Jokaiselle profiilille versionumero
+- [ ] **Data-skeeman hallinta** - Yhteensopivuus vanhempien versioiden kanssa
+
 ---
 
 ## 🎯 PRIORITEETIT
 
 ### 🥇 PRIORITEETTI 1 (Seuraavaksi)
-1. **Moninode-järjestelmän viimeistely** - Hajautettu arkkitehtuuri
-2. **`voting_engine.py`** - Vaalikoneen ydin
+1. **IPNS & Dynaamiset osoitteet** - Päivitettävyys koko järjestelmään
+2. **Moninode-järjestelmän viimeistely** - Hajautettu arkkitehtuuri
 
 ### 🥈 PRIORITEETTI 2 
-3. **Web-käyttöliittymä** - Graafinen käyttöliittymä
-4. **Tulosten visualisointi** - Käyttäjäystävälliset raportit
+3. **`voting_engine.py`** - Vaalikoneen ydin
+4. **Web-käyttöliittymä** - Graafinen käyttöliittymä
 
 ### 🥉 PRIORITEETTI 3
-5. **Laajamittainen testaus** - Skaalautuvuustestit
-6. **Dokumentaatio** - Käyttöohjeet ja API-dokumentaatio
+5. **Tulosten visualisointi** - Käyttäjäystävälliset raportit
+6. **Laajamittainen testaus** - Skaalautuvuustestit
 
 ---
 
-## 🏗️ TEKNISET TIEDOT
+## 🌟 VIIMEISIMMÄT SAAVUTUKSET
 
-### Tiedostorakenne
+### 📅 Tämän Päivän Saavutukset
+- **✅ HTML Template Refaktorointi** - `html_templates.py` jaettu modulaarisiin osiin:
+  - `candidate_templates.py` (208 riviä) - Ehdokasprofiilit
+  - `party_templates.py` (261 riviä) - Puolueprofiilit  
+  - `html_templates.py` (59 riviä) - Päämoduuli (87% pienempi)
+  - `template_utils.py` (38 riviä) - Aputyökalut
+- **✅ Kaikki 48 testiä menevät läpi** refaktoroinnin jälkeen
+- **✅ Git Flow -malli** käyttöön: develop-haara luotu
+- **✅ IPFS-profiilijulkaisu** toimii täydellisesti
 
-src/
-├── cli/
-│ ├── ✅ install.py # Järjestelmän asennus
-│ ├── ✅ manage_questions.py # Kysymysten hallinta
-│ ├── ✅ manage_candidates.py # Ehdokkaiden hallinta
-│ ├── ✅ manage_parties.py # Puolueiden hallinta
-│ ├── ✅ compare_questions.py # ELO-vertailu
-│ ├── ✅ elo_admin.py # ELO-hallinta
-│ ├── ✅ link_candidate_to_party.py
-│ ├── ✅ manage_answers.py # Ehdokkaiden vastaukset
-│ ├── ✅ ipfs_sync.py # IPFS-synkronointi
-│ ├── ✅ analytics.py # Analytics
-│ ├── ✅ generate_profiles.py # HTML-profiilit
-│ ├── 🔨 node_management.py # Moninode-hallinta
-│ └── ⏳ voting_engine.py # Vaalikoneen ydin
-├── core/
-│ ├── ✅ ipfs_client.py # IPFS-integrointi
-│ └── ✅ pki_manager.py # PKI-turvajärjestelmä
-├── nodes/
-│ ├── 🔨 network_sync.py # Verkon synkronointi
-│ ├── 🔨 node_manager.py # Solmujen hallinta
-│ └── 🔨 quorum_voting.py # Hajautettu äänestys
-└── templates/
-├── ✅ html_generator.py # HTML-generaattori
-└── ✅ base_template.css # CSS-tyylit
-
-
-### Data-tiedostot
-
-data/
-├── runtime/
-│ ├── ✅ meta.json # Järjestelmän metadata
-│ ├── ✅ system_chain.json # Muutoshistoria
-│ ├── ✅ questions.json # Kysymykset + ELO-luokitukset
-│ ├── ✅ candidates.json # Ehdokkaat
-│ ├── ✅ parties.json # Puolueet
-│ ├── ✅ candidate_answers.json # Ehdokkaiden vastaukset
-│ └── ✅ ipfs_sync.json # IPFS-synkronointitila
-├── nodes/
-│ ├── 🔨 Jumaltenvaalit2026_nodes.json
-│ ├── 🔨 Jumaltenvaalit2026_network_sync.json
-│ └── 🔨 Jumaltenvaalit2026_votes.json
-└── credentials/
-├── ✅ candidate_certs/ # Ehdokkaiden sertifikaatit
-└── ✅ party_certs/ # Puolueiden sertifikaatit
-
+### 🏗️ Arkkitehtuuriparannukset
+- **Parempi koodinlaatu** - Yksittäiset tiedostot < 300 riviä
+- **Selkeämmät vastuualueet** - Jokaisella template-tyypillä oma moduuli
+- **Helppo laajennettavuus** - Uusia template-tyyppejä voi helposti lisätä
+- **Täysi yhteensopivuus** - Kaikki olemassa olevat toiminnot säilyvät
 
 ---
 
-## 🎉 VIIMEISIMMÄT SAAVUTUKSET (TÄMÄN PÄIVÄN)
+## 🚀 ALOITA IPNS-TOTEUTUS
 
-### 🌟 TÄRKEIMMÄT SAAVUTUKSET
-- **✅ HTML Profiilien Generointi** - Kaikki puolueet ja ehdokkaat saatavilla IPFS:stä
-- **✅ IPFS-Integrointi Korjattu** - Täysi yhteensopivuus IPFS Kubo 0.38.2:n kanssa
-- **✅ Oikeat IPFS-CID:t** - Kaikki profiilit julkaistu oikeaan IPFS-verkkoon
-- **✅ Release v1.0.0** - Ensimmäinen tuotantovalmissa versio
-
-### 🔧 Tekniset Parannukset
-- **Korvattu `ipfshttpclient`** suoralla HTTP API:lla
-- **UTF-8 tuki** suomen kielelle IPFS:ässä
-- **Väriteemat** puolueille
-- **Base.json metadata-järjestelmä**
-
-### 📊 Tuotantovalmiudet
-- **12 profiilia** saatavilla IPFS-verkossa
-- **5 puoluetta** ja **12 ehdokasta** julkaistu
-- **Kaikki testit menevät läpi**
-- **Koodi päähaarassa** ja tagattu v1.0.0
-
----
-
-## 🚀 TUOTANTOVALMIS JÄRJESTELMÄ
-
-### 📦 Mitä on Valmiina
 ```bash
-# 1. Generoi kaikki profiilit IPFS:ään
-python src/cli/generate_profiles.py publish-all-to-ipfs --election Jumaltenvaalit2026
+# 1. Vaihda develop-haaraan
+git checkout develop
 
-# 2. Tarkista profiilien tila
-python src/cli/generate_profiles.py status --election Jumaltenvaalit2026
+# 2. Luo uusi feature-haara IPNS:lle
+git checkout -b feature/ipns-dynamic-links
 
-# 3. HTML-profiilit saatavilla
-#    https://ipfs.io/ipfs/QmVAPCMdMbYdsD... (Testipuolue)
-#    https://ipfs.io/ipfs/QmYR3WTKdcphx... (Zeus)
+# 3. Aloita toteutus
+# - Luo src/managers/ipns_manager.py
+# - Päivitä templatejä käyttämään IPNS-osoitteita
+# - Testaa mock-ympäristössä
+📊 TEKNINEN TILANNE
+Tiedostorakenne (Päivitetty)
+text
+src/templates/
+├── ✅ candidate_templates.py (208 riviä) - Ehdokasprofiilit
+├── ✅ party_templates.py (261 riviä) - Puolueprofiilit  
+├── ✅ html_templates.py (59 riviä) - Päämoduuli
+├── ✅ template_utils.py (38 riviä) - Aputyökalut
+├── ✅ css_generator.py (354 riviä) - CSS-generointi
+├── ✅ html_generator.py (156 riviä) - HTML-generaattori
+└── ✅ profile_manager.py (168 riviä) - Profiilien hallinta
+Testitilanne
+48 testiä - Kaikki menevät läpi
 
-🌐 IPFS-Linkit
-Testipuolue: QmVAPCMdMbYdsDvPeXUJZ9MZ1UpsdNNhgDvZSs7dsPkAYf
+100% läpäisy refaktoroinnin jälkeen
 
-Zeus: QmYR3WTKdcphxBuk6zB5mCsK2X9bZv6TcUSoLkhpZrNQvX
+Modulaarisuus testattu - Kaikki template-moduulit toimivat
 
-Athena: QmXXbqpiJyVRvZLXYNg1Hqns2Mnd8f9iJWhF8gyKsmKgKd
-
-💡 SEURAAVAT ASKELEET
-🔨 Välitavoitteet
-Viimeistele moninode-järjestelmä - Hajautettu arkkitehtuuri
-
-Toteuta voting_engine.py - Vaalikoneen ydinlogiikka
-
-🎯 Pitkän tähtäimen tavoitteet
-Web-käyttöliittymä - Moderni React-sovellus
-
-Skaalautuvuus - Suurten vaalien tuki
-
-13.11.2025
+Päivitetty: la 15.11.2025

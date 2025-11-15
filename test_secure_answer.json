@@ -11,11 +11,11 @@
         "en": "Completely agree - this is an important question",
         "sv": "Helt \u00f6verens - detta \u00e4r en viktig fr\u00e5ga"
       },
-      "submission_timestamp": "2025-11-14T10:21:47.902852",
+      "submission_timestamp": "2025-11-15T03:19:38.172062",
       "document_version": "1.0",
       "previous_answer_hash": "initial"
     },
-    "answer_signature": "bchEirauK8dS7zFVyn09IUtlrMhmLwaGqyvz7GvT82cpO8TtfTwy145iUATQuDUhhv6awADzUdL3RRObiQ+y8gv9wPj5sWTX0gbxUmfnG+2aS/QzyFU5Ycb+atLjoyc7XijXi6guSIi9zawuYZOIOvvu6PnLcSePKA0K2oPyAsvnUyiht2S+GLCb5fHCF56B8F+xEuW3xvCSLpodpqCqZm9UTuzuxAFAL6QRGVzeR51lVMj8sxUPzZ6cxMEWDYGPpiWZbSORM7UrTaARgdkhZU0V1JyRWakmcR0coc/qP0AScbiB8TwI4PrhskvSdnvhN067zGhSEaaLd7J/lMHxHA==",
+    "answer_signature": "j8MkwuFEQD7ErBkVrYXDwj0TSVqcc4OJubr+AofFSY5dYlarbONcr4Fe5CM/DUlPVTZS5iWkrSFmyim+rFCaaa95Z5r4OvRHo9jIv0mhLcXCDYRgFF4IKrD5T5ZZuNdd+EdFbZ4TfQ1U07Zxs+eLr3/70YaNie+Xg4y9mHtUCD8YWAlBDNciAaiBPdhFiwAvVluCwQuDnSmvm5EZs0jMy6nnnjb8IpzT28b0thjW5YnsyVeqhiMmVveM1ej7yCp5cJdiiyCgpnn3trkuVUqE8AvMoUBcmXRYzioQkN9HuCFtRA+eK4/R0bWK7eO0KT+R2OIl86cMPEDhKBZSt4Twdg==",
     "delegation_chain": {
       "delegation_document": {
         "election_id": "Jumaltenvaalit2026",
@@ -27,25 +27,25 @@
           "view_own_data",
           "update_profile"
         ],
-        "valid_from": "2025-11-14T10:21:47.858735",
-        "valid_until": "2026-02-12T10:21:47.858746",
-        "candidate_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAignxETTqqHpmDAszSzoj\nAFevxoesv1oXRYXVfabH6ry2i69uYioxzWWHG5ufkdy2Kh3zM1h/VwyKEc9Tr/Vb\nmZlqlAuv3eb7mDKDBzGODXGIRwLpJmpDwtB/iDDhdJ/JG2ejC0LEhi2L+x+mLE6Q\nHG8w4X0OJpCEj+CD8Kl5SJ/iZ6mwHce1d4rbOggNM6SNNM54cauUAaOXYE2fWjYo\nS/V1Ct7JYEL5vR+paxreEmHg5/1RLvRhkzlXeOngd5bDQalL9LcbzJp6C/BLgcBV\nlECXzALsZzQZPCJtGTXQhc0TVe4QRxNGY2BLmiiMGyEaX3RBXNYdf2VL70gqRzJ4\nGQIDAQAB\n-----END PUBLIC KEY-----\n",
-        "candidate_key_fingerprint": "4478be1aa7b62efe",
+        "valid_from": "2025-11-15T03:19:38.117737",
+        "valid_until": "2026-02-13T03:19:38.117749",
+        "candidate_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAk0LFRMMCSHU5b3deSnW8\nbRTeBvConpVu6O5hu4GXrtGm3Piz6fYBQL+4+FAyESucj8mSmVtRG69tOpMZ0KYO\nMnMhhuff4TA1MJ4iuTLBR3zFpMNxyMtAa9m9HBoz8WbIdAMiUx/YRMG3dAnpgboM\nClZs4OclnZhgK3YJ7QhnJ5pEJ2s9k3Cwj5BdcNtevOUKbNO/Sc18AffgRaAiG7xQ\nj7pGk3st6wtdEEweN206K2726PBnMzK0edVvXnuS+y5M28nGXqxTlXtxN2a0aOJY\nlOV2lz+zVpJSOc6li24DDhWZOnV6ocVDRLR/hGFq+WA/T/2BqzlEIRTzulQbRH7t\nsQIDAQAB\n-----END PUBLIC KEY-----\n",
+        "candidate_key_fingerprint": "221023e0984cf1d6",
         "document_version": "1.0"
       },
-      "delegation_signature": "uM678husxirpsVQ6IC446t9QuuGW/2/s+89yxvNqa91/YOzpCMAF/qIiYr8rgMWsucYsF1Mk1hzm1r35Kmd0mKk+kxZTualdOt02eo0zRmJVpse9ukN4JQUcJGE81rPCRBz9LohZTRiW+FDCeFILuAM6p650GJlXW4dNHW5RUeQL5DjEO/2SxNVzNCroL/iVfH2pynWZTyhJ5Jk5Gp1aWG1cJL5Z4oKjyVZpgi8+9jsCR/2L2J+d6uaTR+W5tIMagN84uhb/aaouUWnMMnfoWfS4OUahZVh3BGVmCstEnimn+ZS8V6y8YUvFsZ8WDlEBuSQ65PgtHVRqz/Em7A/s9g==",
-      "party_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0L86FzPpq6dIA5uTBgWZ\nM8p/RzeXXAHDjDGZ1SQg4JJEXIzdxxsGgP7Pf/MEMpemgp9b5T0Q9JrvrkqGxKiR\nb3sENYOqKwW2ps9OqZtH8LxETWaSu0uMVETJFTzLgQkgKFObTCK3ROAIJ/+QFYZ1\n6B+d5meLb2TsPA2WW/3eLhthIp4z2JhWeqEkQ9yviZjwfqkXkMdUw5GbPp+4Jn/W\nrON33I4ZEPu7maMoKGhT8hL+CjfVxUHP1zYz6EmkMEn/nQryhAzne00R7amrC1HE\ndVYNtB5PGgDt+ljsY/VLwL6Bk7ZdhwnP24K864/wgpqwRH98/40QjkIU/VPVzBNb\nCwIDAQAB\n-----END PUBLIC KEY-----\n"
+      "delegation_signature": "Ea4u54usIyGL47abaryw9gs9olXisfvyUetK7PvQDrMA8relsWY8D2BTVFvumVomkLTOZyIRA6d4OoB+VM37bIgjkIs9wBn5KPBsbuJ2VwlOS2JYU9H/TaInUSEoN6ADpTHUZ5AtuDdRTJ4ES0Yqbr+xGrICqp7h2zIhXeYRSSMJPc92p/+4vErp4+xoB8gpnfpJueesXO082EujQ/li9V1XFLwSGjIEQSNVS2XKszjuQtm2bOhON9VTdnT27el9wT5LZ0XfmB67AKWcF/1q1mxhccy/6oSf9rwtCRXlETVAEyp0lGZrgDMUalkfcQrJLN02BOG5B3zKsG+PB5VcOg==",
+      "party_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwzT5wZKJHFZx/XLq4xxf\ngLwzvcjtMzqqJV5O7kZNtlgqbUNymRCTYQU9Y5om5E855WQG3OWjn1v8SuPbcyrp\n3hXyUMJRs3tRDjBtSSw4EWPpaEVVvdzo41uV0XXulcvLt+MUKtxcXDh1u8NxPDr3\n5h8UchUSijD05YW2+Hny3Bl3FOXPtMHdV+1MjtmBMifVPhq/o0boQHWWfuUtv6N1\nCLz//DkvBhANnqyqZxn8KFmNRiyc/gmGMjRNOAno+QgPuSRimi6yCvBmQmBAKvbp\nE9qdglytwzmuibZ32Vzz96+TlB4trRWPo1A6r7RcwM/cBGpsYk4Xw6W0dVin5Nyf\ntwIDAQAB\n-----END PUBLIC KEY-----\n"
     },
     "metadata": {
-      "submission_id": "ans_532ab63b29a0df25",
+      "submission_id": "ans_9fb32dbe9a3227a4",
       "integrity_verified": true,
-      "verification_timestamp": "2025-11-14T10:21:47.950204",
-      "hash_chain": "197cf3e219f8ab1ed8850bed3940f1d8d48e4cdef30b77ae61b706e95727f759"
+      "verification_timestamp": "2025-11-15T03:19:38.222535",
+      "hash_chain": "0f3fb076f8bd8ceb379d060f8876697c0c64d42b4ad079aa209d12aa54701748"
     }
   },
   "test_info": {
     "candidate_id": "cand_secure_001",
     "question_id": "q_test_001",
-    "generated_at": "2025-11-14T10:21:47.902852"
+    "generated_at": "2025-11-15T03:19:38.172062"
   }
 }
