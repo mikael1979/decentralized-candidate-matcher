@@ -436,5 +436,36 @@ lisätään toimintamalliksi iteratiivinen prosessi, jossa aina uuden ominaisuud
 * worker-nodi taas lukee luataessa vaalilistan ja, kun halutut vaalit valitaan lataa worker-node vaalien asetukset ipfs:stä ja luo paikallisen asennuksen. Asetukset ovat suurimmaksi osaksi samat kuin master-node on asettanut toisinsanoen kaikki vaaleihin liittyvät asetukset tulevat masterilta. Tietenkin nodelle luodaan yksilöllinen ID ja yhteys asetukset jne, jotka eivät liity vaalien asetukseiin voidaan määrittää nodelle konekohtaisesti.
 Testivaaleina käytetään aina Jumaltenvaaleja2026 kunnes koneeseen aletaan syöttämään virallisia vaaleja.
 ----------------------------------------------------------------------------------------------------------------------------
-
-
+Sivut ja profiilit pitäisi hakea CID:n avulla jotta tuo toimii oikein. 🎯 IPNS-toteutusvaiheet
+1. IPNS-periaate
+IPNS mahdollistaa vakio-osoitteen joka osoittaa aina uusimpaan CID:ään
+ipfs name publish QmUusiCID → /ipns/YourPeerID
+Sama URL pysyy voimassa vaikka sisältö päivittyy
+2. Käyttötapaukset järjestelmässämme
+Pääprofiilisivu joka osoittaa aina uusimpiin profiileihin
+Puolueluettelo joka päivittyy automaattisesti
+Ehdokasluettelo dynaamisena versiona
+3. Toteutusstrategia
+python
+# Esimerkki IPNS-julkaisusta
+class IPNSManager:
+    def publish_profile_directory(self, latest_cid: str) -> str:
+        """Julkaise profiilikansio IPNS:ään"""
+        # ipfs name publish QmLatestCID --key=profiles
+        return f"/ipns/{self.peer_id}"
+🔧 Toteutussuunnitelma
+Vaihe 1: IPNS-julkaisutoiminnot
+python
+# src/managers/ipns_manager.py
+class IPNSManager:
+    def publish_latest_profiles(self, profiles_cid: str) -> str:
+    def publish_party_index(self, parties_cid: str) -> str:
+    def publish_candidate_index(self, candidates_cid: str) -> str:
+Vaihe 2: Template-päivitykset
+python
+# Päivitä templatet käyttämään IPNS-osoitteita
+# href="/ipns/QmPeerID/parties" vs href="/ipfs/QmStaticCID"
+Vaihe 3: Automatisointi
+python
+# Automaattinen IPNS-päivitys profiilien muuttuessa
+----------------------------------------------------------------------------------------
