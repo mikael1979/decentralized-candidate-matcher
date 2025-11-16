@@ -436,8 +436,8 @@ lisätään toimintamalliksi iteratiivinen prosessi, jossa aina uuden ominaisuud
 * worker-nodi taas lukee luataessa vaalilistan ja, kun halutut vaalit valitaan lataa worker-node vaalien asetukset ipfs:stä ja luo paikallisen asennuksen. Asetukset ovat suurimmaksi osaksi samat kuin master-node on asettanut toisinsanoen kaikki vaaleihin liittyvät asetukset tulevat masterilta. Tietenkin nodelle luodaan yksilöllinen ID ja yhteys asetukset jne, jotka eivät liity vaalien asetukseiin voidaan määrittää nodelle konekohtaisesti.
 Testivaaleina käytetään aina Jumaltenvaaleja2026 kunnes koneeseen aletaan syöttämään virallisia vaaleja.
 ----------------------------------------------------------------------------------------------------------------------------
-Muutetaan master-noden nimeksi first-node. Tämä on loogisempi nimi noden toimintaa kuvaamaan.
-Käytetään IPNS teknologiaa IPFS osotteiden kanssa tiedostojen päivittämiseen, koska muuten CID osoitteet viittaavat vanhentuneisiin tiedostoihin.
-Lisätään flagit, joilla jäjestelmän voi laittaa toimimaan debugtilassa, jossa järjestelmä käyttää mockIPFS:ää ja tai realIPFS:ää.
-
+*Muutetaan master-noden nimeksi first-node. Tämä on loogisempi nimi noden toimintaa kuvaamaan.
+*Käytetään IPNS teknologiaa IPFS osotteiden kanssa tiedostojen päivittämiseen, koska muuten CID osoitteet viittaavat vanhentuneisiin tiedostoihin.
+*Lisätään flagit, joilla jäjestelmän voi laittaa toimimaan debugtilassa, jossa järjestelmä käyttää mockIPFS:ää ja tai realIPFS:ää.
+*Parannetaan template logiikan toimintaa, koska lopulliseen versioon ei ole fiksua hard-koodata dataa python tiedostoihin sisään.
 
