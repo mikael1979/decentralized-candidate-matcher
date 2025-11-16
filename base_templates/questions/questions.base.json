@@ -1,33 +1,89 @@
 {
   "metadata": {
-    "version": "2.0.0",
+    "template_version": "2.1.0",
     "created": "{{TIMESTAMP}}",
+    "last_updated": "{{TIMESTAMP}}",
     "election_id": "{{ELECTION_ID}}",
     "description": {
-      "fi": "Kysymysten perusrakenteet",
-      "en": "Basic question structures",
-      "sv": "Grundläggande frågestrukturer"
-    }
+      "fi": "Kysymysten perusrakenteet - KÄYTTÖ: Korvaa {{...}} placeholderit todellisilla arvoilla",
+      "en": "Basic question structures - USAGE: Replace {{...}} placeholders with actual values",
+      "sv": "Grundläggande frågestrukturer - ANVÄNDNING: Ersätt {{...}} platshållare med faktiska värden"
+    },
+    "placeholder_guidance": {
+      "fi": "Korvaa kaikki {{ISOMPI_KIRJAIMIN}} olevat arvot. Käytä uniikkeja ID:itä.",
+      "en": "Replace all {{UPPERCASE}} values. Use unique IDs.",
+      "sv": "Ersätt alla {{VERSALER}} värden. Använd unika ID:n."
+    },
+    "schema_type": "question_base"
   },
   "questions": [
     {
-      "local_id": "{{QUESTION_ID}}",
+      "local_id": "{{UNIQUE_QUESTION_ID}}",
+      "ipfs_cid": "{{IPFS_CID_OR_EMPTY}}",
+      "source": "{{SOURCE_LOCAL_OR_IPFS}}",
       "content": {
-        "category": "{{CATEGORY}}",
+        "category": "{{CATEGORY_NAME}}",
         "question": {
-          "fi": "{{FI_QUESTION}}",
-          "en": "{{EN_QUESTION}}",
-          "sv": "{{SV_QUESTION}}"
+          "fi": "{{FINNISH_QUESTION_TEXT}}",
+          "en": "{{ENGLISH_QUESTION_TEXT}}",
+          "sv": "{{SWEDISH_QUESTION_TEXT}}"
         },
+        "tags": [
+          "{{TAG_1}}",
+          "{{TAG_2}}"
+        ],
         "scale": {
           "min": -5,
-          "max": 5
+          "max": 5,
+          "step": 1,
+          "labels": {
+            "fi": {
+              "min": "Täysin eri mieltä",
+              "neutral": "Neutraali",
+              "max": "Täysin samaa mieltä"
+            },
+            "en": {
+              "min": "Strongly disagree",
+              "neutral": "Neutral",
+              "max": "Strongly agree"
+            },
+            "sv": {
+              "min": "Helt avig",
+              "neutral": "Neutral",
+              "max": "Helt enig"
+            }
+          }
         }
       },
       "elo_rating": {
         "base_rating": 1000,
-        "current_rating": 1000
+        "current_rating": 1000,
+        "comparison_delta": 0,
+        "vote_delta": 0,
+        "total_comparisons": 0,
+        "total_votes": 0,
+        "up_votes": 0,
+        "down_votes": 0
+      },
+      "timestamps": {
+        "created_local": "{{CREATION_TIMESTAMP}}",
+        "modified_local": "{{MODIFICATION_TIMESTAMP}}",
+        "last_compared": "{{LAST_COMPARISON_TIMESTAMP}}"
+      },
+      "status": "{{STATUS_ACTIVE_OR_DRAFT}}"
+    }
+  ],
+  "examples": {
+    "minimal_working_example": {
+      "local_id": "q_education_001",
+      "content": {
+        "category": "education",
+        "question": {
+          "fi": "Mitä mieltä olet korkeakoulujen maksullisuudesta?",
+          "en": "What is your opinion on university tuition fees?",
+          "sv": "Vad anser du om universitetsavgifter?"
+        }
       }
     }
-  ]
+  }
 }
