@@ -15,5 +15,16 @@
     "system_id": "system_{{ELECTION_ID}}",
     "created": "{{TIMESTAMP}}",
     "version": "2.0.0"
+  },
+  "metadata": {
+    "template_version": "2.1.0",
+    "schema_type": "election_config_base",
+    "placeholder_guidance": {
+      "fi": "Korvaa kaikki {{ISOMPI_KIRJAIMIN}} olevat arvot todellisilla tiedoilla",
+      "en": "Replace all {{UPPERCASE}} values with actual data",
+      "sv": "Ersätt alla {{VERSALER}} värden med faktiska data"
+    },
+    "created": "{{TIMESTAMP}}",
+    "last_updated": "{{TIMESTAMP}}"
   }
 }

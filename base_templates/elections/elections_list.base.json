@@ -6,7 +6,15 @@
       "fi": "Käytössä olevien vaalien lista",
       "en": "List of active elections",
       "sv": "Lista över aktiva val"
-    }
+    },
+    "template_version": "2.1.0",
+    "schema_type": "election_config_base",
+    "placeholder_guidance": {
+      "fi": "Korvaa kaikki {{ISOMPI_KIRJAIMIN}} olevat arvot todellisilla tiedoilla",
+      "en": "Replace all {{UPPERCASE}} values with actual data",
+      "sv": "Ersätt alla {{VERSALER}} värden med faktiska data"
+    },
+    "last_updated": "{{TIMESTAMP}}"
   },
   "elections": [
     {
@@ -22,10 +30,9 @@
       "master_node": "{{MASTER_NODE_ID}}",
       "description": {
         "fi": "Olimpian jumalten uuden hallituksen valinta",
-        "en": "Election for the new council of Olympian gods", 
+        "en": "Election for the new council of Olympian gods",
         "sv": "Val av nytt råd för Olympens gudar"
       }
     }
   ]
 }
-

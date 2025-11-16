@@ -11,6 +11,13 @@
       "fi": "Järjestelmän perusmetadata",
       "en": "System basic metadata",
       "sv": "Systemets grundmetadata"
+    },
+    "template_version": "2.1.0",
+    "schema_type": "base_template",
+    "placeholder_guidance": {
+      "fi": "Korvaa kaikki {{ISOMPI_KIRJAIMIN}} olevat arvot todellisilla tiedoilla",
+      "en": "Replace all {{UPPERCASE}} values with actual data",
+      "sv": "Ersätt alla {{VERSALER}} värden med faktiska data"
     }
   }
 }

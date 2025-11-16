@@ -3,7 +3,7 @@
   "created_at": "{{TIMESTAMP}}",
   "description": {
     "fi": "Järjestelmän muutoshistoria",
-    "en": "System change history", 
+    "en": "System change history",
     "sv": "Systemets ändringshistorik"
   },
   "version": "2.0.0",
@@ -17,5 +17,16 @@
       "previous_hash": null,
       "block_hash": "{{INITIAL_HASH}}"
     }
-  ]
+  ],
+  "metadata": {
+    "template_version": "2.1.0",
+    "schema_type": "system_base",
+    "placeholder_guidance": {
+      "fi": "Korvaa kaikki {{ISOMPI_KIRJAIMIN}} olevat arvot todellisilla tiedoilla",
+      "en": "Replace all {{UPPERCASE}} values with actual data",
+      "sv": "Ersätt alla {{VERSALER}} värden med faktiska data"
+    },
+    "created": "{{TIMESTAMP}}",
+    "last_updated": "{{TIMESTAMP}}"
+  }
 }

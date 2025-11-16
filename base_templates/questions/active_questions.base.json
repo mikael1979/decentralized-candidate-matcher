@@ -9,7 +9,15 @@
       "fi": "Aktiivisten kysymysten konfiguraatio",
       "en": "Active questions configuration",
       "sv": "Aktiva frågors konfiguration"
-    }
+    },
+    "template_version": "2.1.0",
+    "schema_type": "question_base",
+    "placeholder_guidance": {
+      "fi": "Korvaa kaikki {{ISOMPI_KIRJAIMIN}} olevat arvot todellisilla tiedoilla",
+      "en": "Replace all {{UPPERCASE}} values with actual data",
+      "sv": "Ersätt alla {{VERSALER}} värden med faktiska data"
+    },
+    "last_updated": "{{TIMESTAMP}}"
   },
   "selection_criteria": {
     "min_elo_rating": 800,
@@ -17,5 +25,18 @@
     "min_votes": 3,
     "max_questions": 15
   },
-  "questions": []
+  "questions": [],
+  "examples": {
+    "minimal_working_example": {
+      "local_id": "q_example_001",
+      "content": {
+        "category": "example_category",
+        "question": {
+          "fi": "Esimerkkikysymys suomeksi",
+          "en": "Example question in English",
+          "sv": "Exempelfråga på svenska"
+        }
+      }
+    }
+  }
 }

@@ -7,7 +7,15 @@
       "fi": "Ehdokkaiden profiilit ja perustelut",
       "en": "Candidate profiles and explanations",
       "sv": "Kandidatprofiler och förklaringar"
-    }
+    },
+    "template_version": "2.1.0",
+    "schema_type": "candidate_base",
+    "placeholder_guidance": {
+      "fi": "Korvaa kaikki {{ISOMPI_KIRJAIMIN}} olevat arvot todellisilla tiedoilla",
+      "en": "Replace all {{UPPERCASE}} values with actual data",
+      "sv": "Ersätt alla {{VERSALER}} värden med faktiska data"
+    },
+    "last_updated": "{{TIMESTAMP}}"
   },
   "candidates": [
     {
@@ -24,5 +32,17 @@
         }
       ]
     }
-  ]
+  ],
+  "examples": {
+    "minimal_working_example": {
+      "candidate_id": "cand_example_001",
+      "basic_info": {
+        "name": {
+          "fi": "Esimerkki Ehdokas",
+          "en": "Example Candidate",
+          "sv": "Exempelkandidat"
+        }
+      }
+    }
+  }
 }

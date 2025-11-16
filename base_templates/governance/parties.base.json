@@ -8,6 +8,13 @@
       "fi": "Puolueiden hajautettu rekisteri ja vahvistus",
       "en": "Decentralized party registry and verification",
       "sv": "Decentraliserat partiregister och verifiering"
+    },
+    "template_version": "2.1.0",
+    "schema_type": "party_base",
+    "placeholder_guidance": {
+      "fi": "Korvaa kaikki {{ISOMPI_KIRJAIMIN}} olevat arvot todellisilla tiedoilla",
+      "en": "Replace all {{UPPERCASE}} values with actual data",
+      "sv": "Ersätt alla {{VERSALER}} värden med faktiska data"
     }
   },
   "quorum_config": {
@@ -21,7 +28,7 @@
       "party_id": "{{PARTY_ID}}",
       "name": {
         "fi": "{{FI_PARTY_NAME}}",
-        "en": "{{EN_PARTY_NAME}}", 
+        "en": "{{EN_PARTY_NAME}}",
         "sv": "{{SV_PARTY_NAME}}"
       },
       "description": {
@@ -33,13 +40,20 @@
         "proposed_by": "{{NODE_ID}}",
         "proposed_at": "{{TIMESTAMP}}",
         "verification_status": "pending|verified|rejected",
-        "verified_by": ["{{NODE_ID1}}", "{{NODE_ID2}}", "{{NODE_ID3}}"],
+        "verified_by": [
+          "{{NODE_ID1}}",
+          "{{NODE_ID2}}",
+          "{{NODE_ID3}}"
+        ],
         "verification_timestamp": "{{TIMESTAMP}}",
         "rejection_reason": "{{REJECTION_REASON}}"
       },
-      "candidates": ["{{CANDIDATE_ID1}}", "{{CANDIDATE_ID2}}"],
+      "candidates": [
+        "{{CANDIDATE_ID1}}",
+        "{{CANDIDATE_ID2}}"
+      ],
       "metadata": {
-        "official_registration": {{IS_OFFICIAL}},
+        "official_registration": "{{IS_OFFICIAL}}",
         "contact_email": "{{CONTACT_EMAIL}}",
         "website": "{{WEBSITE}}",
         "founding_year": "{{YEAR}}"
@@ -54,5 +68,15 @@
       "by_node": "{{NODE_ID}}",
       "reason": "{{REASON}}"
     }
-  ]
+  ],
+  "examples": {
+    "minimal_working_example": {
+      "party_id": "party_example_001",
+      "name": {
+        "fi": "Esimerkki Puolue",
+        "en": "Example Party",
+        "sv": "Exempelparti"
+      }
+    }
+  }
 }
