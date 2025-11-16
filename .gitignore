@@ -98,3 +98,7 @@ all_community_based_python_files.txt
 
 *core_python_files.txt
 .env.example
+output/
+output/*
+docs/code_overview_
+docs/template_overview_
