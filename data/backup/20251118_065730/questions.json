@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "local_id": "q_1",
+      "content": {
+        "category": "hallinto",
+        "question": {
+          "fi": "Pitäisikö Zeusin salamaniskuoikeuksia rajoittaa?",
+          "en": "Should Zeus's lightning strike rights be limited?",
+          "sv": "Bör Zeus åskknappsrätter begränsas?"
+        },
+        "scale": {
+          "min": -5,
+          "max": 5
+        }
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "current_rating": 1154,
+        "comparison_delta": 4,
+        "vote_delta": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-11T04:52:09.470496"
+      }
+    },
+    {
+      "local_id": "q_2",
+      "content": {
+        "category": "ympäristö",
+        "question": {
+          "fi": "Pitäisikö merenpinnannousua hidastaa jumalvoimin?",
+          "en": "Should sea level rise be slowed down with divine powers?",
+          "sv": "Bör havsnivåhöjningen bromsas med gudomliga krafter?"
+        },
+        "scale": {
+          "min": -5,
+          "max": 5
+        }
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "current_rating": 833,
+        "comparison_delta": -4,
+        "vote_delta": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-11T05:07:13.022738"
+      }
+    },
+    {
+      "local_id": "q_3",
+      "content": {
+        "category": "turvallisuus",
+        "question": {
+          "fi": "Pitäisikö jumalilla olla oikeus puuttua ihmisten sotiin?",
+          "en": "Should gods have the right to intervene in human wars?",
+          "sv": "Bör gudar ha rätt att ingripa i mänskliga krig?"
+        },
+        "scale": {
+          "min": -5,
+          "max": 5
+        }
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "current_rating": 983,
+        "comparison_delta": 4,
+        "vote_delta": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-11T05:08:22.011084"
+      }
+    },
+    {
+      "local_id": "q_4",
+      "content": {
+        "category": "talous",
+        "question": {
+          "fi": "Pitäisikö jumalten kultavarantojen jakautua tasaisemmin?",
+          "en": "Should gods' gold reserves be distributed more equally?",
+          "sv": "Bör gudarnas guldreserver fördelas mer jämnt?"
+        },
+        "scale": {
+          "min": -5,
+          "max": 5
+        }
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "current_rating": 995,
+        "comparison_delta": -1,
+        "vote_delta": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-11T05:15:00.000000"
+      }
+    },
+    {
+      "local_id": "q_001",
+      "content": {
+        "category": "sky_thunder",
+        "question": {
+          "fi": "Pitääkö ukkosen jumalan osata hallita säätä?",
+          "en": "Should a thunder god be able to control weather?",
+          "sv": "Bör en åskgud kunna kontrollera vädret?"
+        },
+        "scale": {
+          "min": -5,
+          "max": 5
+        }
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "current_rating": 1000,
+        "comparison_delta": 0,
+        "vote_delta": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-12T22:54:12.323818",
+        "modified_local": "2025-11-12T22:54:12.323833"
+      }
+    },
+    {
+      "local_id": "q_002",
+      "content": {
+        "category": "wisdom_warfare",
+        "question": {
+          "fi": "Onko viisauden jumalan tehtävä opettaa ihmiskuntaa?",
+          "en": "Should a wisdom god be responsible for teaching humanity?",
+          "sv": "Bör en vishetsgud vara ansvarig för att undervisa mänskligheten?"
+        },
+        "scale": {
+          "min": -5,
+          "max": 5
+        }
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "current_rating": 1000,
+        "comparison_delta": 0,
+        "vote_delta": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-12T22:54:12.323837",
+        "modified_local": "2025-11-12T22:54:12.323838"
+      }
+    },
+    {
+      "local_id": "q_001",
+      "content": {
+        "category": "sky_thunder",
+        "question": {
+          "fi": "Pitääkö ukkosen jumalan osata hallita säätä?",
+          "en": "Should a thunder god be able to control weather?",
+          "sv": "Bör en åskgud kunna kontrollera vädret?"
+        },
+        "scale": {
+          "min": -5,
+          "max": 5
+        }
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "current_rating": 1000,
+        "comparison_delta": 0,
+        "vote_delta": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-12T23:01:11.127214",
+        "modified_local": "2025-11-12T23:01:11.127230"
+      }
+    },
+    {
+      "local_id": "q_002",
+      "content": {
+        "category": "wisdom_warfare",
+        "question": {
+          "fi": "Onko viisauden jumalan tehtävä opettaa ihmiskuntaa?",
+          "en": "Should a wisdom god be responsible for teaching humanity?",
+          "sv": "Bör en vishetsgud vara ansvarig för att undervisa mänskligheten?"
+        },
+        "scale": {
+          "min": -5,
+          "max": 5
+        }
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "current_rating": 1000,
+        "comparison_delta": 0,
+        "vote_delta": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-12T23:01:11.127233",
+        "modified_local": "2025-11-12T23:01:11.127235"
+      }
+    },
+    {
+      "local_id": "q_001",
+      "content": {
+        "category": "sky_thunder",
+        "question": {
+          "fi": "Pitääkö ukkosen jumalan osata hallita säätä?",
+          "en": "Should a thunder god be able to control weather?",
+          "sv": "Bör en åskgud kunna kontrollera vädret?"
+        },
+        "scale": {
+          "min": -5,
+          "max": 5
+        }
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "current_rating": 1000,
+        "comparison_delta": 0,
+        "vote_delta": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-12T23:13:03.917095",
+        "modified_local": "2025-11-12T23:13:03.917111"
+      }
+    },
+    {
+      "local_id": "q_002",
+      "content": {
+        "category": "wisdom_warfare",
+        "question": {
+          "fi": "Onko viisauden jumalan tehtävä opettaa ihmiskuntaa?",
+          "en": "Should a wisdom god be responsible for teaching humanity?",
+          "sv": "Bör en vishetsgud vara ansvarig för att undervisa mänskligheten?"
+        },
+        "scale": {
+          "min": -5,
+          "max": 5
+        }
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "current_rating": 1000,
+        "comparison_delta": 0,
+        "vote_delta": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-12T23:13:03.917115",
+        "modified_local": "2025-11-12T23:13:03.917116"
+      }
+    },
+    {
+      "local_id": "q_001",
+      "content": {
+        "category": "sky_thunder",
+        "question": {
+          "fi": "Pitääkö ukkosen jumalan osata hallita säätä?",
+          "en": "Should a thunder god be able to control weather?",
+          "sv": "Bör en åskgud kunna kontrollera vädret?"
+        },
+        "scale": {
+          "min": -5,
+          "max": 5
+        }
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "current_rating": 1000,
+        "comparison_delta": 0,
+        "vote_delta": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-12T23:16:25.414484",
+        "modified_local": "2025-11-12T23:16:25.414499"
+      }
+    },
+    {
+      "local_id": "q_002",
+      "content": {
+        "category": "wisdom_warfare",
+        "question": {
+          "fi": "Onko viisauden jumalan tehtävä opettaa ihmiskuntaa?",
+          "en": "Should a wisdom god be responsible for teaching humanity?",
+          "sv": "Bör en vishetsgud vara ansvarig för att undervisa mänskligheten?"
+        },
+        "scale": {
+          "min": -5,
+          "max": 5
+        }
+      },
+      "elo_rating": {
+        "base_rating": 1000,
+        "current_rating": 1000,
+        "comparison_delta": 0,
+        "vote_delta": 0
+      },
+      "timestamps": {
+        "created_local": "2025-11-12T23:16:25.414502",
+        "modified_local": "2025-11-12T23:16:25.414503"
+      }
+    }
+  ],
+  "metadata": {
+    "election_id": "Jumaltenvaalit2026",
+    "last_updated": "2025-11-12T23:16:25.414668"
+  }
+}

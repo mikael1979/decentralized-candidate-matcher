@@ -1,0 +1,490 @@
+{
+  "candidates": [
+    {
+      "candidate_id": "cand_1",
+      "basic_info": {
+        "name": {
+          "fi": "Zeus",
+          "en": "[EN] Zeus",
+          "sv": "[SV] Zeus"
+        },
+        "party": "party_001",
+        "domain": "taivas_salamat"
+      },
+      "answers": [
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Salamat kuuluvat minulle!",
+            "en": "",
+            "sv": ""
+          },
+          "created": "2025-11-12T20:51:35.777597",
+          "last_updated": "2025-11-12T20:52:04.906930"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-12T22:54:14.491127",
+          "last_updated": "2025-11-12T22:54:14.491141"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-12T23:01:13.286848",
+          "last_updated": "2025-11-12T23:01:13.286861"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-12T23:13:06.083956",
+          "last_updated": "2025-11-12T23:13:06.083971"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-12T23:16:27.568085",
+          "last_updated": "2025-11-12T23:16:27.568100"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-14T08:17:09.756293",
+          "last_updated": "2025-11-14T08:17:09.756303"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-14T10:21:47.289789",
+          "last_updated": "2025-11-14T10:21:47.289801"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-15T01:37:28.168082",
+          "last_updated": "2025-11-15T01:37:28.168128"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-15T01:47:03.317559",
+          "last_updated": "2025-11-15T01:47:03.317568"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-15T01:59:00.237826",
+          "last_updated": "2025-11-15T01:59:00.237836"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-15T02:03:31.645217",
+          "last_updated": "2025-11-15T02:03:31.645256"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-15T02:11:18.988250",
+          "last_updated": "2025-11-15T02:11:18.988259"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-15T02:13:12.147154",
+          "last_updated": "2025-11-15T02:13:12.147163"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-15T02:15:53.086400",
+          "last_updated": "2025-11-15T02:15:53.086415"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-15T02:38:54.495467",
+          "last_updated": "2025-11-15T02:38:54.495475"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-15T02:53:11.202541",
+          "last_updated": "2025-11-15T02:53:11.202550"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-15T03:13:44.012979",
+          "last_updated": "2025-11-15T03:13:44.012988"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-15T03:19:37.507504",
+          "last_updated": "2025-11-15T03:19:37.507513"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-15T05:12:39.003751",
+          "last_updated": "2025-11-15T05:12:39.003807"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-16T11:41:22.376196",
+          "last_updated": "2025-11-16T11:41:22.376206"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-17T13:00:53.040612",
+          "last_updated": "2025-11-17T13:00:53.040619"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-17T13:10:20.508480",
+          "last_updated": "2025-11-17T13:10:20.508487"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-17T13:12:44.247728",
+          "last_updated": "2025-11-17T13:12:44.247737"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-17T13:14:30.152056",
+          "last_updated": "2025-11-17T13:14:30.152063"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-17T13:17:40.806254",
+          "last_updated": "2025-11-17T13:17:40.806260"
+        },
+        {
+          "question_id": "q_1",
+          "answer_value": 5,
+          "confidence": 5,
+          "explanation": {
+            "fi": "Totta kai ukkosen jumalan täytyy hallita säätä!",
+            "en": "Of course a thunder god must control weather!",
+            "sv": "Naturligtvis måste en åskgud kontrollera vädret!"
+          },
+          "created": "2025-11-18T04:29:44.108975",
+          "last_updated": "2025-11-18T04:29:44.108983"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_2",
+      "basic_info": {
+        "name": {
+          "fi": "Athena",
+          "en": "[EN] Athena",
+          "sv": "[SV] Athena"
+        },
+        "party": "party_001",
+        "domain": "viisaus_sota"
+      },
+      "answers": [
+        {
+          "question_id": "q_1",
+          "answer_value": -3,
+          "confidence": 4,
+          "explanation": {
+            "fi": "Zeusin valtaa tulisi rajoittaa",
+            "en": "",
+            "sv": ""
+          },
+          "created": "2025-11-12T20:51:35.859672",
+          "last_updated": "2025-11-12T20:52:04.982248"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_3",
+      "basic_info": {
+        "name": {
+          "fi": "Poseidon",
+          "en": "[EN] Poseidon",
+          "sv": "[SV] Poseidon"
+        },
+        "party": "party_001",
+        "domain": "meri_maanjäristykset"
+      },
+      "answers": []
+    },
+    {
+      "candidate_id": "cand_4",
+      "basic_info": {
+        "name": {
+          "fi": "Hades",
+          "en": "[EN] Hades",
+          "sv": "[SV] Hades"
+        },
+        "party": "party_001",
+        "domain": "tuonela_aarteet"
+      },
+      "answers": []
+    },
+    {
+      "candidate_id": "cand_001",
+      "basic_info": {
+        "name": {
+          "fi": "Zeus",
+          "en": "Zeus",
+          "sv": "Zeus"
+        },
+        "party": "party_001",
+        "domain": "sky_thunder"
+      },
+      "answers": []
+    },
+    {
+      "candidate_id": "cand_002",
+      "basic_info": {
+        "name": {
+          "fi": "Athena",
+          "en": "Athena",
+          "sv": "Athena"
+        },
+        "party": "party_001",
+        "domain": "wisdom_warfare"
+      },
+      "answers": []
+    },
+    {
+      "candidate_id": "cand_001",
+      "basic_info": {
+        "name": {
+          "fi": "Zeus",
+          "en": "Zeus",
+          "sv": "Zeus"
+        },
+        "party": "party_001",
+        "domain": "sky_thunder"
+      },
+      "answers": []
+    },
+    {
+      "candidate_id": "cand_002",
+      "basic_info": {
+        "name": {
+          "fi": "Athena",
+          "en": "Athena",
+          "sv": "Athena"
+        },
+        "party": "party_001",
+        "domain": "wisdom_warfare"
+      },
+      "answers": []
+    },
+    {
+      "candidate_id": "cand_001",
+      "basic_info": {
+        "name": {
+          "fi": "Zeus",
+          "en": "Zeus",
+          "sv": "Zeus"
+        },
+        "party": "party_001",
+        "domain": "sky_thunder"
+      },
+      "answers": []
+    },
+    {
+      "candidate_id": "cand_002",
+      "basic_info": {
+        "name": {
+          "fi": "Athena",
+          "en": "Athena",
+          "sv": "Athena"
+        },
+        "party": "party_001",
+        "domain": "wisdom_warfare"
+      },
+      "answers": []
+    },
+    {
+      "candidate_id": "cand_001",
+      "basic_info": {
+        "name": {
+          "fi": "Zeus",
+          "en": "Zeus",
+          "sv": "Zeus"
+        },
+        "party": "party_001",
+        "domain": "sky_thunder"
+      },
+      "answers": []
+    },
+    {
+      "candidate_id": "cand_002",
+      "basic_info": {
+        "name": {
+          "fi": "Athena",
+          "en": "Athena",
+          "sv": "Athena"
+        },
+        "party": "party_001",
+        "domain": "wisdom_warfare"
+      },
+      "answers": []
+    }
+  ],
+  "metadata": {
+    "election_id": "Jumaltenvaalit2026",
+    "last_updated": "2025-11-12T23:16:25.956393"
+  }
+}
