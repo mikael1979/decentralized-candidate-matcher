@@ -292,11 +292,7 @@ python test_ipfs.py
 
 Tämä projekti on lisensoitu Apache 2.0 -lisenssillä - katso [LICENSE](LICENSE) tiedosto lisätietoja varten.
 
-## 🆘 Tuki
 
-- [Issues](https://github.com/your-username/decentralized-candidate-matcher/issues)
-- [Discussions](https://github.com/your-username/decentralized-candidate-matcher/discussions)
-- [Wiki](https://github.com/your-username/decentralized-candidate-matcher/wiki)
 
 ---
 
