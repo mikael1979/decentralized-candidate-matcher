@@ -452,4 +452,11 @@ IPLD sopii erinomaisesti tähän järjestelmään, koska:
 Suosittelen vaiheittaista toteutusta, aloittaen kysymysten ja ehdokkaiden IPLD-migraatiosta, ja laajentaen sitten muihin komponentteihin.
 --------------------------------------------------------------------------------------------
 real IPFS:n kirjoittamista pitää hidastaa. DHT serveri ei pysy perässä.
+ratkaistaan tilanne tar arkistolla ja synkronointilistalla
+🔄 Data Flow:
+
+Asiakas (Node) → Luo arkisto → IPFS:ään → Päivitä synkronointilista → IPFS:ään
+     ↓              ↓              ↓                    ↓
+  Kaikki data    .tar.gz       Vain arkisto    Vain pieni lista
+  paikallisessa  pakattu       CID:llä          CID:llä
 
