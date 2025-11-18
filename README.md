@@ -271,6 +271,21 @@ pytest tests/unit/
 python test_ipfs.py
 ```
 
+## 🧹 Data-eheyden ylläpito
+
+### Tarkista ja korjaa data-ongelmat
+```bash
+# Tarkista ongelmat
+python src/cli/cleanup_data.py --election Jumaltenvaalit2026 --validate
+
+# Korjaa duplikaatit (tee varmuuskopio automaattisesti)
+python src/cli/cleanup_data.py --election Jumaltenvaalit2026 --fix-duplicates --backup
+
+# Dry-run - näytä mitä korjattaisiin
+python src/cli/cleanup_data.py --election Jumaltenvaalit2026 --fix-duplicates --dry-run
+
+```
+
 ## 🔮 Tulevat Ominaisuudet
 
 - [ ] `voting_engine.py` - Varsinainen vaalikoneen ydin
@@ -279,6 +294,7 @@ python test_ipfs.py
 - [ ] Mobiili-sovellus
 - [ ] Laajempi skaalautuvuustesti
 - [ ] Blockchain-integrointi
+
 
 ## 🤝 Osallistu Kehitykseen
 
