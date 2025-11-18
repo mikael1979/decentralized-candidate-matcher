@@ -1,0 +1,37 @@
+{
+  "template_name": "css_theme",
+  "version": "1.0", 
+  "description": "CSS-tyyliteema template",
+  "structure": {
+    "type": "css",
+    "components": ["variables", "base_styles", "components"]
+  },
+  "css_template": {
+    "variables": ":root {\n  --primary-color: $primary_color;\n  --secondary-color: $secondary_color;\n  --accent-color: $accent_color;\n  --background-color: $background_color;\n  --text-color: $text_color;\n}",
+    
+    "base_styles": {
+      "body": "body {\n  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n  line-height: 1.6;\n  color: var(--text-color);\n  background-color: var(--background-color);\n  margin: 0;\n  padding: 20px;\n}",
+      
+      "container": ".container {\n  max-width: 800px;\n  margin: 0 auto;\n  background: white;\n  padding: 30px;\n  border-radius: 10px;\n  box-shadow: 0 2px 10px rgba(0,0,0,0.1);\n}"
+    },
+    
+    "components": {
+      "party_header": ".party-header {\n  text-align: center;\n  margin-bottom: 30px;\n  border-bottom: 2px solid var(--accent-color);\n  padding-bottom: 20px;\n}\n\n.party-header h1 {\n  color: var(--primary-color);\n  margin: 0;\n  font-size: 2.5em;\n}\n\n.party-slogan {\n  font-style: italic;\n  color: var(--secondary-color);\n  font-size: 1.2em;\n  margin-top: 10px;\n}",
+      
+      "candidate_card": ".candidate-card {\n  border: 1px solid var(--secondary-color);\n  border-radius: 8px;\n  padding: 20px;\n  margin: 15px 0;\n  background: #f8f9fa;\n}\n\n.candidate-card h3 {\n  color: var(--primary-color);\n  margin-top: 0;\n}\n\n.candidate-platform ul {\n  padding-left: 20px;\n}",
+      
+      "sections": ".party-info h2,\n.party-platform h2,\n.candidates h2 {\n  color: var(--primary-color);\n  border-bottom: 1px solid var(--secondary-color);\n  padding-bottom: 10px;\n}",
+      
+      "footer": ".party-footer {\n  margin-top: 30px;\n  padding-top: 20px;\n  border-top: 1px solid var(--secondary-color);\n  text-align: center;\n  color: var(--secondary-color);\n}\n\n.disclaimer {\n  font-size: 0.9em;\n  font-style: italic;\n}",
+      
+      "links": "a {\n  color: var(--accent-color);\n  text-decoration: none;\n}\n\na:hover {\n  text-decoration: underline;\n}"
+    }
+  },
+  "default_values": {
+    "primary_color": "#2c3e50",
+    "secondary_color": "#3498db", 
+    "accent_color": "#e74c3c",
+    "background_color": "#ecf0f1",
+    "text_color": "#2c3e50"
+  }
+}

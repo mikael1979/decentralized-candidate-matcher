@@ -439,5 +439,17 @@ Testivaaleina käytetään aina Jumaltenvaaleja2026 kunnes koneeseen aletaan sy�
 *Muutetaan master-noden nimeksi first-node. Tämä on loogisempi nimi noden toimintaa kuvaamaan.
 *Käytetään IPNS teknologiaa IPFS osotteiden kanssa tiedostojen päivittämiseen, koska muuten CID osoitteet viittaavat vanhentuneisiin tiedostoihin.
 *Lisätään flagit, joilla jäjestelmän voi laittaa toimimaan debugtilassa, jossa järjestelmä käyttää mockIPFS:ää ja tai realIPFS:ää.
-*Parannetaan template logiikan toimintaa, koska lopulliseen versioon ei ole fiksua hard-koodata dataa python tiedostoihin sisään.
+*Parannetaan template logiikan toimintaa, koska lopulliseen versioon ei ole fiksua hard-koodata dataa python tiedostoihin sisään. Tehdään html template tiedostot json tiedostojen sisään.
+--------------------------------------------------------------------------------------------------------------------------------------------
+IPLD sopii erinomaisesti tähän järjestelmään, koska:
+
+✅ Ratkaisee linkkien yhteensopivuusongelmat - Kaikki data samassa nimiavaruudessa
+✅ Mahdollistaa monimutkaiset kyselyt - Etsi dataa yli koko järjestelmän
+✅ Parantaa datan eheyttä - Linkitetyt solmut varmistavat konsistenssin
+✅ Skaalaa paremmin - Hajautetut kyselyt useiden nodejen yli
+✅ Tulevaisuuden turvaa - Yhteensopiva tulevien IPFS-päivitysten kanssa
+
+Suosittelen vaiheittaista toteutusta, aloittaen kysymysten ja ehdokkaiden IPLD-migraatiosta, ja laajentaen sitten muihin komponentteihin.
+--------------------------------------------------------------------------------------------
+real IPFS:n kirjoittamista pitää hidastaa. DHT serveri ei pysy perässä.
 

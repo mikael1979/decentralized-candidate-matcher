@@ -1,0 +1,31 @@
+{
+  "template_name": "candidate_card", 
+  "version": "1.0",
+  "description": "Ehdokkaan kortin template",
+  "structure": {
+    "type": "html_fragment",
+    "components": ["card", "header", "details", "platform"]
+  },
+  "html_template": {
+    "card_open": "<div class=\"candidate-card\">",
+    "header": "<h3>$name</h3>",
+    "details": {
+      "age": "<p><strong>Ikä:</strong> $age</p>",
+      "profession": "<p><strong>Ammatti:</strong> $profession</p>", 
+      "theme": "<p><strong>Kampanjan teema:</strong> $campaign_theme</p>"
+    },
+    "platform_section": {
+      "section": "<div class=\"candidate-platform\">",
+      "title": "<h4>Kantojen yhteenveto:</h4>",
+      "list_open": "<ul>",
+      "list_items": "$platform_points",
+      "list_close": "</ul>",
+      "section_close": "</div>"
+    },
+    "card_close": "</div>"
+  },
+  "default_values": {
+    "campaign_theme": "Ei määritelty"
+  },
+  "required_fields": ["name"]
+}

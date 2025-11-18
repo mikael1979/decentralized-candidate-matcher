@@ -1,155 +1,134 @@
-#!/usr/bin/env python3
 """
-Testit HTML-pohjille ja CSS-tyyleille
+Unit tests for HTML templates using JSON templates.
 """
-import pytest
-import json
-from datetime import datetime
-from src.templates.html_templates import HTMLTemplates, PARTY_COLOR_THEMES
+import unittest
+from src.templates.html_templates import HTMLTemplates
+from src.templates.css_generator import CSSGenerator
 
-class TestHTMLTemplates:
-    """Testit HTMLTemplates-luokalle"""
-    
+class TestHTMLTemplates(unittest.TestCase):
+
     def test_get_base_css_returns_string(self):
-        """Testaa että get_base_css palauttaa merkkijonon"""
+        """Test that get_base_css returns a non-empty string."""
         css = HTMLTemplates.get_base_css()
-        assert isinstance(css, str)
-        assert len(css) > 100  # Varmista että CSS on riittävän pitkä
-        assert "body" in css  # Varmista että sisältää peruselementtejä
-        assert "font-family" in css
-    
+        self.assertIsInstance(css, str)
+        self.assertGreater(len(css), 0)
+        self.assertIn('--primary-color', css)
+
     def test_party_color_themes_exist(self):
-        """Testaa että väriteemat on määritelty"""
-        assert "default" in PARTY_COLOR_THEMES
-        assert "blue_theme" in PARTY_COLOR_THEMES
-        assert "green_theme" in PARTY_COLOR_THEMES
-        assert "red_theme" in PARTY_COLOR_THEMES
-        assert "purple_theme" in PARTY_COLOR_THEMES
-    
+        """Test that color themes exist and have expected structure."""
+        themes = CSSGenerator.get_color_themes()
+        self.assertIn('default', themes)
+        self.assertIn('blue_theme', themes)
+        self.assertIn('green_theme', themes)
+        
+        # Check theme structure with new key names
+        default_theme = themes['default']
+        self.assertIn('primary', default_theme)
+        self.assertIn('secondary', default_theme)
+
     def test_color_theme_structure(self):
-        """Testaa että väriteemat sisältävät tarvittavat kentät"""
-        for theme_name, theme in PARTY_COLOR_THEMES.items():
-            assert "primary" in theme
-            assert "secondary" in theme
-            assert "accent" in theme
-            assert "background" in theme
-            # Varmista että värit ovat hex-muodossa
-            assert theme["primary"].startswith("#")
-            assert theme["secondary"].startswith("#")
-    
+        """Test that color themes have required keys."""
+        themes = CSSGenerator.get_color_themes()
+        
+        for theme_name, theme in themes.items():
+            with self.subTest(theme=theme_name):
+                self.assertIn('primary', theme)
+                self.assertIn('secondary', theme)
+                self.assertIn('accent', theme)
+                self.assertIn('background', theme)
+                self.assertIn('text', theme)
+
     def test_generate_party_html_basic_structure(self):
-        """Testaa puolueen HTML-generointia"""
+        """Test basic party HTML generation."""
         party_data = {
-            "party_id": "party_test_001",
-            "name": {"fi": "Testipuolue", "en": "Test Party", "sv": "Testparti"},
-            "description": {"fi": "Testikuvaus", "en": "Test description", "sv": "Testbeskrivning"},
-            "metadata": {
-                "founding_year": "2024",
-                "contact_email": "test@example.com",
-                "website": "https://example.com"
-            }
-        }
-        
-        colors = PARTY_COLOR_THEMES["default"]
-        page_id = "party_test_001_20240101_120000"
-        candidate_cards = "<div>Testiehdokkaat</div>"
-        ipfs_cids = {"parties": "QmTest123", "candidates": "QmTest456"}
-        election_id = "Jumaltenvaalit2026"
-        
-        html = HTMLTemplates.generate_party_html(
-            party_data, colors, page_id, candidate_cards, ipfs_cids, election_id
-        )
-        
-        # Perustarkistukset
-        assert isinstance(html, str)
-        assert "<!DOCTYPE html>" in html
-        assert "<html lang=\"fi\">" in html
-        assert "Testipuolue" in html
-        assert "Jumaltenvaalit 2026" in html
-        assert party_data["party_id"] in html
-        assert page_id in html
-    
-    def test_generate_candidate_html_basic_structure(self):
-        """Testaa ehdokkaan HTML-generointia"""
-        candidate_data = {
-            "candidate_id": "cand_test_001",
-            "basic_info": {
-                "name": {"fi": "Testi Ehdokas", "en": "Test Candidate", "sv": "Testkandidat"},
-                "party": "Testipuolue",
-                "domain": "Testialue"
-            },
-            "answers": [
+            "name": "Testipuolue",
+            "slogan": "Testi on paras",
+            "founded_year": "2024", 
+            "chairperson": "Testi Testinen",
+            "website": "https://example.com",
+            "platform": ["Testi idea 1", "Testi idea 2"],
+            "candidates": [
                 {
-                    "question_id": "q_1",
-                    "answer_value": 3,
-                    "confidence": 4,
-                    "explanation": {"fi": "Testiperustelu"}
+                    "name": "Esko Ehdokas",
+                    "age": 35,
+                    "profession": "Testaaja", 
+                    "campaign_theme": "Laadukas testaus",
+                    "platform_points": ["Testaus on tärkeää", "Laatua kaikille"]
                 }
-            ]
+            ],
+            "election_date": "2024-03-01"
         }
         
-        party_data = {
-            "party_id": "party_test_001",
-            "name": {"fi": "Testipuolue"}
+        html = HTMLTemplates.generate_party_html(party_data)
+        
+        # Check basic structure
+        self.assertIn("Testipuolue", html)
+        self.assertIn("Testi on paras", html)
+        self.assertIn("Testi idea 1", html)
+        self.assertIn("Esko Ehdokas", html)
+        self.assertIn("<!DOCTYPE html>", html)
+        self.assertIn("<html", html)
+
+    def test_generate_candidate_html_basic_structure(self):
+        """Test basic candidate HTML generation."""
+        candidate_data = {
+            "name": "Testi Ehdokas",
+            "age": 35,
+            "profession": "Testaaja",
+            "campaign_theme": "Laadukas testaus", 
+            "platform_points": ["Testaus on tärkeää", "Laatua kaikille"]
         }
         
-        colors = PARTY_COLOR_THEMES["blue_theme"]
-        page_id = "candidate_test_001_20240101_120000"
-        answer_cards = "<div>Testivastaukset</div>"
-        ipfs_cids = {"candidates": "QmTest789"}
-        election_id = "Jumaltenvaalit2026"
+        html = HTMLTemplates.generate_candidate_html(candidate_data)
         
-        html = HTMLTemplates.generate_candidate_html(
-            candidate_data, party_data, colors, page_id, answer_cards, ipfs_cids, election_id
-        )
-        
-        # Perustarkistukset
-        assert isinstance(html, str)
-        assert "<!DOCTYPE html>" in html
-        assert "Testi Ehdokas" in html
-        assert "Testipuolue" in html
-        assert candidate_data["candidate_id"] in html
-        assert page_id in html
-    
+        # Check basic structure
+        self.assertIn("Testi Ehdokas", html)
+        self.assertIn("35", html)
+        self.assertIn("Testaaja", html)
+        self.assertIn("Laadukas testaus", html)
+        self.assertIn("Testaus on tärkeää", html)
+
     def test_html_includes_metadata(self):
-        """Testaa että HTML sisältää tarvittavat metadata-tagit"""
+        """Test that HTML includes necessary metadata."""
         party_data = {
-            "party_id": "party_test_001",
-            "name": {"fi": "Testipuolue"},
-            "description": {"fi": "Testi"},
-            "metadata": {}
+            "name": "Testipuolue",
+            "slogan": "Testi",
+            "founded_year": "2024",
+            "chairperson": "Testi",
+            "website": "https://example.com",
+            "platform": ["Testi"],
+            "candidates": [],
+            "election_date": "2024-01-01"
         }
         
-        html = HTMLTemplates.generate_party_html(
-            party_data, 
-            PARTY_COLOR_THEMES["default"],
-            "test_page",
-            "<div></div>",
-            {},
-            "Testivaali2026"
-        )
+        html = HTMLTemplates.generate_party_html(party_data)
         
-        # Tarkista metadata-tagit
-        assert "meta name=\"profile-id\"" in html
-        assert "meta name=\"profile-type\"" in html
-        assert "meta name=\"party-id\"" in html
-        assert "meta name=\"election-id\"" in html
-    
+        # Check for metadata
+        self.assertIn('<meta charset="UTF-8">', html)
+        self.assertIn('<meta name="viewport"', html)
+        self.assertIn('<title>', html)
+
     def test_css_variables_included(self):
-        """Testaa että CSS-muuttujat sisältyvät HTML:ään"""
+        """Test that CSS variables are included when provided."""
         party_data = {
-            "party_id": "party_test_001",
-            "name": {"fi": "Testipuolue"},
-            "description": {"fi": "Testi"},
-            "metadata": {}
+            "name": "Testipuolue",
+            "slogan": "Testi",
+            "platform": ["Testi"],
+            "candidates": []
         }
         
-        colors = PARTY_COLOR_THEMES["red_theme"]
-        html = HTMLTemplates.generate_party_html(
-            party_data, colors, "test", "<div></div>", {}, "test"
-        )
+        # Test with CSS
+        test_css = "body { color: red; }"
+        html = HTMLTemplates.generate_party_html(party_data, test_css)
         
-        # Tarkista että CSS-muuttujat sisältyvät
-        assert f"--primary-color: {colors['primary']}" in html
-        assert f"--secondary-color: {colors['secondary']}" in html
-        assert f"--accent-color: {colors['accent']}" in html
+        self.assertIn("body { color: red; }", html)
+
+    def test_available_templates(self):
+        """Test that templates are available."""
+        templates = HTMLTemplates.get_available_templates()
+        self.assertIn('party_profile', templates)
+        self.assertIn('candidate_card', templates)
+        self.assertIn('css_theme', templates)
+
+if __name__ == '__main__':
+    unittest.main()

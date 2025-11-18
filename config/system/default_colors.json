@@ -1,0 +1,43 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "description": "Oletusväriteemat vaalijärjestelmälle"
+  },
+  "themes": {
+    "default": {
+      "primary": "#2c3e50",
+      "secondary": "#3498db",
+      "accent": "#e74c3c",
+      "background": "#ecf0f1",
+      "text": "#2c3e50"
+    },
+    "blue_theme": {
+      "primary": "#1a5276",
+      "secondary": "#3498db",
+      "accent": "#2980b9",
+      "background": "#ebf5fb",
+      "text": "#1a5276"
+    },
+    "green_theme": {
+      "primary": "#186a3b",
+      "secondary": "#27ae60",
+      "accent": "#229954",
+      "background": "#eafaf1",
+      "text": "#186a3b"
+    },
+    "red_theme": {
+      "primary": "#922b21",
+      "secondary": "#e74c3c",
+      "accent": "#cb4335",
+      "background": "#fdedec",
+      "text": "#922b21"
+    },
+    "purple_theme": {
+      "primary": "#4a235a",
+      "secondary": "#8e44ad",
+      "accent": "#7d3c98",
+      "background": "#f4ecf7",
+      "text": "#4a235a"
+    }
+  }
+}

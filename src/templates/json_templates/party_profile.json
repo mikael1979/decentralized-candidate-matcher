@@ -1,0 +1,67 @@
+{
+  "template_name": "party_profile",
+  "version": "1.0",
+  "description": "Puolueen HTML-profiilin template",
+  "structure": {
+    "type": "html",
+    "sections": ["header", "info", "platform", "candidates", "footer"]
+  },
+  "html_template": {
+    "doctype": "<!DOCTYPE html>",
+    "html_open": "<html lang=\"$language\">",
+    "head": {
+      "meta_charset": "<meta charset=\"$charset\">",
+      "meta_viewport": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">",
+      "title": "<title>$party_name - Vaaliprofiili</title>",
+      "styles": "<style>\n$css_content\n</style>"
+    },
+    "body_open": "<body>",
+    "container_open": "<div class=\"container\">",
+    
+    "header": {
+      "section": "<header class=\"party-header\">",
+      "title": "<h1>$party_name</h1>",
+      "slogan": "<p class=\"party-slogan\">$slogan</p>",
+      "section_close": "</header>"
+    },
+    
+    "info_section": {
+      "section": "<section class=\"party-info\">",
+      "title": "<h2>Tietoja puolueesta</h2>",
+      "founded": "<p><strong>Perustettu:</strong> $founded_year</p>",
+      "chairperson": "<p><strong>Puheenjohtaja:</strong> $chairperson</p>",
+      "website": "<p><strong>Kotisivu:</strong> <a href=\"$website\">$website</a></p>",
+      "section_close": "</section>"
+    },
+    
+    "platform_section": {
+      "section": "<section class=\"party-platform\">",
+      "title": "<h2>Poliittinen ohjelma</h2>",
+      "content": "$platform_content",
+      "section_close": "</section>"
+    },
+    
+    "candidates_section": {
+      "section": "<section class=\"candidates\">",
+      "title": "<h2>Ehdokkaat</h2>",
+      "content": "$candidates_content",
+      "section_close": "</section>"
+    },
+    
+    "footer": {
+      "section": "<footer class=\"party-footer\">",
+      "election_date": "<p>Äänestyspäivämäärä: $election_date</p>",
+      "disclaimer": "<p class=\"disclaimer\">Tämä on automaattisesti generoitu vaaliprofiili.</p>",
+      "section_close": "</footer>"
+    },
+    
+    "container_close": "</div>",
+    "body_close": "</body>",
+    "html_close": "</html>"
+  },
+  "default_values": {
+    "language": "fi",
+    "charset": "UTF-8"
+  },
+  "required_fields": ["party_name", "slogan", "platform_content"]
+}

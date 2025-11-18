@@ -1,9 +1,9 @@
 {
   "credentials": {
     "candidate_keys": {
-      "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCsQ6udmpNoT243\n8zSlugJRKoJb29ScItpcl86Vn+YB92cW1Gyv7rFkUPL2KSpfjV2J0dJSZjuccGGF\ntB84TCQc8qlWWENrFHL5sJ6i/jR4KxNgx3XVJUGOK5T8rQA9DGVayLB0vdqJQD6s\nfdDped4QVd62SCnQEwzLc5DiKdVYWWVOPIM1/1WTsGN8dca+k1OdCRME071Zb5Q+\n+YHzNGE/c2Dr1w5lbLh68+Z9jw69jBXfasFZsX3ZujD/mcj/tUlRlgnEFweqXgdR\no7+docFhjc3UNe7i0i6z3D/u1g/iy/X3CKnXtwmN6s3f0SjQlFLBdgz/sDn49w78\naUDOoYDnAgMBAAECggEASoX7+HKm0rmKNSpB3HBcEEETpCm2ENYDIYuLE6/ZEYC2\nWGoNmw7oLz3V3ihw7GV70eOz2XHg2AzGI9GIsBJAjUVtfK0yfWCbXOnLtzfB+zqn\nZ3biwxMbCSZRjf5J3B9AucWYkOiRYk8ozfagKmFOcEK11qXhcOLM5jdYtn7ijRVp\nQncRGmfb++b/UvgBAKNAT9OwlxfbllIVnp8rtFac41r1xXyf1tNmH9aS9fxcVLI7\nRC95r/eLzx9AkuI3QRBwFdlX2oXH7QMGLvgLBfpRaManUPewQfUNbqdwm7/8x3t3\nhgd2icOMMXpLFGP4Cnw3KZwQJpmIE+HrjQ2U5sNYAQKBgQDivYcLSTqKJ4NldXTf\nXYSYPQCRv740hqxrUs5Zvk7tIisHnWdVniskJS9uBJqOgljaY/ABZx2o9tY4b6VU\nulOVmnwXqCIapM3ifF2fxh9dMH6SzE/qCMchYyTqbX4+paEpsi+7LWpGsCWfYuA8\nb8jpa7C9JmmDKkOFUB3zICYvlwKBgQDCfoC0cb6GVQihCyCBvTDRc4AfON9VjZUc\nWOkvivqt9Oedx+nlGW4ahJr7iZNAgrm725llg8IZl/SWcr8ypvk9e36pZ/gVA7sF\nwRBvm1yePY437Z0x+80UgVu/Omcy1TgZHPuizsJzN9xT6uQZCHw6L3ULDqR8nAv1\nT+VKUc1jMQKBgQDL7w2EYCPP2MQ8wA0TTaiRyOQ3Mw9fbPWtPfgtDZctf7rWCYPE\npRNGWk+zk15z6NcD7jkS+ezaaNC6R+ibMU82UpFkMawi7LHlEFig+PCCv7hITo1e\nAPEhnWu5kiunKw+uUf7OSoW4+HuORL9MfHpnP53iMqdZ+uxp/mpBn1vZFwKBgEfE\nlEuBWVOKVyfNyk31eOkg3JsoykhweSA/srQnbX75SupO1YEDVDyWx/Wfe2Wnl0+5\npa3u45W8G7XUW7ceJARK6J8sTT+746wo5J66Tn/ZqPv8QzApgTBa13cF3wTD5vJl\nXnliICCR8UxJ9adDGUwDLQZKfem5TzRTKgG1k7tRAoGBAIFC3xNKKLiC7LVEVVjP\nVqmGom+8rCHly8+rtu1OWcOzKSyv1V/6PXbgRoebdEn4XhXIZuyn3l8R7jp8NM2k\nm4+uPIrz8fCqfIhpxhsMqnhADcwyzTNJ2a5Vg04C3Yd/S5uffGky6mNCSSp0Vsq5\nq/lI3wTlN62stLBjFVsqYJsw\n-----END PRIVATE KEY-----\n",
-      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArEOrnZqTaE9uN/M0pboC\nUSqCW9vUnCLaXJfOlZ/mAfdnFtRsr+6xZFDy9ikqX41didHSUmY7nHBhhbQfOEwk\nHPKpVlhDaxRy+bCeov40eCsTYMd11SVBjiuU/K0APQxlWsiwdL3aiUA+rH3Q6Xne\nEFXetkgp0BMMy3OQ4inVWFllTjyDNf9Vk7BjfHXGvpNTnQkTBNO9WW+UPvmB8zRh\nP3Ng69cOZWy4evPmfY8OvYwV32rBWbF92bow/5nI/7VJUZYJxBcHql4HUaO/naHB\nYY3N1DXu4tIus9w/7tYP4sv19wip17cJjerN39Eo0JRSwXYM/7A5+PcO/GlAzqGA\n5wIDAQAB\n-----END PUBLIC KEY-----\n",
-      "key_fingerprint": "7bfc119c04cb2597"
+      "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCeCja3u2beEPWQ\nIB5k8anKJu/ihGIHAsOlaw3GLixO6dT8eZpnKhxHsI5+0uaR1FqPdt7FaNFCPvI/\nKG8mgb+eBhBPrusmLfelhOzVJSBInckysR4g/rr3ZIxDYIHmlH1XazdHrCHY/k0w\naEYo09YhHply0jrY/AIksqs0lEiP2AEWWdMXyxyPYKZn81vEkH6+m+evKEk6wxOl\n9pgpSz+x7F21HYBOaZNXgSTf1Lmct0ffHeb+ssQ5ddAF7QNpXc/EFvn79rOaWDnE\n/QNw5Z/duSwV1Sgr+DLwmeVFujY47RceUfr5v3DUBqSOFcG9DttAXMegojFOd7zH\ntPn+WnCLAgMBAAECggEACt6HoN9MqzKIu7QvIvYpR/P276H3M/rmsHZ1E2ToOzfY\neXzLjROCWmk0LljG7s9SDdKObmP6cGSajel0AOFPknNhpSP8nDrxG1B8ZrRk91mS\nwDUaQ16sRojYdLyAcqFSdYle20O6wuJ1Ne0WANzWOfTmzNTUo0kXGfsHzK1IyEu7\nxACBuG42nVWifAIT8yDDsJldl0RrCpnohquPAMzYoE1W7gJbJLuNelEePKhJ33A/\n7VXWgk4qISyV+y5/muJsRZxrKXY6b8U+B5OnlXyId+uKQngcSZvWT4kb7AFylNzL\n8pVQ8x7sY73fQQ3rkkg79Z2l2ZBcG+H6BZ9u1kXBwQKBgQDYe/wB3MI6YCwuojAz\nMuNRYAdhQpw5C/Xmjl59zbQmaZjIWAVYto20uibgdbTVblysX3WWCqUoa+KLLVh9\ncyahm1nuJ9SrfWfh++cU6Xzocrftq+44kZooLAhpS9ksuMf3NowdvJoVYPL2lRM6\nXGfQwnYRIJoqZA8Q6sLEQeIOEQKBgQC64zOm/yMjynjStG0r1SXXh5Cm84hVwdmb\neKxXTH2vw/SDHLpWXpGRartu6TR1mF3mV4jl08rd/UgK9v7qOTId1nVJl4wE+GsI\nysUGlWmDocGLxQ7gqZ6a6imdnKfAyJ1V2/aViXzGkUcUm5udvmpUttVdEl1ai0BQ\nQSDBvKno2wKBgQCUUm5ZQE16/YWH9eucSJNin66uvpqWo1E5Q/YNr7BsWREqwtP2\n8iyo1JnqU/sv+EtadpTz1htOVIyE2u60FP803mGBQJz/Wg6g0JyEwWypPmAyYQf4\njhnWyESDEEqdz4SCJkdd4GiZmTEeLQldhQ5EA9gs5+94d9Gyv4XuPU2KYQKBgFM+\nsNtJ+lUO8xKn25kSsHB4qi4zfB724f8mmV2pbLLGDjv4p+eg6CZl7GdS6VMYM3tO\nsmPtGwgWsehwbMvX/kLcLBJDttLf9I1OBMUR+JXxj0y60g2wgD1w4GicRvzQX4TH\nHect/q5UN90uEvsIvkRNzGxQqdSTAmq9F+I0L1rRAoGADmsW4Mruy+QTtLod83rQ\nuyGE3K8nrYlmwt6ftDqB25BZEPaSpBClyuh+y0pzxeW7orPGBeS0Ksiod310Aepo\nUHsB0MeRQp2bbXkUvOiRMqKaLu/d9wDB+TiLeVuQT9R9MaaUyn8z3LFVvF12qtYR\nwAlAAkU8i94/hvW/KEpczXI=\n-----END PRIVATE KEY-----\n",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAngo2t7tm3hD1kCAeZPGp\nyibv4oRiBwLDpWsNxi4sTunU/HmaZyocR7COftLmkdRaj3bexWjRQj7yPyhvJoG/\nngYQT67rJi33pYTs1SUgSJ3JMrEeIP6692SMQ2CB5pR9V2s3R6wh2P5NMGhGKNPW\nIR6ZctI62PwCJLKrNJRIj9gBFlnTF8scj2CmZ/NbxJB+vpvnryhJOsMTpfaYKUs/\nsexdtR2ATmmTV4Ek39S5nLdH3x3m/rLEOXXQBe0DaV3PxBb5+/azmlg5xP0DcOWf\n3bksFdUoK/gy8JnlRbo2OO0XHlH6+b9w1AakjhXBvQ7bQFzHoKIxTne8x7T5/lpw\niwIDAQAB\n-----END PUBLIC KEY-----\n",
+      "key_fingerprint": "d892be9ef3bc9255"
     },
     "delegation_document": {
       "election_id": "Jumaltenvaalit2026",
@@ -15,23 +15,23 @@
         "view_own_data",
         "update_profile"
       ],
-      "valid_from": "2025-11-14T10:21:47.467108",
-      "valid_until": "2026-02-12T10:21:47.467120",
-      "candidate_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArEOrnZqTaE9uN/M0pboC\nUSqCW9vUnCLaXJfOlZ/mAfdnFtRsr+6xZFDy9ikqX41didHSUmY7nHBhhbQfOEwk\nHPKpVlhDaxRy+bCeov40eCsTYMd11SVBjiuU/K0APQxlWsiwdL3aiUA+rH3Q6Xne\nEFXetkgp0BMMy3OQ4inVWFllTjyDNf9Vk7BjfHXGvpNTnQkTBNO9WW+UPvmB8zRh\nP3Ng69cOZWy4evPmfY8OvYwV32rBWbF92bow/5nI/7VJUZYJxBcHql4HUaO/naHB\nYY3N1DXu4tIus9w/7tYP4sv19wip17cJjerN39Eo0JRSwXYM/7A5+PcO/GlAzqGA\n5wIDAQAB\n-----END PUBLIC KEY-----\n",
-      "candidate_key_fingerprint": "7bfc119c04cb2597",
+      "valid_from": "2025-11-18T04:29:44.234760",
+      "valid_until": "2026-02-16T04:29:44.234770",
+      "candidate_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAngo2t7tm3hD1kCAeZPGp\nyibv4oRiBwLDpWsNxi4sTunU/HmaZyocR7COftLmkdRaj3bexWjRQj7yPyhvJoG/\nngYQT67rJi33pYTs1SUgSJ3JMrEeIP6692SMQ2CB5pR9V2s3R6wh2P5NMGhGKNPW\nIR6ZctI62PwCJLKrNJRIj9gBFlnTF8scj2CmZ/NbxJB+vpvnryhJOsMTpfaYKUs/\nsexdtR2ATmmTV4Ek39S5nLdH3x3m/rLEOXXQBe0DaV3PxBb5+/azmlg5xP0DcOWf\n3bksFdUoK/gy8JnlRbo2OO0XHlH6+b9w1AakjhXBvQ7bQFzHoKIxTne8x7T5/lpw\niwIDAQAB\n-----END PUBLIC KEY-----\n",
+      "candidate_key_fingerprint": "d892be9ef3bc9255",
       "document_version": "1.0"
     },
-    "delegation_signature": "UwgYrQdW5SXrpKzI/evOKMas3iU8pvho9ihtAiOQh2yLPaFbskzKaiFWO1miKJ/FoXy5EjWx/NmJ8ayWK9brV2d3/K1IVlJUx5tf9CZ9WfpDVaecgPqxUhAw1Z3tPMa6B+Wdzno65qeHw2t9NS2Q4qfGC3LqyHYZOkT4jh5+eV5NJVbHpfvXMHeor+iB5B1WTHqR5hlRAq34IJser/hpRX7jvIJTyxHLiScXeOvHMzuDCYcQh4JI8yfxn2/rEJHRXCkf8OB+r88O89AQ3O6idytasHatTktTnFuPh8GB3ScIz5fxOGodmySrXnRBfqHWf6i11JnEVvUTGSWZD3g6gg==",
+    "delegation_signature": "cytv+WqEG7US0igCnb7WbRA37GY8qRiTfexfGdDYcuOiAOzfgNRe+JdqwEpc1jUyV2DLugsGlHmbex3ymYo6EMwE4G90mqnBgTcR6kfIzhUHNVCnW2/HhahAS1PfOFiTjVPaRyA51frNv2U6kJCbuFHaBwCdaIpL9qAMsOzSC5csaGprcM89DfJ/WWRZAKk/tG63nEpgrmg+O4aoU0/aX+BAUm9cj1FfO8mC4FLrAyEUbSVwC8aHiYzTUlPnU7SfE2ArnInTB5IK5BQk5yTjrkRmpUtJ/nrgXVVLMahbaqsI+iD+x4NhQjQWu6RuJ0i5HpFFjWJ8mHZDuzUoFCmpVw==",
     "party_verification": {
       "party_id": "party_test_delegation",
-      "verification_timestamp": "2025-11-14T10:21:47.521861",
+      "verification_timestamp": "2025-11-18T04:29:44.283874",
       "validity_days": 90
     }
   },
-  "party_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA9CZKUTScc41YYEBy1SvC\nrYS3hLFu3MoaEqsB+UpRhvSsv75XAKvf3MKzBZksBrr5KJnwq0ifejdi9g46Dbmn\nnXeFBmx0BQ4aqzj+obWKdFzckn2eu5/L70PN+WMhls8kmagaMtkgwg+F9u0ILY+K\ntWvPROlG110n2b7tUwr3+C9fJ/+SFja5QOEiqXgkbZWPZNndlUKftCuF5Fw9D59s\n72ai5TQNSglqKklLlO6lQcQSO4FrSNhTrBJK8evaI2Kwz/Eyz0gu9qqhRd+MHWJ6\nFM9UFhI4cZBVxPysQKQOVmF3/LPkzrn1/lCoQ9xg9NaMQIeuU1fMST2GF06G4/wd\nxQIDAQAB\n-----END PUBLIC KEY-----\n",
+  "party_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyooUG/P2tE4YC4yR7KJm\ns3QVEakRG83wjTwLsim72PP5E563RoQXGDTnbbD8uo7TxGxyBOMjD+8PmOeP6klM\nbN/lH7Ym9XMyTxUo5sIWbcd5J2aqAsLZtg92RTFbu+hcD28kxzB0ot38eCEtPN5c\ndOeY7v3nxv/+aagnEdy3mSqnvKyCzkSw9tj25qqopS5LADAx7d/UZoCux0tNfiEb\nAhEVqtugkSGHAz2Y28krP5+0lU/kl+jaOO60+tXgwrKHtO7Ym3aCS69XVcCwQBE+\ncRmvJaa1i250g9Id2NoWTHfLXYoadoplJxo00HSvIo3uNLugraiHXR+ZAv5oD9bU\nSwIDAQAB\n-----END PUBLIC KEY-----\n",
   "test_info": {
     "party_id": "party_test_delegation",
     "candidate_id": "cand_test_001",
-    "generated_at": "2025-11-14T10:21:47.467108"
+    "generated_at": "2025-11-18T04:29:44.234760"
   }
 }

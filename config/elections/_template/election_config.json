@@ -1,0 +1,28 @@
+{
+  "metadata": {
+    "template_version": "1.0.0",
+    "description": "Vaalikonfiguraation perusmalli"
+  },
+  "election_info": {
+    "name": {
+      "fi": "{{ELECTION_NAME_FI}}",
+      "en": "{{ELECTION_NAME_EN}}",
+      "sv": "{{ELECTION_NAME_SV}}"
+    },
+    "description": {
+      "fi": "{{ELECTION_DESCRIPTION_FI}}",
+      "en": "{{ELECTION_DESCRIPTION_EN}}",
+      "sv": "{{ELECTION_DESCRIPTION_SV}}"
+    },
+    "dates": {
+      "start": "{{START_DATE}}",
+      "end": "{{END_DATE}}"
+    }
+  },
+  "system_settings": {
+    "min_nodes": 3,
+    "quorum_threshold": 0.6,
+    "max_questions": 50,
+    "allow_new_questions": true
+  }
+}

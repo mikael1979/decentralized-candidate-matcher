@@ -1,0 +1,31 @@
+// templates/template_schema.json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Vaalijärjestelmän Template Schema",
+  "description": "Yhteinen pohja kaikille templateille",
+  "type": "object",
+  "required": ["metadata", "schema"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["template_version", "description", "generated_from"],
+      "properties": {
+        "template_version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+        "description": {
+          "type": "object",
+          "properties": {
+            "fi": {"type": "string"}, "en": {"type": "string"}, "sv": {"type": "string"}
+          }
+        },
+        "placeholder_guidance": {
+          "type": "object", 
+          "properties": {
+            "fi": {"type": "string"}, "en": {"type": "string"}, "sv": {"type": "string"}
+          }
+        }
+      }
+    },
+    "schema": {"type": "object"},
+    "examples": {"type": "object"}
+  }
+}

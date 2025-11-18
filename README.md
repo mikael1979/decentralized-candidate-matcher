@@ -352,6 +352,28 @@ python scripts/debug_elo.py
 python test_ipfs.py
 ```
 
+🚀 Template-editori:
+🎯 Pääominaisuudet:
+📄 HTML/CSS Analyysi - Analysoi olemassa olevat verkkosivut
+
+🛡️ Turvallisuussuodatus - Poistaa JavaScriptin ja XSS-uhkat
+
+🎨 Väriteeman tunnistus - Ehdota värejä automaattisesti
+
+📝 JSON-template generointi - Luo JSON-templateja
+
+👁️ Esikatselu - Testaa templateja ennen käyttöönottoa
+
+🔧 Käyttötavat:
+bash
+# Komentorivikäyttö
+python -m src.tools.template_editor.editor --html verkkosivu.html --css tyylit.css --preview
+
+# Ohjelmallinen käyttö
+from src.tools.template_editor.editor import TemplateEditor
+editor = TemplateEditor()
+result = editor.create_template_from_website("sivu.html", "tyylit.css")
+
 ## 🤝 Osallistu Kehitykseen
 
 1. **Tutki koodia**: `src/` hakemisto sisältää kaiken lähdekoodin

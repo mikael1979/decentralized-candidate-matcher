@@ -1,0 +1,12 @@
+{
+  "template_name": "platform_point",
+  "version": "1.0",
+  "description": "Yksittäinen kannatuskohta template",
+  "structure": {
+    "type": "html_fragment"
+  },
+  "html_template": {
+    "point": "<li>$point</li>"
+  },
+  "required_fields": ["point"]
+}

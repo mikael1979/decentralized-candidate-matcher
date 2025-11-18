@@ -1,0 +1,92 @@
+:root {
+    --primary-color: {primary_color};
+    --secondary-color: {secondary_color};
+    --accent-color: {accent_color};
+    --background-color: {background_color};
+    --text-color: {text_color};
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.party-header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 20px;
+}
+
+.party-header h1 {
+    color: var(--primary-color);
+    margin: 0;
+    font-size: 2.5em;
+}
+
+.party-slogan {
+    font-style: italic;
+    color: var(--secondary-color);
+    font-size: 1.2em;
+    margin-top: 10px;
+}
+
+.party-info h2,
+.party-platform h2,
+.candidates h2 {
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--secondary-color);
+    padding-bottom: 10px;
+}
+
+.candidate-card {
+    border: 1px solid var(--secondary-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 15px 0;
+    background: #f8f9fa;
+}
+
+.candidate-card h3 {
+    color: var(--primary-color);
+    margin-top: 0;
+}
+
+.candidate-platform ul {
+    padding-left: 20px;
+}
+
+.party-footer {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--secondary-color);
+    text-align: center;
+    color: var(--secondary-color);
+}
+
+.disclaimer {
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

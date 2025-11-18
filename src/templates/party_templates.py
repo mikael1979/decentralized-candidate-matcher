@@ -7,7 +7,6 @@ import json
 from datetime import datetime
 from typing import Dict
 
-from .css_generator import CSSGenerator, PARTY_COLOR_THEMES
 
 
 class PartyTemplates:
@@ -17,7 +16,7 @@ class PartyTemplates:
     def generate_party_html(*args, **kwargs) -> str:
         """Generoi HTML-profiilisivun puolueelle"""
         party_data = args[0] if args else kwargs.get('party_data', {})
-        colors = args[1] if len(args) > 1 else kwargs.get('colors', PARTY_COLOR_THEMES["default"])
+        colors = args[1] if len(args) > 1 else kwargs.get('colors', {})
         election_id = args[2] if len(args) > 2 else kwargs.get('election_id', "Jumaltenvaalit2026")
         candidates = args[3] if len(args) > 3 else kwargs.get('candidates')
         ipfs_cids = args[4] if len(args) > 4 else kwargs.get('ipfs_cids')

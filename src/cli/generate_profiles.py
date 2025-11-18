@@ -13,7 +13,7 @@ import sys
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.templates.html_generator import HTMLProfileGenerator, PARTY_COLOR_THEMES
+
 
 def load_parties() -> List[Dict]:
     """Lataa puolueet JSON-tiedostosta"""
@@ -35,7 +35,7 @@ def load_candidates() -> List[Dict]:
 
 def load_theme(theme_name: str) -> Optional[Dict]:
     """Lataa väriteema"""
-    return PARTY_COLOR_THEMES.get(theme_name)
+    return CSSGenerator.get_color_themes().get(theme_name)
 
 @click.group()
 def profile_generator():
@@ -46,7 +46,7 @@ def profile_generator():
 def list_themes():
     """Listaa kaikki saatavilla olevat väriteemat"""
     click.echo("✅ Käytettävissä olevat teemat:")
-    for theme_name in PARTY_COLOR_THEMES.keys():
+    for theme_name in CSSGenerator.get_color_themes().keys():
         click.echo(f"- {theme_name}")
 
 @profile_generator.command()

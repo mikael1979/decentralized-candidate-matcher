@@ -1,0 +1,14 @@
+config/
+├── elections/                    # Vaalikohtaiset konfiguraatiot
+│   ├── jumaltenvaalit2026/
+│   │   ├── election_config.json
+│   │   ├── color_themes.json
+│   │   └── questions.json
+│   └── _template/               # Konfiguraatiomalli
+├── system/                      # Järjestelmälaajuiset asetukset
+│   ├── default_colors.json
+│   ├── ipfs_settings.json
+│   └── security_policies.json
+└── templates/                   # Template-generointi
+    ├── generator_config.json
+    └── validation_rules.json

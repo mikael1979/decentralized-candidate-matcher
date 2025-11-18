@@ -3,8 +3,8 @@
     "party_id": "party_quorum_test",
     "party_name": "Kvoorumi-testipuolue",
     "public_key_fingerprint": "test123456789abcd",
-    "verification_started": "2025-11-14T10:21:47.774009",
-    "verification_timeout": "2025-11-15T10:21:47.774028",
+    "verification_started": "2025-11-18T04:29:44.582488",
+    "verification_timeout": "2025-11-19T04:29:44.582496",
     "current_phase": "quorum_voting",
     "quorum_votes": [
       {
@@ -12,45 +12,45 @@
         "vote": "approve",
         "weight": 15,
         "justification": "Hyv\u00e4 mediavahvistus",
-        "timestamp": "2025-11-14T10:21:47.774120",
+        "timestamp": "2025-11-18T04:29:44.582582",
         "node_public_key_fingerprint": "43d95084ecc74dc8",
-        "vote_signature": "0dcac8b3da5ed4ea438c45839dfe13b5c1235cd52bdb034a3eab497593497910"
+        "vote_signature": "1ca6722d1286f8845177922efeb6a505198b894cdf96bab081b47c48b8ee210b"
       },
       {
         "node_id": "node_athena",
         "vote": "approve",
         "weight": 15,
         "justification": "Vahva PKI-toteutus",
-        "timestamp": "2025-11-14T10:21:47.774156",
+        "timestamp": "2025-11-18T04:29:44.582616",
         "node_public_key_fingerprint": "5990b33ae22c98c9",
-        "vote_signature": "a5b55b2daafa989e9b188da387f18211c2ebab6d1229f4bf7ea422d92c8d80a7"
+        "vote_signature": "4676b49465bbffcb48746e783544d0beca82ae84681271b6e9bdb0a8d5c01a7f"
       },
       {
         "node_id": "node_poseidon",
         "vote": "approve",
         "weight": 10,
         "justification": "Kaikki kriteerit t\u00e4ytetty",
-        "timestamp": "2025-11-14T10:21:47.774225",
+        "timestamp": "2025-11-18T04:29:44.582642",
         "node_public_key_fingerprint": "eefd4f5dbe4b4aab",
-        "vote_signature": "1378262f8ba360e54e648079784476c6c2aee1d6f1ebd5c1347624da09a9d529"
+        "vote_signature": "ae5c960bab77cba048bc9e896e9ba1c23aab3fd03def315e3aab8a72d1561aca"
       },
       {
         "node_id": "node_ares",
         "vote": "reject",
         "weight": 10,
         "justification": "Liian v\u00e4h\u00e4n tietoja",
-        "timestamp": "2025-11-14T10:21:47.774252",
+        "timestamp": "2025-11-18T04:29:44.582666",
         "node_public_key_fingerprint": "d1079b9b6b7771d6",
-        "vote_signature": "1aa4c9115180c911e42d1575f0a5bea7c4ad055fff3048de4fb82fe45dde2428"
+        "vote_signature": "a3be1cd2a8eb1786423783f4b82ca68123148e9ce943d5a0f2b4c848a0ba618d"
       },
       {
         "node_id": "node_aphrodite",
         "vote": "abstain",
         "weight": 10,
         "justification": "Tarvitsen lis\u00e4tietoja",
-        "timestamp": "2025-11-14T10:21:47.774275",
+        "timestamp": "2025-11-18T04:29:44.582688",
         "node_public_key_fingerprint": "436415520468e4cd",
-        "vote_signature": "b1b36073c8aca1ca7706a791709e2a3df2a0af5080555768bbd4011ffd975590"
+        "vote_signature": "0e69ef2e4e140eaf6b2b109c1bf08af4ad9e6bab215eeb4779e2689e741e8e40"
       }
     ],
     "media_verifications": [
@@ -59,7 +59,7 @@
         "media_domain": "vaalit.fi",
         "trust_score": 10,
         "verified_by_node": "node_zeus",
-        "verification_timestamp": "2025-11-14T10:21:47.774085",
+        "verification_timestamp": "2025-11-18T04:29:44.582551",
         "evidence_url": "https://vaalit.fi/julkaisut/kvoorumi-testi"
       },
       {
@@ -67,12 +67,12 @@
         "media_domain": "vaalit.fi",
         "trust_score": 10,
         "verified_by_node": "node_athena",
-        "verification_timestamp": "2025-11-14T10:21:47.774090",
+        "verification_timestamp": "2025-11-18T04:29:44.582556",
         "evidence_url": "https://vaalit.fi/julkaisut/kvoorumi-testi"
       }
     ],
     "final_decision": "approved",
-    "decision_timestamp": "2025-11-14T10:21:47.774285"
+    "decision_timestamp": "2025-11-18T04:29:44.582699"
   },
   "status": {
     "party_id": "party_quorum_test",
@@ -82,7 +82,7 @@
     "reject_votes": 1,
     "abstain_votes": 1,
     "media_verifications": 2,
-    "time_remaining_hours": 23.99999992472222,
+    "time_remaining_hours": 23.999999939722223,
     "final_decision": "approved",
     "quorum_met": true
   },

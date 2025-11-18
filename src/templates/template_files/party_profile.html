@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{party_name} - Vaaliprofiili</title>
+    <style>
+        {css_content}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="party-header">
+            <h1>{party_name}</h1>
+            <p class="party-slogan">{slogan}</p>
+        </header>
+        
+        <section class="party-info">
+            <h2>Tietoja puolueesta</h2>
+            <p><strong>Perustettu:</strong> {founded_year}</p>
+            <p><strong>Puheenjohtaja:</strong> {chairperson}</p>
+            <p><strong>Kotisivu:</strong> <a href="{website}">{website}</a></p>
+        </section>
+        
+        <section class="party-platform">
+            <h2>Poliittinen ohjelma</h2>
+            {platform_content}
+        </section>
+        
+        <section class="candidates">
+            <h2>Ehdokkaat</h2>
+            {candidates_content}
+        </section>
+        
+        <footer class="party-footer">
+            <p>Äänestyspäivämäärä: {election_date}</p>
+            <p class="disclaimer">Tämä on automaattisesti generoitu vaaliprofiili.</p>
+        </footer>
+    </div>
+</body>
+</html>
