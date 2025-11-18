@@ -367,13 +367,14 @@ python test_ipfs.py
 🔧 Käyttötavat:
 bash
 # Komentorivikäyttö
+```bash
 python -m src.tools.template_editor.editor --html verkkosivu.html --css tyylit.css --preview
 
 # Ohjelmallinen käyttö
 from src.tools.template_editor.editor import TemplateEditor
 editor = TemplateEditor()
 result = editor.create_template_from_website("sivu.html", "tyylit.css")
-
+```
 ## 🤝 Osallistu Kehitykseen
 
 1. **Tutki koodia**: `src/` hakemisto sisältää kaiken lähdekoodin
