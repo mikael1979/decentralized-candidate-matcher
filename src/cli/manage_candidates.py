@@ -3,13 +3,13 @@ import click
 import json
 from datetime import datetime
 import os
+import sys
 from pathlib import Path
 
-# KORJATTU: Käytetään yhteisiä file_utils-funktioita
-try:
-    from src.core.file_utils import read_json_file, write_json_file, ensure_directory
-except ImportError:
-    from core.file_utils import read_json_file, write_json_file, ensure_directory
+# LISÄTTY: Lisää src hakemisto Python-polkuun
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from core.file_utils import read_json_file, write_json_file, ensure_directory
 
 @click.command()
 @click.option('--election', required=True, help='Vaalin tunniste')
@@ -27,7 +27,7 @@ def manage_candidates(election, add, name, party, list_candidates):
             click.echo("❌ Anna --name")
             return
         
-        # KORJATTU: Varmistetaan hakemisto
+        # Varmistetaan hakemisto
         ensure_directory("data/runtime")
         
         # Lataa nykyiset ehdokkaat
@@ -60,7 +60,7 @@ def manage_candidates(election, add, name, party, list_candidates):
         
         # Lisää uusi ehdokas
         new_candidate = {
-            "candidate_id": f"cand_{len(data['candidates']) + 1}",
+            "candidate_id": f"cand_{len(data['candidates']) + 1:03d}",
             "basic_info": {
                 "name": {
                     "fi": name,
@@ -68,7 +68,7 @@ def manage_candidates(election, add, name, party, list_candidates):
                     "sv": f"[SV] {name}"
                 },
                 "party": party or "sitoutumaton",
-                "domain": "divine_power"  # Jumaltenvaalien erikoisala
+                "domain": "divine_power"
             },
             "answers": [],
             "metadata": {

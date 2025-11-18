@@ -15,7 +15,7 @@ project_root = current_dir.parent.parent  # src/cli/ -> src/ -> project root
 sys.path.insert(0, str(project_root))
 
 try:
-    from src.core.ipfs_client import IPFSClient
+    from core.ipfs_client import IPFSClient
     print("✅ IPFS-client ladattu onnistuneesti")
 except ImportError as e:
     print(f"❌ Import error: {e}")

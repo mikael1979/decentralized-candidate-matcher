@@ -1,3 +1,14 @@
+#!/usr/bin/env python3
+import click
+import json
+from datetime import datetime
+import os
+import sys
+from pathlib import Path
+
+# LISÄTTY: Lisää src hakemisto Python-polkuun
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 # src/cli/candidate_credentials.py
 import click
 import json
@@ -15,7 +26,7 @@ def candidate_credentials():
 @click.option('--party-private-key-file', required=True, help='Puolueen yksityisen avaimen tiedosto')
 def issue_credentials(election, party_id, candidate_id, party_private_key_file):
     """Luo ehdokkaalle PKI-valtuutus"""
-    from src.managers.candidate_key_manager import CandidateKeyManager
+    from managers.candidate_key_manager import CandidateKeyManager
     
     # Lataa puolueen avain
     with open(party_private_key_file, 'r') as f:

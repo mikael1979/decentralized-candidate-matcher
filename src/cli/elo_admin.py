@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 import click
+import json
+from datetime import datetime
+import os
+import sys
+from pathlib import Path
+
+# LISÄTTY: Lisää src hakemisto Python-polkuun
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+import click
 import sys
 import os
 

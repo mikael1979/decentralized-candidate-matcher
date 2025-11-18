@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+import click
+import json
+from datetime import datetime
+import os
+import sys
+from pathlib import Path
+
+# LISÄTTY: Lisää src hakemisto Python-polkuun
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 """
 Puolueiden vahvistuslogiikka - UUSI MODULAARINEN
 """
@@ -8,8 +18,8 @@ from typing import Dict
 
 # KORJATTU: Käytetään yhteisiä file_utils-funktioita
 try:
-    from src.core.file_utils import read_json_file, write_json_file
-    from src.core.validators import validate_party_id
+    from core.file_utils import read_json_file, write_json_file
+    from core.validators import validate_party_id
 except ImportError:
     from core.file_utils import read_json_file, write_json_file
     from core.validators import validate_party_id
