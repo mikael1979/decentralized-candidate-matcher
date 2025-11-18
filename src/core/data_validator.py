@@ -35,3 +35,19 @@ def get_candidate_by_id_or_name(candidates_file, identifier):
         pass
     
     return None
+
+def validate_answer_value(answer_value):
+    """Tarkista että vastausarvo on validi (-5 - +5)"""
+    try:
+        value = int(answer_value)
+        return -5 <= value <= 5
+    except (ValueError, TypeError):
+        return False
+
+def validate_confidence_level(confidence):
+    """Tarkista että luottamustaso on validi (1-5)"""
+    try:
+        level = int(confidence)
+        return 1 <= level <= 5
+    except (ValueError, TypeError):
+        return False
