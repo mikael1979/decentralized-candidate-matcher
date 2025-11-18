@@ -1,4 +1,4 @@
-# 🏛️ Hajautetun Vaalikoneen Kehitys - TODO Lista
+# 🏛️ Hajautetun Vaalikoneen Kehitys - Päivitetty TODO Lista
 
 ## 📊 NYKYINEN TILA (✅ VALMIS)
 
@@ -16,9 +16,10 @@
 - [x] `elo_admin.py` - ELO-tilastot ja hallinta
 
 ### 👑 Ehdokkaiden Hallinta
-- [x] `manage_candidates.py` - Ehdokkaiden lisäys
+- [x] `manage_candidates.py` - Ehdokkaiden lisäys ja hallinta
 - [x] `candidates.json` - Ehdokkaiden perustiedot
-- [x] Ehdokkaiden perusrakenteet
+- [x] UUID-pohjainen ID-generointi
+- [x] Duplikaattien esto
 
 ### 🏛️ Puolueiden Hallinta
 - [x] `manage_parties.py` - Puolueiden hajautettu hallinta
@@ -57,14 +58,17 @@
 - [x] IPFS-julkaisu profiileista
 - [x] Base.json metadata-järjestelmä
 
-### 🔧 Data Validointi
+### 🔧 Data Validointi & Eheys
 - [x] `validate_data.py` - Data-eheyden tarkistus
+- [x] `cleanup_data.py` - Duplikaattien poisto ja siivous
+- [x] `data_validator.py` - Validointimoduuli
 - [x] JSON-skeemat ja validointi
 - [x] Eheystarkistukset
+- [x] Varmuuskopiointijärjestelmä
 
 ---
 
-## 🚧 TEKIJÄLLÄ (🔨 KEHItyksessä)
+## 🚧 KEHITYKSESSÄ (🔨 TYÖN ALLA)
 
 ### 🖥️ Moninode-järjestelmä
 - [ ] `node_management.py` - Solmujen hallinta
@@ -97,8 +101,8 @@
 ## 🎯 PRIORITEETIT
 
 ### 🥇 PRIORITEETTI 1 (Seuraavaksi)
-1. **Moninode-järjestelmän viimeistely** - Hajautettu arkkitehtuuri
-2. **`voting_engine.py`** - Vaalikoneen ydin
+1. **`voting_engine.py`** - Vaalikoneen ydinlogiikka
+2. **Moninode-järjestelmän viimeistely** - Hajautettu arkkitehtuuri
 
 ### 🥈 PRIORITEETTI 2 
 3. **Web-käyttöliittymä** - Graafinen käyttöliittymä
@@ -110,78 +114,85 @@
 
 ---
 
-## 🏗️ TEKNISET TIEDOT
+## 🏗️ PÄIVITETTY TEKNINEN RAKENNE
 
 ### Tiedostorakenne
-
+```
 src/
 ├── cli/
-│ ├── ✅ install.py # Järjestelmän asennus
-│ ├── ✅ manage_questions.py # Kysymysten hallinta
-│ ├── ✅ manage_candidates.py # Ehdokkaiden hallinta
-│ ├── ✅ manage_parties.py # Puolueiden hallinta
-│ ├── ✅ compare_questions.py # ELO-vertailu
-│ ├── ✅ elo_admin.py # ELO-hallinta
-│ ├── ✅ link_candidate_to_party.py
-│ ├── ✅ manage_answers.py # Ehdokkaiden vastaukset
-│ ├── ✅ ipfs_sync.py # IPFS-synkronointi
-│ ├── ✅ analytics.py # Analytics
-│ ├── ✅ generate_profiles.py # HTML-profiilit
-│ ├── 🔨 node_management.py # Moninode-hallinta
-│ └── ⏳ voting_engine.py # Vaalikoneen ydin
+│   ├── ✅ install.py              # Järjestelmän asennus
+│   ├── ✅ manage_questions.py     # Kysymysten hallinta
+│   ├── ✅ manage_candidates.py    # Ehdokkaiden hallinta (UUID-ID:t)
+│   ├── ✅ manage_parties.py       # Puolueiden hallinta
+│   ├── ✅ compare_questions.py    # ELO-vertailu
+│   ├── ✅ elo_admin.py           # ELO-hallinta
+│   ├── ✅ link_candidate_to_party.py
+│   ├── ✅ manage_answers.py      # Ehdokkaiden vastaukset
+│   ├── ✅ ipfs_sync.py           # IPFS-synkronointi
+│   ├── ✅ analytics.py           # Analytics
+│   ├── ✅ generate_profiles.py   # HTML-profiilit
+│   ├── ✅ cleanup_data.py        # Data-siivoustyökalu
+│   ├── 🔨 node_management.py     # Moninode-hallinta
+│   └── ⏳ voting_engine.py       # Vaalikoneen ydin
 ├── core/
-│ ├── ✅ ipfs_client.py # IPFS-integrointi
-│ └── ✅ pki_manager.py # PKI-turvajärjestelmä
+│   ├── ✅ ipfs_client.py         # IPFS-integrointi
+│   ├── ✅ pki_manager.py         # PKI-turvajärjestelmä
+│   ├── ✅ file_utils.py          # Tiedostotyökalut
+│   ├── ✅ data_validator.py      # Data-validointi
+│   └── ✅ config_manager.py      # Konfiguraatio
 ├── nodes/
-│ ├── 🔨 network_sync.py # Verkon synkronointi
-│ ├── 🔨 node_manager.py # Solmujen hallinta
-│ └── 🔨 quorum_voting.py # Hajautettu äänestys
+│   ├── 🔨 network_sync.py        # Verkon synkronointi
+│   ├── 🔨 node_manager.py        # Solmujen hallinta
+│   └── 🔨 quorum_voting.py       # Hajautettu äänestys
 └── templates/
-├── ✅ html_generator.py # HTML-generaattori
-└── ✅ base_template.css # CSS-tyylit
-
+    ├── ✅ html_generator.py      # HTML-generaattori
+    └── ✅ base_template.css      # CSS-tyylit
+```
 
 ### Data-tiedostot
-
+```
 data/
 ├── runtime/
-│ ├── ✅ meta.json # Järjestelmän metadata
-│ ├── ✅ system_chain.json # Muutoshistoria
-│ ├── ✅ questions.json # Kysymykset + ELO-luokitukset
-│ ├── ✅ candidates.json # Ehdokkaat
-│ ├── ✅ parties.json # Puolueet
-│ ├── ✅ candidate_answers.json # Ehdokkaiden vastaukset
-│ └── ✅ ipfs_sync.json # IPFS-synkronointitila
+│   ├── ✅ meta.json              # Järjestelmän metadata
+│   ├── ✅ system_chain.json      # Muutoshistoria
+│   ├── ✅ questions.json         # Kysymykset + ELO-luokitukset
+│   ├── ✅ candidates.json        # Ehdokkaat (UUID-ID:t)
+│   ├── ✅ parties.json           # Puolueet
+│   ├── ✅ candidate_answers.json # Ehdokkaiden vastaukset
+│   └── ✅ ipfs_sync.json         # IPFS-synkronointitila
+├── backup/
+│   ├── ✅ 20251118_065730/       # Varmuuskopiot
+│   └── ✅ 20251118_070652/
 ├── nodes/
-│ ├── 🔨 Jumaltenvaalit2026_nodes.json
-│ ├── 🔨 Jumaltenvaalit2026_network_sync.json
-│ └── 🔨 Jumaltenvaalit2026_votes.json
+│   ├── 🔨 Jumaltenvaalit2026_nodes.json
+│   ├── 🔨 Jumaltenvaalit2026_network_sync.json
+│   └── 🔨 Jumaltenvaalit2026_votes.json
 └── credentials/
-├── ✅ candidate_certs/ # Ehdokkaiden sertifikaatit
-└── ✅ party_certs/ # Puolueiden sertifikaatit
-
+    ├── ✅ candidate_certs/       # Ehdokkaiden sertifikaatit
+    └── ✅ party_certs/           # Puolueiden sertifikaatit
+```
 
 ---
 
-## 🎉 VIIMEISIMMÄT SAAVUTUKSET (TÄMÄN PÄIVÄN)
+## 🎉 VIIMEISIMMÄT SAAVUTUKSET (18.11.2025)
 
-### 🌟 TÄRKEIMMÄT SAAVUTUKSET
-- **✅ HTML Profiilien Generointi** - Kaikki puolueet ja ehdokkaat saatavilla IPFS:stä
-- **✅ IPFS-Integrointi Korjattu** - Täysi yhteensopivuus IPFS Kubo 0.38.2:n kanssa
-- **✅ Oikeat IPFS-CID:t** - Kaikki profiilit julkaistu oikeaan IPFS-verkkoon
-- **✅ Release v1.0.0** - Ensimmäinen tuotantovalmissa versio
+### 🌟 PÄIVITETYT SAAVUTUKSET
+- **✅ Data-eheyden korjaus** - Duplikaattien poisto ja validointi
+- **✅ UUID-pohjainen ID-generointi** - Estää duplikaatit
+- **✅ `cleanup_data.py` työkalu** - Data-siivous ja varmuuskopiointi
+- **✅ `data_validator.py` moduuli** - Validointi ja uniikkius tarkistus
 
 ### 🔧 Tekniset Parannukset
-- **Korvattu `ipfshttpclient`** suoralla HTTP API:lla
-- **UTF-8 tuki** suomen kielelle IPFS:ässä
-- **Väriteemat** puolueille
-- **Base.json metadata-järjestelmä**
+- **Korjattu ModuleNotFoundError** - sys.path workaround CLI-työkaluihin
+- **Parannettu error handling** - Robustimpi virheidenkäsittely
+- **Uniikkiusvalidaatio** - Estää duplikaattien luomisen
+- **Varmuuskopiointijärjestelmä** - Automaattiset backupit ennen muutoksia
 
 ### 📊 Tuotantovalmiudet
-- **12 profiilia** saatavilla IPFS-verkossa
-- **5 puoluetta** ja **12 ehdokasta** julkaistu
-- **Kaikki testit menevät läpi**
-- **Koodi päähaarassa** ja tagattu v1.0.0
+- **5 ehdokasta** (aikaisemmin 12 duplikaattia)
+- **6 kysymystä** (aikaisemmin 12 duplikaattia) 
+- **27 vastausta** säilyneet datan siivouksessa
+- **Kaikki CLI-komennot** toimivat luotettavasti
 
 ---
 
@@ -189,32 +200,49 @@ data/
 
 ### 📦 Mitä on Valmiina
 ```bash
-# 1. Generoi kaikki profiilit IPFS:ään
+# 1. Hallitse ehdokkaita (estää duplikaatit)
+python src/cli/manage_candidates.py --election Jumaltenvaalit2026 --add --name "Hera" --party "Perhejumalat"
+
+# 2. Tarkista data-eheys
+python src/cli/cleanup_data.py --election Jumaltenvaalit2026 --validate
+
+# 3. Generoi profiilit IPFS:ään
 python src/cli/generate_profiles.py publish-all-to-ipfs --election Jumaltenvaalit2026
 
-# 2. Tarkista profiilien tila
-python src/cli/generate_profiles.py status --election Jumaltenvaalit2026
+# 4. Listaa kaikki ehdokkaat
+python src/cli/manage_candidates.py --election Jumaltenvaalit2026 --list
+```
 
-# 3. HTML-profiilit saatavilla
-#    https://ipfs.io/ipfs/QmVAPCMdMbYdsD... (Testipuolue)
-#    https://ipfs.io/ipfs/QmYR3WTKdcphx... (Zeus)
+### 🌐 IPFS-Profiilit (Päivitetty)
+- **Testipuolue**: `QmVAPCMdMbYdsDvPeXUJZ9MZ1UpsdNNhgDvZSs7dsPkAYf`
+- **Zeus**: `QmYR3WTKdcphxBuk6zB5mCsK2X9bZv6TcUSoLkhpZrNQvX`
+- **Athena**: `QmXXbqpiJyVRvZLXYNg1Hqns2Mnd8f9iJWhF8gyKsmKgKd`
 
-🌐 IPFS-Linkit
-Testipuolue: QmVAPCMdMbYdsDvPeXUJZ9MZ1UpsdNNhgDvZSs7dsPkAYf
+---
 
-Zeus: QmYR3WTKdcphxBuk6zB5mCsK2X9bZv6TcUSoLkhpZrNQvX
+## 💡 SEURAAVAT ASKELEET
 
-Athena: QmXXbqpiJyVRvZLXYNg1Hqns2Mnd8f9iJWhF8gyKsmKgKd
+### 🔨 Välitavoitteet (Seuraavaksi)
+1. **Toteuta `voting_engine.py`** - Vaalikoneen ydinlogiikka
+2. **Viimeistele moninode-järjestelmä** - Hajautettu arkkitehtuuri
 
-💡 SEURAAVAT ASKELEET
-🔨 Välitavoitteet
-Viimeistele moninode-järjestelmä - Hajautettu arkkitehtuuri
+### 🎯 Pitkän tähtäimen tavoitteet
+3. **Web-käyttöliittymä** - Moderni React-sovellus
+4. **Skaalautuvuus** - Suurten vaalien tuki
 
-Toteuta voting_engine.py - Vaalikoneen ydinlogiikka
+---
 
-🎯 Pitkän tähtäimen tavoitteet
-Web-käyttöliittymä - Moderni React-sovellus
+## 📈 KEHTIYSPROSESSI
 
-Skaalautuvuus - Suurten vaalien tuki
+### ✅ Viimeisimmät korjaukset:
+1. **Data-eheysongelmat** ratkaistu (duplikaatit, import virheet)
+2. **CLI-työkalut** stabiloitu (kaikki komennot toimivat)
 
-13.11.2025
+
+### 🎯 Seuraava isompi askel:
+**Vaalikoneen ydinlogiikka** - Mahdollistaa todellisen vaalikoneen käytön
+
+
+
+---
+*Päivitetty: 18.11.2025*
