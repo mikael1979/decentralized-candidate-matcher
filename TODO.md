@@ -44,6 +44,10 @@
 - [x] `ipfs_sync.py` - Hajautettu datajako
 - [x] Mock-IPFS testausta varten
 - [x] Synkronointiprotokolla
+- [x] **UUSI:** Modulaarinen IPFS-arkkitehtuuri
+  - [x] `archive_manager.py` - Arkistointi
+  - [x] `delta_manager.py` - Muutosten seuranta
+  - [x] `sync_orchestrator.py` - Synkronoinnin koordinointi
 
 ### 📊 Analytics ja Raportointi
 - [x] `analytics.py` - Vaalitilastot ja analyysit
@@ -66,9 +70,22 @@
 - [x] Eheystarkistukset
 - [x] Varmuuskopiointijärjestelmä
 
+### 🗳️ Vaalikoneen Ydin
+- [x] `voting_engine.py` - Varsinainen vaalikone
+- [x] Käyttäjän vastausten keräys
+- [x] Yhteensopivuuslaskenta
+- [x] Tulosten järjestely
+
 ---
 
 ## 🚧 KEHITYKSESSÄ (🔨 TYÖN ALLA)
+
+### ⚙️ Config-järjestelmä (UUSI)
+- [ ] `config.json` - Keskitetty konfiguraatio
+- [ ] `config_manager.py` - Config-hallinta
+- [ ] `install.py --first-install` - Konfiguraation alustus
+- [ ] IPFS-tallennus configille
+- [ ] Hash-fingerprint system_chain:iin
 
 ### 🖥️ Moninode-järjestelmä
 - [ ] `node_management.py` - Solmujen hallinta
@@ -79,12 +96,6 @@
 ---
 
 ## 📋 SEURAAVAT VAIHEET (⏳ ODOTTAA)
-
-### 🎯 Vaalikoneen Ydin
-- [ ] `voting_engine.py` - Varsinainen vaalikone
-- [ ] Käyttäjän vastausten keräys
-- [ ] Yhteensopivuuslaskenta
-- [ ] Tulosten järjestely
 
 ### 🖥️ Käyttöliittymät
 - [ ] Web-käyttöliittymä (Flask/FastAPI)
@@ -101,7 +112,7 @@
 ## 🎯 PRIORITEETIT
 
 ### 🥇 PRIORITEETTI 1 (Seuraavaksi)
-1. **`voting_engine.py`** - Vaalikoneen ydinlogiikka
+1. **Config-järjestelmä** - Keskitetty konfiguraatio
 2. **Moninode-järjestelmän viimeistely** - Hajautettu arkkitehtuuri
 
 ### 🥈 PRIORITEETTI 2 
@@ -132,14 +143,19 @@ src/
 │   ├── ✅ analytics.py           # Analytics
 │   ├── ✅ generate_profiles.py   # HTML-profiilit
 │   ├── ✅ cleanup_data.py        # Data-siivoustyökalu
+│   ├── ✅ voting_engine.py       # Vaalikoneen ydin
 │   ├── 🔨 node_management.py     # Moninode-hallinta
-│   └── ⏳ voting_engine.py       # Vaalikoneen ydin
+│   └── 🔨 config_manager.py      # Config-hallinta (UUSI)
 ├── core/
 │   ├── ✅ ipfs_client.py         # IPFS-integrointi
 │   ├── ✅ pki_manager.py         # PKI-turvajärjestelmä
 │   ├── ✅ file_utils.py          # Tiedostotyökalut
 │   ├── ✅ data_validator.py      # Data-validointi
-│   └── ✅ config_manager.py      # Konfiguraatio
+│   ├── 🔨 config_manager.py      # Konfiguraatio (UUSI)
+│   └── ipfs/
+│       ├── ✅ archive_manager.py  # Arkistointi
+│       ├── ✅ delta_manager.py    # Muutosten seuranta
+│       └── ✅ sync_orchestrator.py # Synkronointi
 ├── nodes/
 │   ├── 🔨 network_sync.py        # Verkon synkronointi
 │   ├── 🔨 node_manager.py        # Solmujen hallinta
@@ -174,25 +190,19 @@ data/
 
 ---
 
-## 🎉 VIIMEISIMMÄT SAAVUTUKSET (18.11.2025)
+## 🎉 VIIMEISIMMÄT SAAVUTUKSET (19.11.2025)
 
 ### 🌟 PÄIVITETYT SAAVUTUKSET
-- **✅ Data-eheyden korjaus** - Duplikaattien poisto ja validointi
-- **✅ UUID-pohjainen ID-generointi** - Estää duplikaatit
-- **✅ `cleanup_data.py` työkalu** - Data-siivous ja varmuuskopiointi
-- **✅ `data_validator.py` moduuli** - Validointi ja uniikkius tarkistus
+- **✅ Modulaarinen IPFS-arkkitehtuuri** - Archive, Delta, Sync moduulit
+- **✅ Vaalikoneen ydin valmis** - `voting_engine.py` toimii
+- **✅ Template-järjestelmän parannus** - Parempi base template -hallinta
+- **✅ Package-rakenne** - `setup.py` ja egg-info
 
 ### 🔧 Tekniset Parannukset
-- **Korjattu ModuleNotFoundError** - sys.path workaround CLI-työkaluihin
-- **Parannettu error handling** - Robustimpi virheidenkäsittely
-- **Uniikkiusvalidaatio** - Estää duplikaattien luomisen
-- **Varmuuskopiointijärjestelmä** - Automaattiset backupit ennen muutoksia
-
-### 📊 Tuotantovalmiudet
-- **5 ehdokasta** (aikaisemmin 12 duplikaattia)
-- **6 kysymystä** (aikaisemmin 12 duplikaattia) 
-- **27 vastausta** säilyneet datan siivouksessa
-- **Kaikki CLI-komennot** toimivat luotettavasti
+- **Refaktoroitu IPFS-koodi** - Modulaarisempi ja ylläpidettävämpi
+- **Paranneltu synkronointi** - `sync_orchestrator.py`
+- **Testit uusille moduuleille** - `test_ipfs_modular.py`
+- **Stabiili main-haara** - Kaikki toiminnot testattu
 
 ---
 
@@ -200,31 +210,27 @@ data/
 
 ### 📦 Mitä on Valmiina
 ```bash
-# 1. Hallitse ehdokkaita (estää duplikaatit)
-python src/cli/manage_candidates.py --election Jumaltenvaalit2026 --add --name "Hera" --party "Perhejumalat"
+# 1. Käynnistä vaalikone
+python src/cli/voting_engine.py --election Jumaltenvaalit2026 --start
 
-# 2. Tarkista data-eheys
-python src/cli/cleanup_data.py --election Jumaltenvaalit2026 --validate
+# 2. Analytics-raportit
+python src/cli/analytics.py wrapper --election Jumaltenvaalit2026
 
-# 3. Generoi profiilit IPFS:ään
-python src/cli/generate_profiles.py publish-all-to-ipfs --election Jumaltenvaalit2026
-
-# 4. Listaa kaikki ehdokkaat
+# 3. Hallitse dataa
+python src/cli/manage_answers.py list --election Jumaltenvaalit2026
 python src/cli/manage_candidates.py --election Jumaltenvaalit2026 --list
-```
 
-### 🌐 IPFS-Profiilit (Päivitetty)
-- **Testipuolue**: `QmVAPCMdMbYdsDvPeXUJZ9MZ1UpsdNNhgDvZSs7dsPkAYf`
-- **Zeus**: `QmYR3WTKdcphxBuk6zB5mCsK2X9bZv6TcUSoLkhpZrNQvX`
-- **Athena**: `QmXXbqpiJyVRvZLXYNg1Hqns2Mnd8f9iJWhF8gyKsmKgKd`
+# 4. IPFS-synkronointi
+python src/cli/ipfs_sync.py --election Jumaltenvaalit2026 --publish
+```
 
 ---
 
 ## 💡 SEURAAVAT ASKELEET
 
 ### 🔨 Välitavoitteet (Seuraavaksi)
-1. **Toteuta `voting_engine.py`** - Vaalikoneen ydinlogiikka
-2. **Viimeistele moninode-järjestelmä** - Hajautettu arkkitehtuuri
+1. **Config-järjestelmä** - Keskitetty konfiguraatio (feature/config-system branch)
+2. **Moninode-järjestelmä** - Hajautettu arkkitehtuuri
 
 ### 🎯 Pitkän tähtäimen tavoitteet
 3. **Web-käyttöliittymä** - Moderni React-sovellus
@@ -232,17 +238,22 @@ python src/cli/manage_candidates.py --election Jumaltenvaalit2026 --list
 
 ---
 
-## 📈 KEHTIYSPROSESSI
+## 🌟 UUSI CONFIG-JÄRJESTELMÄ (feature/config-system)
 
-### ✅ Viimeisimmät korjaukset:
-1. **Data-eheysongelmat** ratkaistu (duplikaatit, import virheet)
-2. **CLI-työkalut** stabiloitu (kaikki komennot toimivat)
+### 🎯 Tavoitteet
+- **Yksinkertaisemmat komennot** (ei tarvi --election joka kerta)
+- **IPFS-pohjainen deployment** - helpompi worker-node setup
+- **Hash-fingerprint** - configin eheyden varmistus
+- **Template-pohjainen** - base_config.json + generointi
 
-
-### 🎯 Seuraava isompi askel:
-**Vaalikoneen ydinlogiikka** - Mahdollistaa todellisen vaalikoneen käytön
-
-
+### 📋 To Do Config-järjestelmälle
+- [ ] `config.json` template
+- [ ] `src/core/config_manager.py`
+- [ ] `install.py --first-install` päivitys
+- [ ] CLI-komentojen päivitys (optionaaliset --election)
+- [ ] IPFS-tallennus & hash-validointi
+- [ ] System_chain integrointi
 
 ---
-*Päivitetty: 18.11.2025*
+*Päivitetty: 19.11.2025 - feature/config-system branch*
+
