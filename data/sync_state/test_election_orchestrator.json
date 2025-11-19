@@ -1,0 +1,24 @@
+{
+  "election_id": "test_election",
+  "created": "2025-11-19T07:46:59.124144",
+  "sync_count": 1,
+  "delta_count": 1,
+  "total_savings_bytes": 11,
+  "last_base_cid": "QmdeLs86EjtFW1NoL7CJty4eT93L5fhfY1A5t76MYd1WEK",
+  "base_hashes": {
+    "questions.json": "ab7b4228ee35a5d60f3a6dcf5c404c67eeedbbff7fa785488abd8a80661b5f7f",
+    "candidates.json": "8c2ef18fa73e485fb0b31817cb1d52fc56dd95eaaad9745a616b7c17f6aa85b9"
+  },
+  "last_full_sync": "2025-11-19T07:46:59.134005",
+  "file_count": 2,
+  "last_delta_cid": "QmfFst4K1u44W1gb9yFPNaKhQTJe5PeE5BjjYUDd5Q6q77",
+  "last_sync": "2025-11-19T07:46:59.141620",
+  "last_savings": {
+    "full_size_bytes": 134,
+    "delta_size_bytes": 123,
+    "saving_bytes": 11,
+    "saving_percent": 8.208955223880597,
+    "changed_files": 1,
+    "deleted_files": 0
+  }
+}

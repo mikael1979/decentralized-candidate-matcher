@@ -17,4 +17,4 @@ mypy>=1.5.0           # Tyypitystarkistus
 # Vaihtoehtoiset (kommentoidut)
 # ipfshttpclient>=0.8.0  # IPFS-integraatio
 # web3>=6.0.0           # Blockchain-integraatio
-ipfshttpclient>=0.8.0a2
+ipfshttpclient==0.8.0a2

@@ -459,4 +459,66 @@ Asiakas (Node) → Luo arkisto → IPFS:ään → Päivitä synkronointilista �
      ↓              ↓              ↓                    ↓
   Kaikki data    .tar.gz       Vain arkisto    Vain pieni lista
   paikallisessa  pakattu       CID:llä          CID:llä
+--------------------------------------------------------------------------------------------------
+Järjestelmä vaatii config.json tiedoston varsinkin vaalien nimen voisi tallentaa config.json tiedostoon, jolloin järjestelmä lukittuisi yhteen default vaaliin asennuksessa.
+config.json esimerkki:
+{
+  "version": "1.0.0",
+  "environment": "production",
+  
+  "paths": {
+    "data_directory": "data/runtime",
+    "output_directory": "output",
+    "templates_directory": "templates",
+    "logs_directory": "logs"
+  },
+  
+  "election": {
+    "default_election": "Jumaltenvaalit2026",
+    "max_questions": 20,
+    "max_candidates": 100,
+    "answer_scale": {"min": -5, "max": 5},
+    "confidence_scale": {"min": 1, "max": 5},
+    "default_language": "fi"
+  },
+  
+  "ui": {
+    "default_theme": "modern",
+    "show_explanations": true,
+    "show_confidence": true
+  },
+  
+  "analytics": {
+    "track_usage": true,
+    "auto_validate": true,
+    "generate_reports": true
+  },
+  
+  "publishing": {
+    "auto_publish_ipfs": false,
+    "ipfs_gateway": "https://ipfs.io/ipfs/"
+  },
+  
+  "security": {
+    "auto_backup": true,
+    "backup_interval": 24,
+    "log_level": "INFO"
+  },
+  
+  "system": {
+    "cache_enabled": true,
+    "debug_mode": false
+  }
+}
+---------------------------------------------------------------
+Config on sellainen joka luodaan install.py --first-install ja tallennetaan ipfs:ään ja worker-node luodaan config.json pohjalta
+Workflow:
+install.py --first-install → Luo config → Tallentaa IPFS:ään → Palauttaa CID:n
+
+Worker-nodet → Bootstrappaa CID:stä → Liittyy verkkoon
+
+Kaikki nodet → Käyttävät samaa configia → Yhdenmukainen toiminta
+
+-----------------------------------------------------------------------------
+config tiedostolle pitää luoda myös base template ja sitten siitä puuttuu hash, eli fingerprint, tai no config tiedoston hash tallennetaan system_chain tiedostoon
 

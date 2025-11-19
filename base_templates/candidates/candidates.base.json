@@ -5,7 +5,7 @@
     "election_id": "{{ELECTION_ID}}",
     "description": {
       "fi": "Ehdokkaiden perustiedot",
-      "en": "Candidate basic information",
+      "en": "Candidate basic information", 
       "sv": "Kandidaters grundinformation"
     },
     "template_version": "2.1.0",
