@@ -1,5 +1,3 @@
-Totta kai! Tässä on **täysin yhtenäinen, suoraan kopioitavissa oleva README.md** – kaikki yhdessä palassa, valmiina tallennettavaksi tiedostoksi:
-
 ```markdown
 # Hajautettu Vaalikone - Decentralized Candidate Matcher
 
