@@ -1,10 +1,10 @@
 ```markdown
 # Hajautettu Vaalikone - Decentralized Candidate Matcher
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)]
-[![IPFS Compatible](https://img.shields.io/badge/IPFS-Kubo%200.38.2-green.svg)](https://docs.ipfs.tech/)]
-[![Status: Production Ready](https://img.shields.io/badge/Status-TUOTANTOVALMIS-success.svg)]()
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue?logo=python)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![IPFS](https://img.shields.io/badge/IPFS-Kubo%200.38.2-orange?logo=ipfs)](https://github.com/ipfs/kubo#install)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)]()
 
 Hajautettu, yhteisöohjattu vaalikonejärjestelmä, joka käyttää ELO-luokitusjärjestelmää kysymysten priorisointiin ja automoderaatioon. Järjestelmä on suunniteltu tukemaan useita samanaikaisia vaaleja hajautetusti ilman keskitettyä hallintapalvelinta.
 
