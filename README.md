@@ -118,7 +118,7 @@ python src/cli/manage_questions.py --remove q_abc123
 
 ### Vaalien järjestäjille
 ```bash
-python src/cli/install.py --first-install --election-id Kuntavaalit2025
+python src/cli/install.py --first-install --election-id Jumaltenvaalit2026
 python src/cli/manage_questions.py --list
 python src/cli/compare_questions.py --auto 10
 python src/cli/analytics.py wrapper
@@ -153,7 +153,7 @@ Sisältää:
 
 ```bash
 # Config julkaistaan automaattisesti asennuksessa
-python src/cli/install.py --first-install --election-id TestVaalit
+python src/cli/install.py --first-install --election-id Jumaltenvaalit2026
 
 # Julkaise kaikki profiilit IPFS:ään
 python src/cli/generate_profiles.py publish-all-to-ipfs
@@ -165,7 +165,7 @@ python src/cli/generate_profiles.py publish-all-to-ipfs
 python tests/test_config_manager.py
 
 # Tai täydellinen pikatestirundi
-python src/cli/install.py --first-install --election-id TestVaalit --node-type coordinator
+python src/cli/install.py --first-install --election-id Jumaltenvaalit2026 --node-type coordinator
 python src/cli/manage_questions.py --add --question-fi "Testikysymys"
 python src/cli/manage_candidates.py --add --name-fi "Testiehdokas"
 python src/cli/analytics.py wrapper
