@@ -1,4 +1,7 @@
-# 🏛️ Hajautettu Vaalikone - Decentralized Candidate Matcher
+Totta kai! Tässä on **täysin yhtenäinen, suoraan kopioitavissa oleva README.md** – kaikki yhdessä palassa, valmiina tallennettavaksi tiedostoksi:
+
+```markdown
+# Hajautettu Vaalikone - Decentralized Candidate Matcher
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -6,314 +9,204 @@
 
 Hajautettu, yhteisöohjattu vaalikonejärjestelmä, joka käyttää ELO-luokitusjärjestelmää kysymysten priorisointiin ja automoderaatioon. Järjestelmä on suunniteltu tukemaan useita samanaikaisia vaaleja hajautetusti ilman keskitettyä hallintapalvelinta.
 
-## 🌟 Pääominaisuudet
+## Pääominaisuudet
 
-- **🎯 Hajautettu Arkkitehtuuri** - Ei single point of failure
-- **🏅 ELO-luokitusjärjestelmä** - Kysymysten laadun automaattinen arviointi
-- **🔐 PKI-turvajärjestelmä** - Ehdokkaiden ja puolueiden varmennus
-- **🌐 IPFS-integrointi** - Hajautettu datajako ja tallennus
-- **📊 Reaaliaikainen analytics** - Vaalitilastot ja analyysit
-- **🎨 HTML-profiilit** Automaattiset profiilisivut IPFS:ään
-- **👥 Moninode-tuki** Useat solmut samalle vaalille
+- **Hajautettu Arkkitehtuuri** – Ei single point of failure  
+- **Config-järjestelmä** – Template-pohjainen konfiguraatio  
+- **ELO-luokitusjärjestelmä** – Kysymysten laadun automaattinen arviointi  
+- **PKI-turvajärjestelmä** – Ehdokkaiden ja puolueiden varmennus  
+- **IPFS-integrointi** – Hajautettu datajako ja tallennus  
+- **Reaaliaikainen analytics** – Vaalitilastot ja analyysit  
+- **HTML-profiilit** – Automaattiset profiilisivut IPFS:ään  
+- **Remove/Update toiminnot** – Täydellinen data-hallinta  
 
-## 🏗️ Projektin Rakenne
+## TUOTANTOVALMIS!
+
+Järjestelmä on nyt täysin tuotantovalmis ja sisältää:
+- **Config-järjestelmä** – Template-pohjainen konfiguraatio  
+- **Vaalikoneen ydin** – Täysin toimiva voting engine  
+- **Analytics & raportointi** – Kattava tilasto- ja terveysraportointi  
+- **Data-hallinta** – CRUD-toiminnot kaikille data-tyypeille  
+- **IPFS-tuki** – Configin ja profiilien julkaisu  
+
+## Projektin Rakenne
 
 ```
 src/
 ├── cli/                    # Komentorivityökalut
-│   ├── install.py              # Järjestelmän asennus
-│   ├── manage_questions.py     # Kysymysten hallinta  
-│   ├── manage_candidates.py    # Ehdokkaiden hallinta
+│   ├── install.py              # Järjestelmän asennus + config
+│   ├── voting_engine.py        # Vaalikoneen ydin
+│   ├── analytics.py            # Analytics & raportointi
+│   ├── manage_questions.py     # Kysymysten hallinta (add/remove/update)
+│   ├── manage_candidates.py    # Ehdokkaiden hallinta (add/remove/update)  
+│   ├── manage_answers.py       # Vastausten hallinta (add/remove/update)
 │   ├── manage_parties.py       # Puolueiden hallinta
-│   ├── manage_answers.py       # Vastausten hallinta
 │   ├── compare_questions.py    # ELO-vertailu
-│   ├── elo_admin.py           # ELO-hallinta
-│   ├── link_candidate_to_party.py
-│   ├── ipfs_sync.py           # IPFS-synkronointi
-│   ├── analytics.py           # Analytics
-│   ├── generate_profiles.py   # HTML-profiilit
-│   ├── node_management.py     # Solmujen hallinta
-│   ├── answer_validation.py   # Vastausten validointi
-│   ├── answer_reports.py      # Raportointi
-│   ├── party_verification.py  # Puolueiden vahvistus
-│   ├── candidate_credentials.py # Ehdokkaiden tunnistus
-│   └── publish_election_configs.py
+│   ├── elo_admin.py            # ELO-hallinta
+│   ├── ipfs_sync.py            # IPFS-synkronointi
+│   ├── generate_profiles.py    # HTML-profiilit
+│   └── validate_data.py        # Data-validointi
 ├── core/                    # Ydintoiminnallisuudet
+│   ├── config_manager.py       # Config-hallinta (UUSI)
 │   ├── ipfs_client.py          # IPFS-integrointi
-│   ├── pki_manager.py          # PKI-turvajärjestelmä
-│   ├── validators.py           # Validaattorit
 │   ├── file_utils.py           # Tiedostotyökalut
-│   ├── election_validator.py   # Vaalien validointi
-│   ├── data_manager.py         # Datan hallinta
-│   ├── config_manager.py       # Konfiguraatio
-│   └── error_handling.py       # Virheiden käsittely
-├── managers/                # Hallintamoduulit
-│   ├── ipfs_sync_manager.py    # IPFS-synkronointi
-│   ├── candidate_key_manager.py # Avainten hallinta
-│   ├── secure_answer_manager.py # Turvalliset vastaukset
-│   ├── question_manager.py     # Kysymysten hallinta
-│   ├── elo_manager.py          # ELO-luokitus
-│   ├── crypto_manager.py       # Kryptografia
-│   ├── analytics_manager.py    # Analytics
-│   ├── divine_manager.py       # Jumaltenvaalit-spesifinen
-│   ├── ipfs_manager.py         # IPFS-hallinta
-│   ├── media_registry.py       # Media-rekisteri
-│   ├── enhanced_party_manager.py # Puolueiden hallinta
-│   └── quorum_manager.py       # Kvoorum-äänestys
-├── nodes/                   # Hajautetut solmut
-│   ├── node_manager.py         # Solmujen hallinta
-│   ├── network_sync.py         # Verkon synkronointi
-│   ├── quorum_voting.py        # Hajautettu äänestys
-│   └── worker/
-│       └── election_installer.py # Vaalien asennus
-├── templates/               # Templatet ja HTML
-│   ├── html_generator.py       # HTML-generaattori
-│   ├── css_generator.py        # CSS-generaattori
-│   ├── party_templates.py      # Puoluetemplatet
-│   ├── candidate_templates.py  # Ehdokastemplatet
-│   ├── html_templates.py       # HTML-mallit
-│   ├── ipfs_publisher.py       # IPFS-julkaisu
-│   ├── template_utils.py       # Aputyökalut
-│   ├── base_templates.py       # Perustemplatet
-│   ├── profile_manager.py      # Profiilien hallinta
-│   └── json_templates/         # JSON-template-tiedostot
-└── models/                  # Data-mallit
+│   ├── data_validator.py       # Data-validointi
+│   └── ipfs/                   # Modulaarinen IPFS
+│       ├── archive_manager.py   # Arkistointi
+│       ├── delta_manager.py     # Muutosten seuranta
+│       └── sync_orchestrator.py # Synkronointi
+└── templates/               # Templatet
+    └── config.base.json        # Config template (UUSI)
 ```
 
-## 📁 Data-rakenne
+## Config-järjestelmä (UUSI!)
 
-```
-data/
-├── runtime/
-│   ├── meta.json              # Järjestelmän metadata
-│   ├── system_chain.json      # Muutoshistoria
-│   ├── questions.json         # Kysymykset + ELO-luokitukset
-│   ├── candidates.json        # Ehdokkaat
-│   ├── parties.json           # Puolueet
-│   ├── candidate_answers.json # Ehdokkaiden vastaukset
-│   └── ipfs_sync.json         # IPFS-synkronointitila
-├── nodes/
-│   ├── Jumaltenvaalit2026_nodes.json
-│   ├── Jumaltenvaalit2026_network_sync.json
-│   └── Jumaltenvaalit2026_votes.json
-├── credentials/
-│   ├── candidate_certs/       # Ehdokkaiden sertifikaatit
-│   └── party_certs/           # Puolueiden sertifikaatit
-└── backup/
+Järjestelmä käyttää nyt template-pohjaista config-järjestelmää:
+
+```json
+{
+  "metadata": {
+    "election_id": "Jumaltenvaalit2026",
+    "config_hash": "abc123...",
+    "template_hash": "def456..."
+  },
+  "election_config": {
+    "answer_scale": {"min": -5, "max": 5},
+    "confidence_scale": {"min": 1, "max": 5},
+    "max_questions": 50,
+    "max_candidates": 200
+  }
+}
 ```
 
-## 🚀 Pika-aloitus
+## Pika-aloitus
 
-### 1. Asennus
+### 1. Asennus ja Config
 
 ```bash
-# Kloonaa repositorio
-git clone https://github.com/your-username/decentralized-candidate-matcher.git
+git clone https://github.com/mikael1979/decentralized-candidate-matcher.git
 cd decentralized-candidate-matcher
-
-# Asenna riippuvuudet
 pip install -r requirements.txt
 
-# Alusta järjestelmä
-python src/cli/install.py --first-install --election-id Jumaltenvaalit2026
+# Alusta järjestelmä ja luo config (tehdään vain kerran)
+python src/cli/install.py --first-install --election-id Jumaltenvaalit2026 --node-type coordinator
 ```
 
-### 2. Peruskäyttö
+### 2. Peruskäyttö (EI enää --election -parametria!)
 
 ```bash
-# Lisää kysymyksiä
-python src/cli/manage_questions.py --add \
-  --category "Ympäristö" \
-  --question "Pitäisikö hiilidioksidipäästöjä vähentää?" \
-  --fi "Pitäisikö hiilidioksidipäästöjä vähentää?" \
-  --en "Should carbon dioxide emissions be reduced?" \
-  --sv "Bör koldioxidutsläppen minskas?"
+# Config-järjestelmä muistaa vaalin automaattisesti!
 
-# Lisää puolueita
-python src/cli/manage_parties.py --add \
-  --name "Vihreä liitto" \
-  --fi "Vihreä liitto" \
-  --en "Green Alliance" \
-  --sv "Gröna förbundet"
+python src/cli/manage_questions.py --add --question-fi "Pitäisikö hiilidioksidipäästöjä vähentää?" --category "Ympäristö"
+python src/cli/manage_candidates.py --add --name-fi "Matti Meikäläinen" --party "Vihreä liitto"
+python src/cli/manage_answers.py add --candidate-id cand_abc123 --question-id q_xyz789 --answer 3 --confidence 4
 
-# Lisää ehdokkaita
-python src/cli/manage_candidates.py --add \
-  --name "Matti Meikäläinen" \
-  --party "Vihreä liitto"
-
-# Luo HTML-profiilit IPFS:ään
-python src/cli/generate_profiles.py publish-all-to-ipfs --election Jumaltenvaalit2026
+python src/cli/voting_engine.py --start
+python src/cli/analytics.py wrapper
 ```
 
-## 🎯 Käyttötapaukset
+### 3. Data-hallinta (Uudet remove/update-toiminnot!)
+
+```bash
+python src/cli/manage_questions.py --update q_abc123 --question-fi "Päivitetty kysymys"
+python src/cli/manage_candidates.py --update cand_xyz --name-fi "Uusi nimi"
+python src/cli/manage_answers.py remove --candidate-id cand_abc123 --question-id q_xyz789
+python src/cli/manage_questions.py --remove q_abc123
+```
+
+## Käyttötapaukset
 
 ### Vaalien järjestäjille
 ```bash
-# Alusta uudet vaalit
 python src/cli/install.py --first-install --election-id Kuntavaalit2025
-
-# Hallinnoi kysymyksiä
 python src/cli/manage_questions.py --list
 python src/cli/compare_questions.py --auto 10
-
-# Tarkista data-eheys
-python src/cli/validate_data.py --election-id Kuntavaalit2025
+python src/cli/analytics.py wrapper
 ```
 
-### Puolueille
+### Puolueille & ehdokkaille
 ```bash
-# Rekisteröi puolue
-python src/cli/manage_parties.py --add --name "Oma Puolue"
-
-# Lisää ehdokkaita
-python src/cli/manage_candidates.py --add --name "Ehdokas Nimi" --party "Oma Puolue"
-
-# Hallinnoi vastauksia
-python src/cli/manage_answers.py --candidate "Ehdokas Nimi" --add
+python src/cli/manage_candidates.py --add --name-fi "Ehdokas Nimi" --party "Oma Puolue"
+python src/cli/manage_answers.py add --candidate-id cand_123 --question-id q_456 --answer 5 --confidence 5
 ```
 
-### Ehdokkaille
+### Äänestäjille
 ```bash
-# Luo henkilökohtaiset tunnistetiedot
-python src/cli/candidate_credentials.py --generate
-
-# Anna vastaukset kysymyksiin
-python src/cli/manage_answers.py --add --candidate "Oma Nimi"
+python src/cli/voting_engine.py --start
+python src/cli/voting_engine.py --results session_20251120_120000
+python src/cli/analytics.py wrapper
 ```
 
-### Käyttäjille
-```bash
-# Vertaile kysymyksiä parantaaksesi laatua
-python src/cli/compare_questions.py
-
-# Selaa IPFS-profiileja
-python src/cli/generate_profiles.py status --election Jumaltenvaalit2026
-
-# Katso tilastoja
-python src/cli/analytics.py --election Jumaltenvaalit2026
-```
-
-## 🔧 Tekniset Ominaisuudet
-
-### ELO-luokitusjärjestelmä
-- Kaksitasoinen rating: `current_rating = 1000 + comparison_delta + vote_delta`
-- Automaattinen moderaatio: Estää manipuloinnin vaatii yhteisökonsensuksen
-- Laadun priorisointi: Korkealuokituksiset kysymykset nousevat esille
-
-### PKI-turvajärjestelmä
-- Ehdokkaiden digitaaliset allekirjoitukset
-- Puolueiden hajautettu vahvistus (3/3 kvoorumi)
-- Tietoturva-avaimet ja sertifikaatit
-
-### IPFS-integrointi
-- Täysi yhteensopivuus IPFS Kubo 0.38.2:n kanssa
-- Hajautettu datajako ilman keskitettyä palvelinta
-- Mock-IPFS testausympäristöä varten
-
-### Monikielisyys
-- Suomi, englanti, ruotsi
-- Kaikki tekstit lokalisoitu
-- Automaattiset käännöspohjat
-
-## 🌐 IPFS-profiilit
-
-Järjestelmä generoi automaattisesti HTML-profiilit kaikille puolueille ja ehdokkaille ja julkaisee ne IPFS-verkkoon:
+## Analytics & Terveysraportti
 
 ```bash
-# Julkaise kaikki profiilit
-python src/cli/generate_profiles.py publish-all-to-ipfs --election Jumaltenvaalit2026
-
-# Tarkista tila
-python src/cli/generate_profiles.py status --election Jumaltenvaalit2026
+python src/cli/analytics.py wrapper
 ```
 
-**Esimerkki IPFS-linkkejä:**
-- Testipuolue: `QmVAPCMdMbYdsDvPeXUJZ9MZ1UpsdNNhgDvZSs7dsPkAYf`
-- Zeus: `QmYR3WTKdcphxBuk6zB5mCsK2X9bZv6TcUSoLkhpZrNQvX`
-- Athena: `QmXXbqpiJyVRvZLXYNg1Hqns2Mnd8f9iJWhF8gyKsmKgKd`
+Sisältää:
+- Järjestelmän tilan (healthy / needs_attention)
+- Data-tilastot
+- Kysymysten ELO-jakauma
+- Konkreettiset suositukset puutteiden korjaamiseksi
 
-## 📊 Analytics ja Raportointi
+## IPFS-integrointi
 
 ```bash
-# Yleiset tilastot
-python src/cli/analytics.py --election Jumaltenvaalit2026
+# Config julkaistaan automaattisesti asennuksessa
+python src/cli/install.py --first-install --election-id TestVaalit
 
-# Puoluekohtaiset tilastot
-python src/cli/party_stats.py --election Jumaltenvaalit2026
-
-# ELO-tilastot
-python src/cli/elo_admin.py --stats
-
-# Vastausten raportit
-python src/cli/answer_reports.py --election Jumaltenvaalit2026
+# Julkaise kaikki profiilit IPFS:ään
+python src/cli/generate_profiles.py publish-all-to-ipfs
 ```
 
-## 🔐 Tietoturva
-
-- Kaikki ehdokkaiden vastaukset digitaalisesti allekirjoitettuja
-- Puolueiden rekisteröinti vaatii hajautetun vahvistuksen
-- Data-eheys tarkistetaan system_chain.json:n avulla
-- IPFS-data varmennettu hash-pohjaisella eheystarkistuksella
-
-## 🧪 Testaus
+## Testaus
 
 ```bash
-# Suorita kaikki testit
-python tests/run_tests.py
+python tests/test_config_manager.py
 
-# Integraatiotestit
-python tests/run_integration_tests.py
-
-# Yksikkötestit
-pytest tests/unit/
-
-# IPFS-testaus
-python test_ipfs.py
+# Tai täydellinen pikatestirundi
+python src/cli/install.py --first-install --election-id TestVaalit --node-type coordinator
+python src/cli/manage_questions.py --add --question-fi "Testikysymys"
+python src/cli/manage_candidates.py --add --name-fi "Testiehdokas"
+python src/cli/analytics.py wrapper
+python src/cli/voting_engine.py --start
 ```
 
-## 🧹 Data-eheyden ylläpito
+## Tietoturva & Eheys
 
-### Tarkista ja korjaa data-ongelmat
-```bash
-# Tarkista ongelmat
-python src/cli/cleanup_data.py --election Jumaltenvaalit2026 --validate
+- Kaikki vastaukset validoitu (−5…+5, varmuus 1…5)
+- Data-eheys varmistettu `system_chain.json`:llä
+- Configin hash-fingerprint
+- IPFS CID-pohjainen eheystarkistus
 
-# Korjaa duplikaatit (tee varmuuskopio automaattisesti)
-python src/cli/cleanup_data.py --election Jumaltenvaalit2026 --fix-duplicates --backup
+## Tulevat Ominaisuudet
 
-# Dry-run - näytä mitä korjattaisiin
-python src/cli/cleanup_data.py --election Jumaltenvaalit2026 --fix-duplicates --dry-run
-
-```
-
-## 🔮 Tulevat Ominaisuudet
-
-- [ ] `voting_engine.py` - Varsinainen vaalikoneen ydin
-- [ ] Web-käyttöliittymä Reactilla
+- [ ] Moninode-hajautus
+- [ ] Moderni React-web-käyttöliittymä
 - [ ] Reaaliaikainen tulospalvelu
-- [ ] Mobiili-sovellus
-- [ ] Laajempi skaalautuvuustesti
-- [ ] Blockchain-integrointi
+- [ ] Mobiilisovellus
+- [ ] Blockchain-integrointi (valinnainen)
 
+## Osallistu Kehitykseen
 
-## 🤝 Osallistu Kehitykseen
+1. Forkkaa repo
+2. Luo feature-haara (`git checkout -b feature/oma-ominaisuus`)
+3. Commitoi (`git commit -am 'Kuvaus muutoksesta'`)
+4. Pushaa & avaa Pull Request
 
-1. Forkkaa repositorio
-2. Luo feature-haara (`git checkout -b feature/ominaisuus`)
-3. Commitoi muutokset (`git commit -am 'Lisää uusi ominaisuus'`)
-4. Pushaa haaraan (`git push origin feature/ominaisuus`)
-5. Luo Pull Request
+## Lisenssi
 
-## 📜 Lisenssi
-
-Tämä projekti on lisensoitu Apache 2.0 -lisenssillä - katso [LICENSE](LICENSE) tiedosto lisätietoja varten.
-
-
+Apache License 2.0 – katso [LICENSE](LICENSE)
 
 ---
 
 <div align="center">
-  
-**🏛️ Demokratia koodiksi - Yhteisö luo, äänestää ja moderoi kysymyksiä hajautetusti** 🚀
+
+**Demokratia koodiksi – Config-järjestelmä valmis, tuotanto käynnissä!**
+
+*"Yksinkertaisemmat komennot, tehokkaampi demokratia"*
 
 </div>
+```
+
+
