@@ -36,7 +36,7 @@ Hajautettu, yhteisöohjattu vaalikonejärjestelmä, joka käyttää ELO-luokitus
 - **HTML-profiilit** – Automaattiset profiilisivut IPFS:ään  
 - **Remove/Update toiminnot** – Täydellinen data-hallinta  
 
-## 🛠️ Vaatimukses
+## 🛠️ Vaatimukset
 
 - **Python 3.8** tai uudempi
 - **IPFS Kubo 0.38.2** tai uudempi
