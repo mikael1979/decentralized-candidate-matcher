@@ -31,15 +31,10 @@ python src/cli/manage_candidates.py --add --name-fi "Zeus" --name-en "Zeus" --pa
 python src/cli/manage_candidates.py --add --name-fi "Athena" --name-en "Athena" --party "Olympolaiset" --domain "wisdom_warfare"
 python src/cli/manage_candidates.py --add --name-fi "Hades" --name-en "Hades" --party "Olympolaiset" --domain "underworld"
 
-# Lisää vastauksia
+# Lisää vastauksia - yksinkertaisemmin ilman dynaamista ID-hakua
 echo "📝 Lisätään vastauksia..."
-# Zeusin vastaukset
-python src/cli/manage_answers.py add --candidate-id $(python -c "from src.core.config_manager import CandidateManager; m = CandidateManager('Jumaltenvaalit2026'); print([c['id'] for c in m.list_candidates() if c['basic_info']['name']['fi'] == 'Zeus'][0])") --question-id q_1 --answer 5 --confidence 5 --explanation-fi "Jumalana pidän täyttä valtaa"
-python src/cli/manage_answers.py add --candidate-id $(python -c "from src.core.config_manager import CandidateManager; m = CandidateManager('Jumaltenvaalit2026'); print([c['id'] for c in m.list_candidates() if c['basic_info']['name']['fi'] == 'Zeus'][0])") --question-id q_2 --answer 4 --confidence 5 --explanation-fi "Valtaa tarvitaan järjestyksen ylläpitoon"
-
-# Athenan vastaukset
-python src/cli/manage_answers.py add --candidate-id $(python -c "from src.core.config_manager import CandidateManager; m = CandidateManager('Jumaltenvaalit2026'); print([c['id'] for c in m.list_candidates() if c['basic_info']['name']['fi'] == 'Athena'][0])") --question-id q_1 --answer 3 --confidence 4 --explanation-fi "Viisaus ja valta tasapainoon"
-python src/cli/manage_answers.py add --candidate-id $(python -c "from src.core.config_manager import CandidateManager; m = CandidateManager('Jumaltenvaalit2026'); print([c['id'] for c in m.list_candidates() if c['basic_info']['name']['fi'] == 'Athena'][0])") --question-id q_2 --answer 2 --confidence 4 --explanation-fi "Demokratia viisauden kanssa"
+echo "💡 Vastausten lisäys vaatii manuaaliset ID:t - voit tehdä sen myöhemmin:"
+echo "   python src/cli/manage_answers.py add --candidate-id cand_xxx --question-id q_xxx --answer 3 --confidence 4"
 
 # Generoi analytics-raportti
 echo "📊 Generoidaan analytics-raportti..."

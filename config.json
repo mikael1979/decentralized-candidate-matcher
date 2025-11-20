@@ -2,11 +2,11 @@
   "$schema": "https://vaalikone.example.com/schemas/config/v1.json",
   "template_version": "1.0.0",
   "metadata": {
-    "election_id": "IPFSTest2025",
-    "network_id": "IPFSTest2025_network",
-    "deployed_at": "2025-11-20T07:42:00.515962",
+    "election_id": "Jumaltenvaalit2026",
+    "network_id": "Jumaltenvaalit2026_network",
+    "deployed_at": "2025-11-20T08:43:23.489469",
     "version": "1.0.0",
-    "config_hash": "8adb4de5097eb72eb5c141db6cb607ac117ea3acc9ceb8ca86723da8b4caaa75",
+    "config_hash": "20bab849856ce3aeb219a654940ce412aef002e8bfa1c93a8bb1cde5e2205e14",
     "template_hash": "9bca700f3bc37e3addf0eec70d395b3dfdf94d001cff8821c46abc59949acdd6"
   },
   "network_config": {
