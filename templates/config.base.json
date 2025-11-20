@@ -1,0 +1,30 @@
+{
+  "$schema": "https://vaalikone.example.com/schemas/config/v1.json",
+  "template_version": "1.0.0",
+  "metadata": {
+    "election_id": "{{ELECTION_ID}}",
+    "network_id": "{{NETWORK_ID}}",
+    "deployed_at": "{{TIMESTAMP}}",
+    "version": "{{VERSION}}"
+  },
+  "network_config": {
+    "bootstrap_nodes": [],
+    "consensus_algorithm": "raft",
+    "block_time_seconds": 30,
+    "node_type": "{{NODE_TYPE}}"
+  },
+  "election_config": {
+    "answer_scale": {"min": -5, "max": 5},
+    "confidence_scale": {"min": 1, "max": 5},
+    "supported_languages": ["fi", "en"],
+    "max_questions": 50,
+    "max_candidates": 200,
+    "default_theme": "modern"
+  },
+  "system_config": {
+    "data_path": "./data",
+    "backup_enabled": true,
+    "backup_interval_hours": 24,
+    "log_level": "INFO"
+  }
+}

@@ -9,6 +9,8 @@ from datetime import datetime
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from core.file_utils import read_json_file, write_json_file, ensure_directory
+from core.config_manager import get_election_id, get_data_path
+
 
 def validate_answer_value(answer_value):
     """Tarkista että vastausarvo on validi (-5 - +5)"""
@@ -18,8 +20,9 @@ def validate_answer_value(answer_value):
     except (ValueError, TypeError):
         return False
 
+
 @click.command()
-@click.option('--election', required=True, help='Vaalin tunniste')
+@click.option('--election', required=False, help='Vaalin tunniste (valinnainen, käytetään configista jos ei anneta)')
 @click.option('--start', is_flag=True, help='Aloita vaalikone')
 @click.option('--results', help='Näytä tulokset (session-ID)')
 @click.option('--compare', help='Vertaa ehdokkaita (session-ID)')
@@ -27,312 +30,258 @@ def validate_answer_value(answer_value):
 def voting_engine(election, start, results, compare, list_sessions):
     """Vaalikoneen ydin - käyttäjien vastausten keräys ja tulosten laskenta"""
     
+    # Hae election_id configista jos parametria ei annettu
+    election_id = get_election_id(election)
+    if not election_id:
+        print("❌ Vaali-ID:tä ei annettu eikä config tiedostoa löydy.")
+        print("💡 Käytä: --election VAALI_ID tai asenna järjestelmä ensin: python src/cli/install.py --first-install")
+        sys.exit(1)
+    
+    print(f"🗳️  VAALIKONE: {election_id}")
+    print("=" * 50)
+    
     if start:
-        start_voting_session(election)
+        start_voting_session(election_id)
     elif results:
-        show_results(election, results)
+        show_results(election_id, results)
     elif compare:
-        compare_candidates(election, compare)
+        compare_candidates(election_id, compare)
     elif list_sessions:
-        list_voting_sessions(election)
+        list_voting_sessions(election_id)
     else:
-        click.echo("💡 KÄYTTÖ:")
-        click.echo("   --start          # Aloita uusi vaalikone")
-        click.echo("   --results ID     # Näytä tulokset")
-        click.echo("   --compare ID     # Vertaa ehdokkaita")
-        click.echo("   --list-sessions  # Listaa kaikki sessiot")
+        print("❌ Anna komento: --start, --results, --compare tai --list-sessions")
+        print("💡 Kokeile: python src/cli/voting_engine.py --start")
 
-def start_voting_session(election):
-    """Aloita uusi vaalikonesessio"""
-    click.echo(f"🗳️  VAALIKONE: {election}")
-    click.echo("=" * 50)
+
+def start_voting_session(election_id):
+    """Käynnistä uusi voting-sessio"""
+    data_path = get_data_path(election_id)
     
     # Lataa kysymykset
-    questions = load_questions(election)
+    questions_file = Path(data_path) / "questions.json"
+    if not questions_file.exists():
+        print(f"❌ Kysymyksiä ei löydy vaalille: {election_id}")
+        print("💡 Lisää kysymyksiä ensin: python src/cli/manage_questions.py --election {election_id} --add")
+        return
+    
+    questions_data = read_json_file(questions_file)
+    questions = questions_data.get("questions", [])
+    
     if not questions:
-        click.echo("❌ Ei kysymyksiä saatavilla")
+        print("❌ Ei kysymyksiä saatavilla.")
         return
     
     # Lataa ehdokkaat
-    candidates = load_candidates(election)
+    candidates_file = Path(data_path) / "candidates.json"
+    candidates_data = read_json_file(candidates_file)
+    candidates = candidates_data.get("candidates", [])
+    
     if not candidates:
-        click.echo("❌ Ei ehdokkaita saatavilla")
+        print("❌ Ei ehdokkaita saatavilla.")
         return
     
-    click.echo(f"📝 Kysymyksiä: {len(questions)}")
-    click.echo(f"👑 Ehdokkaita: {len(candidates)}")
-    click.echo()
+    print(f"📝 Kysymyksiä: {len(questions)}")
+    print(f"👑 Ehdokkaita: {len(candidates)}")
+    print()
+    print("🤔 VASTA KYSYMYKSIIN (-5 ... +5)")
+    print("-" * 40)
     
-    # Kerää käyttäjän vastaukset
-    user_answers = collect_user_answers(questions)
-    
-    if not user_answers:
-        click.echo("❌ Et vastannut yhteenkään kysymykseen")
-        return
-    
-    # Laske yhteensopivuus
-    results = calculate_compatibility(user_answers, candidates)
-    
-    # Tallenna tulokset
-    session_id = save_results(election, user_answers, results)
-    
-    # Näytä tulokset
-    show_results_table(results, candidates)
-    
-    click.echo(f"\n🎯 VAALIKONE SUORITETTU!")
-    click.echo(f"📊 Sessio ID: {session_id}")
-    click.echo(f"💡 Käytä: python src/cli/voting_engine.py --results {session_id}")
-
-def load_questions(election):
-    """Lataa kysymykset"""
-    questions_file = "data/runtime/questions.json"
-    if not Path(questions_file).exists():
-        return []
-    
-    data = read_json_file(questions_file, {"questions": []})
-    return [q for q in data.get("questions", []) if q.get("content")]
-
-def load_candidates(election):
-    """Lataa ehdokkaat"""
-    candidates_file = "data/runtime/candidates.json"
-    if not Path(candidates_file).exists():
-        return []
-    
-    data = read_json_file(candidates_file, {"candidates": []})
-    return [c for c in data.get("candidates", []) if c.get("basic_info")]
-
-def collect_user_answers(questions):
-    """Kerää käyttäjän vastaukset kysymyksiin"""
     user_answers = {}
     
-    click.echo("🤔 VASTA KYSYMYKSIIN (-5 ... +5)")
-    click.echo("-" * 40)
-    
     for i, question in enumerate(questions, 1):
-        q_content = question["content"]
-        q_id = question["local_id"]
+        question_id = question.get("id", f"q_{i}")
+        question_text = question.get("question_fi", f"Kysymys {i}")
+        category = question.get("category", "Yleinen")
         
-        click.echo(f"\n{i}. {q_content['question']['fi']}")
-        if "en" in q_content['question'] and q_content['question']['en'] and not q_content['question']['en'].startswith('[EN]'):
-            click.echo(f"   EN: {q_content['question']['en']}")
-        
-        click.echo("   Asteikko: -5 (Täysin eri mieltä) ... +5 (Täysin samaa mieltä)")
+        print(f"\n{i}. {question_text}")
+        print(f"   Kategoria: {category}")
+        print(f"   Asteikko: -5 (Täysin eri mieltä) ... +5 (Täysin samaa mieltä)")
         
         while True:
             try:
-                answer = click.prompt("   Vastaus (-5 - +5)", type=int)
+                answer = input("   Vastaus (-5 - +5): ").strip()
                 if validate_answer_value(answer):
-                    # KORJATTU: Kategorian käsittely
-                    category = q_content.get('category', {})
-                    if isinstance(category, dict):
-                        category_text = category.get('fi', 'Yleinen')
-                    else:
-                        category_text = str(category)
-                    
-                    user_answers[q_id] = {
-                        "question_id": q_id,
-                        "answer_value": answer,
-                        "question_text": q_content['question']['fi'],
-                        "category": category_text
-                    }
+                    user_answers[question_id] = int(answer)
                     break
                 else:
-                    click.echo("   ❌ Vastauksen tulee olla välillä -5 - +5")
-            except ValueError:
-                click.echo("   ❌ Anna numero välillä -5 - +5")
+                    print("   ❌ Virheellinen arvo! Käytä lukua -5 ja +5 välillä.")
+            except KeyboardInterrupt:
+                print("\n\n❌ Voting keskeytetty.")
+                return
     
-    return user_answers
+    # Laske tulokset
+    session_id = f"session_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    results = calculate_results(election_id, user_answers, session_id)
+    
+    # Tallenna sessio
+    save_voting_session(election_id, session_id, user_answers, results)
+    
+    # Näytä tulokset
+    show_results(election_id, session_id)
 
-def calculate_compatibility(user_answers, candidates):
-    """Laske yhteensopivuus käyttäjän ja ehdokkaiden välillä"""
+
+def calculate_results(election_id, user_answers, session_id):
+    """Laske ehdokkaiden yhteensopivuus"""
+    data_path = get_data_path(election_id)
+    
+    # Lataa ehdokkaat ja vastaukset
+    candidates_file = Path(data_path) / "candidates.json"
+    answers_file = Path(data_path) / "candidate_answers.json"
+    
+    candidates_data = read_json_file(candidates_file)
+    answers_data = read_json_file(answers_file)
+    
+    candidates = candidates_data.get("candidates", [])
+    candidate_answers = answers_data.get("answers", [])
+    
     results = []
     
     for candidate in candidates:
-        compatibility = calculate_candidate_compatibility(user_answers, candidate)
+        candidate_id = candidate.get("id")
+        candidate_name = candidate.get("name_fi", candidate.get("name_en", "Nimetön"))
+        candidate_party = candidate.get("party", "sitoutumaton")
+        
+        # Etsi ehdokkaan vastaukset
+        c_answers = {}
+        for answer in candidate_answers:
+            if answer.get("candidate_id") == candidate_id:
+                c_answers[answer.get("question_id")] = {
+                    "value": answer.get("value", 0),
+                    "confidence": answer.get("confidence", 1)
+                }
+        
+        # Laske pisteet
+        total_score = 0
+        matches = 0
+        
+        for q_id, user_answer in user_answers.items():
+            if q_id in c_answers:
+                candidate_answer = c_answers[q_id]["value"]
+                confidence = c_answers[q_id]["confidence"]
+                
+                # Laske etäisyys (0-10 asteikolla) ja muunna pisteiksi
+                distance = abs(user_answer - candidate_answer)
+                max_distance = 10  # -5 to +5 = 10 units
+                
+                # Pisteet: 10 - etäisyys, skaalattu luottamuksella
+                question_score = (10 - distance) * (confidence / 5.0)
+                total_score += question_score
+                matches += 1
+        
+        # Laska prosentti
+        percentage = (matches / len(user_answers)) * 100 if user_answers else 0
+        
         results.append({
-            "candidate_id": candidate["candidate_id"],
-            "candidate_name": candidate["basic_info"]["name"]["fi"],
-            "party": candidate["basic_info"].get("party", "Sitoutumaton"),
-            "compatibility_score": compatibility["score"],
-            "matching_answers": compatibility["matching"],
-            "total_questions": compatibility["total"],
-            "match_percentage": compatibility["percentage"]
+            "candidate_id": candidate_id,
+            "name": candidate_name,
+            "party": candidate_party,
+            "score": round(total_score, 1),
+            "matches": matches,
+            "percentage": round(percentage, 1)
         })
     
-    # Järjestä parhaimman yhteensopivuuden mukaan
-    results.sort(key=lambda x: x["compatibility_score"], reverse=True)
+    # Järjestä tulokset
+    results.sort(key=lambda x: x["score"], reverse=True)
+    
     return results
 
-def calculate_candidate_compatibility(user_answers, candidate):
-    """Laske yhteensopivuus yhden ehdokkaan kanssa"""
-    candidate_answers = {ans["question_id"]: ans for ans in candidate.get("answers", [])}
-    
-    total_score = 0
-    matching_answers = 0
-    total_questions = len(user_answers)
-    
-    for q_id, user_answer in user_answers.items():
-        if q_id in candidate_answers:
-            cand_answer = candidate_answers[q_id]
-            # Laske etäisyys (pienempi = parempi)
-            distance = abs(user_answer["answer_value"] - cand_answer["answer_value"])
-            # Muunna pisteeksi (10 - etäisyys)
-            score = max(0, 10 - distance)
-            total_score += score
-            matching_answers += 1
-    
-    percentage = (matching_answers / total_questions * 100) if total_questions > 0 else 0
-    
-    return {
-        "score": total_score,
-        "matching": matching_answers,
-        "total": total_questions,
-        "percentage": percentage
-    }
 
-def show_results_table(results, candidates):
-    """Näytä tulokset taulukkona"""
-    click.echo("\n🏆 TULOKSET")
-    click.echo("=" * 70)
-    click.echo(f"{'Sija':<4} {'Ehdokas':<20} {'Puolue':<15} {'Pisteet':<8} {'Osumat':<8} {'%':<6}")
-    click.echo("-" * 70)
+def save_voting_session(election_id, session_id, user_answers, results):
+    """Tallenna voting-sessio"""
+    sessions_path = Path(get_data_path(election_id)) / "voting_sessions.json"
+    ensure_directory(sessions_path.parent)
     
-    for i, result in enumerate(results[:10], 1):  # Näytä 10 parasta
-        click.echo(f"{i:<4} {result['candidate_name']:<20} {result['party']:<15} "
-                  f"{result['compatibility_score']:<8} {result['matching_answers']:<8} "
-                  f"{result['match_percentage']:.1f}%")
+    sessions_data = {"sessions": []}
+    if sessions_path.exists():
+        sessions_data = read_json_file(sessions_path)
     
-    # Näytä yleiskuvaus
-    if results:
-        best = results[0]
-        click.echo(f"\n🎯 PARAS YHTEENSOPIVUUS: {best['candidate_name']} ({best['party']})")
-        click.echo(f"📊 Pisteet: {best['compatibility_score']} | Osumia: {best['matching_answers']}/{best['total_questions']}")
-
-def save_results(election, user_answers, results):
-    """Tallenna käyttäjän tulokset"""
-    ensure_directory("data/runtime/voting_sessions")
-    
-    session_id = f"session_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-    results_file = f"data/runtime/voting_sessions/{session_id}.json"
-    
-    data = {
+    session_data = {
         "session_id": session_id,
-        "election_id": election,
+        "election_id": election_id,
         "timestamp": datetime.now().isoformat(),
         "user_answers": user_answers,
-        "results": results,
-        "metadata": {
-            "total_questions": len(user_answers),
-            "total_candidates": len(results),
-            "best_match": results[0] if results else None
-        }
+        "results": results
     }
     
-    write_json_file(results_file, data)
-    return session_id
-
-def show_results(election, session_id):
-    """Näytä tallennetut tulokset"""
-    results_file = f"data/runtime/voting_sessions/{session_id}.json"
+    sessions_data["sessions"].append(session_data)
+    write_json_file(sessions_path, sessions_data)
     
-    if not Path(results_file).exists():
-        click.echo(f"❌ Sessiota ei löydy: {session_id}")
+    print(f"💾 Sessio tallennettu: {session_id}")
+
+
+def show_results(election_id, session_id):
+    """Näytä voting-session tulokset"""
+    sessions_path = Path(get_data_path(election_id)) / "voting_sessions.json"
+    
+    if not sessions_path.exists():
+        print(f"❌ Sessionta ei löydy: {session_id}")
         return
     
-    data = read_json_file(results_file, {})
-    candidates = load_candidates(election)
+    sessions_data = read_json_file(sessions_path)
+    target_session = None
     
-    click.echo(f"📊 VAALIKONEEN TULOKSET - Sessio {session_id}")
-    click.echo("=" * 50)
-    click.echo(f"📅 Aikaleima: {data.get('timestamp', 'N/A')}")
-    click.echo(f"📝 Vastattuja kysymyksiä: {len(data.get('user_answers', {}))}")
-    click.echo()
+    for session in sessions_data.get("sessions", []):
+        if session.get("session_id") == session_id:
+            target_session = session
+            break
     
-    show_results_table(data.get('results', []), candidates)
-
-def compare_candidates(election, session_id):
-    """Vertaa ehdokkaita yksityiskohtaisesti"""
-    results_file = f"data/runtime/voting_sessions/{session_id}.json"
-    
-    if not Path(results_file).exists():
-        click.echo(f"❌ Sessiota ei löydy: {session_id}")
+    if not target_session:
+        print(f"❌ Sessionta ei löydy: {session_id}")
         return
     
-    data = read_json_file(results_file, {})
-    user_answers = data.get('user_answers', {})
-    candidates = load_candidates(election)
+    results = target_session.get("results", [])
     
-    click.echo(f"🔍 EHDOKKAIDEN VERTAILU - Sessio {session_id}")
-    click.echo("=" * 50)
+    print(f"\n🏆 TULOKSET - {session_id}")
+    print("=" * 70)
+    print(f"{'Sija':<4} {'Ehdokas':<20} {'Puolue':<15} {'Pisteet':<8} {'Osumat':<8} {'%':<6}")
+    print("-" * 70)
     
-    # Näytä 3 parasta ehdokasta
-    top_candidates = data.get('results', [])[:3]
+    for i, result in enumerate(results, 1):
+        print(f"{i:<4} {result['name']:<20} {result['party']:<15} {result['score']:<8} {result['matches']:<8} {result['percentage']:<6.1f}%")
     
-    for i, candidate_result in enumerate(top_candidates, 1):
-        candidate = next((c for c in candidates if c["candidate_id"] == candidate_result["candidate_id"]), None)
-        if not candidate:
-            continue
-            
-        click.echo(f"\n{i}. {candidate_result['candidate_name']} ({candidate_result['party']})")
-        click.echo(f"   Yhteensopivuus: {candidate_result['compatibility_score']} pistettä")
-        click.echo(f"   Vastausten osumia: {candidate_result['matching_answers']}/{candidate_result['total_questions']}")
-        click.echo(f"   Osumaprosentti: {candidate_result['match_percentage']:.1f}%")
-        
-        # Näytä eroavaisuudet
-        show_answer_differences(user_answers, candidate)
+    if results:
+        best_match = results[0]
+        total_questions = len(target_session.get("user_answers", {}))
+        print(f"\n🎯 PARAS YHTEENSOPIVUUS: {best_match['name']} ({best_match['party']})")
+        print(f"📊 Pisteet: {best_match['score']} | Osumia: {best_match['matches']}/{total_questions}")
+    
+    print(f"\n🎯 VAALIKONE SUORITETTU!")
+    print(f"📊 Sessio ID: {session_id}")
+    print(f"💡 Käytä: python src/cli/voting_engine.py --results {session_id}")
 
-def show_answer_differences(user_answers, candidate):
-    """Näytä vastauseroavaisuudet"""
-    candidate_answers = {ans["question_id"]: ans for ans in candidate.get("answers", [])}
-    differences = []
-    
-    for q_id, user_answer in user_answers.items():
-        if q_id in candidate_answers:
-            cand_answer = candidate_answers[q_id]
-            diff = abs(user_answer["answer_value"] - cand_answer["answer_value"])
-            if diff >= 3:  # Näytä vain suuret erot
-                differences.append({
-                    "question": user_answer["question_text"],
-                    "user_answer": user_answer["answer_value"],
-                    "candidate_answer": cand_answer["answer_value"],
-                    "difference": diff
-                })
-    
-    if differences:
-        click.echo("   📋 SUURIMMAT EROAVUUDET:")
-        for diff in differences[:3]:  # Näytä 3 suurinta eroa
-            click.echo(f"      - {diff['question'][:50]}...")
-            click.echo(f"        Sinä: {diff['user_answer']} | Ehdokas: {diff['candidate_answer']}")
 
-def list_voting_sessions(election):
+def compare_candidates(election_id, session_id):
+    """Vertaa ehdokkaita session perusteella"""
+    # Toteutus myöhemmin
+    print(f"🔍 Vertailu-toiminto tulossa myöhemmin...")
+    print(f"   Vaali: {election_id}")
+    print(f"   Sessio: {session_id}")
+
+
+def list_voting_sessions(election_id):
     """Listaa kaikki voting-sessiot"""
-    sessions_dir = Path("data/runtime/voting_sessions")
-    if not sessions_dir.exists():
-        click.echo("❌ Ei voting-sessioita")
+    sessions_path = Path(get_data_path(election_id)) / "voting_sessions.json"
+    
+    if not sessions_path.exists():
+        print(f"❌ Ei voting-sessioita vaalille: {election_id}")
         return
     
-    sessions = list(sessions_dir.glob("session_*.json"))
-    if not sessions:
-        click.echo("❌ Ei voting-sessioita")
-        return
+    sessions_data = read_json_file(sessions_path)
+    sessions = sessions_data.get("sessions", [])
     
-    click.echo(f"📋 VOTING-SESSIOT - {election}")
-    click.echo("=" * 50)
+    print(f"📋 VOTING-SESSIOT - {election_id}")
+    print("=" * 50)
     
-    for session_file in sorted(sessions)[-10:]:  # Näytä 10 viimeisintä
-        data = read_json_file(session_file, {})
-        session_id = session_file.stem
-        timestamp = data.get('timestamp', 'N/A')
-        questions = len(data.get('user_answers', {}))
+    for session in sessions:
+        session_id = session.get("session_id")
+        timestamp = session.get("timestamp", "")
+        answer_count = len(session.get("user_answers", {}))
         
-        click.echo(f"🆔 {session_id}")
-        click.echo(f"   📅 {timestamp}")
-        click.echo(f"   📝 {questions} kysymystä")
-        
-        if data.get('results'):
-            best = data['results'][0]
-            click.echo(f"   🏆 {best['candidate_name']} ({best['compatibility_score']} pistettä)")
-        click.echo()
+        print(f"🆔 {session_id}")
+        print(f"   📅 {timestamp}")
+        print(f"   ❓ {answer_count} vastausta")
+        print()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     voting_engine()
