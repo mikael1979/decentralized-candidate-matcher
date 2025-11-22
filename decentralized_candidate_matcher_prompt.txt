@@ -557,3 +557,6 @@ tässä vielä config.base.json template
   }
 }
 
+--------------------------------------------------------
+Jos luodaan moduuleita, niin tehdään importit ensin ja testataan importtien toimintaa ennen kuin kirjoitetaan tiedostoon ohjelmallista koodia, koska iso osa virheistä on yleensä moduulien importtauksessa
+
