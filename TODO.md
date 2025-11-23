@@ -1,3 +1,5 @@
+TODO.md (Päivitetty)
+markdown
 # 🏛️ Hajautetun Vaalikoneen Kehitys - Päivitetty TODO Lista
 
 ## 📊 NYKYINEN TILA (✅ VALMIS)
@@ -16,6 +18,14 @@
 - [x] Hash-fingerprint system_chain:iin
 - [x] Template-pohjainen config-generointi
 
+### 🌐 Multinode-järjestelmä (UUSI ✅ VALMIS)
+- [x] `node_identity.py` - Node identiteetit ja roolit
+- [x] `network_manager.py` - Verkkoyhteyksien hallinta
+- [x] `consensus.py` - Konsensusmekanismi muutoksille
+- [x] Ehdokkaiden hallinta verkossa
+- [x] Voting-sessioiden jakaminen
+- [x] Verkontilastot ja monitoring
+
 ### ❓ Kysymysten Hallinta
 - [x] `manage_questions.py` - Kysymysten lisäys ja hallinta
 - [x] `questions.json` - Kysymysten data-rakenne
@@ -30,6 +40,7 @@
 - [x] UUID-pohjainen ID-generointi
 - [x] Duplikaattien esto
 - [x] **UUSI:** Remove/update toiminnot
+- [x] **UUSI:** Multinode-tuki konsensusmekanismilla
 
 ### 🏛️ Puolueiden Hallinta
 - [x] `manage_parties.py` - Puolueiden hajautettu hallinta
@@ -62,6 +73,7 @@
 - [x] `party_stats.py` - Puoluetilastot
 - [x] Tulosten analysointi
 - [x] Raporttien generointi
+- [x] **UUSI:** Verkontilastot multinode-tilassa
 
 ### 🎨 HTML Profiilien Generointi
 - [x] `generate_profiles.py` - Profiilisivujen CLI
@@ -83,16 +95,16 @@
 - [x] Käyttäjän vastausten keräys
 - [x] Yhteensopivuuslaskenta
 - [x] Tulosten järjestely
+- [x] **UUSI:** Multinode-tuki voting-sessioille
 
 ---
 
 ## 🚧 KEHITYKSESSÄ (🔨 TYÖN ALLA)
 
-### 🖥️ Moninode-järjestelmä
-- [ ] `node_management.py` - Solmujen hallinta
-- [ ] `network_sync.py` - Verkon synkronointi
-- [ ] `quorum_voting.py` - Hajautettu äänestys
-- [ ] Täysin hajautettu arkkitehtuuri
+### 🖥️ Moninode-järjestelmän laajennukset
+- [ ] `node_discovery.py` - Automaattinen peer-löytö
+- [ ] `load_balancing.py` - Kuormantasaus nodejen välillä
+- [ ] `fault_tolerance.py` - Vikasietoisuus
 
 ---
 
@@ -113,8 +125,8 @@
 ## 🎯 PRIORITEETIT
 
 ### 🥇 PRIORITEETTI 1 (Seuraavaksi)
-1. **Moninode-järjestelmän viimeistely** - Hajautettu arkkitehtuuri
-2. **Web-käyttöliittymä** - Graafinen käyttöliittymä
+1. **Web-käyttöliittymä** - Graafinen käyttöliittymä
+2. **Node Discovery** - Automaattinen peer-löytö
 
 ### 🥈 PRIORITEETTI 2 
 3. **Tulosten visualisointi** - Käyttäjäystävälliset raportit
@@ -126,29 +138,39 @@
 
 ---
 
-## 🌟 CONFIG-JÄRJESTELMÄ VALMIS! (20.11.2025)
+## 🌟 MULTINODE-JÄRJESTELMÄ VALMIS! (23.11.2025)
 
 ### 🎉 UUDET TOIMINNOT:
-- **Template-pohjainen config** - `templates/config.base.json`
-- **Automaattiset data-polut** - Ei tarvitse --election parametria
-- **IPFS-julkaisu** - Config tallennettu IPFS:ään
-- **Hash-fingerprint** - Configin eheyden varmistus
-- **Remove/update komennot** - Kaikille data-tyypeille
+- **Node Identity Management** - `src/nodes/core/node_identity.py`
+- **Network Manager** - `src/nodes/core/network_manager.py` 
+- **Consensus Protocol** - `src/nodes/protocols/consensus.py`
+- **Multinode Candidate Management** - Ehdokasmuutokset verkossa
+- **Multinode Voting Sessions** - Voting-data jaetaan nodejen kesken
+- **Network Statistics** - Verkon tilan seuranta
 
 ### 🔧 PÄIVITETYT KOMENNOT:
-- `install.py --first-install` - Luo configin ja IPFS-julkaisu
-- `voting_engine.py` - --election valinnainen
-- `analytics.py` - --election valinnainen
-- `manage_answers.py` - Remove/update toiminnot
-- `manage_candidates.py` - Remove/update toiminnot  
-- `manage_questions.py` - Remove/update toiminnot
+- `manage_candidates.py --enable-multinode` - Ehdokkaiden hallinta verkossa
+- `voting_engine.py --enable-multinode` - Voting-sessiot verkossa
+- `voting_engine.py --network-stats` - Verkontilastot
+- `manage_candidates.py --bootstrap-debug` - Debug-tila
 
-### 📊 TESTATTU TOIMIVaksi:
-- ✅ Config generointi template-pohjaisesti
-- ✅ IPFS-julkaisu CID:llä QmZQQKEbh78QNMnin7anDTfs3sxAGr1jndQeEYrErpatAU
-- ✅ Kaikki CLI-komennot ilman --election parametria
-- ✅ Uudet remove/update toiminnot
-- ✅ Analytics raportoi oikein järjestelmän tilan
+### 📊 MULTINODE-ARKKITEHTUURI:
+┌─────────────────┐ ┌─────────────────┐
+│ Coordinator │◄──►│ Worker │
+│ Node │ │ Node │
+└─────────────────┘ └─────────────────┘
+▲ ▲
+└───── Consensus ───────┘
+
+text
+
+### ✅ TESTATTU TOIMIVAKSI:
+- ✅ Node identiteettien luonti ja lataus
+- ✅ Verkkoyhteyksien hallinta
+- ✅ Konsensusproposalien luonti ja äänestys
+- ✅ Ehdokkaiden hallinta verkossa
+- ✅ Voting-sessioiden jakaminen
+- ✅ Verkontilastojen raportointi
 
 ---
-*Päivitetty: 20.11.2025 - Config-järjestelmä valmis!*
+*Päivitetty: 23.11.2025 - Multinode-järjestelmä valmis!*
