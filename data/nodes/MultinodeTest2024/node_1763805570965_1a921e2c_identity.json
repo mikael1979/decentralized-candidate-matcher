@@ -1,0 +1,19 @@
+{
+  "node_id": "node_1763805570965_1a921e2c",
+  "election_id": "MultinodeTest2024",
+  "node_type": "coordinator",
+  "node_name": "coordinator_MultinodeTest2024",
+  "domain": "election_network",
+  "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAujxGpTP+BC7TBqS2DmuA\nUpjO/hENwJ5IcR02pqnVcROP4N+FGaHW71PCLS5mPRQ8WdwNRTosOT+kwvJ6YD55\nhsGIKMRCTM+pC0TlXXtLa9rtMMT+7+Vmj00lzcDtsflhhVcCyy8oD/2McNke4aWe\nwDq653owJBrDhKA76+910L/SRjvulppwRhw9L/fEIe5cUMJzFvZH3+BTn3Zu9Rnt\nmEtE+LtDq+tslZNe/FM7okWFhOOsp/0ZOdzf1dyqgrG+jhua4W1QfA52VXzcMIkH\nVvfPOUmTeT3Mf939mQSmlAWvKSSnC9egyQNsu8Xmt66y5XtJbQjdge0ig3IneCMF\ngQIDAQAB\n-----END PUBLIC KEY-----\n",
+  "key_fingerprint": "60e8e4b7ce8a1383",
+  "capabilities": [
+    "voting",
+    "verification",
+    "consensus_lead",
+    "data_sync",
+    "node_management"
+  ],
+  "trust_score": 100,
+  "created": "2025-11-22T11:59:30.965584",
+  "last_seen": "2025-11-22T11:59:30.965584"
+}

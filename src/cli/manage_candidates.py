@@ -13,6 +13,16 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from core.config_manager import get_election_id, get_data_path
 from core.file_utils import read_json_file, write_json_file, ensure_directory
 
+# MULTINODE: Tuo uudet moduulit
+try:
+    from nodes.core.node_identity import NodeIdentity
+    from nodes.core.network_manager import NetworkManager
+    from nodes.protocols.consensus import ConsensusManager
+    MULTINODE_AVAILABLE = True
+except ImportError as e:
+    print(f"⚠️  Multinode modules not available: {e}")
+    MULTINODE_AVAILABLE = False
+
 # KORJATTU: Tarkista ensin jos data_validator on saatavilla
 try:
     from core.data_validator import validate_candidate_uniqueness, get_candidate_by_id_or_name
@@ -52,12 +62,146 @@ except ImportError:
 
 
 class CandidateManager:
-    """Ehdokkaiden hallinta config-järjestelmän kanssa"""
+    """Ehdokkaiden hallinta config-järjestelmän kanssa - MULTINODE VERSION"""
     
-    def __init__(self, election_id=None):
+    def __init__(self, election_id=None, enable_multinode=False, bootstrap_debug=False):
         self.election_id = election_id or get_election_id()
         self.data_path = get_data_path(self.election_id)
         self.candidates_file = Path(self.data_path) / "candidates.json"
+        
+        # MULTINODE: Alusta node-järjestelmä
+        self.enable_multinode = enable_multinode
+        self.bootstrap_debug = bootstrap_debug
+        self.node_identity = None
+        self.network_manager = None
+        self.consensus_manager = None
+        
+        if self.enable_multinode and MULTINODE_AVAILABLE:
+            self._initialize_multinode()
+    
+    def _initialize_multinode(self):
+        """Alustaa multinode-järjestelmän ehdokkaiden hallintaan"""
+        try:
+            print("🌐 Alustetaan multinode-ehdokkaiden hallinta...")
+            
+            # Lataa olemassa oleva node identity tai luo uusi
+            self.node_identity = self._load_or_create_node_identity()
+            
+            # Luo verkkomanageri
+            self.network_manager = NetworkManager(self.node_identity)
+            
+            # Luo konsensusmanageri
+            self.consensus_manager = ConsensusManager(self.network_manager)
+            
+            # Yhdistä verkkoon
+            bootstrap_peers = self._get_bootstrap_peers()
+            self.network_manager.connect_to_network(bootstrap_peers)
+            
+            print(f"✅ Multinode ehdokkaiden hallinta alustettu: {self.node_identity.node_id}")
+            print(f"   📡 Network peers: {self.network_manager.get_peer_count()}")
+            
+        except Exception as e:
+            print(f"⚠️  Multinode initialization failed: {e}")
+            self.enable_multinode = False
+    
+    def _load_or_create_node_identity(self):
+        """Lataa olemassa oleva node identity tai luo uusi"""
+        try:
+            # Yritä ladata olemassa oleva identity
+            identity_files = list(Path(f"data/nodes/{self.election_id}").glob("*_identity.json"))
+            if identity_files:
+                latest_file = max(identity_files, key=lambda f: f.stat().st_mtime)
+                identity = NodeIdentity(self.election_id, "worker")
+                if identity.load_identity(latest_file.stem.replace("_identity", "")):
+                    print(f"✅ Loaded existing node identity: {identity.node_id}")
+                    return identity
+            
+            # Luo uusi identity
+            identity = NodeIdentity(
+                election_id=self.election_id,
+                node_type="worker", 
+                node_name=f"candidate_manager_{self.election_id}",
+                domain="candidate_management"
+            )
+            identity.save_identity()
+            return identity
+            
+        except Exception as e:
+            print(f"⚠️  Failed to load/create node identity: {e}")
+            # Fallback: Luo uusi identity
+            identity = NodeIdentity(self.election_id, "worker")
+            identity.save_identity()
+            return identity
+    
+    def _get_bootstrap_peers(self):
+        """Hae bootstrap-peerit - YKSINKERTAISTETTU"""
+        if self.bootstrap_debug:
+            print("🔧 DEBUG: Using debug bootstrap for candidate management")
+            # Luo mock-peerit debug-tilassa
+            debug_peers = []
+            for i in range(2):
+                peer = NodeIdentity(
+                    election_id=self.election_id,
+                    node_type="coordinator",
+                    node_name=f"debug_candidate_peer_{i+1}",
+                    domain="debug_candidates"
+                )
+                debug_peers.append(peer)
+            return debug_peers
+        else:
+            print("🔧 Using empty bootstrap peers for candidate management")
+            return []
+    
+    def _propose_candidate_change(self, action, candidate_data, justification):
+        """Lähetä ehdokasmuutos konsensusproposalina verkkoon"""
+        if not self.enable_multinode or not self.consensus_manager:
+            return True, "Multinode not enabled - change applied locally"
+        
+        try:
+            # Varmista että candidate_data on serialisoitavissa
+            serializable_data = candidate_data.copy() if hasattr(candidate_data, 'copy') else candidate_data
+            
+            # Jos se on dictionary, varmista että kaikki arvot ovat serialisoitavissa
+            if isinstance(serializable_data, dict):
+                serializable_data = {
+                    key: (value.isoformat() if hasattr(value, 'isoformat') else value)
+                    for key, value in serializable_data.items()
+                }
+        
+            proposal_data = {
+                "action": action,
+                "candidate_data": serializable_data,
+                "justification": justification,
+                "proposer": self.node_identity.node_id,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            proposal_id = self.consensus_manager.create_proposal(
+                "candidate_management",
+                proposal_data,
+                timeout_seconds=30
+            )
+            
+            print(f"📤 Candidate change proposed to network: {proposal_id}")
+            print(f"   🎯 Action: {action}")
+            print(f"   📝 Justification: {justification}")
+            
+            # Odota konsensusta (mock-toteutus)
+            import time
+            time.sleep(2)
+            
+            # Tarkista proposalin status
+            proposal_status = self.consensus_manager.get_proposal_status(proposal_id)
+            if proposal_status and proposal_status.get("status") == "approved":
+                return True, f"Change approved by network consensus: {proposal_id}"
+            else:
+                return False, f"Change rejected or timed out: {proposal_id}"
+                
+        except Exception as e:
+            print(f"⚠️  Consensus proposal failed: {e}")
+            import traceback
+            traceback.print_exc()
+            return True, "Fallback: Change applied locally"
     
     def load_candidates(self):
         """Lataa ehdokkaat"""
@@ -71,7 +215,7 @@ class CandidateManager:
         write_json_file(self.candidates_file, candidates_data)
     
     def add_candidate(self, name_fi, name_en=None, party="sitoutumaton", domain="yleinen", is_active=True):
-        """Lisää uusi ehdokas"""
+        """Lisää uusi ehdokas - MULTINODE: Lähetä konsensusproposalina"""
         candidates_data = self.load_candidates()
         
         # Tarkista uniikkius
@@ -97,19 +241,41 @@ class CandidateManager:
             "answers_count": 0
         }
         
+        # MULTINODE: Lähetä muutos konsensusproposalina
+        if self.enable_multinode:
+            success, consensus_message = self._propose_candidate_change(
+                "add_candidate",
+                new_candidate,
+                f"Add new candidate: {name_fi} ({party})"
+            )
+            if not success:
+                return False, f"Network rejected candidate: {consensus_message}"
+            print(f"🌐 {consensus_message}")
+        
         candidates_data["candidates"].append(new_candidate)
         self.save_candidates(candidates_data)
         
         return True, new_candidate
     
     def remove_candidate(self, candidate_identifier):
-        """Poista ehdokas"""
+        """Poista ehdokas - MULTINODE: Lähetä konsensusproposalina"""
         candidates_data = self.load_candidates()
         
         # Etsi ehdokas ID:llä tai nimellä
         candidate_to_remove = get_candidate_by_id_or_name(self.candidates_file, candidate_identifier)
         if not candidate_to_remove:
             return False, "Ehdokasta ei löydy"
+        
+        # MULTINODE: Lähetä poisto konsensusproposalina
+        if self.enable_multinode:
+            success, consensus_message = self._propose_candidate_change(
+                "remove_candidate",
+                candidate_to_remove,
+                f"Remove candidate: {candidate_to_remove['basic_info']['name']['fi']}"
+            )
+            if not success:
+                return False, f"Network rejected removal: {consensus_message}"
+            print(f"🌐 {consensus_message}")
         
         candidate_id = candidate_to_remove["id"]
         initial_count = len(candidates_data["candidates"])
@@ -126,7 +292,7 @@ class CandidateManager:
             return False, "Ehdokasta ei löytynyt"
     
     def update_candidate(self, candidate_identifier, name_fi=None, name_en=None, party=None, domain=None, is_active=None):
-        """Päivitä ehdokas"""
+        """Päivitä ehdokas - MULTINODE: Lähetä konsensusproposalina"""
         candidates_data = self.load_candidates()
         updated = False
         
@@ -145,30 +311,54 @@ class CandidateManager:
         if not candidate_to_update:
             return False, "Ehdokasta ei löydy"
         
+        # Luo päivitysdata
+        update_data = {
+            "original_candidate": candidate_to_update.copy(),
+            "updates": {}
+        }
+        
         # Päivitä kentät
         if name_fi is not None:
             candidates_data["candidates"][candidate_index]["basic_info"]["name"]["fi"] = name_fi
+            update_data["updates"]["name_fi"] = name_fi
             updated = True
         
         if name_en is not None:
             candidates_data["candidates"][candidate_index]["basic_info"]["name"]["en"] = name_en
+            update_data["updates"]["name_en"] = name_en
             updated = True
         
         if party is not None:
             candidates_data["candidates"][candidate_index]["basic_info"]["party"] = party
+            update_data["updates"]["party"] = party
             updated = True
         
         if domain is not None:
             candidates_data["candidates"][candidate_index]["basic_info"]["domain"] = domain
+            update_data["updates"]["domain"] = domain
             updated = True
         
         if is_active is not None:
             candidates_data["candidates"][candidate_index]["basic_info"]["is_active"] = is_active
             candidates_data["candidates"][candidate_index]["status"] = "active" if is_active else "inactive"
+            update_data["updates"]["is_active"] = is_active
             updated = True
         
         if updated:
             candidates_data["candidates"][candidate_index]["basic_info"]["updated_at"] = datetime.now().isoformat()
+            update_data["updates"]["updated_at"] = datetime.now().isoformat()
+            
+            # MULTINODE: Lähetä päivitys konsensusproposalina
+            if self.enable_multinode:
+                success, consensus_message = self._propose_candidate_change(
+                    "update_candidate",
+                    update_data,
+                    f"Update candidate: {candidate_to_update['basic_info']['name']['fi']}"
+                )
+                if not success:
+                    return False, f"Network rejected update: {consensus_message}"
+                print(f"🌐 {consensus_message}")
+            
             self.save_candidates(candidates_data)
             return True, f"Ehdokas päivitetty: {candidate_to_update['basic_info']['name']['fi']}"
         else:
@@ -203,7 +393,7 @@ class CandidateManager:
             answers_data = read_json_file(answers_file)
             candidates_with_answers = len(set(a["candidate_id"] for a in answers_data.get("answers", [])))
         
-        return {
+        stats = {
             "total_candidates": len(candidates),
             "parties": len(parties),
             "active_candidates": active_count,
@@ -211,6 +401,17 @@ class CandidateManager:
             "candidates_with_answers": candidates_with_answers,
             "answer_coverage": round((candidates_with_answers / len(candidates) * 100) if candidates else 0, 1)
         }
+        
+        # MULTINODE: Lisää verkontilastoja
+        if self.enable_multinode and self.network_manager:
+            network_stats = self.network_manager.get_network_stats()
+            stats["network"] = {
+                "node_id": self.node_identity.node_id,
+                "peer_count": network_stats["peer_count"],
+                "connection_status": network_stats["connection_status"]
+            }
+        
+        return stats
 
 
 @click.command()
@@ -225,8 +426,17 @@ class CandidateManager:
 @click.option('--domain', help='Alue/domain')
 @click.option('--inactive', is_flag=True, help='Merkitse ehdokas epäaktiiviseksi')
 @click.option('--active', is_flag=True, help='Merkitse ehdokas aktiiviseksi')
-def manage_candidates(election, add, remove, update, list_candidates, name_fi, name_en, party, domain, inactive, active):
-    """Ehdokkaiden hallinta"""
+@click.option('--enable-multinode', is_flag=True, help='Ota multinode käyttöön')
+@click.option('--bootstrap-debug', is_flag=True, help='Käytä debug-bootstrap peeritä')
+def manage_candidates(election, add, remove, update, list_candidates, name_fi, name_en, party, domain, inactive, active, enable_multinode, bootstrap_debug):
+    """Ehdokkaiden hallinta - MULTINODE VERSION
+    
+    Esimerkkejä:
+        python manage_candidates.py --list  # Peruslistaus
+        python manage_candidates.py --add --name-fi "Matti Meikäläinen" --party "Demo"  # Peruslisäys
+        python manage_candidates.py --add --name-fi "Verkkoehdokas" --party "Testi" --enable-multinode  # Multinode-lisäys
+        python manage_candidates.py --list --enable-multinode  # Listaus verkontilastoilla
+    """
     
     # Hae election_id configista jos parametria ei annettu
     election_id = get_election_id(election)
@@ -235,7 +445,17 @@ def manage_candidates(election, add, remove, update, list_candidates, name_fi, n
         print("💡 Käytä: --election VAALI_ID tai asenna järjestelmä ensin: python src/cli/install.py --first-install")
         return
     
-    manager = CandidateManager(election_id)
+    # MULTINODE: Tarkista saatavuus
+    if enable_multinode and not MULTINODE_AVAILABLE:
+        print("❌ Multinode requested but modules not available")
+        click.confirm("Continue without multinode?", abort=True)
+        enable_multinode = False
+    
+    manager = CandidateManager(
+        election_id=election_id,
+        enable_multinode=enable_multinode,
+        bootstrap_debug=bootstrap_debug
+    )
     
     if add:
         if not name_fi:
@@ -305,6 +525,8 @@ def manage_candidates(election, add, remove, update, list_candidates, name_fi, n
         stats = manager.get_candidate_stats()
         
         print(f"👑 REKISTERÖIDYT EHDOKKAAT - {election_id}")
+        if enable_multinode:
+            print(f"🌐 MULTINODE MODE - Node: {manager.node_identity.node_id if manager.node_identity else 'N/A'}")
         print("=" * 60)
         
         # Ryhmittele puolueittain
@@ -335,10 +557,19 @@ def manage_candidates(election, add, remove, update, list_candidates, name_fi, n
         print(f"   🏛️  Puolueita: {stats['parties']}")
         print(f"   📝 Vastanneita: {stats['candidates_with_answers']}")
         print(f"   📈 Vastauskattavuus: {stats['answer_coverage']}%")
+        
+        # MULTINODE: Näytä verkontilastot
+        if enable_multinode and "network" in stats:
+            print(f"\n🌐 VERKKOTILASTOT:")
+            print(f"   🆔 Node ID: {stats['network']['node_id']}")
+            print(f"   📡 Peerit: {stats['network']['peer_count']}")
+            print(f"   🔗 Tila: {stats['network']['connection_status']}")
     
     else:
         print("❌ Anna komento: --add, --remove, --update tai --list")
         print("💡 Kokeile: python src/cli/manage_candidates.py --list")
+        if MULTINODE_AVAILABLE:
+            print("🌐 Multinode: python src/cli/manage_candidates.py --list --enable-multinode")
 
 
 if __name__ == "__main__":

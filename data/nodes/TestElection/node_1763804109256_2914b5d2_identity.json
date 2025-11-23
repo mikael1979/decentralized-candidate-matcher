@@ -1,0 +1,19 @@
+{
+  "node_id": "node_1763804109256_2914b5d2",
+  "election_id": "TestElection",
+  "node_type": "coordinator",
+  "node_name": "TestCoordinator",
+  "domain": "testing",
+  "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwWhQmVo/0IfPYQYNnfpk\nmhiX9rIYz1JjGk5fNXtifaPiknh2HLqL9wawgEyPKjPwjIFd7vQaA4PITjr2NYaO\neZgiJQGXxiclzrYdM6mBmaErp1RGXs0tJNTc/XszMvoql+L2IQya3EOITJiQv5gn\nuJKGjeEfWJMbWOuF9mUHFxOPfAAkaTIPj+B+I5nPvMeDgCyUCaAmbNd/CiYKrTQZ\nrIvVUSV6JomUPwg5V+5BcmagV4ly2Osp339FJsk6WaZ3j0BcVSbV54JrrHuS4Nxg\n1luYmiuX3i5YU+cvpDUQvftGJPDYelu0B9fUzcJhMIlzXKVymJglwa6scu/dr+M9\nCwIDAQAB\n-----END PUBLIC KEY-----\n",
+  "key_fingerprint": "840266a444f16407",
+  "capabilities": [
+    "voting",
+    "verification",
+    "consensus_lead",
+    "data_sync",
+    "node_management"
+  ],
+  "trust_score": 100,
+  "created": "2025-11-22T11:35:09.256504",
+  "last_seen": "2025-11-22T11:35:09.305859"
+}

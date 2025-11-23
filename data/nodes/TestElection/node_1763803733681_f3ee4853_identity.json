@@ -1,0 +1,19 @@
+{
+  "node_id": "node_1763803733681_f3ee4853",
+  "election_id": "TestElection",
+  "node_type": "coordinator",
+  "node_name": "TestCoordinator",
+  "domain": "testing",
+  "public_key": "mock_public_key",
+  "key_fingerprint": "mock_fingerprint",
+  "capabilities": [
+    "voting",
+    "verification",
+    "consensus_lead",
+    "data_sync",
+    "node_management"
+  ],
+  "trust_score": 100,
+  "created": "2025-11-22T11:28:53.681195",
+  "last_seen": "2025-11-22T11:28:53.681195"
+}

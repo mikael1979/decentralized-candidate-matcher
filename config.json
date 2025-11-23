@@ -4,9 +4,9 @@
   "metadata": {
     "election_id": "Jumaltenvaalit2026",
     "network_id": "Jumaltenvaalit2026_network",
-    "deployed_at": "2025-11-20T08:43:23.489469",
+    "deployed_at": "2025-11-23T10:15:29.768942",
     "version": "1.0.0",
-    "config_hash": "20bab849856ce3aeb219a654940ce412aef002e8bfa1c93a8bb1cde5e2205e14",
+    "config_hash": "156ce22e284095eda83f6a4a7506c67dc0a327b44aecce97e945f8429bb000a7",
     "template_hash": "9bca700f3bc37e3addf0eec70d395b3dfdf94d001cff8821c46abc59949acdd6"
   },
   "network_config": {

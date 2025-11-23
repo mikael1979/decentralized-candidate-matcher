@@ -5,6 +5,7 @@ Extends existing NetworkSyncManager functionality
 
 import time
 import json
+import hashlib  # LISÄTTY: Turvallisempaa hash-laskentaa varten
 from datetime import datetime
 from typing import Dict, List, Any, Optional, Callable
 from pathlib import Path
@@ -95,13 +96,22 @@ class NetworkManager:
         
         exclude_nodes = exclude_nodes or []
         
+        # KORJATTU: Turvallisempi message_id generointi
+        try:
+            # Yritä JSON-serialisointia ensin
+            payload_json = json.dumps(payload, sort_keys=True, default=str)
+            payload_hash = hashlib.md5(payload_json.encode()).hexdigest()[:8]
+        except (TypeError, ValueError):
+            # Fallback: käytä string-repr ja timestamp
+            payload_hash = hashlib.md5(str(payload).encode()).hexdigest()[:8]
+        
         message = {
             "type": message_type,
             "payload": payload,
             "sender": self.identity.node_id,
             "timestamp": datetime.now().isoformat(),
             "election_id": self.identity.election_id,
-            "message_id": f"msg_{int(time.time())}_{hash(str(payload))[:8]}"
+            "message_id": f"msg_{int(time.time())}_{payload_hash}"  # KORJATTU
         }
         
         # Sign message if we have crypto capabilities
@@ -125,13 +135,21 @@ class NetworkManager:
             print(f"❌ Target peer not found: {target_node_id}")
             return False
         
+        # KORJATTU: Sama message_id korjaus myös send_message:lle
+        try:
+            payload_json = json.dumps(payload, sort_keys=True, default=str)
+            payload_hash = hashlib.md5(payload_json.encode()).hexdigest()[:8]
+        except (TypeError, ValueError):
+            payload_hash = hashlib.md5(str(payload).encode()).hexdigest()[:8]
+        
         message = {
             "type": message_type,
             "payload": payload,
             "sender": self.identity.node_id,
             "target": target_node_id,
             "timestamp": datetime.now().isoformat(),
-            "election_id": self.identity.election_id
+            "election_id": self.identity.election_id,
+            "message_id": f"msg_{int(time.time())}_{payload_hash}"  # KORJATTU
         }
         
         peer_info = self.peers[target_node_id]
@@ -253,6 +271,14 @@ def test_network_manager_direct():
     result = network.connect_to_network()
     assert result == True
     assert network.connection_status == "connected"
+    
+    # Test broadcasting with complex payload (testaa korjaus)
+    complex_payload = {
+        "nested": {"data": [1, 2, 3]},
+        "timestamp": datetime.now(),
+        "candidates": [{"name": "Test", "id": "123"}]
+    }
+    network.broadcast_message("test_message", complex_payload)
     
     # Test network stats
     stats = network.get_network_stats()

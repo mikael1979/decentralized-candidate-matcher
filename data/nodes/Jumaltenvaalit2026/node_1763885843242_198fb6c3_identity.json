@@ -1,0 +1,16 @@
+{
+  "node_id": "node_1763885843242_198fb6c3",
+  "election_id": "Jumaltenvaalit2026",
+  "node_type": "voter",
+  "node_name": "voting_engine_101723",
+  "domain": "voting_sessions",
+  "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyO69TXXAYjXXAbTFEoiS\nhoSpGYzI+wQICg4Z7jN2b9RCPt8UuLQeXiThX0ZW4UhDnMlAHhFZ96IPp10O8vbv\n5nVx8sB0RTTZhDWeTkAipHwoBxLjsAaf6ETtpjLvpNBJgkirZseBw9T5oOp/9r/W\nuWphSBDek9xfwVRcJheHGaKAdGTMmgibEoo/UYF21E/7MKFDRvbJmXrYEtEbiG/C\nQHiE21Ckqzoax2cAJKg0D1ojIVDZIToBt+0DIGTqzbCZmsCLNm3Eri9562CZd8v8\nzsxdqIKjtHZfYEkLty+bWxuG1cSb4lr8acT2ZtgcI6zhW7VedCYDTm8PqrcyF9G1\ndQIDAQAB\n-----END PUBLIC KEY-----\n",
+  "key_fingerprint": "c178899bc1558e65",
+  "capabilities": [
+    "voting",
+    "verification"
+  ],
+  "trust_score": 50,
+  "created": "2025-11-23T10:17:23.242412",
+  "last_seen": "2025-11-23T10:17:23.242412"
+}

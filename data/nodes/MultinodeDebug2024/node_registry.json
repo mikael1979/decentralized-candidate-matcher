@@ -1,0 +1,38 @@
+{
+  "election_id": "MultinodeDebug2024",
+  "nodes": {
+    "node_1763806051920_dd7fd536": {
+      "identity": {
+        "node_id": "node_1763806051920_dd7fd536",
+        "election_id": "MultinodeDebug2024",
+        "node_type": "coordinator",
+        "node_name": "coordinator_MultinodeDebug2024",
+        "domain": "election_network",
+        "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwIzzLzqHhoXKAdfNIsfH\nEcM6I/UKex+QEeSeG1/gwt+kZOBTBeCESBqzA154RNCmvzsrMb4nKwyoDQK+joOA\nm9LDPmblB1mxP7g+jc+MQu3y0QVKa4E3E6EC3yUjjbBdWqeFOMJMC3DjetcPBX+V\n4kvmWc6cwmE/56bgbJwH7gI9amBRNllUnNHrPcmNI/JQjmFyRIwXRKlx2d+slNn8\nbSceUwsLV2sfiKc4MgwECwvzZQ/LOWAN51XTqme+rKCMVvbF5LHfqOzVYELkraDL\nTMU+hrZiSEOUtyGFMNE5urLy0gQTIxq3YAzmDW3pjWrNMMeGftSQ8bl/yKYFTsGy\niwIDAQAB\n-----END PUBLIC KEY-----\n",
+        "key_fingerprint": "45ccc81a70ed7c9f",
+        "capabilities": [
+          "voting",
+          "verification",
+          "consensus_lead",
+          "data_sync",
+          "node_management"
+        ],
+        "trust_score": 100,
+        "created": "2025-11-22T12:07:31.921165",
+        "last_seen": "2025-11-22T12:07:31.921165"
+      },
+      "network_stats": {
+        "node_id": "node_1763806051920_dd7fd536",
+        "connection_status": "connected",
+        "peer_count": 4,
+        "messages_sent": 0,
+        "messages_received": 0,
+        "connection_attempts": 1,
+        "active_handlers": 6
+      },
+      "registered_at": "2025-11-22T12:07:32.887587"
+    }
+  },
+  "total_nodes": 1,
+  "last_updated": "2025-11-22T12:07:32.887593"
+}

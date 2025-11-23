@@ -1,0 +1,16 @@
+{
+  "node_id": "node_1763805571681_2d7a3a19",
+  "election_id": "WorkerTest2024",
+  "node_type": "worker",
+  "node_name": "worker_WorkerTest2024",
+  "domain": "election_network",
+  "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3eAyHkF6B0x8M2VhRJm/\n0RijQWMUP0A04kE2VpKNqS6FhaLSfP4Vi114R+Zz6rjnVvFkPOCYqDGBWWbfrIra\nr3eT21NjTiov3NEqu4GBSjV+5eN/dABwO3AjahnmN1/EukiwUWregR3JjwLiDOgP\nGRW4B87qIJizzb+RrEotmBPZSn6OdwGqjW6C5IL/nSxT1YZXsUTgPoX3uUds4/Ap\n5eG/W8ilT8WIg9wrwp3Xwl2SEGmf9I0cU+zO+XrEhqKYTvJ+d/QERC32MSHgczeL\nYOiVc+ghKFYuHgNTU2pC38H44az4RBU/KUUPd+PXnpOBCgzzgF5qAW5mRQsMeII/\newIDAQAB\n-----END PUBLIC KEY-----\n",
+  "key_fingerprint": "63b3223436e27176",
+  "capabilities": [
+    "voting",
+    "verification"
+  ],
+  "trust_score": 60,
+  "created": "2025-11-22T11:59:31.681070",
+  "last_seen": "2025-11-22T11:59:31.681070"
+}

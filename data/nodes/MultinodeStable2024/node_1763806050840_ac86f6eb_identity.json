@@ -1,0 +1,19 @@
+{
+  "node_id": "node_1763806050840_ac86f6eb",
+  "election_id": "MultinodeStable2024",
+  "node_type": "coordinator",
+  "node_name": "coordinator_MultinodeStable2024",
+  "domain": "election_network",
+  "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxjm1+7Oby8TNV5TvbHjg\nYM+H2cDM5FxWekn+a1bBUDrGU32104Bx8Gv4ve4ndqWltB9JDmvuWQzS9uQPueLt\nKzIe647t2Qnc0aiIKOFgC6GWaqsYy6r0HqHlhWHFdMBblLvUhytm0NbtzIgaBmtB\ni9YJaV1GHQB0S7sPfNIqqXINoq4WXKDF9vj86OvXTNromKaljoAAbtcAlFnKSvNm\nAt0iJMuFydhK+eOccUAYI15hZ/5KcIFYnXQmwO9ABVfZ3LwcQqC6PSsyaF9MZDNG\nXIMM4oC6rZ1xb8aHEuEuyu952zZ1bV5zVsuZbevjgOtSXyKT8BnlzUMjg+B1VSeE\n3wIDAQAB\n-----END PUBLIC KEY-----\n",
+  "key_fingerprint": "5d1382a1526a201b",
+  "capabilities": [
+    "voting",
+    "verification",
+    "consensus_lead",
+    "data_sync",
+    "node_management"
+  ],
+  "trust_score": 100,
+  "created": "2025-11-22T12:07:30.840415",
+  "last_seen": "2025-11-22T12:07:30.840415"
+}

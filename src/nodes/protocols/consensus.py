@@ -33,6 +33,7 @@ class ConsensusManager:
         """Create new consensus proposal"""
         proposal_id = self._generate_proposal_id(proposal_type, proposal_data)
         
+        # KORJATTU: Käytä listaa setin sijaan JSON-serialisoitavuuden vuoksi
         proposal = {
             "id": proposal_id,
             "type": proposal_type,
@@ -44,7 +45,7 @@ class ConsensusManager:
             "votes_for": 0,
             "votes_against": 0,
             "votes_abstain": 0,
-            "participating_nodes": set()
+            "participating_nodes": []  # KORJATTU: [] instead of set()
         }
         
         self.proposals[proposal_id] = proposal
@@ -110,7 +111,9 @@ class ConsensusManager:
         elif vote == "abstain":
             proposal["votes_abstain"] += 1
         
-        proposal["participating_nodes"].add(self.network.identity.node_id)
+        # KORJATTU: Käytä listaa setin sijaan
+        if self.network.identity.node_id not in proposal["participating_nodes"]:
+            proposal["participating_nodes"].append(self.network.identity.node_id)
         
         print(f"✅ Vote cast: {self.network.identity.node_id} → {vote} on {proposal_id}")
         
@@ -205,9 +208,6 @@ class ConsensusManager:
         stats = self.get_consensus_stats()
         return f"ConsensusManager(active: {stats['active_proposals']}, finalized: {stats['finalized_proposals']})"
 
-
-# src/nodes/protocols/consensus.py
-# (Korvaa test_funktio tiedoston lopussa)
 
 # Simple test that works when running module directly
 def test_consensus_manager_direct():
