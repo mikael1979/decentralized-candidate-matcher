@@ -342,7 +342,7 @@ python src/cli/voting_engine.py --start
 📄 Lisenssi
 Apache License 2.0 - Katso LICENSE tiedosto lisätietoja varten.
 
-<div align="center">
+
 
 Demokratia koodiksi – Hajautettu vaalikone käyttövalmiina
 
@@ -350,5 +350,4 @@ Demokratia koodiksi – Hajautettu vaalikone käyttövalmiina
 
 
 🌐 Multinode-tuki saatavilla!
-
-</div> ```
+```
