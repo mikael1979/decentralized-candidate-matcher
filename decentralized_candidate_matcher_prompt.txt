@@ -558,5 +558,6 @@ tässä vielä config.base.json template
 }
 
 --------------------------------------------------------
-Jos luodaan moduuleita, niin tehdään importit ensin ja testataan importtien toimintaa ennen kuin kirjoitetaan tiedostoon ohjelmallista koodia, koska iso osa virheistä on yleensä moduulien importtauksessa
+*Jos luodaan moduuleita, niin tehdään importit ensin ja testataan importtien toimintaa ennen kuin kirjoitetaan tiedostoon ohjelmallista koodia, koska iso osa virheistä on yleensä moduulien importtauksessa
+*oikeastaan voitaisiin tehdä first_install.py joka luo ipfs:ään kaksi tiedostoa. Toinen on staattinen muuttumaton merkki että ipfs:ssä on jo vaalikoneen dataa, tällä tiedostolla on kiinteä CID, ja jos install.py näkee tämän tiedoston ipfs:ssä, niin se lataa ipfs:tä vaalilistan election_list.json. Lisätään myös /elections_list.base.json tiedostoon loogiset ryhmät, jotka ovat mantereet, valtiot ja vaalit plus muut vaalit (nimet englanniksi).
 

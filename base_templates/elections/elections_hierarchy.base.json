@@ -1,0 +1,143 @@
+{
+  "metadata": {
+    "version": "2.0.0",
+    "created": "{{TIMESTAMP}}",
+    "description": {
+      "fi": "Käytössä olevien vaalien hierarkkinen lista",
+      "en": "Hierarchical list of active elections",
+      "sv": "Hierarkisk lista över aktiva val"
+    },
+    "template_version": "2.1.0",
+    "schema_type": "election_hierarchy",
+    "static_marker_cid": "{{STATIC_MARKER_CID}}",
+    "last_updated": "{{TIMESTAMP}}"
+  },
+  "hierarchy": {
+    "continents": {
+      "europe": {
+        "name": {
+          "fi": "Eurooppa",
+          "en": "Europe",
+          "sv": "Europa"
+        },
+        "countries": {
+          "finland": {
+            "name": {
+              "fi": "Suomi",
+              "en": "Finland",
+              "sv": "Finland"
+            },
+            "elections": {
+              "presidential": {
+                "election_id": "finland_presidential_2024",
+                "name": {
+                  "fi": "Presidentinvaalit 2024",
+                  "en": "Presidential Election 2024",
+                  "sv": "Presidentval 2024"
+                },
+                "type": "national",
+                "status": "upcoming",
+                "level": "national"
+              },
+              "parliamentary": {
+                "election_id": "finland_parliamentary_2023",
+                "name": {
+                  "fi": "Eduskuntavaalit 2023",
+                  "en": "Parliamentary Election 2023",
+                  "sv": "Riksdagsval 2023"
+                },
+                "type": "national",
+                "status": "completed",
+                "level": "national"
+              }
+            }
+          },
+          "sweden": {
+            "name": {
+              "fi": "Ruotsi",
+              "en": "Sweden",
+              "sv": "Sverige"
+            },
+            "elections": {
+              "general": {
+                "election_id": "sweden_general_2022",
+                "name": {
+                  "fi": "Yleisvaalit 2022",
+                  "en": "General Election 2022",
+                  "sv": "Allmänna val 2022"
+                },
+                "type": "national",
+                "status": "completed",
+                "level": "national"
+              }
+            }
+          }
+        }
+      },
+      "north_america": {
+        "name": {
+          "fi": "Pohjois-Amerikka",
+          "en": "North America",
+          "sv": "Nordamerika"
+        },
+        "countries": {
+          "usa": {
+            "name": {
+              "fi": "Yhdysvallat",
+              "en": "United States",
+              "sv": "USA"
+            },
+            "elections": {
+              "presidential": {
+                "election_id": "usa_presidential_2024",
+                "name": {
+                  "fi": "Presidentinvaalit 2024",
+                  "en": "Presidential Election 2024",
+                  "sv": "Presidentval 2024"
+                },
+                "type": "national",
+                "status": "upcoming",
+                "level": "national"
+              }
+            }
+          }
+        }
+      }
+    },
+    "other_elections": {
+      "international": {
+        "election_id": "eu_parliament_2024",
+        "name": {
+          "fi": "EU-parlamenttivaalit 2024",
+          "en": "European Parliament Election 2024",
+          "sv": "EU-parlamentsval 2024"
+        },
+        "type": "supranational",
+        "status": "upcoming",
+        "level": "international"
+      },
+      "organizations": {
+        "election_id": "un_security_council_2024",
+        "name": {
+          "fi": "YK:n turvallisuusneuvosto 2024",
+          "en": "UN Security Council 2024",
+          "sv": "FN:s säkerhetsråd 2024"
+        },
+        "type": "international_organization",
+        "status": "upcoming",
+        "level": "international"
+      },
+      "fantasy": {
+        "election_id": "olympian_gods_2024",
+        "name": {
+          "fi": "Olimpian jumalten vaalit 2024",
+          "en": "Olympian Gods Election 2024",
+          "sv": "Olympiska gudaval 2024"
+        },
+        "type": "fantasy_demonstration",
+        "status": "active",
+        "level": "fantasy"
+      }
+    }
+  }
+}
