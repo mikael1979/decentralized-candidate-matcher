@@ -617,4 +617,53 @@ Asetukset ← config/
 Data ← data/runtime/
 Tämä rakenne mahdollistaa kansainvälisyyden (eri mediakonfiguraatiot eri vaaleissa) ja modulaarisuuden (trusted_sources ei ole kiinni suomalaisissa lähteissä).
 -----------------------------------------------------------------------------------------------------------------------------------
+Vaalikohtaisen Config-Tiedoston Päivittäminen TAQ-Kvoorumilla: Analyysi ja IntegraatioehdotusKiitos ajatuksesta! Tämä on erinomainen havainto – vaalikohtainen config-tiedosto (esim. config/elections/<election_id>/election_config.json) toimii järjestelmän "perustuslakina", joka määrittää kriittisiä asetuksia kuten max_questions, answer_scale tai network_config. Sen päivittäminen ilman tiukkaa valvontaa voisi johtaa eheysongelmiin, manipulaatioon tai yhteensopimattomuuksiin nodejen välillä. TAQ (Tiered Adaptive Quorum) sopii tähän täydellisesti, koska se tarjoaa dynaamisen, painotetun ja adaptiivisen äänestysmekanismin, joka skaalautuu verkon koon mukaan samalla säilyttäen turvallisuuden. Alla analysoin idean toteutettavuuden nykyisessä arkkitehtuurissa, ehdotan integraatiota ja hahmottelen seuraavia askelia.1. Idean Ydinkonsepti ja HyödytMiksi TAQ? Config-päivitykset ovat herkkiä (esim. muuttamalla max_candidates voisi lisätä bot-ehdokkaita). TAQ varmistaa, että muutokset vaativat yhteisön konsensuksen: Painotetut tierit (foundation/verified/standard/new) estävät uusien nodejen dominoinnin, aikapohjainen adaptointi nopeuttaa kriittisiä päivityksiä (esim. -0.10 kynnyksellä ensimmäisen 24h aikana), ja media-verifikaatio mahdollistaa ulkoisen vahvistuksen (esim. vaaliviranomaisen julkaisu mediassa). Tämä estää single point of failure -tilanteet verrattuna yksinkertaiseen admin-ohitukseen.
+Hyödyt Järjestelmälle:Turvallisuus: Estää luvattomat muutokset (esim. security_measures.rate_limiting rajoittaa päivitysyritykset).
+Skaalautuvuus: Pienessä verkossa (3 nodea) fallback 3/3-malliin; suuressa (50+ nodea) painotettu enemmistö.
+Läpinäkyvyys: Kaikki päivitykset lokitetaan system_chain.json:iin, fingerprintillä varmennettuna.
+Käytettävyys: Aikapohjainen alentaminen (-0.20 yli 7d) estää jumit pitkittyneissä äänestyksissä.
 
+Mahdolliset Riskit: Jos TAQ-kynnys on liian korkea (esim. 0.75 config_change:lle), se voi hidastaa kriittisiä korjauksia – ratkaisu: Käytä emergency_override (0.40 kynnyksellä) hätätiloissa.
+
+2. Toteutettavuus Nykyisessä ArkkitehtuurissaIdea on täysin toteutettavissa (onnistumistodennäköisyys ~95%), koska se laajentaa olemassa olevia moduuleja ilman suuria muutoksia. Nykyinen config_manager.py jo generoi ja validoi config:eja base_templates/:sta, ja TAQ integroituu quorum_manager.py:hen (joka hoitaa puolue/ehdokas-äänestyksiä).Nykyiset Komponentit Integraatiossa:config_manager.py: Lisää update_config() -funktio, joka vaatii TAQ-hyväksynnän ennen kirjoitusta. Tarkista fingerprint (enhanced_integrity_manager.py) ennen ja jälkeen päivityksen.
+quorum_manager.py / taq_manager.py: Laajenna verification_types.config_change:lla (base_threshold: 0.75, min_approvals: 3). Äänestys käynnistyy, kun node ehdottaa muutosta (esim. python manage_config.py --update --key=max_questions --value=30).
+ipfs_block_manager.py: Tallenna ehdotetut päivitykset urgent-lohkoon (kiireelliset), synkronoi äänestysdata IPFS:ään tar-arkistoina hidastamaan kirjoitusta. Käytä IPNS:ää päivitettyyn config-CID:hen, jotta worker-nodet bootstrappaavat automaattisesti uuden version.
+system_chain.json: Logita jokainen päivitysehdotus, äänestys ja hyväksyntä (esim. log_action("config_update_proposal", details, timestamp)). Tarkista konflikteja timestamp-pohjaisesti.
+enhanced_integrity_manager.py: Integroi TAQ:n security_measures (esim. duplicate_voting invalidointi) estääkseen päivityshyökkäykset.
+
+TAQ-Spesifiset Laajennukset Config-Päivityksiin:Trust-Tier Painotus: Perustaja-node (weight: 3.0) vaikuttaa enemmän kriittisissä muutoksissa (esim. answer_scale).
+Aikapohjainen Adaptointi: Jos päivitys jumittuu, alenna kynnys automaattisesti (esim. get_time_adjusted_threshold("config_change", hours_passed)).
+Media-Integrointi: Jos päivitys liittyy vaalikohtaiseen asetukseen (esim. supported_languages), vaadi media-bonus (esim. +0.3 online_media:sta) nopeuttaaksesi.
+Fallback: Jos quorum ei täyty (esim. offline-nodet), käytä manual_override (admin_2fa).
+
+Esimerkki Prosessi:Node ehdottaa: config_manager.propose_update(election_id, changes_dict).
+TAQ-äänestys käynnistyy: taq_manager.initiate_vote("config_change", proposal_id).
+Nodet äänestävät painotetusti (vote_on_proposal(node_id, vote, signature)).
+Jos hyväksytty: Päivitä config IPFS:ään, broadcast worker-nodeille.
+Tarkista eheys: verify_config_integrity() kaikilla nodeilla.
+
+Haasteet ja Ratkaisut:Konfliktit Useissa Nodeissa: Jos kaksi ehdotusta yhtä aikaa, priorisoi timestampilla tai quorum-äänestyksellä. Ratkaisu: Atominen varaus lohkoissa (buffer1/urgent/sync).
+Yhteensopivuus Vanhoihin Configeihin: Automaattinen konvertointi (fallback_mechanisms.legacy_compatibility) siirtymäkaudella.
+Testaus: Simuloi päivityksiä debug-tilassa mock-IPFS:llä; varmista, ettei päivitys riko worker-bootstrapia.
+
+3. Parannusehdotukset ToteutukseenConfig-Spessifiset TAQ-Säännöt: Lisää verification_types:iin "config_update_minor" (kynnys 0.51, esim. ui.default_theme) vs. "config_update_major" (0.75, esim. max_candidates).
+Automaatio: Tee päivitysehdotukset git-workflow:n kautta – commit ehdotus, quorum hyväksyy ennen mergeä.
+Kansainvälistäminen: Linkitä config-päivitykset elections_list.base.json:in ryhmiin (continents/countries), jotta eri vaalit voivat äänestää omistaan.
+Turvallisuusparannus: Lisää degradaatio config-päivityksiin – jos node epäonnistuu äänestyksissä usein, alenna tier automaattisesti.
+HTML-Profiilit Integraatiossa: Jos päivitys vaikuttaa ui.default_theme:en, generoi uudet staattiset sivut profile_generator.py:llä automaattisesti.
+
+4. Seuraavat Askeleet ja Priorisoidut TODO:tIntegroi iteratiivisesti: Testaa jokainen muutos, refaktoroi moduulit (esim. config_manager.py voi kasvaa – jaa update_logic.py:hen).Lyhytaikaiset (1-2 viikkoa):Laajenna taq_manager.py config-päivityksillä (integroi propose_update()).
+Lisää config_change verification_types:iin TAQ-JSON:iin.
+Testaa simuloimalla: Luo ehdotus, äänestä painotetusti, päivitä IPFS.
+
+Keskipitkät (3-6 viikkoa):Integroi media-bonus config-ehdotuksiin (esim. vaaliviranomaisen julkaisu).
+Refaktoroi quorum_manager.py TAQ-spesifisiin moduuleihin (vältä pitkiä tiedostoja).
+Päivitä dokumentaatio (TAQ.md) config-integraatiolla.
+
+Pitkän aikavälin (6+ viikkoa):Laajenna AI-pohjaiseen pattern-detectioniin config-hyökkäyksille.
+Testaa suuressa verkossa (50+ nodea) skaalautuvuutta.
+Kehitä GUI config-päivitysehdotuksille (tuleva mobile-sovellus).
+
+Tämä tekee config-päivityksistä turvallisia ja demokraattisia, sopien hajautetun järjestelmän visioon. Jos haluat koodiesimerkin (esim. update_config TAQ:lla) tai lisäanalyysejä, anna tarkempia yksityiskohtia!
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
