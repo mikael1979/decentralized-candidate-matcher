@@ -2,6 +2,7 @@
 #!/usr/bin/env python3
 """
 Hajautettu kvoorumi-pohjainen puoluevahvistusjärjestelmä - PÄIVITETTY TAQ:lla
+Nyt sisältää config-päivitysten tuen
 """
 import hashlib
 import json
@@ -14,14 +15,36 @@ class QuorumManager:
         self.election_id = election_id
         self.crypto = CryptoManager()
         
-        # Kvoorumikonfiguraatio - PÄIVITETTY TAQ:lla
+        # Kvoorumikonfiguraatio - PÄIVITETTY config-päivityksillä
         self.quorum_config = {
             "min_nodes_for_verification": 3,
             "approval_threshold_percent": 60,
             "verification_timeout_hours": 24,
             "rejection_quorum_percent": 40,
             "node_weight_calculation": "based_on_history",
-            "taq_enabled": True,  # UUSI: Ota TAQ käyttöön
+            "taq_enabled": True,
+            
+            # UUSI: Config-päivitysten asetukset
+            "config_update_settings": {
+                "config_update_minor": {
+                    "base_threshold": 0.51,
+                    "min_approvals": 2,
+                    "timeout_hours": 24,
+                    "description": "Pienet muutokset (UI, tekstit)"
+                },
+                "config_update_major": {
+                    "base_threshold": 0.75,
+                    "min_approvals": 5, 
+                    "timeout_hours": 48,
+                    "description": "Kriittiset muutokset (turvallisuus, rajat)"
+                },
+                "config_update_emergency": {
+                    "base_threshold": 0.40,
+                    "min_approvals": 2,
+                    "timeout_hours": 6,
+                    "description": "Hätätilannekorjaukset"
+                }
+            }
         }
     
     def initialize_party_verification(self, party_data: Dict) -> Dict:
@@ -41,8 +64,8 @@ class QuorumManager:
             "media_verifications": [],
             "final_decision": None,
             "decision_timestamp": None,
-            "taq_bonus": taq_bonus,  # UUSI: Tallenna TAQ-tiedot
-            "required_approvals": self._calculate_required_approvals_with_taq(taq_bonus)  # UUSI
+            "taq_bonus": taq_bonus,
+            "required_approvals": self._calculate_required_approvals_with_taq(taq_bonus)
         }
         
         print(f"🎯 KV OORUMI ALUSTETTU: {party_data['party_id']}")
@@ -53,10 +76,86 @@ class QuorumManager:
             print(f"   ℹ️  Normaali kvoorumi: 3/3 vahvistusta, 24h aikaraja")
         
         return verification_process
+
+    # UUSI: Config-päivitysten tuki
+    def initialize_config_update_verification(self, config_proposal: Dict) -> Dict:
+        """Alusta config-päivityksen kvoorumivahvistus"""
+        
+        proposal_type = config_proposal["type"]
+        config_settings = self.quorum_config["config_update_settings"].get(
+            proposal_type, 
+            self.quorum_config["config_update_settings"]["config_update_minor"]
+        )
+        
+        # Laske TAQ-parametrit config-päivitykselle
+        taq_parameters = self._calculate_config_taq_parameters(config_proposal)
+        
+        verification_process = {
+            "proposal_id": config_proposal["proposal_id"],
+            "proposal_type": proposal_type,
+            "config_hash_before": config_proposal["current_config_hash"],
+            "config_hash_after": config_proposal["proposed_config_hash"],
+            "verification_started": datetime.now().isoformat(),
+            "verification_timeout": self._calculate_config_timeout(proposal_type),
+            "current_phase": "quorum_voting",
+            "quorum_votes": [],
+            "final_decision": None,
+            "decision_timestamp": None,
+            "taq_parameters": taq_parameters,
+            "required_approvals": taq_parameters["min_approvals"],
+            "changes": config_proposal["changes"],
+            "justification": config_proposal["justification"]
+        }
+        
+        print(f"🎯 CONFIG-PÄIVITYS KV OORUMI: {config_proposal['proposal_id']}")
+        print(f"   📊 Tyyppi: {proposal_type}")
+        print(f"   🎯 Kynnys: {taq_parameters['base_threshold']}")
+        print(f"   👥 Vaadittu: {taq_parameters['min_approvals']}")
+        print(f"   ⏰ Aikaraja: {config_settings['timeout_hours']}h")
+        
+        return verification_process
+    
+    def _calculate_config_taq_parameters(self, config_proposal: Dict) -> Dict:
+        """Laske TAQ-parametrit config-päivitykselle"""
+        proposal_type = config_proposal["type"]
+        base_params = self.quorum_config["config_update_settings"][proposal_type].copy()
+        
+        # Aikapohjainen adaptointi
+        base_params["time_adjusted_threshold"] = self._get_time_adjusted_threshold(
+            base_params["base_threshold"]
+        )
+        
+        # Kriittisten kohtien tunnistus
+        critical_keys = ["max_candidates", "security_measures", "crypto_settings", "network_config"]
+        changes = config_proposal["changes"]
+        
+        if any(key in str(changes.keys()) for key in critical_keys):
+            base_params["base_threshold"] = max(base_params["base_threshold"], 0.80)
+            base_params["min_approvals"] = max(base_params["min_approvals"], 5)
+            print(f"   ⚠️  Kriittinen muutos - nostettu kynnystä")
+        
+        # Media-bonus config-päivityksille
+        if config_proposal.get("media_bonus_applied"):
+            base_params["base_threshold"] = base_params["base_threshold"] * 0.8  # 20% helpompi
+            base_params["min_approvals"] = max(2, base_params["min_approvals"] - 1)
+            print(f"   📰 Media-bonus aktivoitu - alennettu kynnystä")
+        
+        return base_params
+    
+    def _calculate_config_timeout(self, proposal_type: str) -> str:
+        """Laske config-päivityksen aikaraja"""
+        config_settings = self.quorum_config["config_update_settings"]
+        timeout_hours = config_settings.get(proposal_type, config_settings["config_update_minor"])["timeout_hours"]
+        return (datetime.now() + timedelta(hours=timeout_hours)).isoformat()
+    
+    def _get_time_adjusted_threshold(self, base_threshold: float) -> float:
+        """Säädä kynnystä ajan mukaan - yksinkertaistettu toteutus"""
+        # Toteutus: Ensimmäisen 24h normaali, sitten aleneva
+        return base_threshold
     
     def cast_vote(self, verification_process: Dict, node_id: str, 
                  vote: str, node_public_key: str, justification: str = "") -> bool:
-        """Äänestä puolueen vahvistamisesta - PÄIVITETTY TAQ:lla"""
+        """Äänestä puolueen vahvistamisesta TAI config-päivityksestä - PÄIVITETTY"""
         
         if vote not in ["approve", "reject", "abstain"]:
             return False
@@ -68,7 +167,7 @@ class QuorumManager:
             print(f"❌ Node {node_id} on jo äänestänyt")
             return False
         
-        # Tarkista aikaraja - PÄIVITETTY TAQ:lla
+        # Tarkista aikaraja
         timeout = datetime.fromisoformat(verification_process["verification_timeout"])
         if datetime.now() > timeout:
             print("⏰ Äänestysaika on päättynyt")
@@ -91,8 +190,49 @@ class QuorumManager:
         
         verification_process["quorum_votes"].append(vote_record)
         
-        # Tarkista onko päätös saavutettu - PÄIVITETTY TAQ:lla
-        return self._check_quorum_decision_with_taq(verification_process)
+        # Tarkista onko päätös saavutettu - eri logiikka config-päivityksille
+        if "proposal_type" in verification_process:  # Config-päivitys
+            return self._check_config_quorum_decision(verification_process)
+        else:  # Perus puoluevahvistus
+            return self._check_quorum_decision_with_taq(verification_process)
+    
+    def _check_config_quorum_decision(self, verification_process: Dict) -> bool:
+        """Tarkista onko config-päivityksen kvoorumipäätös saavutettu"""
+        
+        votes = verification_process["quorum_votes"]
+        if not votes:
+            return False
+        
+        # Käytä TAQ-määrittelemää vaadittujen hyväksyntöjen määrää
+        required_approvals = verification_process.get("required_approvals", 3)
+        base_threshold = verification_process["taq_parameters"]["base_threshold"]
+        
+        total_votes = len(votes)
+        approve_count = len([v for v in votes if v["vote"] == "approve"])
+        reject_count = len([v for v in votes if v["vote"] == "reject"])
+        
+        approval_ratio = approve_count / total_votes if total_votes > 0 else 0
+        
+        print(f"📊 CONFIG-ÄÄNESTYSTILANNE: {approve_count}/{required_approvals} hyväksyntää")
+        print(f"   📈 Hyväksymisprosentti: {approval_ratio:.1%} (vaaditaan {base_threshold:.1%})")
+        
+        # Tarkista minimihyvaksynnät JA kynnys
+        if (approve_count >= required_approvals and 
+            approval_ratio >= base_threshold):
+            verification_process["final_decision"] = "approved"
+            verification_process["decision_timestamp"] = datetime.now().isoformat()
+            print(f"🎉 CONFIG-PÄIVITYS HYVÄKSYTTY!")
+            print(f"   ✅ {approve_count}/{required_approvals} ääntä, {approval_ratio:.1%} hyväksyntä")
+            return True
+        
+        # Tarkista hylkäys (enemmistö hylkää)
+        elif reject_count > approve_count and total_votes >= 3:
+            verification_process["final_decision"] = "rejected"
+            verification_process["decision_timestamp"] = datetime.now().isoformat()
+            print(f"❌ CONFIG-PÄIVITYS HYLÄTTY! {reject_count}/{total_votes} ääntä")
+            return True
+        
+        return False
     
     def _get_taq_bonus_for_party(self, party_data: Dict) -> Dict:
         """Hae TAQ-bonus puolueelle"""
@@ -126,7 +266,6 @@ class QuorumManager:
         if taq_bonus.get("taq_enabled"):
             bonus_multiplier = taq_bonus.get("bonus_multiplier", 1.0)
             # Käytä bonus_multiplieria timeoutin lyhentämiseen
-            # Esim. bonus_multiplier 0.6 = 40% nopeutus → 24h * 0.6 = 14.4h
             taq_hours = base_hours * bonus_multiplier
             timeout = datetime.now() + timedelta(hours=taq_hours)
             print(f"⏰ TAQ-TIMEOUT: {taq_hours:.1f}h (normaali: {base_hours}h)")
@@ -238,26 +377,32 @@ class QuorumManager:
         return hashlib.sha256(vote_data.encode()).hexdigest()
     
     def get_verification_status(self, verification_process: Dict) -> Dict:
-        """Hae vahvistusprosessin tila - PÄIVITETTY TAQ:lla"""
+        """Hae vahvistusprosessin tila - PÄIVITETTY config-tuella"""
         
         votes = verification_process["quorum_votes"]
         total_votes = len(votes)
         
         status = {
-            "party_id": verification_process["party_id"],
+            "party_id": verification_process.get("party_id", verification_process.get("proposal_id")),
             "current_phase": verification_process["current_phase"],
             "total_votes": total_votes,
             "approve_votes": len([v for v in votes if v["vote"] == "approve"]),
             "reject_votes": len([v for v in votes if v["vote"] == "reject"]),
             "abstain_votes": len([v for v in votes if v["vote"] == "abstain"]),
-            "media_verifications": len(verification_process["media_verifications"]),
+            "media_verifications": len(verification_process.get("media_verifications", [])),
             "time_remaining_hours": self._calculate_time_remaining(verification_process),
             "final_decision": verification_process.get("final_decision"),
             "quorum_met": verification_process.get("final_decision") is not None,
-            "taq_bonus": verification_process.get("taq_bonus", {}),  # UUSI
-            "required_approvals": verification_process.get("required_approvals", 3),  # UUSI
+            "taq_bonus": verification_process.get("taq_bonus", {}),
+            "required_approvals": verification_process.get("required_approvals", 3),
             "verification_timeout": verification_process.get("verification_timeout")
         }
+        
+        # Config-spesifiset kentät
+        if "proposal_type" in verification_process:
+            status["proposal_type"] = verification_process["proposal_type"]
+            status["changes"] = verification_process.get("changes", {})
+            status["justification"] = verification_process.get("justification", "")
         
         return status
     

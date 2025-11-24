@@ -1,0 +1,153 @@
+[
+  {
+    "proposal_id": "e00ef68ca6425bdcd6dcdd05",
+    "type": "config_update_minor",
+    "changes": {
+      "ui.default_theme": "dark"
+    },
+    "current_config_hash": "5d412fcd2115db559fb42da69be271638b69ff89602fae01bd7be1d5c17ed655",
+    "proposed_config_hash": "f9a1fa5b8d055563f4967334d88edac03465d0389e7039a227c36bb809236306",
+    "proposed_config": {
+      "election": {
+        "id": "Jumaltenvaalit2026",
+        "name": {
+          "fi": "Vaalit Jumaltenvaalit2026",
+          "en": "Election Jumaltenvaalit2026",
+          "sv": "Val Jumaltenvaalit2026"
+        },
+        "max_questions": 20,
+        "max_candidates": 50,
+        "answer_scale": {
+          "min": -5,
+          "max": 5,
+          "step": 1
+        },
+        "supported_languages": [
+          "fi",
+          "en",
+          "sv"
+        ],
+        "timelock_enabled": true,
+        "edit_deadline": "2026-02-28T23:59:59"
+      },
+      "system_info": {
+        "system_id": "system_Jumaltenvaalit2026",
+        "version": "2.0.0",
+        "created": "2025-11-24T17:10:37.164812"
+      },
+      "security_measures": {
+        "rate_limiting": true,
+        "max_answers_per_candidate": 100,
+        "crypto_requirements": "RSA-2048"
+      },
+      "network_config": {
+        "min_nodes": 3,
+        "sync_interval": 3600,
+        "ipfs_gateway": "https://ipfs.io/ipfs"
+      },
+      "ui": {
+        "default_theme": "dark",
+        "supported_themes": [
+          "light",
+          "dark",
+          "blue"
+        ],
+        "results_public": true
+      },
+      "metadata": {
+        "update_history": []
+      }
+    },
+    "justification": "Testaus korjatusta versiosta",
+    "proposer_node_id": "node_zeus",
+    "created_at": "2025-11-24T17:46:12.695974",
+    "timeout_at": "2025-11-27T17:46:12.695979",
+    "status": "pending",
+    "votes": {},
+    "taq_parameters": {
+      "base_threshold": 0.51,
+      "min_approvals": 2,
+      "time_adjusted_threshold": 0.51
+    },
+    "media_bonus_applied": false
+  },
+  {
+    "proposal_id": "cfbae2bb68c00db295ccadca",
+    "type": "config_update_minor",
+    "changes": {
+      "ui.default_theme": "dark"
+    },
+    "current_config_hash": "5d412fcd2115db559fb42da69be271638b69ff89602fae01bd7be1d5c17ed655",
+    "proposed_config_hash": "f9a1fa5b8d055563f4967334d88edac03465d0389e7039a227c36bb809236306",
+    "proposed_config": {
+      "election": {
+        "id": "Jumaltenvaalit2026",
+        "name": {
+          "fi": "Vaalit Jumaltenvaalit2026",
+          "en": "Election Jumaltenvaalit2026",
+          "sv": "Val Jumaltenvaalit2026"
+        },
+        "max_questions": 20,
+        "max_candidates": 50,
+        "answer_scale": {
+          "min": -5,
+          "max": 5,
+          "step": 1
+        },
+        "supported_languages": [
+          "fi",
+          "en",
+          "sv"
+        ],
+        "timelock_enabled": true,
+        "edit_deadline": "2026-02-28T23:59:59"
+      },
+      "system_info": {
+        "system_id": "system_Jumaltenvaalit2026",
+        "version": "2.0.0",
+        "created": "2025-11-24T17:10:37.164812"
+      },
+      "security_measures": {
+        "rate_limiting": true,
+        "max_answers_per_candidate": 100,
+        "crypto_requirements": "RSA-2048"
+      },
+      "network_config": {
+        "min_nodes": 3,
+        "sync_interval": 3600,
+        "ipfs_gateway": "https://ipfs.io/ipfs"
+      },
+      "ui": {
+        "default_theme": "dark",
+        "supported_themes": [
+          "light",
+          "dark",
+          "blue"
+        ],
+        "results_public": true
+      },
+      "metadata": {
+        "update_history": []
+      }
+    },
+    "justification": "Testaus korjatusta versiosta",
+    "proposer_node_id": "node_zeus",
+    "created_at": "2025-11-24T17:34:03.748986",
+    "timeout_at": "2025-11-27T17:34:03.748995",
+    "status": "failed_application",
+    "votes": {
+      "node_athena": {
+        "vote": "approve",
+        "weight": 2.0,
+        "justification": "",
+        "timestamp": "2025-11-24T17:46:13.006308"
+      }
+    },
+    "taq_parameters": {
+      "base_threshold": 0.51,
+      "min_approvals": 2,
+      "time_adjusted_threshold": 0.51
+    },
+    "media_bonus_applied": false
+  }
+]
