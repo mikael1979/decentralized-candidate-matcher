@@ -1,24 +1,46 @@
 # src/managers/media_registry.py
 #!/usr/bin/env python3
 """
-Julkisten avainten mediavahvistusjärjestelmä
+Julkisten avainten mediavahvistusjärjestelmä - Päivitetty konfiguroitavaksi
 """
 import hashlib
 import json
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 import requests
+from pathlib import Path
 
 class MediaRegistry:
     def __init__(self, election_id: str):
         self.election_id = election_id
-        self.trusted_media = {
-            "yle.fi": {"trust_score": 10, "verification_api": None},
-            "hsl.fi": {"trust_score": 10, "verification_api": None},
-            "vaalit.fi": {"trust_score": 10, "verification_api": "https://vaalit.fi/api/verify"},
-            "hs.fi": {"trust_score": 9, "verification_api": None},
-            "mtv.fi": {"trust_score": 8, "verification_api": None}
-        }
+        self.trusted_media = self._load_trusted_media_config()
+    
+    def _load_trusted_media_config(self) -> Dict:
+        """Lataa luotetut mediat konfiguraatiosta"""
+        try:
+            from core.taq_media_bonus import TAQMediaBonus
+            taq_manager = TAQMediaBonus(self.election_id)
+            
+            # Muunna TAQ trusted_sources vanhaan muotoon
+            trusted_media = {}
+            for source_type, config in taq_manager.trusted_sources.items():
+                for domain in config.get("domains", []):
+                    trusted_media[domain] = {
+                        "trust_score": int(config["trust_level"] * 10),
+                        "category": source_type,
+                        "verification_api": None
+                    }
+            return trusted_media
+            
+        except ImportError:
+            # Fallback vanhaan konfiguraatioon
+            return {
+                "yle.fi": {"trust_score": 10, "category": "newspapers", "verification_api": None},
+                "hsl.fi": {"trust_score": 10, "category": "newspapers", "verification_api": None},
+                "vaalit.fi": {"trust_score": 10, "category": "newspapers", "verification_api": "https://vaalit.fi/api/verify"},
+                "hs.fi": {"trust_score": 9, "category": "newspapers", "verification_api": None},
+                "mtv.fi": {"trust_score": 8, "category": "online_media", "verification_api": None}
+            }
     
     def register_media_publication(self, party_id: str, party_name: str,
                                  public_key_fingerprint: str, media_url: str,
@@ -27,7 +49,7 @@ class MediaRegistry:
         
         # Tarkista media-domain
         domain = self._extract_domain(media_url)
-        trust_info = self.trusted_media.get(domain, {"trust_score": 3})
+        trust_info = self.trusted_media.get(domain, {"trust_score": 3, "category": "unknown"})
         
         publication_id = f"pub_{hashlib.sha256(media_url.encode()).hexdigest()[:12]}"
         
@@ -42,6 +64,7 @@ class MediaRegistry:
             "publication_timestamp": datetime.now().isoformat(),
             "verification_status": "pending",
             "trust_score": trust_info["trust_score"],
+            "media_category": trust_info["category"],
             "verified_by_nodes": [],
             "verification_evidence": []
         }

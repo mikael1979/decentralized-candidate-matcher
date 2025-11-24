@@ -4,7 +4,7 @@
 Erikoistoiminnallisuus Jumaltenvaaleille - Täysi PKI-toteutus
 """
 from datetime import datetime, timedelta
-from typing import Dict, List
+from typing import Dict, List, Optional
 import json
 from .crypto_manager import CryptoManager
 
@@ -158,3 +158,25 @@ class EnhancedPartyManager:
         
         verification = party_data["registration"]["verification_process"]
         return quorum_manager.cast_vote(verification, node_id, vote, node_public_key, justification)
+
+    def get_taq_media_bonus(self, party_data: Dict) -> Optional[Dict]:
+        """Hae TAQ media-bonus puolueelle - UUSI TAQ-TOIMINNALISUUS"""
+        try:
+            from core.taq_media_bonus import TAQMediaBonus
+            
+            # Tarkista onko puolueella mediajulkaisuja
+            publications = party_data.get("media_publications", [])
+            if not publications:
+                return None
+                
+            # Käytä viimeisintä julkaisua
+            latest_pub = publications[-1]
+            media_domain = latest_pub.get("media_domain", "")
+            
+            # Laske bonus konfiguraation perusteella
+            taq_manager = TAQMediaBonus(self.election_id)
+            return taq_manager.calculate_media_bonus(media_domain)
+            
+        except ImportError:
+            # TAQ ei saatavilla - palauta None (ei haittaa, järjestelmä toimii normaalisti)
+            return None

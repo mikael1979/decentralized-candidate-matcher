@@ -1,0 +1,65 @@
+{
+  "metadata": {
+    "version": "{{VERSION}}",
+    "election_id": "{{ELECTION_ID}}",
+    "description": {
+      "fi": "Luotettujen mediayhteistyökumppanien konfiguraatio",
+      "en": "Configuration of trusted media partners",
+      "sv": "Konfiguration av betrodda mediasamarbetspartner"
+    },
+    "last_updated": "{{TIMESTAMP}}"
+  },
+  "trusted_sources": {
+    "{{MEDIA_TYPE_1}}": {
+      "description": {
+        "fi": "Kansalliset ja paikalliset sanomalehdet (esim. HS, Yle)",
+        "en": "National and local newspapers (e.g., HS, Yle)",
+        "sv": "Nationella och lokala tidningar (t.ex. HS, Yle)"
+      },
+      "domains": ["{{DOMAIN_1}}", "{{DOMAIN_2}}"],
+      "trust_level": 0.9,
+      "bonus_multiplier": 0.6,
+      "verification_required": ["title_match", "content_review"]
+    },
+    "{{MEDIA_TYPE_2}}": {
+      "description": {
+        "fi": "Kansainväliset uutislähteet (esim. BBC, Reuters)",
+        "en": "International news sources (e.g., BBC, Reuters)",
+        "sv": "Internationella nyhetskällor (t.ex. BBC, Reuters)"
+      },
+      "domains": ["{{DOMAIN_3}}", "{{DOMAIN_4}}"],
+      "trust_level": 0.85,
+      "bonus_multiplier": 0.65,
+      "verification_required": ["domain_match"]
+    },
+    "{{MEDIA_TYPE_3}}": {
+      "description": {
+        "fi": "Verkkomediat ja blogit (esim. MTV, Ilta-Sanomat)",
+        "en": "Online media and blogs (e.g., MTV, Iltalehti)",
+        "sv": "Nätmedier och bloggar (t.ex. MTV, Iltalehti)"
+      },
+      "domains": ["{{DOMAIN_5}}"],
+      "trust_level": 0.7,
+      "bonus_multiplier": 0.7,
+      "verification_required": ["manual_check"]
+    }
+  },
+  "security": {
+    "max_bonus": 0.6,
+    "min_approval_threshold": 2,
+    "url_validation_enabled": true,
+    "allowed_protocols": ["https"]
+  },
+  "documentation": {
+    "usage": "Tämä tiedosto toimii pohjana mediavahvistuksen luotettavuusarviointiin. Käytä placeholderien korvaamiseen config-järjestelmää.",
+    "placeholders": {
+      "{{ELECTION_ID}}": "Vaalitunniste (esim. Jumaltenvaalit2026)",
+      "{{VERSION}}": "Tiedoston versio (esim. 1.0.0)",
+      "{{TIMESTAMP}}": "ISO 8601 aikaleima (esim. 2025-11-23T14:30:00+02:00)",
+      "{{MEDIA_TYPE_N}}": "Mediatyypin nimi (esim. newspapers, international, community)",
+      "{{DOMAIN_N}}": "Domain-nimi (esim. hs.fi, bbc.com)"
+    },
+    "generated_by": "template_manager.py",
+    "template_type": "trusted_sources"
+  }
+}

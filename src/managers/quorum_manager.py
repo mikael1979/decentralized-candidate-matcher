@@ -1,7 +1,7 @@
 # src/managers/quorum_manager.py
 #!/usr/bin/env python3
 """
-Hajautettu kvoorumi-pohjainen puoluevahvistusjärjestelmä
+Hajautettu kvoorumi-pohjainen puoluevahvistusjärjestelmä - PÄIVITETTY TAQ:lla
 """
 import hashlib
 import json
@@ -14,36 +14,49 @@ class QuorumManager:
         self.election_id = election_id
         self.crypto = CryptoManager()
         
-        # Kvoorumikonfiguraatio
+        # Kvoorumikonfiguraatio - PÄIVITETTY TAQ:lla
         self.quorum_config = {
             "min_nodes_for_verification": 3,
             "approval_threshold_percent": 60,
             "verification_timeout_hours": 24,
             "rejection_quorum_percent": 40,
-            "node_weight_calculation": "based_on_history"
+            "node_weight_calculation": "based_on_history",
+            "taq_enabled": True,  # UUSI: Ota TAQ käyttöön
         }
     
     def initialize_party_verification(self, party_data: Dict) -> Dict:
-        """Alusta puolueen kvoorumivahvistus"""
+        """Alusta puolueen kvoorumivahvistus - PÄIVITETTY TAQ:lla"""
+        
+        # TARKISTA TAQ-BONUS
+        taq_bonus = self._get_taq_bonus_for_party(party_data)
         
         verification_process = {
             "party_id": party_data["party_id"],
             "party_name": party_data["name"]["fi"],
             "public_key_fingerprint": party_data["crypto_identity"]["key_fingerprint"],
             "verification_started": datetime.now().isoformat(),
-            "verification_timeout": (datetime.now() + timedelta(hours=24)).isoformat(),
+            "verification_timeout": self._calculate_timeout_with_taq(taq_bonus),
             "current_phase": "media_verification",
             "quorum_votes": [],
             "media_verifications": [],
             "final_decision": None,
-            "decision_timestamp": None
+            "decision_timestamp": None,
+            "taq_bonus": taq_bonus,  # UUSI: Tallenna TAQ-tiedot
+            "required_approvals": self._calculate_required_approvals_with_taq(taq_bonus)  # UUSI
         }
+        
+        print(f"🎯 KV OORUMI ALUSTETTU: {party_data['party_id']}")
+        if taq_bonus.get("taq_enabled"):
+            print(f"   🚀 TAQ-BONUS AKTIIVINEN: {taq_bonus.get('time_saving', '0%')} nopeutus")
+            print(f"   👥 VAHVISTUKSET: {verification_process['required_approvals']}/3")
+        else:
+            print(f"   ℹ️  Normaali kvoorumi: 3/3 vahvistusta, 24h aikaraja")
         
         return verification_process
     
     def cast_vote(self, verification_process: Dict, node_id: str, 
                  vote: str, node_public_key: str, justification: str = "") -> bool:
-        """Äänestä puolueen vahvistamisesta"""
+        """Äänestä puolueen vahvistamisesta - PÄIVITETTY TAQ:lla"""
         
         if vote not in ["approve", "reject", "abstain"]:
             return False
@@ -52,11 +65,14 @@ class QuorumManager:
         existing_vote = next((v for v in verification_process["quorum_votes"] 
                             if v["node_id"] == node_id), None)
         if existing_vote:
+            print(f"❌ Node {node_id} on jo äänestänyt")
             return False
         
-        # Tarkista aikaraja
+        # Tarkista aikaraja - PÄIVITETTY TAQ:lla
         timeout = datetime.fromisoformat(verification_process["verification_timeout"])
         if datetime.now() > timeout:
+            print("⏰ Äänestysaika on päättynyt")
+            verification_process["final_decision"] = "timeout"
             return False
         
         # Laske noden painoarvo
@@ -75,8 +91,112 @@ class QuorumManager:
         
         verification_process["quorum_votes"].append(vote_record)
         
-        # Tarkista onko päätös saavutettu
-        return self._check_quorum_decision(verification_process)
+        # Tarkista onko päätös saavutettu - PÄIVITETTY TAQ:lla
+        return self._check_quorum_decision_with_taq(verification_process)
+    
+    def _get_taq_bonus_for_party(self, party_data: Dict) -> Dict:
+        """Hae TAQ-bonus puolueelle"""
+        try:
+            from core.taq_media_bonus import TAQMediaBonus
+            taq_manager = TAQMediaBonus(self.election_id)
+            
+            # Tarkista onko puolueella mediajulkaisuja
+            publications = party_data.get("media_publications", [])
+            if not publications:
+                return {"taq_enabled": False}
+                
+            # Käytä viimeisintä julkaisua
+            latest_pub = publications[-1]
+            media_domain = latest_pub.get("media_domain", "")
+            
+            bonus = taq_manager.calculate_media_bonus(media_domain)
+            return bonus if bonus else {"taq_enabled": False}
+            
+        except ImportError as e:
+            print(f"⚠️  TAQ Media Bonus ei saatavilla: {e}")
+            return {"taq_enabled": False}
+        except Exception as e:
+            print(f"⚠️  TAQ-bonuksen haku epäonnistui: {e}")
+            return {"taq_enabled": False}
+    
+    def _calculate_timeout_with_taq(self, taq_bonus: Dict) -> str:
+        """Laske timeout TAQ-bonuksen perusteella"""
+        base_hours = self.quorum_config["verification_timeout_hours"]
+        
+        if taq_bonus.get("taq_enabled"):
+            bonus_multiplier = taq_bonus.get("bonus_multiplier", 1.0)
+            # Käytä bonus_multiplieria timeoutin lyhentämiseen
+            # Esim. bonus_multiplier 0.6 = 40% nopeutus → 24h * 0.6 = 14.4h
+            taq_hours = base_hours * bonus_multiplier
+            timeout = datetime.now() + timedelta(hours=taq_hours)
+            print(f"⏰ TAQ-TIMEOUT: {taq_hours:.1f}h (normaali: {base_hours}h)")
+        else:
+            timeout = datetime.now() + timedelta(hours=base_hours)
+        
+        return timeout.isoformat()
+    
+    def _calculate_required_approvals_with_taq(self, taq_bonus: Dict) -> int:
+        """Laske tarvittavat hyväksynnät TAQ-bonuksen perusteella"""
+        base_approvals = self.quorum_config["min_nodes_for_verification"]
+        
+        if taq_bonus.get("taq_enabled"):
+            taq_approvals = taq_bonus.get("required_approvals", base_approvals)
+            print(f"👥 TAQ-VAHVISTUKSET: {taq_approvals}/{base_approvals}")
+            return taq_approvals
+        
+        return base_approvals
+    
+    def _check_quorum_decision_with_taq(self, verification_process: Dict) -> bool:
+        """Tarkista onko kvoorumipäätös saavutettu - PÄIVITETTY TAQ:lla"""
+        
+        votes = verification_process["quorum_votes"]
+        if not votes:
+            return False
+        
+        # Käytä TAQ-määrittelemää vaadittujen hyväksyntöjen määrää
+        required_approvals = verification_process.get("required_approvals", 
+                                                     self.quorum_config["min_nodes_for_verification"])
+        
+        total_weight = sum(vote["weight"] for vote in votes)
+        approve_weight = sum(vote["weight"] for vote in votes if vote["vote"] == "approve")
+        reject_weight = sum(vote["weight"] for vote in votes if vote["vote"] == "reject")
+        
+        approval_ratio = (approve_weight / total_weight) * 100 if total_weight > 0 else 0
+        rejection_ratio = (reject_weight / total_weight) * 100 if total_weight > 0 else 0
+        
+        approval_threshold = self.quorum_config["approval_threshold_percent"]
+        rejection_threshold = self.quorum_config["rejection_quorum_percent"]
+        
+        # Tarkista ehdot - PÄIVITETTY: käytä TAQ-vaatimia hyväksyntöjä
+        approve_count = len([v for v in votes if v["vote"] == "approve"])
+        has_min_approvals = approve_count >= required_approvals
+        has_approval_quorum = approval_ratio >= approval_threshold
+        
+        # Tarkista hylkäys (yli puolet hylkää)
+        total_votes = len(votes)
+        reject_count = len([v for v in votes if v["vote"] == "reject"])
+        has_rejection_quorum = rejection_ratio >= rejection_threshold
+        
+        taq_enabled = verification_process.get("taq_bonus", {}).get("taq_enabled", False)
+        
+        print(f"📊 ÄÄNESTYSTILANNE: {approve_count}/{required_approvals} hyväksyntää" + 
+              f" ({'TAQ' if taq_enabled else 'normaali'})")
+        
+        if has_min_approvals and has_approval_quorum:
+            verification_process["final_decision"] = "approved"
+            verification_process["decision_timestamp"] = datetime.now().isoformat()
+            print(f"🎉 PUOLUE HYVÄKSYTTY! {approve_count}/{required_approvals} ääntä")
+            if taq_enabled:
+                print("   🚀 TAQ-BONUS AUTTOI - nopeampi vahvistus!")
+            return True
+        
+        elif has_rejection_quorum and total_votes >= 3:
+            verification_process["final_decision"] = "rejected" 
+            verification_process["decision_timestamp"] = datetime.now().isoformat()
+            print(f"❌ PUOLUE HYLKÄTTY! {reject_count}/{total_votes} ääntä")
+            return True
+        
+        return False
     
     def add_media_verification(self, verification_process: Dict, 
                              publication_record: Dict, node_id: str) -> bool:
@@ -101,41 +221,6 @@ class QuorumManager:
         
         return True
     
-    def _check_quorum_decision(self, verification_process: Dict) -> bool:
-        """Tarkista onko kvoorumipäätös saavutettu"""
-        
-        votes = verification_process["quorum_votes"]
-        if not votes:
-            return False
-        
-        total_weight = sum(vote["weight"] for vote in votes)
-        approve_weight = sum(vote["weight"] for vote in votes if vote["vote"] == "approve")
-        reject_weight = sum(vote["weight"] for vote in votes if vote["vote"] == "reject")
-        
-        approval_ratio = (approve_weight / total_weight) * 100 if total_weight > 0 else 0
-        rejection_ratio = (reject_weight / total_weight) * 100 if total_weight > 0 else 0
-        
-        min_votes = self.quorum_config["min_nodes_for_verification"]
-        approval_threshold = self.quorum_config["approval_threshold_percent"]
-        rejection_threshold = self.quorum_config["rejection_quorum_percent"]
-        
-        # Tarkista ehdot
-        has_min_votes = len(votes) >= min_votes
-        has_approval_quorum = approval_ratio >= approval_threshold
-        has_rejection_quorum = rejection_ratio >= rejection_threshold
-        
-        if has_min_votes and has_approval_quorum:
-            verification_process["final_decision"] = "approved"
-            verification_process["decision_timestamp"] = datetime.now().isoformat()
-            return True
-        
-        elif has_min_votes and has_rejection_quorum:
-            verification_process["final_decision"] = "rejected" 
-            verification_process["decision_timestamp"] = datetime.now().isoformat()
-            return True
-        
-        return False
-    
     def _calculate_node_weight(self, node_id: str, node_public_key: str) -> int:
         """Laske noden painoarvo äänestyksessä"""
         # Yksinkertaistettu - oikeassa järjestelmässä perustuisi historiaan
@@ -153,7 +238,7 @@ class QuorumManager:
         return hashlib.sha256(vote_data.encode()).hexdigest()
     
     def get_verification_status(self, verification_process: Dict) -> Dict:
-        """Hae vahvistusprosessin tila"""
+        """Hae vahvistusprosessin tila - PÄIVITETTY TAQ:lla"""
         
         votes = verification_process["quorum_votes"]
         total_votes = len(votes)
@@ -168,7 +253,10 @@ class QuorumManager:
             "media_verifications": len(verification_process["media_verifications"]),
             "time_remaining_hours": self._calculate_time_remaining(verification_process),
             "final_decision": verification_process.get("final_decision"),
-            "quorum_met": verification_process.get("final_decision") is not None
+            "quorum_met": verification_process.get("final_decision") is not None,
+            "taq_bonus": verification_process.get("taq_bonus", {}),  # UUSI
+            "required_approvals": verification_process.get("required_approvals", 3),  # UUSI
+            "verification_timeout": verification_process.get("verification_timeout")
         }
         
         return status

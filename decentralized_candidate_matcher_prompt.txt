@@ -560,4 +560,61 @@ tässä vielä config.base.json template
 --------------------------------------------------------
 *Jos luodaan moduuleita, niin tehdään importit ensin ja testataan importtien toimintaa ennen kuin kirjoitetaan tiedostoon ohjelmallista koodia, koska iso osa virheistä on yleensä moduulien importtauksessa
 *oikeastaan voitaisiin tehdä first_install.py joka luo ipfs:ään kaksi tiedostoa. Toinen on staattinen muuttumaton merkki että ipfs:ssä on jo vaalikoneen dataa, tällä tiedostolla on kiinteä CID, ja jos install.py näkee tämän tiedoston ipfs:ssä, niin se lataa ipfs:tä vaalilistan election_list.json. Lisätään myös /elections_list.base.json tiedostoon loogiset ryhmät, jotka ovat mantereet, valtiot ja vaalit plus muut vaalit (nimet englanniksi).
+----------------------------------------------------------------------------------------------------------------------
+config/system/trusted_sources.base.json itseasiassa base tiedostoille on toinen hakemisto:
+
+ find base_templates/
+base_templates/
+base_templates/questions
+base_templates/questions/questions.base.json
+base_templates/questions/active_questions.base.json
+base_templates/elections
+base_templates/elections/install_config.base.json
+base_templates/elections/elections_hierarchy.base.json
+base_templates/elections/parties.base.json
+base_templates/elections/elections_list.base.json
+base_templates/governance
+base_templates/governance/parties.base.json
+base_templates/candidates
+base_templates/candidates/candidates.base.json
+base_templates/candidates/candidate_profiles.base.json
+base_templates/core
+base_templates/core/meta.base.json
+base_templates/parties
+base_templates/parties/parties.base.json
+base_templates/sync
+base_templates/system
+base_templates/system/trusted_sources.base.json
+base_templates/system/system_chain.base.json
+
+ja config tiedostoille on omansa:
+find config/
+config/
+config/templates
+config/elections
+config/elections/_template
+config/elections/_template/election_config.json
+config/elections/jumaltenvaalit2026
+config/elections/jumaltenvaalit2026/election_config.json
+config/jumaltenvaalit_questions.example.json
+config/election_registry.json
+config/jumaltenvaalit_candidates.example.json
+config/install_config.example.json
+config/election_jumaltenvaalit2026.json
+config/worker_config.json
+config/system
+config/system/default_colors.json
+
+Ideana on se että base tiedosto on rakenne template ja config tiedosto on asetustiedosto, joiden luomiseen ainakin olisi tarkoituksena hyödyntää base tiedostojen rakenne pohjia.
+
+ Yhteenveto
+trusted_sources.base.json kuuluu base_templates/system/ -hakemistoon
+Se on rakenne-määritys, ei konfiguraatio
+Tämä erottuu selkeästi config/-hakemiston asetustiedostoista
+Arkkitehtuuri noudattaa single source of truth -periaatetta:
+Rakenne ← base_templates/
+Asetukset ← config/
+Data ← data/runtime/
+Tämä rakenne mahdollistaa kansainvälisyyden (eri mediakonfiguraatiot eri vaaleissa) ja modulaarisuuden (trusted_sources ei ole kiinni suomalaisissa lähteissä).
+-----------------------------------------------------------------------------------------------------------------------------------
 

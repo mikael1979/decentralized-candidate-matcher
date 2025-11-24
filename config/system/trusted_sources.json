@@ -1,0 +1,54 @@
+{
+  "trusted_sources": {
+    "newspapers": {
+      "description": {
+        "fi": "Kansalliset ja paikalliset sanomalehdet",
+        "en": "National and local newspapers",
+        "sv": "Nationella och lokala tidningar"
+      },
+      "domains": ["yle.fi", "hsl.fi", "hs.fi", "vaalit.fi"],
+      "trust_level": 0.9,
+      "bonus_multiplier": 0.6,
+      "verification_required": ["title_match", "content_review"]
+    },
+    "international": {
+      "description": {
+        "fi": "Kansainväliset uutislähteet",
+        "en": "International news sources", 
+        "sv": "Internationella nyhetskällor"
+      },
+      "domains": ["bbc.com", "reuters.com", "apnews.com"],
+      "trust_level": 0.85,
+      "bonus_multiplier": 0.65,
+      "verification_required": ["domain_match"]
+    },
+    "online_media": {
+      "description": {
+        "fi": "Verkkomediat ja blogit",
+        "en": "Online media and blogs",
+        "sv": "Nätmedier och bloggar"
+      },
+      "domains": ["mtv.fi", "ilta-sanomat.fi", "verkkolehti.fi"],
+      "trust_level": 0.7,
+      "bonus_multiplier": 0.7,
+      "verification_required": ["manual_check"]
+    },
+    "community": {
+      "description": {
+        "fi": "Paikallisyhteisön mediat",
+        "en": "Local community media",
+        "sv": "Lokala samhällsmedier"
+      },
+      "domains": ["paikallislehti.fi", "kylayhteiso.net", "kuntalehti.fi"],
+      "trust_level": 0.6,
+      "bonus_multiplier": 0.8,
+      "verification_required": ["community_verification"]
+    }
+  },
+  "security": {
+    "max_bonus": 0.6,
+    "min_approval_threshold": 2,
+    "url_validation_enabled": true,
+    "allowed_protocols": ["https"]
+  }
+}

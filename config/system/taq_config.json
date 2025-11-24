@@ -1,0 +1,33 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "description": "TAQ (Tiered Adaptive Quorum) - Media Bonus Configuration",
+    "last_updated": "2024-01-15"
+  },
+  "media_bonus_levels": {
+    "high": {
+      "min_trust_score": 8,
+      "required_approvals": 2,
+      "time_saving": "40%",
+      "description": "Korkea luotettavuus (YLE, HSL, HS)"
+    },
+    "medium": {
+      "min_trust_score": 5,
+      "required_approvals": 2,
+      "time_saving": "30%",
+      "description": "Keskitaso (MTV, muut luotetut)"
+    },
+    "low": {
+      "min_trust_score": 0,
+      "required_approvals": 3,
+      "time_saving": "20%",
+      "description": "Matala luotettavuus (blogit, paikallislehdet)"
+    }
+  },
+  "system_settings": {
+    "default_trust_score": 3,
+    "enable_taq_by_default": false,
+    "fallback_to_standard_quorum": true,
+    "log_taq_decisions": true
+  }
+}

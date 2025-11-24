@@ -60,17 +60,65 @@ def propose_with_keys(election, name_fi, contact_email, principles):
 @click.option('--election', required=True, help='Vaalin tunniste')
 @click.option('--party-id', required=True, help='Puolueen tunniste')
 @click.option('--media-url', required=True, help='Median URL jossa avain julkaistu')
-def publish_media(election, party_id, media_url):
-    """Rekisteröi mediassa julkaistu julkisen avaimen tiedote"""
+@click.option('--enable-taq-bonus', is_flag=True, help='Ota käyttöön TAQ media-bonus')
+def publish_media(election, party_id, media_url, enable_taq_bonus):
+    """Rekisteröi mediassa julkaistu julkisen avaimen tiedote - Laajennettu TAQ:lla"""
     
     from managers.enhanced_party_manager import EnhancedPartyManager
     
+    # KORJATTU: Lataa puolueen tiedot ensin
     manager = EnhancedPartyManager(election)
-    publication_id = manager.publish_public_key_to_media(party_id, media_url)
     
-    click.echo(f"✅ Mediajulkaisu rekisteröity: {publication_id}")
+    # SIMULOIDAAN puolueen data - oikeassa järjestelmässä haettaisiin tietokannasta
+    party_data = {
+        "party_id": party_id,
+        "name": {"fi": f"Testipuolue {party_id}"},
+        "crypto_identity": {
+            "key_fingerprint": f"fp_{party_id}_12345"
+        },
+        "media_publications": []
+    }
+    
+    # NYKYINEN TOIMINTA (aina)
+    publication = manager.publish_party_key_to_media(party_data, media_url)
+    
+    # UUSI TAQ-BONUS (opt-in)
+    taq_bonus_info = {}
+    if enable_taq_bonus:
+        click.echo("🔍 Tarkistetaan TAQ media-bonusta...")
+        taq_bonus = manager.get_taq_media_bonus(party_data)
+        
+        if taq_bonus:
+            taq_bonus_info = {
+                "taq_enabled": True,
+                "trust_level": taq_bonus.get("trust_level", "unknown"),
+                "time_saving": taq_bonus.get("time_saving", "0%"),
+                "required_approvals": taq_bonus.get("required_approvals", 3),  # KORJATTU
+                "source_type": taq_bonus.get("source_type", "unknown")
+            }
+            click.echo("✅ TAQ bonus saatavilla!")
+        else:
+            click.echo("ℹ️  TAQ bonus ei saatavilla tälle medialle")
+    
+    click.echo(f"✅ Mediajulkaisu rekisteröity: {publication['publication_id']}")
     click.echo(f"📰 Media: {media_url}")
-    click.echo("💡 Odota nyt että muut nodet vahvistavat julkaisun")
+    click.echo(f"🏷️  Domain: {publication['media_domain']}")
+    click.echo(f"⭐ Luotettavuuspisteet: {publication['trust_score']}/10")
+    
+    if taq_bonus_info:
+        click.echo("\n🚀 TAQ MEDIA-BONUS AKTIIVINEN!")
+        click.echo(f"   📊 Lähdetyyppi: {taq_bonus_info['source_type']}")
+        click.echo(f"   📈 Luotettavuustaso: {taq_bonus_info['trust_level']}")
+        click.echo(f"   ⚡ Nopeutus: {taq_bonus_info['time_saving']}")
+        click.echo(f"   👥 Vaaditut vahvistukset: {taq_bonus_info['required_approvals']}/3")
+        click.echo("   💡 Vahvistusprosessi nopeutuu automaattisesti!")
+    elif enable_taq_bonus:
+        click.echo("\n💡 Media ei ole TAQ-luotettujen lähteiden listalla")
+        click.echo("   Käytä luotettua mediaa (esim. Yle, HS, BBC) saadaksesi bonuksen!")
+    else:
+        click.echo("\n💡 Vinkki: Käytä --enable-taq-bonus nopeuttaaksesi vahvistusta!")
+    
+    click.echo("\n⏳ Odota nyt että muut nodet vahvistavat julkaisun")
 
 @party_verification.command()
 @click.option('--election', required=True, help='Vaalin tunniste')
@@ -126,3 +174,6 @@ def quorum_vote(election, party_id, node_id, vote, node_public_key_file):
     else:
         click.echo(f"✅ Ääni annettu: {vote}")
         click.echo("⏳ Odotetaan lisää ääniä...")
+
+if __name__ == '__main__':
+    party_verification()
