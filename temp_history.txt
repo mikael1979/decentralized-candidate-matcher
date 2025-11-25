@@ -1,0 +1,29 @@
+def history(election):
+    """Näytä config-päivityshistoria"""
+    
+    election_id = get_election_id(election)
+    if not election_id:
+        click.echo("❌ Vaalia ei ole asetettu")
+        return
+    
+    try:
+        from core.config_manager import ConfigManager
+        config_mgr = ConfigManager(election_id)
+        history = config_mgr.get_config_update_history()
+        
+        if not history:
+            click.echo("ℹ️  Ei config-päivityshistoriaa")
+            click.echo("💡 Historia luodaan automaattisesti config-päivitysten yhteydessä")
+            return
+            
+        click.echo("📜 CONFIG-PÄIVITYSHISTORIA")
+        
+        for i, entry in enumerate(reversed(history[-5:]), 1):
+            click.echo(f"{i}. {entry.get('timestamp', 'N/A')}")
+            click.echo(f"   Proposal: {entry.get('proposal_id', 'N/A')}")
+            click.echo()
+            
+    except Exception as e:
+        click.echo(f"❌ Historian haku epäonnistui: {e}")
+
+@manage_config.command()

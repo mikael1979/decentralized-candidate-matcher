@@ -1,0 +1,36 @@
+def config_info(election):
+    """Näytä nykyisen configin tiedot"""
+    
+    election_id = get_election_id(election)
+    if not election_id:
+        click.echo("❌ Vaalia ei ole asetettu")
+        return
+    
+    try:
+        from core.config_manager import ConfigManager
+        config_mgr = ConfigManager(election_id)
+        
+        # Yritä lukea config suoraan tiedostosta
+        config_path = Path(f"config/elections/{election_id}/election_config.json")
+        if config_path.exists():
+            with open(config_path, 'r') as f:
+                config_data = json.load(f)
+            
+            click.echo("📄 NYKYINEN CONFIG-TIEDOSTO")
+            click.echo(f"🏛️  Vaali: {election_id}")
+            click.echo(f"📁 Polku: {config_path}")
+            
+            # Näytä tärkeimmät asetukset
+            if 'ui' in config_data:
+                click.echo(f"🎨 UI-teema: {config_data['ui'].get('default_theme', 'ei asetettu')}")
+            
+        else:
+            click.echo("❌ Config-tiedostoa ei löydy")
+            click.echo("💡 Luo ensin config-tiedosto:")
+            click.echo(f"   python src/cli/manage_config.py propose-update --key 'ui.default_theme' --value '\"light\"' --type minor --node-id node_zeus")
+        
+    except Exception as e:
+        click.echo(f"❌ Config-tiedon haku epäonnistui: {e}")
+
+@manage_config.command()
+@click.option('--election', required=False, help='Vaalitunniste')
