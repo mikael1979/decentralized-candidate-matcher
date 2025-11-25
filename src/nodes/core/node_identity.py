@@ -26,7 +26,7 @@ class MockCryptoManager:
 
 # Try to import real CryptoManager, fallback to mock
 try:
-    from managers.crypto_manager import CryptoManager
+    from src.managers.crypto_manager import CryptoManager
     print("✅ Using real CryptoManager")
 except ImportError:
     CryptoManager = MockCryptoManager
