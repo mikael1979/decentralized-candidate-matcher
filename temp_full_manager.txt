@@ -1,0 +1,108 @@
+class VotingSessionManager:
+    """Voting session management with multinode support"""
+    
+    def __init__(self, election_id=None, enable_multinode=False):
+        self.election_id = election_id or get_election_id()
+        self.data_path = get_data_path(self.election_id)
+        
+        # MULTINODE: Alusta node-järjestelmä
+        self.enable_multinode = enable_multinode
+        self.node_identity = None
+        self.network_manager = None
+        self.consensus_manager = None
+        
+        if self.enable_multinode and MULTINODE_AVAILABLE:
+            self._initialize_multinode()
+    
+    def _initialize_multinode(self):
+        """Alustaa multinode-järjestelmän voting-sessioihin"""
+        try:
+            print("🌐 Alustetaan multinode-voting...")
+            
+            # Lataa olemassa oleva node identity tai luo uusi
+            self.node_identity = self._load_or_create_node_identity()
+            
+            # Luo verkkomanageri
+            self.network_manager = NetworkManager(self.node_identity)
+            
+            # Luo konsensusmanageri
+            self.consensus_manager = ConsensusManager(self.network_manager)
+            
+            # Yhdistä verkkoon (tyhjät bootstrap-peerit voting-sessioille)
+            self.network_manager.connect_to_network([])
+            
+            print(f"✅ Multinode voting alustettu: {self.node_identity.node_id}")
+            
+        except Exception as e:
+            print(f"⚠️  Multinode initialization failed: {e}")
+            self.enable_multinode = False
+    
+    def _load_or_create_node_identity(self):
+        """Lataa olemassa oleva node identity tai luo uusi"""
+        try:
+            # Yritä ladata olemassa oleva identity
+            identity_files = list(Path(f"data/nodes/{self.election_id}").glob("*_identity.json"))
+            if identity_files:
+                latest_file = max(identity_files, key=lambda f: f.stat().st_mtime)
+                identity = NodeIdentity(self.election_id, "voter")
+                if identity.load_identity(latest_file.stem.replace("_identity", "")):
+                    print(f"✅ Loaded existing node identity: {identity.node_id}")
+                    return identity
+            
+            # Luo uusi identity voting-sessioita varten
+            identity = NodeIdentity(
+                election_id=self.election_id,
+                node_type="voter", 
+                node_name=f"voting_engine_{datetime.now().strftime('%H%M%S')}",
+                domain="voting_sessions"
+            )
+            identity.save_identity()
+            return identity
+            
+        except Exception as e:
+            print(f"⚠️  Failed to load/create node identity: {e}")
+            # Fallback: Luo uusi identity
+            identity = NodeIdentity(self.election_id, "voter")
+            identity.save_identity()
+            return identity
+    
+    def _broadcast_voting_session(self, session_data):
+        """Lähetä voting-sessio verkkoon multinode-tilassa"""
+        if not self.enable_multinode or not self.network_manager:
+            return
+        
+        try:
+            # Lähetä voting-session tiedot verkkoon
+            self.network_manager.broadcast_message("voting_session_completed", {
+                "session_id": session_data["session_id"],
+                "election_id": self.election_id,
+                "timestamp": session_data["timestamp"],
+                "answer_count": len(session_data["user_answers"]),
+                "node_id": self.node_identity.node_id
+            })
+            
+            print(f"📤 Voting session broadcast to network: {session_data['session_id']}")
+            
+        except Exception as e:
+            print(f"⚠️  Failed to broadcast voting session: {e}")
+    
+    def _sync_voting_data(self):
+        """Synkronoi voting-data verkosta multinode-tilassa"""
+        if not self.enable_multinode or not self.network_manager:
+            return
+        
+        try:
+            # Kysy verkosta uusimmat voting-sessiot
+            self.network_manager.broadcast_message("voting_data_request", {
+                "election_id": self.election_id,
+                "request_type": "session_list",
+                "node_id": self.node_identity.node_id
+            })
+            
+            print("🔄 Syncing voting data from network...")
+            
+        except Exception as e:
+            print(f"⚠️  Failed to sync voting data: {e}")
+
+
+def validate_answer_value(answer_value):
