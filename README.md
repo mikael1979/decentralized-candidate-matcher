@@ -5,6 +5,8 @@
 [![IPFS Compatible](https://img.shields.io/badge/IPFS-Kubo%200.38.2-green.svg)](https://docs.ipfs.tech/)
 [![Multinode Ready](https://img.shields.io/badge/Multinode-Enabled-success.svg)]()
 [![IPFS Discovery](https://img.shields.io/badge/IPFS-Discovery-blue.svg)]()
+[![Security: Case Conflict Detection](https://img.shields.io/badge/Security-Case%20Conflict%20Detection-red.svg)]()
+[![Data Quality: Duplicate Prevention](https://img.shields.io/badge/Data%20Quality-Duplicate%20Prevention-green.svg)]()
 [![Status: Production Ready](https://img.shields.io/badge/Status-TUOTANTOVALMIS-success.svg)]()
 
 Hajautettu, yhteisöohjattu vaalikonejärjestelmä, joka käyttää ELO-luokitusjärjestelmää kysymysten priorisointiin ja automoderaatioon. Järjestelmä on suunniteltu tukemaan useita samanaikaisia vaaleja hajautetusti ilman keskitettyä hallintapalvelinta.
@@ -14,7 +16,8 @@ Hajautettu, yhteisöohjattu vaalikonejärjestelmä, joka käyttää ELO-luokitus
 - [Pääominaisuudet](#-pääominaisuudet)
 - [Vaatimukset](#-vaatimukset)
 - [Pika-aloitus](#🚀-pika-aloitus)
-- [IPFS-pohjainen Discovery](#🌐-ipfs-pohjainen-discovery-uusi)
+- [Turvallisuus & Data-laatu](#🛡️-turvallisuus--data-laatu-uusi)
+- [IPFS-pohjainen Discovery](#🌐-ipfs-pohjainen-discovery)
 - [Multinode-tuki](#🔗-multinode-tuki)
 - [Käyttöopas](#📖-käyttöopas)
 - [Config-järjestelmä](#⚙️-config-järjestelmä)
@@ -29,32 +32,53 @@ Hajautettu, yhteisöohjattu vaalikonejärjestelmä, joka käyttää ELO-luokitus
 
 ## 🎯 Pääominaisuudet
 
-- **IPFS-pohjainen Discovery** – Järjestelmä löytyy staattisella CID:llä, vaalit jaetaan dynaamisesti
-- **Hajautettu Arkkitehtuuri** – Ei single point of failure  
-- **Multinode-tuki** – Hajautettu multimode-järjestelmä konsensusmekanismilla
-- **Hierarkkinen vaalivalikoima** – Mantereet → maat → vaalit -rakenne
-- **Dynaaminen vaalien hallinta** – Uusia vaaleja voi lisätä ilman uudelleenasennusta
-- **Config-järjestelmä** – Template-pohjainen konfiguraatio  
-- **ELO-luokitusjärjestelmä** – Kysymysten laadun automaattinen arviointi  
-- **PKI-turvajärjestelmä** – Ehdokkaiden ja puolueiden varmennus  
-- **IPFS-integrointi** – Hajautettu datajako ja tallennus  
-- **Reaaliaikainen analytics** – Vaalitilastot ja analyysit  
-- **HTML-profiilit** – Automaattiset profiilisivut IPFS:ään  
-- **Remove/Update toiminnot** – Täydellinen data-hallinta  
+- **🛡️ Case Conflict Detection** – Automaattinen case-konfliktien tunnistus ja korjaus
+- **📊 Duplicate Question Prevention** – Estää samanlaisten kysymysten lisäämisen
+- **🔍 Two-Step Workflow** – new_questions.json → manuaalinen tarkistus → questions.json
+- **🌐 IPFS-pohjainen Discovery** – Järjestelmä löytyy staattisella CID:llä, vaalit jaetaan dynaamisesti
+- **🔗 Hajautettu Arkkitehtuuri** – Ei single point of failure  
+- **👥 Multinode-tuki** – Hajautettu multimode-järjestelmä konsensusmekanismilla
+- **🏛️ Hierarkkinen vaalivalikoima** – Mantereet → maat → vaalit -rakenne
+- **🔄 Dynaaminen vaalien hallinta** – Uusia vaaleja voi lisätä ilman uudelleenasennusta
+- **⚙️ Config-järjestelmä** – Template-pohjainen konfiguraatio  
+- **📈 ELO-luokitusjärjestelmä** – Kysymysten laadun automaattinen arviointi  
+- **🔐 PKI-turvajärjestelmä** – Ehdokkaiden ja puolueiden varmennus  
+- **🌐 IPFS-integrointi** – Hajautettu datajako ja tallennus  
+- **📊 Reaaliaikainen analytics** – Vaalitilastot ja analyysit  
+- **🎨 HTML-profiilit** – Automaattiset profiilisivut IPFS:ään  
+- **🗑️ Remove/Update toiminnot** – Täydellinen data-hallinta  
 
-## 🛠️ Vaatimukset
+## 🛡️ Turvallisuus & Data-laatu (UUSI!)
 
-- **Python 3.8** tai uudempi
-- **IPFS Kubo 0.38.2** tai uudempi
-- **2GB** vapaata muistia
-- **1GB** levytilaa
-- **Internet-yhteys** (IPFS-synkronointia varten)
-
-## 🚀 Pika-aloitus
-
-### 1. Ensimmäinen asennus (vain kerran)
-
+### Case Conflict Detection
 ```bash
+# Tarkista case-konfliktit
+python src/cli/check_election_isolation.py --full-scan
+
+# Korjaa case-ongelmat automaattisesti
+python scripts/fix_election_case_issues.py --apply
+
+# Validoi järjestelmän eheys
+python scripts/validate_election_integrity.py
+Duplicate Question Prevention
+bash
+# Lisää kysymys duplikaattitarkistuksella
+python src/cli/manage_questions_enhanced.py add \
+  --category "Kategoria" \
+  --question-fi "Kysymys suomeksi" \
+  --question-en "Question in English"
+
+# Tarkista duplikaatit
+python src/cli/manage_questions_enhanced.py check-duplicates
+
+# Hyväksy uudet kysymykset
+python scripts/review_new_questions.py
+Two-Step Workflow
+text
+Uusi kysymys → 🔍 Duplikaattitarkistus → 📝 New Questions → 👁️ Manuaalinen tarkistus → ✅ Questions.json
+🚀 Pika-aloitus
+1. Ensimmäinen asennus (vain kerran)
+bash
 # Kloonaa repositorio
 git clone https://github.com/mikael1979/decentralized-candidate-matcher.git
 cd decentralized-candidate-matcher
@@ -64,11 +88,8 @@ pip install -r requirements.txt
 
 # Alusta IPFS-rakenteet (tehdään vain kerran koko järjestelmän historiassa)
 python src/cli/first_install.py
-```
-
-### 2. Asenna vaali
-
-```bash
+2. Asenna vaali
+bash
 # Näytä saatavilla olevat vaalit
 python src/cli/install.py --list-elections
 
@@ -77,37 +98,47 @@ python src/cli/install.py --election-id "olympian_gods_2024" --enable-multinode 
 
 # TAI asenna Suomen presidentinvaali
 python src/cli/install.py --election-id "finland_presidential_2024" --enable-multinode --node-type worker
-```
-
-### 3. Peruskäyttö
-
-```bash
+3. Peruskäyttö
+bash
 # Config-järjestelmä muistaa vaalin automaattisesti!
 
-# Lisää kysymys
-python src/cli/manage_questions.py --add --question-fi "Pitäisikö salamavaltaa rajoittaa?" --category "Hallinto"
+# Lisää kysymys duplikaattitarkistuksella
+python src/cli/manage_questions_enhanced.py add --category "Hallinto" --question-fi "Pitäisikö salamavaltaa rajoittaa?"
 
 # Lisää ehdokas
 python src/cli/manage_candidates.py --add --name-fi "Zeus" --party "Olympolaiset"
+
+# Tarkista järjestelmän eheys
+python scripts/validate_election_integrity.py
 
 # Käynnistä äänestys
 python src/cli/voting_engine.py --start --enable-multinode
 
 # Näytä analytiikka
 python src/cli/analytics.py wrapper
-```
+🛠️ Vaatimukset
+Python 3.8 tai uudempi
 
-## 🌐 IPFS-pohjainen Discovery (UUSI!)
+IPFS Kubo 0.38.2 tai uudempi
 
-Järjestelmä käyttää nyt täysin hajautettua IPFS-pohjaista discoverya:
+2GB vapaata muistia
 
-### Staattinen merkki & Dynaaminen lista
-- **Staattinen CID-merkki** - Järjestelmä löytyy aina samalla CID:llä
-- **Dynaaminen vaalilista** - Uusia vaaleja voi lisätä ilman uudelleenasennusta
-- **Hierarkkinen rakenne** - Mantereet, maat ja vaalit loogisessa rakenteessa
+1GB levytilaa
 
-### Uudet komennot
-```bash
+Internet-yhteys (IPFS-synkronointia varten)
+
+🌐 IPFS-pohjainen Discovery
+Järjestelmä käyttää täysin hajautettua IPFS-pohjaista discoverya:
+
+Staattinen merkki & Dynaaminen lista
+Staattinen CID-merkki - Järjestelmä löytyy aina samalla CID:llä
+
+Dynaaminen vaalilista - Uusia vaaleja voi lisätä ilman uudelleenasennusta
+
+Hierarkkinen rakenne - Mantereet, maat ja vaalit loogisessa rakenteessa
+
+Uudet komennot
+bash
 # Lisää uusi vaali järjestelmään
 python src/cli/update_elections.py --election-id "kuntavaalit_2025" \
   --name-fi "Kuntavaalit 2025" --name-en "Municipal Election 2025" --name-sv "Kommunalval 2025" \
@@ -115,10 +146,8 @@ python src/cli/update_elections.py --election-id "kuntavaalit_2025" \
 
 # Näytä nykyinen vaalilista
 python src/cli/update_elections.py --list-current
-```
-
-### Discovery-arkkitehtuuri
-```
+Discovery-arkkitehtuuri
+text
 📱 Käyttäjä
    ↓
 🔍 install.py --list-elections
@@ -126,18 +155,18 @@ python src/cli/update_elections.py --list-current
 🌐 IPFS (Staattinen merkki → Dynaaminen vaalilista)
    ↓
 🏛️  Valitse vaali → Asenna
-```
+🔗 Multinode-tuki
+Multinode-ominaisuudet
+Ehdokkaiden hallinta verkossa - Ehdokasmuutokset synkronoidaan konsensusmekanismilla
 
-## 🔗 Multinode-tuki
+Voting-sessioiden jakaminen - Äänestyssession tiedot jaetaan verkon nodejen kesken
 
-### Multinode-ominaisuudet
-- **Ehdokkaiden hallinta verkossa** - Ehdokasmuutokset synkronoidaan konsensusmekanismilla
-- **Voting-sessioiden jakaminen** - Äänestyssession tiedot jaetaan verkon nodejen kesken
-- **Node-identiteetit** - Jokaisella nodella on uniikki identiteetti ja rooli
-- **Konsensusprotokolla** - Muutokset hyväksytään verkoston enemmistöllä
+Node-identiteetit - Jokaisella nodella on uniikki identiteetti ja rooli
 
-### Multinode-käyttö
-```bash
+Konsensusprotokolla - Muutokset hyväksytään verkoston enemmistöllä
+
+Multinode-käyttö
+bash
 # Ehdokkaiden hallinta verkossa
 python src/cli/manage_candidates.py --list --enable-multinode
 
@@ -149,37 +178,30 @@ python src/cli/voting_engine.py --network-stats --enable-multinode
 
 # Debug-tila bootstrap-peereille
 python src/cli/manage_candidates.py --enable-multinode --bootstrap-debug
-```
-
-### Multinode-arkkitehtuuri
-```
+Multinode-arkkitehtuuri
+text
 ┌─────────────────┐    ┌─────────────────┐
 │   Coordinator   │◄──►│    Worker       │
 │     Node        │    │     Node        │
 └─────────────────┘    └─────────────────┘
          ▲                       ▲
          └───── Consensus ───────┘
-```
+📖 Käyttöopas
+Vaalien Järjestäjille
+bash
+# Tarkista järjestelmän eheys
+python scripts/validate_election_integrity.py
 
-## 📖 Käyttöopas
+# Lisää kysymyksiä duplikaattitarkistuksella
+python src/cli/manage_questions_enhanced.py add --category "Uusi" --question-fi "Kysymys" --question-en "Question"
 
-### Vaalien Järjestäjille
-```bash
-# Lisää uusi vaali järjestelmään
-python src/cli/update_elections.py --election-id "uusi_vaali_2024" ...
+# Korjaa case-ongelmat
+python scripts/fix_election_case_issues.py --apply
 
-# Asenna vaali
-python src/cli/install.py --election-id "uusi_vaali_2024" --enable-multinode
-
-# Listaa kysymykset
-python src/cli/manage_questions.py --list
-
-# Tarkista järjestelmän tila
-python src/cli/analytics.py wrapper
-```
-
-### Multinode-hallinta
-```bash
+# Tarkista duplikaatit
+python src/cli/manage_questions_enhanced.py check-duplicates
+Multinode-hallinta
+bash
 # Ehdokkaiden hallinta verkossa
 python src/cli/manage_candidates.py --add --name-fi "Verkkoehdokas" --enable-multinode
 
@@ -188,10 +210,8 @@ python src/cli/voting_engine.py --network-stats --enable-multinode
 
 # Listaa voting-sessiot verkosta
 python src/cli/voting_engine.py --list-sessions --enable-multinode
-```
-
-### Puolueille & Ehdokkaille
-```bash
+Puolueille & Ehdokkaille
+bash
 # Rekisteröi ehdokas
 python src/cli/manage_candidates.py --add --name-fi "Athena" --party "Olympos"
 
@@ -200,10 +220,8 @@ python src/cli/manage_answers.py add --candidate-id athena_002 --question-id q_s
 
 # Päivitä profiili
 python src/cli/manage_candidates.py --update athena_002 --name-fi "Athena Parhenos"
-```
-
-### Äänestäjille
-```bash
+Äänestäjille
+bash
 # Osallistu äänestykseen
 python src/cli/voting_engine.py --start --enable-multinode
 
@@ -212,10 +230,8 @@ python src/cli/voting_engine.py --results session_olympos_20241201_120000
 
 # Selaa analytiikkaa
 python src/cli/analytics.py wrapper
-```
-
-### Data-hallinta
-```bash
+Data-hallinta
+bash
 # Päivitä kysymys
 python src/cli/manage_questions.py --update q_hallinto_01 --question-fi "Pitäisikö ukkoseniskuoikeuksia rajoittaa?"
 
@@ -224,13 +240,10 @@ python src/cli/manage_candidates.py --remove ares_003
 
 # Poista vastaus
 python src/cli/manage_answers.py remove --candidate-id zeus_001 --question-id q_hallinto_01
-```
-
-## ⚙️ Config-järjestelmä
-
+⚙️ Config-järjestelmä
 Järjestelmä käyttää template-pohjaista config-järjestelmää:
 
-```json
+json
 {
   "metadata": {
     "election_id": "olympian_gods_2024",
@@ -244,27 +257,30 @@ Järjestelmä käyttää template-pohjaista config-järjestelmää:
     "enable_multinode": true,
     "node_type": "coordinator",
     "bootstrap_peers": []
-  }
+  },
+  "current_election": "olympian_gods_2024"
 }
-```
-
-## 📊 Analytics & Raportointi
-
-```bash
+📊 Analytics & Raportointi
+bash
 python src/cli/analytics.py wrapper
-```
+Raportti sisältää:
 
-**Raportti sisältää:**
-- ✅ Järjestelmän tila (healthy / needs_attention)
-- 📈 Data-tilastot (kysymykset, ehdokkaat, vastaukset)
-- 🏆 Kysymysten ELO-jakauma
-- 🌐 Verkontilastot (multinode-tilassa)
-- 🔧 Konkreettiset suositukset puutteiden korjaamiseksi
-- 📋 Terveysindikaattorit
+✅ Järjestelmän tila (healthy / needs_attention)
 
-## 🌐 IPFS-integrointi
+📈 Data-tilastot (kysymykset, ehdokkaat, vastaukset)
 
-```bash
+🏆 Kysymysten ELO-jakauma
+
+🌐 Verkontilastot (multinode-tilassa)
+
+🔧 Konkreettiset suositukset puutteiden korjaamiseksi
+
+📋 Terveysindikaattorit
+
+🛡️ Case konfliktit ja duplikaatit
+
+🌐 IPFS-integrointi
+bash
 # Ensimmäinen asennus luo IPFS-rakenteet
 python src/cli/first_install.py
 
@@ -276,51 +292,70 @@ python src/cli/generate_profiles.py publish-all-to-ipfs
 
 # Synkronoi data IPFS-verkkoon
 python src/cli/ipfs_sync.py --status
-```
+🔒 Tietoturva
+🛡️ Case Conflict Detection - Automaattinen case-konfliktien tunnistus
 
-## 🔒 Tietoturva
+📊 Duplicate Prevention - Estää samanlaisten kysymysten lisäämisen
 
-- **Data Validointi** - Kaikki vastaukset validoitu (−5…+5, varmuus 1…5)
-- **Eheysvarmistus** - Data-eheys varmistettu system_chain.json:llä
-- **Hash-fingerprint** - Configin muutosten seuranta
-- **CID-tarkistus** - IPFS-pohjainen eheystarkistus
-- **PKI-todennus** - Ehdokkaiden ja puolueiden varmennus
-- **Konsensusvarmistus** - Multinode-muutokset vaativat verkoston hyväksynnän
-- **IPFS-salaus** - Data salataan ennen IPFS-julkaisua
+🔍 Two-Step Workflow - Manuaalinen tarkistus ennen kysymysten hyväksyntää
 
-## 🐛 Vianetsintä
+✅ Data Validointi - Kaikki vastaukset validoitu (−5…+5, varmuus 1…5)
 
-### Yleisimmät ongelmat
+🔐 Eheysvarmistus - Data-eheys varmistettu system_chain.json:llä
 
-**IPFS-yhteysongelma:**
-```bash
+🔑 Hash-fingerprint - Configin muutosten seuranta
+
+🌐 CID-tarkistus - IPFS-pohjainen eheystarkistus
+
+📜 PKI-todennus - Ehdokkaiden ja puolueiden varmennus
+
+🤝 Konsensusvarmistus - Multinode-muutokset vaativat verkoston hyväksynnän
+
+🔒 IPFS-salaus - Data salataan ennen IPFS-julkaisua
+
+🐛 Vianetsintä
+Yleisimmät ongelmat
+IPFS-yhteysongelma:
+
+bash
 # Käynnistä IPFS-daemon
 ipfs daemon
 
 # Tarkista yhteys
 python -c "from core.ipfs.client import IPFSClient; print(IPFSClient().test_connection())"
-```
+Case-konfliktit:
 
-**Järjestelmää ei löydy IPFS:stä:**
-```bash
+bash
+# Tarkista case-konfliktit
+python src/cli/check_election_isolation.py --full-scan
+
+# Korjaa konfliktit automaattisesti
+python scripts/fix_election_case_issues.py --apply
+
+# Validoi korjaukset
+python scripts/validate_election_integrity.py
+Duplikaattikysymykset:
+
+bash
+# Tarkista duplikaatit
+python src/cli/manage_questions_enhanced.py check-duplicates
+
+# Listaa uudet kysymykset
+python src/cli/manage_questions_enhanced.py list-new
+
+# Hyväksy uudet kysymykset
+python scripts/review_new_questions.py
+Järjestelmää ei löydy IPFS:stä:
+
+bash
 # Suorita ensimmäinen asennus
 python src/cli/first_install.py
 
 # TAI tarkista first_install.json
 cat data/installation/first_install.json
-```
+Multinode-ongelmat:
 
-**Vaalilistan lataus epäonnistuu:**
-```bash
-# Pakota uudelleenlataus
-python src/cli/install.py --list-elections
-
-# Tarkista CID first_install.json:sta
-cat data/installation/first_install.json | grep elections_list_cid
-```
-
-**Multinode-ongelmat:**
-```bash
+bash
 # Tarkista node-identiteetit
 ls -la data/nodes/{election_id}/
 
@@ -329,11 +364,8 @@ python src/cli/manage_candidates.py --enable-multinode --bootstrap-debug
 
 # Tarkista verkontilastot
 python src/cli/voting_engine.py --network-stats --enable-multinode
-```
-
-## 📁 Projektin Rakenne
-
-```
+📁 Projektin Rakenne
+text
 src/
 ├── cli/                    # Komentorivityökalut
 │   ├── first_install.py        # ✅ Ensimmäinen asennus (IPFS-rakenteet)
@@ -342,6 +374,7 @@ src/
 │   ├── voting_engine.py        # Vaalikoneen ydin (multinode-tuki)
 │   ├── analytics.py            # Analytics & raportointi
 │   ├── manage_questions.py     # Kysymysten hallinta
+│   ├── manage_questions_enhanced.py # 🆕 Parannettu kysymysten hallinta
 │   ├── manage_candidates.py    # Ehdokkaiden hallinta (multinode-tuki)
 │   ├── manage_answers.py       # Vastausten hallinta
 │   ├── manage_parties.py       # Puolueiden hallinta
@@ -349,12 +382,17 @@ src/
 │   ├── elo_admin.py            # ELO-hallinta
 │   ├── ipfs_sync.py            # IPFS-synkronointi
 │   ├── generate_profiles.py    # HTML-profiilit
-│   └── validate_data.py        # Data-validointi
+│   ├── validate_data.py        # Data-validointi
+│   ├── check_election_isolation.py # 🆕 Vaalien eristystarkistus
+│   └── manage_questions_enhanced.py # 🆕 Duplikaattitarkistus
 ├── core/                    # Ydintoiminnallisuudet
 │   ├── config_manager.py       # Config-hallinta
 │   ├── ipfs_client.py          # IPFS-integrointi
 │   ├── file_utils.py           # Tiedostotyökalut
 │   ├── data_validator.py       # Data-validointi
+│   ├── election_case_manager.py # 🆕 Case konfliktien hallinta
+│   ├── election_isolation_manager.py # 🆕 Vaalien eristys
+│   ├── question_duplicate_checker.py # 🆕 Duplikaattien esto
 │   └── ipfs/                   # Modulaarinen IPFS
 │       ├── archive_manager.py   # Arkistointi
 │       ├── delta_manager.py     # Muutosten seuranta
@@ -370,42 +408,59 @@ src/
 └── base_templates/          # ✅ UUSI: Base templatet
     └── elections/
         └── elections_hierarchy.base.json  # ✅ Vaalihierarkia
-```
 
-## 🔮 Tulevat Ominaisuudet
+scripts/
+├── fix_election_case_issues.py    # 🆕 Case-ongelmien korjaus
+├── review_new_questions.py        # 🆕 Kysymysten hyväksyntä
+└── validate_election_integrity.py # 🆕 Järjestelmän validointi
+🔮 Tulevat Ominaisuudet
+Automaattinen peer-discovery - Nodeet löytävät toisensa automaattisesti
 
-- [ ] **Automaattinen peer-discovery** - Nodeet löytävät toisensa automaattisesti
-- [ ] **Moderni React-web-käyttöliittymä** - Graafinen käyttöliittymä
-- [ ] **Reaaliaikainen tulospalvelu** - Live-tulokset
-- [ ] **Mobiilisovellus** - Äänestys mobiililaitteilla
-- [ ] **Blockchain-integrointi** - Lisäeheystakuu (valinnainen)
-- [ ] **Käännöstoiminnot** - Laajempi kielituki
-- [ ] **API-rajapinta** - Kolmannen osapuolen integraatiot
+Moderni React-web-käyttöliittymä - Graafinen käyttöliittymä
 
-## 🤝 Kehitykseen Osallistuminen
+Reaaliaikainen tulospalvelu - Live-tulokset
 
-1. **Forkkaa** repositorio
-2. **Luo feature-haara**: 
-   ```bash
-   git checkout -b feature/oma-ominaisuus
-   ```
-3. **Tee muutokset** ja testaa
-4. **Commitoi** muutokset:
-   ```bash
-   git commit -am 'Lisää uusi ominaisuus: kuvaus'
-   ```
-5. **Pushaa** haara:
-   ```bash
-   git push origin feature/oma-ominaisuus
-   ```
-6. **Avaa Pull Request**
+Mobiilisovellus - Äänestys mobiililaitteilla
 
-### Testaus
+Blockchain-integrointi - Lisäeheystakuu (valinnainen)
 
-```bash
+Käännöstoiminnot - Laajempi kielituki
+
+API-rajapinta - Kolmannen osapuolen integraatiot
+
+Candidate Duplicate Detection - Ehdokkaiden duplikaattien esto
+
+Advanced Analytics - Syvällisemmät data-analyysit
+
+🤝 Kehitykseen Osallistuminen
+Forkkaa repositorio
+
+Luo feature-haara:
+
+bash
+git checkout -b feature/oma-ominaisuus
+Tee muutokset ja testaa
+
+Commitoi muutokset:
+
+bash
+git commit -am 'Lisää uusi ominaisuus: kuvaus'
+Pushaa haara:
+
+bash
+git push origin feature/oma-ominaisuus
+Avaa Pull Request
+
+Testaus
+bash
 # Suorita perustestit
 python -c "from core.ipfs.client import IPFSClient; print('✅ IPFS client ok')"
 python -c "from nodes.core.node_identity import NodeIdentity; print('✅ NodeIdentity ok')"
+
+# Testaa turvallisuusominaisuudet
+python scripts/validate_election_integrity.py
+python src/cli/check_election_isolation.py --full-scan
+python src/cli/manage_questions_enhanced.py check-duplicates
 
 # Testaa IPFS-discovery
 python src/cli/install.py --list-elections
@@ -417,30 +472,21 @@ python src/cli/voting_engine.py --network-stats --enable-multinode
 # Täydellinen testirundi
 python src/cli/first_install.py
 python src/cli/install.py --election-id "olympian_gods_2024" --enable-multinode
-python src/cli/manage_questions.py --add --question-fi "Testikysymys"
+python src/cli/manage_questions_enhanced.py --add --category "Testi" --question-fi "Testikysymys"
 python src/cli/manage_candidates.py --add --name-fi "Testiehdokas"
+python scripts/validate_election_integrity.py
 python src/cli/analytics.py wrapper
-```
-
-## 📄 Lisenssi
-
-Apache License 2.0 - Katso [LICENSE](LICENSE) tiedosto lisätietoja varten.
-
----
+📄 Lisenssi
+Apache License 2.0 - Katso LICENSE tiedosto lisätietoja varten.
 
 <div align="center">
+🛡️ TURVALLINEN & 📊 LAADUKAS – Hajautettu vaalikone uusilla turvallisuusominaisuuksilla
 
+*"Case-konfliktit korjattu, duplikaatit estetty – data-laatu parannettu 100%"*
 
-
-**Demokratia koodiksi – Täysin hajautettu vaalikone käyttövalmiina**
-
-*"Staattinen discovery, dynaaminen sisältö – yksi asennus, loputtomat vaalit"*
-
-**🌐 IPFS-pohjainen discovery saatavilla!**  
-**🔗 Täysi multinode-tuki!**  
-**🏛️ Hierarkkinen vaalihallinta!**
+🛡️ Case Conflict Detection saatavilla!
+📊 Duplicate Question Prevention käytössä!
+🔍 Two-Step Workflow aktiivisena!
 
 </div>
-```
-
 

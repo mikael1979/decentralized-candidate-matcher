@@ -6,5 +6,13 @@
     "status": "pending_review",
     "checked_for_duplicates": true,
     "duplicate_check_timestamp": "2025-11-27T17:03:02.070291"
+  },
+  {
+    "question_fi": "Kysymys",
+    "question_en": "Question",
+    "category": "Uusi",
+    "status": "pending_review",
+    "checked_for_duplicates": true,
+    "duplicate_check_timestamp": "2025-11-27T17:08:45.073708"
   }
 ]
