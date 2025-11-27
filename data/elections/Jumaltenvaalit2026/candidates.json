@@ -1,0 +1,80 @@
+{
+  "candidates": [
+    {
+      "id": "cand_96f6442e",
+      "basic_info": {
+        "name": {
+          "fi": "Zeus",
+          "en": "Zeus"
+        },
+        "party": "Olympolaiset",
+        "domain": "sky_thunder",
+        "status": "active",
+        "created": "2025-11-27T16:23:47.559381"
+      },
+      "answers": {},
+      "media": {},
+      "metadata": {
+        "last_updated": "2025-11-27T16:23:47.559383"
+      }
+    },
+    {
+      "id": "cand_ae2152a3",
+      "basic_info": {
+        "name": {
+          "fi": "Athena",
+          "en": "Athena"
+        },
+        "party": "Olympolaiset",
+        "domain": "wisdom_warfare",
+        "status": "active",
+        "created": "2025-11-27T16:23:47.655521"
+      },
+      "answers": {},
+      "media": {},
+      "metadata": {
+        "last_updated": "2025-11-27T16:23:47.655535"
+      }
+    },
+    {
+      "id": "cand_0e37596b",
+      "basic_info": {
+        "name": {
+          "fi": "Hades",
+          "en": "Hades"
+        },
+        "party": "Olympolaiset",
+        "domain": "underworld",
+        "status": "active",
+        "created": "2025-11-27T16:23:47.755418"
+      },
+      "answers": {},
+      "media": {},
+      "metadata": {
+        "last_updated": "2025-11-27T16:23:47.755428"
+      }
+    },
+    {
+      "id": "cand_35c6e655",
+      "basic_info": {
+        "name": {
+          "fi": "Poseidon",
+          "en": "Poseidon"
+        },
+        "party": "Olympolaiset",
+        "domain": "sea_earthquakes",
+        "status": "active",
+        "created": "2025-11-27T16:28:07.589086"
+      },
+      "answers": {},
+      "media": {},
+      "metadata": {
+        "last_updated": "2025-11-27T16:28:07.589099"
+      }
+    }
+  ],
+  "metadata": {
+    "last_updated": "2025-11-27T16:28:07.589154",
+    "total_candidates": 4
+  }
+}

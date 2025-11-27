@@ -1,0 +1,40 @@
+{
+  "questions": [
+    {
+      "id": "q_8e12cb54",
+      "question_fi": "Pitäisikö Zeusin salamaniskuoikeuksia rajoittaa?",
+      "question_en": "Should Zeus's lightning bolt privileges be restricted?",
+      "category": "Hallinto",
+      "elo_rating": 1000,
+      "created_at": "2025-11-27T16:23:47.221227",
+      "updated_at": "2025-11-27T16:23:47.221261"
+    },
+    {
+      "id": "q_fbf91b1f",
+      "question_fi": "Tulisiko jumalilla olla enemmän valtaa maan asioihin?",
+      "question_en": "Should gods have more power in earthly affairs?",
+      "category": "Turvallisuus",
+      "elo_rating": 1000,
+      "created_at": "2025-11-27T16:23:47.338298",
+      "updated_at": "2025-11-27T16:23:47.338342"
+    },
+    {
+      "id": "q_08dd8e87",
+      "question_fi": "Kannatanko täyttä demokratiaa jumalallisella ohjauksella?",
+      "question_en": "Do I support full democracy with divine guidance?",
+      "category": "Yleinen",
+      "elo_rating": 1000,
+      "created_at": "2025-11-27T16:23:47.450261",
+      "updated_at": "2025-11-27T16:23:47.450297"
+    },
+    {
+      "id": "q_07a64284",
+      "question_fi": "Pitäisikö jumalten saada verohelpotuksia?",
+      "question_en": "Should gods receive tax benefits?",
+      "category": "Talous",
+      "elo_rating": 1000,
+      "created_at": "2025-11-27T16:28:07.464333",
+      "updated_at": "2025-11-27T16:28:07.464374"
+    }
+  ]
+}
