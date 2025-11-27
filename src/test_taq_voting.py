@@ -6,7 +6,7 @@ Testaa TAQ-äänestysprosessia
 import sys
 sys.path.insert(0, 'src')
 
-from managers.quorum_manager import QuorumManager
+from managers.quorum import QuorumManager
 
 def test_taq_voting():
     print("🧪 TESTATAAN TAQ-ÄÄNESTYSPROSESSIA...")
