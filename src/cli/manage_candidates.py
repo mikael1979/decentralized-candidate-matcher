@@ -37,7 +37,7 @@ def manage_candidates(election, add, remove, update, list_candidates_flag, name_
     """Ehdokkaiden hallinta"""
     
     # Käytä configista saatavaa vaalitunnistetta jos ei annettu
-    from src.core.config_manager import get_election_id
+    from src.core import get_election_id
     election_id = election or get_election_id()
     
     if not election_id:

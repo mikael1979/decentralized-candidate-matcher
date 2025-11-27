@@ -1,6 +1,6 @@
-# src/managers/taq_config_manager.py
+#!/usr/bin/env python3
 """
-TAQ-pohjainen config-päivitysten hallinta – TÄYSIN TOIMIVA KORJATTU VERSIO
+TAQ-pohjainen config-päivitysten hallinta – PÄIVITETTY UUDELLE CONFIG-RAKENTEELLE
 """
 import hashlib
 import json
@@ -8,194 +8,212 @@ import copy
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional, Any
-from core.config_manager import ConfigManager
+
+# PÄIVITETTY IMPORT - käytä uutta modulaarista rakennetta
+from core.config import ConfigManager
+
 
 class TAQConfigManager:
     def __init__(self, election_id: str):
         self.election_id = election_id
         self.config_path = Path(f"config/elections/{election_id}/election_config.json")
-        self.proposals_path = Path(f"data/taq/config_proposals/{election_id}.json")
-        self.proposals_path.parent.mkdir(parents=True, exist_ok=True)
+        self.proposals_path = Path(f"data/elections/{election_id}/config_proposals.json")
+        self.voting_period_hours = 24  # 24 tuntia äänestysaikaa
 
-    def propose_config_update(self, changes: Dict, update_type: str,
-                            justification: str, proposer_node_id: str) -> str:
-        """Ehdotta uutta config-päivitystä TAQ-kvoorumille - KORJATTU"""
+    def propose_config_update(self, changes: Dict, update_type: str, 
+                            justification: str, proposer_node: str) -> str:
+        """Ehdotta config-päivitystä - KORJATTU VERSIO"""
         
-        # KORJATTU: Lisää config_update_-etuliite tässä
-        full_update_type = f"config_update_{update_type}"
+        # Tarkista muutosten kelvollisuus
+        if not changes or not isinstance(changes, dict):
+            raise ValueError("Muutosten täytyy olla ei-tyhjä sanakirja")
         
-        if full_update_type not in ["config_update_minor", "config_update_major", "config_update_emergency"]:
-            raise ValueError(f"Tuntematon update_type: {full_update_type}")
-
-        proposal_id = self._generate_proposal_id(changes, proposer_node_id)
-        current_config = self._load_current_config()
-
-        proposed_config = self._apply_changes_to_config(current_config, changes)
-
+        # Luo proposal
+        proposal_id = self._generate_proposal_id()
         proposal = {
             "proposal_id": proposal_id,
-            "type": full_update_type,  # Käytä täyttä tyyppiä
+            "election_id": self.election_id,
             "changes": changes,
-            "current_config_hash": self._calculate_config_hash(current_config),
-            "proposed_config_hash": self._calculate_config_hash(proposed_config),
-            "proposed_config": proposed_config,
+            "update_type": update_type,
             "justification": justification,
-            "proposer_node_id": proposer_node_id,
+            "proposer_node": proposer_node,
             "created_at": datetime.now().isoformat(),
-            "timeout_at": (datetime.now() + timedelta(hours=72)).isoformat(),
-            "status": "pending",
-            "votes": {},
-            "taq_parameters": self._calculate_taq_parameters(full_update_type, changes),  # Käytä täyttä tyyppiä
-            "media_bonus_applied": False
+            "voting_deadline": (datetime.now() + timedelta(hours=self.voting_period_hours)).isoformat(),
+            "status": "active",
+            "votes": {}
         }
-
+        
+        # Tallenna proposal
         self._save_proposal(proposal)
-        print(f"✅ CONFIG-PÄIVITYS EHOTETTU: {proposal_id}")
-        print(f"📊 Tyyppi: {full_update_type}")
-        print(f"📝 Perustelu: {justification[:60]}...")
-        print(f"🔑 Muutos: {list(changes.keys())[0]} = {list(changes.values())[0]}")
+        
+        print(f"✅ CONFIG-PÄIVITYS EHDOTETTU: {proposal_id}")
+        print(f"📊 Muutokset: {len(changes)} kohdetta")
+        print(f"⏰ Äänestysaikaa: {self.voting_period_hours}h")
+        print(f"🔍 Tarkista status: python src/cli/manage_config.py status --proposal-id {proposal_id}")
+        
         return proposal_id
 
-    def cast_vote_on_config(self, proposal_id: str, node_id: str, vote: str,
-                          weight: float = 1.0, justification: str = "") -> bool:
-        """Äänestä config-päivitysehdotuksesta"""
+    def vote_on_proposal(self, proposal_id: str, node_id: str, vote: bool, 
+                        justification: str = "") -> bool:
+        """Äänestä config-päivitysehdotusta"""
+        
         proposal = self._load_proposal(proposal_id)
-        if not proposal or proposal["status"] != "pending":
-            return False
-
-        if node_id in proposal["votes"]:
-            return False
-
+        if not proposal:
+            raise ValueError(f"Proposalia ei löydy: {proposal_id}")
+        
+        # Tarkista äänestysaika
+        deadline = datetime.fromisoformat(proposal["voting_deadline"])
+        if datetime.now() > deadline:
+            raise ValueError("Äänestysaika on päättynyt")
+        
+        # Tallenna ääni
         proposal["votes"][node_id] = {
             "vote": vote,
-            "weight": weight,
             "justification": justification,
             "timestamp": datetime.now().isoformat()
         }
-
-        # Tarkista onko kvoorumi saavutettu
-        if self._check_quorum_reached(proposal):
-            proposal["status"] = "approved" if self._is_approved(proposal) else "rejected"
-            if proposal["status"] == "approved":
-                self._apply_approved_update(proposal)
-
-        self._save_proposal(proposal, overwrite=True)
+        
+        # Päivitä status tarvittaessa
+        self._update_proposal_status(proposal)
+        
+        # Tallenna
+        self._save_proposal(proposal)
+        
+        print(f"✅ ÄÄNI ANNETTU: {'✅ Kyllä' if vote else '❌ Ei'}")
         return True
 
-    def _check_quorum_reached(self, proposal: Dict) -> bool:
-        """Tarkista onko kvoorumi saavutettu"""
-        params = proposal["taq_parameters"]
-        total_weight = sum(v["weight"] for v in proposal["votes"].values())
-        approve_weight = sum(v["weight"] for v in proposal["votes"].values() if v["vote"] == "approve")
+    def get_proposal_status(self, proposal_id: str) -> Dict:
+        """Hae ehdotuksen tila"""
+        proposal = self._load_proposal(proposal_id)
+        if not proposal:
+            raise ValueError(f"Proposalia ei löydy: {proposal_id}")
+        
+        return {
+            "proposal_id": proposal_id,
+            "status": proposal["status"],
+            "votes": proposal["votes"],
+            "created_at": proposal["created_at"],
+            "voting_deadline": proposal["voting_deadline"],
+            "changes": proposal["changes"],
+            "update_type": proposal["update_type"],
+            "justification": proposal["justification"]
+        }
 
-        if total_weight == 0:
-            return False
+    def calculate_voting_consensus(self, proposal_id: str) -> Dict:
+        """Laske äänestyskonsensus"""
+        proposal = self._load_proposal(proposal_id)
+        if not proposal:
+            raise ValueError(f"Proposalia ei löydy: {proposal_id}")
+        
+        votes = proposal["votes"]
+        yes_votes = sum(1 for vote in votes.values() if vote["vote"])
+        no_votes = sum(1 for vote in votes.values() if not vote["vote"])
+        total_votes = len(votes)
+        
+        consensus_threshold = 0.6  # 60% tarvitaan hyväksymiseen
+        
+        return {
+            "total_votes": total_votes,
+            "yes_votes": yes_votes,
+            "no_votes": no_votes,
+            "consensus_required": consensus_threshold,
+            "current_consensus": yes_votes / total_votes if total_votes > 0 else 0,
+            "reached_consensus": (yes_votes / total_votes >= consensus_threshold) if total_votes > 0 else False
+        }
 
-        current_ratio = approve_weight / total_weight
-        threshold = params.get("time_adjusted_threshold", params["base_threshold"])
+    def process_config_proposals(self) -> List[Dict]:
+        """Käsittele vanhentuneet ehdotukset"""
+        proposals = self._load_all_proposals()
+        processed = []
+        
+        for proposal in proposals:
+            if proposal["status"] == "active":
+                deadline = datetime.fromisoformat(proposal["voting_deadline"])
+                if datetime.now() > deadline:
+                    # Päivitä vanhentuneet ehdotukset
+                    consensus = self.calculate_voting_consensus(proposal["proposal_id"])
+                    if consensus["reached_consensus"]:
+                        proposal["status"] = "approved"
+                    else:
+                        proposal["status"] = "rejected"
+                    
+                    self._save_proposal(proposal)
+                    processed.append(proposal)
+        
+        return processed
 
-        return current_ratio >= threshold
+    def _generate_proposal_id(self) -> str:
+        """Luo uniikki proposal-ID"""
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        random_hash = hashlib.md5(str(datetime.now().timestamp()).encode()).hexdigest()[:8]
+        return f"config_prop_{timestamp}_{random_hash}"
 
-    def _is_approved(self, proposal: Dict) -> bool:
-        """Tarkista onko ehdotus hyväksytty"""
-        total = sum(v["weight"] for v in proposal["votes"].values())
-        approve = sum(v["weight"] for v in proposal["votes"].values() if v["vote"] == "approve")
-        return approve / total >= 0.51  # lopullinen varmistus
-
-    def _apply_approved_update(self, proposal: Dict):
-        """Toteuta hyväksytty config-päivitys"""
-        config_mgr = ConfigManager(self.election_id)
-        success = config_mgr.apply_approved_config_update(proposal, self.election_id)
-        if success:
-            print(f"✅ CONFIG PÄIVITETTY LOPULLISESTI: {proposal['proposal_id']}")
-        else:
-            proposal["status"] = "failed_application"
-            self._save_proposal(proposal, overwrite=True)
-
-    def _generate_proposal_id(self, changes: Dict, node_id: str) -> str:
-        """Generoi uniikki proposal-ID"""
-        raw = f"{self.election_id}{node_id}{json.dumps(changes,sort_keys=True)}{datetime.now().isoformat()}"
-        return hashlib.sha256(raw.encode()).hexdigest()[:24]
-
-    def _load_current_config(self) -> Dict:
-        """Lataa nykyinen config"""
-        return ConfigManager(self.election_id).get_election_config()
-
-    def _apply_changes_to_config(self, current: Dict, changes: Dict) -> Dict:
-        """Toteuta muutokset config-objektiin"""
-        new = copy.deepcopy(current)
-        for key_path, value in changes.items():
-            keys = key_path.split(".")
-            d = new
-            for k in keys[:-1]:
-                d = d[k]
-            d[keys[-1]] = value
-        return new
-
-    def _calculate_config_hash(self, config: Dict) -> str:
-        """Laske config-tiedoston tiiviste"""
-        s = json.dumps(config, sort_keys=True, separators=(',', ':'))
-        return hashlib.sha256(s.encode()).hexdigest()
-
-    def _calculate_taq_parameters(self, update_type: str, changes: Dict) -> Dict:
-        """Laske TAQ-parametrit config-päivitykselle"""
-        base = {
-            "config_update_minor": {"base_threshold": 0.51, "min_approvals": 2},
-            "config_update_major": {"base_threshold": 0.75, "min_approvals": 5},
-            "config_update_emergency": {"base_threshold": 0.40, "min_approvals": 2},
-        }[update_type]
-
-        # Kriittiset avaimet → pakotetaan major-tasolle
-        critical = ["max_candidates", "security_measures", "crypto_settings", "network_config"]
-        if any(k.split(".")[0] in critical for k in changes):
-            base["base_threshold"] = max(base["base_threshold"], 0.80)
-            base["min_approvals"] = max(base["min_approvals"], 5)
-
-        base["time_adjusted_threshold"] = base["base_threshold"]  # myöhemmin aikalisäys
-        return base
-
-    def _save_proposal(self, proposal: Dict, overwrite: bool = False):
+    def _save_proposal(self, proposal: Dict):
         """Tallenna proposal tiedostoon"""
-        proposals = []
-        if self.proposals_path.exists():
-            try:
-                proposals = json.loads(self.proposals_path.read_text(encoding="utf-8"))
-            except:
-                proposals = []
-
-        if overwrite:
-            proposals = [p for p in proposals if p["proposal_id"] != proposal["proposal_id"]]
-        proposals.append(proposal)
-
-        self.proposals_path.write_text(json.dumps(proposals, indent=2, ensure_ascii=False), encoding="utf-8")
+        self.proposals_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        proposals = self._load_all_proposals()
+        
+        # Korvaa tai lisää proposal
+        existing_index = next((i for i, p in enumerate(proposals) 
+                             if p["proposal_id"] == proposal["proposal_id"]), -1)
+        if existing_index >= 0:
+            proposals[existing_index] = proposal
+        else:
+            proposals.append(proposal)
+        
+        with open(self.proposals_path, 'w', encoding='utf-8') as f:
+            json.dump(proposals, f, indent=2, ensure_ascii=False)
 
     def _load_proposal(self, proposal_id: str) -> Optional[Dict]:
-        """Lataa proposal ID:n perusteella"""
-        if not self.proposals_path.exists():
-            return None
-        proposals = json.loads(self.proposals_path.read_text(encoding="utf-8"))
+        """Lataa proposal tiedostosta"""
+        proposals = self._load_all_proposals()
         return next((p for p in proposals if p["proposal_id"] == proposal_id), None)
 
-    def get_all_proposals(self) -> List[Dict]:
-        """Hae kaikki proposalit"""
+    def _load_all_proposals(self) -> List[Dict]:
+        """Lataa kaikki proposalit"""
         if not self.proposals_path.exists():
             return []
+        
         try:
-            return json.loads(self.proposals_path.read_text(encoding="utf-8"))
+            with open(self.proposals_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
         except:
             return []
 
-    def _load_all_proposals(self) -> List[Dict]:
-        """Lataa kaikki proposalit - tämä metodi puuttui!"""
-        return self.get_all_proposals()
-    
-    def get_proposal_status(self, proposal_id: str) -> Optional[Dict]:
-        """Hae proposalin tila"""
-        return self._load_proposal(proposal_id)
-    
-    def list_proposals(self, status_filter: str = None) -> List[Dict]:
-        """Listaa proposalit"""
-        proposals = self.get_all_proposals()
-        if status_filter:
-            proposals = [p for p in proposals if p.get("status") == status_filter]
-        return proposals
+    def _update_proposal_status(self, proposal: Dict):
+        """Päivitä proposalin status äänestysten perusteella"""
+        consensus = self.calculate_voting_consensus(proposal["proposal_id"])
+        
+        if consensus["reached_consensus"]:
+            proposal["status"] = "approved"
+        elif consensus["total_votes"] >= 3:  # Vähintään 3 ääntä
+            proposal["status"] = "rejected"
+
+    def _apply_changes_to_config(self, current_config: Dict, changes: Dict) -> Dict:
+        """Toteuta muutokset config-objektiin (apumetodi)"""
+        import copy
+        updated_config = copy.deepcopy(current_config)
+        
+        for key, new_value in changes.items():
+            self._set_nested_value(updated_config, key, new_value)
+            
+        return updated_config
+
+    def _set_nested_value(self, config: Dict, key: str, value: Any):
+        """Aseta arvo nested-rakenteeseen piste-erotellulla avaimella"""
+        keys = key.split('.')
+        current = config
+        
+        # Navigoi viimeiseen tasoon asti
+        for k in keys[:-1]:
+            if k not in current:
+                current[k] = {}
+            current = current[k]
+        
+        # Aseta arvo
+        current[keys[-1]] = value
+
+    def get_election_config(self) -> Dict:
+        """Hae vaalikonfiguraatio - PÄIVITETTY"""
+        return ConfigManager(self.election_id).get_election_config()

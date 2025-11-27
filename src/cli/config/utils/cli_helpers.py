@@ -2,7 +2,7 @@
 cli_helpers.py - Config CLI apufunktiot
 """
 import click
-from src.core.config_manager import ConfigManager
+from src.core.config import ConfigManager
 
 def help():
     """Näytä käyttöohjeet"""

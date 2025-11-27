@@ -2,12 +2,12 @@
 list_command.py - list komento config-hallinnalle
 """
 import click
-from src.core.config_manager import ConfigManager
+from src.core.config import ConfigManager
 from src.core.file_utils import read_json_file, write_json_file
 
 # Käytä samaa get_election_id funktiota
 try:
-    from src.core.config_manager import get_election_id
+    from src.core import get_election_id
 except ImportError:
     # Fallback jos ei löydy config_managerista
     def get_election_id(election_param: str = None) -> str:

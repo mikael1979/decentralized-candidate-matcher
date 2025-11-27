@@ -10,7 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from core.config_manager import ConfigManager
+from core.config import ConfigManager
 from core.ipfs.client import IPFSClient
 from core.file_utils import ensure_directory, read_json_file, write_json_file
 

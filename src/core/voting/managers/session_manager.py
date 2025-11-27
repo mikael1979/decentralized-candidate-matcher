@@ -8,7 +8,7 @@ from pathlib import Path
 
 # Importoi tarvittavat moduulit
 try:
-    from src.core.config_manager import get_election_id, get_data_path
+    from src.core import get_election_id, get_data_path
     from src.core.file_utils import read_json_file, write_json_file
 except ImportError:
     # Fallback jos importit eivät toimi

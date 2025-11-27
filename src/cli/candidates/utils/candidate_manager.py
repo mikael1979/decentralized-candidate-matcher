@@ -18,7 +18,7 @@ class CandidateManager:
         
     def _get_data_path(self):
         """Get candidate data file path"""
-        from src.core.config_manager import get_election_id, get_data_path
+        from src.core import get_election_id, get_data_path
         
         election_id = self.election_id or get_election_id()
         data_path = get_data_path(election_id)

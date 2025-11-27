@@ -12,7 +12,7 @@ from pathlib import Path
 # LISÄTTY: Lisää src hakemisto Python-polkuun
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from core.config_manager import get_election_id, get_data_path
+from core import get_election_id, get_data_path
 from core.file_utils import read_json_file
 
 

@@ -1,7 +1,7 @@
 """
 delete_command.py - delete komento config-hallinnalle
 """
-from src.core.config_manager import ConfigManager
+from src.core.config import ConfigManager
 try:
     from managers.taq_config_manager import TAQConfigManager
 except ImportError:
