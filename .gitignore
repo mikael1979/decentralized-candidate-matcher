@@ -90,6 +90,7 @@ cookies.txt
 test/IPFS/IPFS_test/venv/
 *.patch
 runtime/
+runtime/*
 runtime_test/
 config_output
 all_python_files.txt
@@ -111,3 +112,8 @@ docs/*_documentation.txt
 # docs/*
 
 myenv/
+
+# Runtime data
+data/nodes/
+config.json
+

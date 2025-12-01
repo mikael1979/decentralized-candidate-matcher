@@ -1,42 +1,21 @@
 {
-  "$schema": "https://vaalikone.example.com/schemas/config/v1.json",
-  "template_version": "1.0.0",
   "metadata": {
-    "election_id": "Jumaltenvaalit2026",
-    "network_id": "Jumaltenvaalit2026_network",
-    "deployed_at": "2025-11-23T10:15:29.768942",
-    "version": "1.0.0",
-    "config_hash": "156ce22e284095eda83f6a4a7506c67dc0a327b44aecce97e945f8429bb000a7",
-    "template_hash": "9bca700f3bc37e3addf0eec70d395b3dfdf94d001cff8821c46abc59949acdd6"
+    "election_id": "finland_presidential_2024",
+    "node_type": "worker",
+    "version": "2.0.0",
+    "created_at": "2025-12-02T00:24:29.056780"
   },
-  "network_config": {
-    "bootstrap_nodes": [],
-    "consensus_algorithm": "raft",
-    "block_time_seconds": 30,
-    "node_type": "coordinator"
+  "paths": {
+    "data_root": "data/runtime/finland_presidential_2024",
+    "cache_dir": "data/cache",
+    "logs_dir": "data/logs"
   },
-  "election_config": {
-    "answer_scale": {
-      "min": -5,
-      "max": 5
-    },
-    "confidence_scale": {
-      "min": 1,
-      "max": 5
-    },
-    "supported_languages": [
-      "fi",
-      "en"
-    ],
-    "max_questions": 50,
-    "max_candidates": 200,
-    "default_theme": "modern"
+  "ipfs": {
+    "gateway": "http://localhost:8080",
+    "api_port": 5001
   },
-  "system_config": {
-    "data_path": "./data",
-    "backup_enabled": true,
-    "backup_interval_hours": 24,
-    "log_level": "INFO"
-  },
-  "current_election": "Jumaltenvaalit2026"
+  "network": {
+    "multinode_enabled": false,
+    "node_discovery": true
+  }
 }
