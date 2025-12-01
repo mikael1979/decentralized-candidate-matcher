@@ -1,70 +1,55 @@
 """
-propose_command.py - propose komento config-hallinnalle
+Propose config update command.
 """
-import json
 import click
+import sys
 from pathlib import Path
-from ....core.config_manager import ConfigManager
-from ....core.file_utils import read_json_file, write_json_file
 
-# Lisää get_election_id import
+# Lisää projektin juuri Python-polkuun
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
+
+# Import ConfigManager suhteellisesti
 try:
-    from ....core.config_manager import get_election_id
+    # Yritä ensin core.config-managerista
+    from core.config import ConfigManager
 except ImportError:
-    # Fallback jos ei löydy config_managerista
-    def get_election_id(election_param: str = None) -> str:
-        """Hae vaalitunniste parametrista tai configista"""
-        if election_param:
-            return election_param
-        return "Jumaltenvaalit2026"
-
-def propose_update(election, key, value, update_type, justification, node_id):
-    """Ehdotta config-päivitystä TAQ-kvoorumille"""
-    
-    election_id = get_election_id(election)
-    if not election_id:
-        click.echo("❌ Vaalia ei ole asetettu")
-        return
-    
+    # Fallback: yritä suoraan config_manager.py:stä
     try:
-        # Varmista että config-hakemisto on olemassa
-        config_dir = Path(f"config/elections/{election_id}")
-        config_dir.mkdir(parents=True, exist_ok=True)
+        from core.config_manager import ConfigManager
+    except ImportError as e:
+        print(f"❌ ConfigManager import failed: {e}")
+        sys.exit(1)
+
+
+@click.command()
+@click.option('--election', required=False, help='Election ID (optional)')
+@click.option('--change-type', required=True, type=click.Choice(['add', 'update', 'remove']), 
+              help='Type of change')
+@click.option('--key', required=True, help='Config key to change')
+@click.option('--value', required=True, help='New value')
+@click.option('--reason', help='Reason for change')
+def propose_update(election, change_type, key, value, reason):
+    """Propose a config update to TAQ network."""
+    try:
+        manager = ConfigManager(election_id=election)
         
-        # Jäsennä arvo oikein
-        try:
-            parsed_value = json.loads(value)
-        except json.JSONDecodeError:
-            if value.lower() in ['true', 'false']:
-                parsed_value = value.lower() == 'true'
-            elif value.isdigit():
-                parsed_value = int(value)
-            elif value.replace('.', '').isdigit():
-                parsed_value = float(value)
-            else:
-                parsed_value = value.strip('"\'')
+        # Create change proposal
+        changes = {key: value}
         
-        changes = {key: parsed_value}
-        
-        click.echo(f"🔄 Aloitetaan config-päivitys...")
-        click.echo(f"🏛️  Vaali: {election_id}")
-        
-        config_mgr = ConfigManager()
-        
-        result = config_mgr.update_config_with_taq(
-            changes, update_type, justification, node_id, election_id
+        # Submit to TAQ
+        result = manager.update_config_with_taq(
+            changes=changes,
+            update_type=change_type,
+            node_id="cli_proposer",
+            reason=reason or "CLI update"
         )
         
-        if result["status"] == "proposed":
-            click.echo("")
-            click.echo("✅ CONFIG-PÄIVITYS EHOTETTU ONNISTUNEESTI!")
-            click.echo("=" * 50)
-            click.echo(f"📋 Proposal ID: {result['proposal_id']}")
-            click.echo(f"🔑 Muutos: {key} = {parsed_value}")
-            click.echo("⏳ Odota kvoorumin hyväksyntää...")
-            
+        if result.get("success"):
+            click.echo(f"✅ Proposal submitted: {result.get('message')}")
+            if result.get("transaction_hash"):
+                click.echo(f"📝 Transaction: {result.get('transaction_hash')}")
         else:
-            click.echo(f"❌ {result['message']}")
+            click.echo(f"❌ Failed: {result.get('error', 'Unknown error')}")
             
     except Exception as e:
-        click.echo(f"❌ Config-päivitys epäonnistui: {e}")
+        click.echo(f"❌ Error: {e}")
