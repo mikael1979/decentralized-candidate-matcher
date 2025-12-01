@@ -3,6 +3,7 @@ Pääasennuskomento.
 """
 import click
 import sys
+import json
 from pathlib import Path
 
 # Import riippuvuudet
@@ -82,30 +83,35 @@ def install_command(election_id, node_type, node_name, list_elections, enable_mu
     # Alusta config manager
     config_manager = ConfigManager()
     
-    # Tarkista onko config jo olemassa (käytä get_config() jos load_config() ei toimi)
+    # Tarkista onko config jo olemassa
+    current_config = None
     try:
-        # Yritä ensin load_config()
-        current_config = config_manager.load_config()
-    except AttributeError:
-        # Fallback: yritä get_config()
-        try:
+        # Yritä eri metodeja
+        if hasattr(config_manager, 'load_config'):
+            current_config = config_manager.load_config()
+        elif hasattr(config_manager, 'get_config'):
             current_config = config_manager.get_config()
-        except AttributeError:
-            # Fallback 2: lue config tiedostosta
+        else:
+            # Lue suoraan tiedostosta
             config_path = Path("config.json")
             if config_path.exists():
-                import json
                 with open(config_path, 'r') as f:
                     current_config = json.load(f)
-            else:
-                current_config = None
+    except Exception as e:
+        print(f"⚠️  Config load failed: {e}")
+        current_config = None
     
     # Jos config on olemassa ja vaali eri, kysy vahvistus
     if current_config and current_config.get("metadata", {}).get("election_id") != election_id:
-        if not click.confirm(
-            f"Haluatko vaihtaa vaalia '{current_config['metadata']['election_id']}' -> '{election_id}'?",
-            default=False
-        ):
+        try:
+            if not click.confirm(
+                f"Haluatko vaihtaa vaalia '{current_config['metadata']['election_id']}' -> '{election_id}'?",
+                default=False
+            ):
+                print("Asennus peruutettu.")
+                return
+        except Exception as e:
+            print(f"⚠️  Confirmation failed: {e}")
             print("Asennus peruutettu.")
             return
     
@@ -119,18 +125,23 @@ def install_command(election_id, node_type, node_name, list_elections, enable_mu
         version="2.0.0"
     )
     
-    # Tallenna config (käytä save_config() tai save_generated_config())
+    # Tallenna config
+    config_path = None
     try:
-        config_path = config_manager.save_config(config)
-    except AttributeError:
-        try:
+        if hasattr(config_manager, 'save_config'):
+            config_path = config_manager.save_config(config)
+        elif hasattr(config_manager, 'save_generated_config'):
             config_path = config_manager.save_generated_config(config)
-        except AttributeError:
+        else:
             # Fallback: tallenna itse
             config_path = Path("config.json")
-            import json
             with open(config_path, 'w') as f:
                 json.dump(config, f, indent=2)
+    except Exception as e:
+        print(f"⚠️  Config save failed: {e}")
+        config_path = Path("config.json")
+        with open(config_path, 'w') as f:
+            json.dump(config, f, indent=2)
     
     print(f"✅ Config tallennettu: {config_path}")
     
@@ -139,11 +150,16 @@ def install_command(election_id, node_type, node_name, list_elections, enable_mu
     if enable_multinode:
         node_identity = initialize_node(election_id, node_type, node_name)
     
-    # Luo data-hakemistot (käytä get_data_path() tai vastaavaa)
+    # Luo data-hakemistot
+    data_path = None
     try:
-        data_path = config_manager.get_data_path(election_id)
-    except AttributeError:
-        # Fallback: käytä vakio polkua
+        if hasattr(config_manager, 'get_data_path'):
+            data_path = config_manager.get_data_path(election_id)
+        else:
+            # Fallback: käytä vakio polkua
+            data_path = Path(f"data/{election_id}")
+    except Exception as e:
+        print(f"⚠️  Data path failed: {e}")
         data_path = Path(f"data/{election_id}")
     
     ensure_directory(data_path)
