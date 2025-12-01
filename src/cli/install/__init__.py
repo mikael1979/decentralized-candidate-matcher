@@ -13,9 +13,12 @@ try:
         initialize_node,
         show_elections_hierarchy,
         validate_election_id,
+        get_election_info,
+        format_election_display,
         initialize_basic_data_files
     )
-    from .commands import install_command
+    from .installer import SystemInstaller
+    from .cli import install_system
     
     __all__ = [
         'get_static_marker_cid',
@@ -24,8 +27,11 @@ try:
         'initialize_node',
         'show_elections_hierarchy',
         'validate_election_id',
+        'get_election_info',
+        'format_election_display',
         'initialize_basic_data_files',
-        'install_command'
+        'SystemInstaller',
+        'install_system'
     ]
     
 except ImportError as e:

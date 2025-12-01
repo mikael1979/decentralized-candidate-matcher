@@ -1,49 +1,47 @@
-# src/cli/install/utils/election_utils.py
+# src/cli/install/utils.py
 """
-Vaalitietojen käsittely.
+Apufunktiot asennukseen
 """
+import sys
+from pathlib import Path
+import json
+from datetime import datetime
 
-def show_elections_hierarchy(elections_data):
+# Lisää polku
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
+from core.file_utils import read_json_file
+
+
+def get_static_marker_cid():
     """
-    Näytä vaalihierarkia käyttäjälle
+    Hae staattisen merkin CID first_install.json tiedostosta
     
-    Args:
-        elections_data: Elections listan data
+    Returns:
+        str: Staattisen merkin CID
     """
-    print("\n🌍 KÄYTÖSSÄ OLEVAT VAALIT:")
-    print("=" * 50)
+    try:
+        install_info_path = Path("data/installation/first_install.json")
+        if install_info_path.exists():
+            install_info = read_json_file(install_info_path)
+            return install_info.get("static_marker_cid")
+    except Exception as e:
+        print(f"⚠️  First install info load failed: {e}")
     
-    hierarchy = elections_data.get("hierarchy", {})
-    
-    # Näytä mantereet
-    for continent_id, continent_data in hierarchy.get("continents", {}).items():
-        continent_name = continent_data["name"]["fi"]
-        print(f"\n🏔️  {continent_name.upper()}")
-        print("-" * 30)
-        
-        for country_id, country_data in continent_data.get("countries", {}).items():
-            country_name = country_data["name"]["fi"]
-            print(f"  🇺🇳 {country_name}")
-            
-            for election_id, election_data in country_data.get("elections", {}).items():
-                print(format_election_display(election_data))
-    
-    # Näytä muut vaalit
-    other_elections = hierarchy.get("other_elections", {})
-    if other_elections:
-        print(f"\n🎭 MUUT VAALIT:")
-        print("-" * 30)
-        
-        for category, election_data in other_elections.items():
-            if isinstance(election_data, dict) and "election_id" in election_data:
-                # Poista indentti "muiden" vaalien kohdalla
-                formatted = format_election_display(election_data)
-                print(f"  {formatted.lstrip()}")
+    # Fallback vanhaan CID:ään
+    return "QmVaaliKoneStaticMarker123456789"
 
 
 def validate_election_id(election_id, elections_data):
     """
     Tarkista että election_id on olemassa vaalilistassa
+    
+    Args:
+        election_id: Tarkistettava vaalin tunniste
+        elections_data: Elections listan data
+        
+    Returns:
+        bool: True jos vaali löytyy, muuten False
     """
     if not elections_data or not election_id:
         return False
@@ -58,9 +56,11 @@ def validate_election_id(election_id, elections_data):
                     return True
     
     # Tarkista muut vaalit
-    for category, election_data in hierarchy.get("other_elections", {}).items():
-        if isinstance(election_data, dict) and election_data.get("election_id") == election_id:
-            return True
+    other_elections = hierarchy.get("other_elections", {})
+    if isinstance(other_elections, dict):
+        for category, election_data in other_elections.items():
+            if isinstance(election_data, dict) and election_data.get("election_id") == election_id:
+                return True
     
     return False
 
@@ -123,4 +123,35 @@ def format_election_display(election_data):
     }
     
     icon = status_icons.get(status, "⚪")
-    return f"    {icon} {name} ({election_id})"
+    return f"{icon} {name} ({election_id})"
+
+
+def create_backup_config(config_manager):
+    """
+    Luo varmuuskopio nykyisestä configista
+    
+    Args:
+        config_manager: ConfigManager-instanssi
+        
+    Returns:
+        Path: Varmuuskopion polku tai None
+    """
+    try:
+        current_config = config_manager.load_config()
+        if not current_config:
+            return None
+            
+        backup_dir = Path("data/backups")
+        backup_dir.mkdir(exist_ok=True, parents=True)
+        
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        backup_path = backup_dir / f"config_backup_{timestamp}.json"
+        
+        with open(backup_path, 'w', encoding='utf-8') as f:
+            json.dump(current_config, f, indent=2, ensure_ascii=False)
+            
+        return backup_path
+        
+    except Exception as e:
+        print(f"⚠️  Varmuuskopion luonti epäonnistui: {e}")
+        return None
