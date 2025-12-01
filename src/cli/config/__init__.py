@@ -8,7 +8,7 @@ import click
 from src.cli.config.commands.propose_command import propose_update
 from src.cli.config.commands.vote_command import vote
 from src.cli.config.commands.status_command import status
-from src.cli.config.commands.list_command import list_configs_configs  # Muutettu list -> list_configs
+from src.cli.config.commands.list_command import list_configs  # Oikea nimi
 from src.cli.config.commands.get_command import config_info
 from src.cli.config.commands.export_command import history
 from src.cli.config.utils.cli_helpers import help
