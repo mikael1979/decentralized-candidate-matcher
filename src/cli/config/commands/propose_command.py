@@ -28,7 +28,7 @@ except ImportError:
 @click.option('--key', required=True, help='Config key to change')
 @click.option('--value', required=True, help='New value')
 @click.option('--reason', help='Reason for change')
-def propose_command(election, change_type, key, value, reason):
+def propose_update(election, change_type, key, value, reason):
     """Propose a config update to TAQ network."""
     try:
         manager = ConfigManager(election_id=election)

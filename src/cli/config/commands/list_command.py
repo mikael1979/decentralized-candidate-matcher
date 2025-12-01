@@ -16,7 +16,7 @@ except ImportError:
             return election_param
         return "Jumaltenvaalit2026"  # Oletus
 
-def list(election):
+def list_configs(election):
     """Listaa kaikki config-päivitysehdotukset"""
     
     election_id = get_election_id(election)
