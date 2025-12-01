@@ -1,30 +1,58 @@
-#!/usr/bin/env python3
+# src/cli/questions/__init__.py
 """
-manage_questions.py - REFAKTOROITU VERSIO
-Käyttää modulaarisia komponentteja, säilyttää alkuperäisen käyttöliittymän.
+Päämoduuli kysymysten hallinnalle - yhdistää kaikki komponentit.
 """
 import sys
 from pathlib import Path
+import click
 
-# Lisää projektin juuri Python-polkuun
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Lisää src hakemisto Python-polkuun
+project_root = Path(__file__).parent.parent.parent.parent
+sys.path.insert(0, str(project_root))
 
 try:
     from core import get_election_id
     CORE_AVAILABLE = True
 except ImportError as e:
-    print(f"⚠️  Core import warning: {e}")
+    print(f"⚠️  Core modules not available: {e}")
     CORE_AVAILABLE = False
 
-from cli.questions.commands import (
+from src.cli.questions.commands import (
+    add_command,
+    remove_command,
+    update_command,
+    list_command,
     add_question_command,
     remove_question_command,
     update_question_command,
     list_questions_command
 )
 
-import click
+# MULTINODE: Tuo uudet moduulit
+try:
+    from nodes.core.node_identity import NodeIdentity
+    from nodes.core.network_manager import NetworkManager
+    from nodes.protocols.consensus import ConsensusManager
+    MULTINODE_AVAILABLE = True
+except ImportError as e:
+    print(f"⚠️  Multinode modules not available: {e}")
+    MULTINODE_AVAILABLE = False
 
+
+@click.group()
+def questions_cli():
+    """Kysymysten hallinta - MODULAARINEN VERSIO"""
+    pass
+
+
+# Rekisteröi komennot
+questions_cli.add_command(add_command, name='add')
+questions_cli.add_command(remove_command, name='remove')
+questions_cli.add_command(update_command, name='update')
+questions_cli.add_command(list_command, name='list')
+
+
+# Pääfunktio yhteensopivuuden säilyttämiseksi
 @click.command()
 @click.option('--election', required=False, help='Vaalin tunniste (valinnainen, käytetään configista)')
 @click.option('--add', is_flag=True, help='Lisää uusi kysymys')
@@ -37,34 +65,28 @@ import click
 @click.option('--elo-rating', type=int, help='ELO-luokitus')
 @click.option('--enable-multinode', is_flag=True, help='Ota multinode käyttöön')
 @click.option('--bootstrap-debug', is_flag=True, help='Käytä debug-bootstrap peeritä')
-def main(election, add, remove, update, list_questions, question_fi, question_en, 
-         category, elo_rating, enable_multinode, bootstrap_debug):
-    """Kysymysten hallinta - refaktoroitu modulaarinen versio."""
+def manage_questions(election, add, remove, update, list_questions, question_fi, question_en, 
+                     category, elo_rating, enable_multinode, bootstrap_debug):
+    """Kysymysten hallinta - YHTEENSOPIVA MODULAARINEN VERSIO"""
     
     if not CORE_AVAILABLE:
-        # Yritä hakea suoraan config tiedostosta
-        import json
-        config_path = Path("config.json")
-        if config_path.exists():
-            with open(config_path) as f:
-                config = json.load(f)
-                election_id = config.get("election_id", election)
-        else:
-            election_id = election
-    else:
-        election_id = get_election_id(election)
-    
-    if not election_id:
-        print("❌ Vaali-ID:tä ei annettu eikä config tiedostoa löydy.")
-        print("💡 Käytä: --election VAALI_ID tai asenna järjestelmä ensin")
+        print("❌ Core modules not available")
         return
     
-    if enable_multinode:
-        print("ℹ️  Multinode-tuki refaktoroinnin yhteydessä - käytetään perusversiota")
+    # Hae election_id configista jos parametria ei annettu
+    election_id = get_election_id(election)
+    if not election_id:
+        print("❌ Vaali-ID:tä ei annettu eikä config tiedostoa löydy.")
+        print("💡 Käytä: --election VAALI_ID tai asenna järjestelmä ensin: python src/cli/install.py --first-install")
+        return
     
-    if bootstrap_debug:
-        print("ℹ️  Debug-tila refaktoroinnin yhteydessä")
+    # MULTINODE: Tarkista saatavuus
+    if enable_multinode and not MULTINODE_AVAILABLE:
+        print("❌ Multinode requested but modules not available")
+        click.confirm("Continue without multinode?", abort=True)
+        enable_multinode = False
     
+    # Käytä uusia modulaarisia komentoja
     if add:
         if not question_fi:
             print("❌ --question-fi vaaditaan uuden kysymyksen lisäämiseksi")
@@ -77,9 +99,9 @@ def main(election, add, remove, update, list_questions, question_fi, question_en
             category=category,
             elo_rating=elo_rating
         )
-        
-        if success and enable_multinode:
-            print("🌐 Multinode-tuki saatavilla refaktoroinnin jälkeen")
+        # MULTINODE: Toteuta tarvittaessa
+        if enable_multinode:
+            print("ℹ️  Multinode-tuki tulee myöhemmin")
     
     elif remove:
         if not remove:
@@ -115,13 +137,17 @@ def main(election, add, remove, update, list_questions, question_fi, question_en
             category_filter=category
         )
         
+        # MULTINODE: Lisää tilastot tarvittaessa
         if enable_multinode:
-            print("🌐 Multinode-tilastot saatavilla refaktoroinnin jälkeen")
+            print("ℹ️  Multinode-tilastot tulevat myöhemmin")
     
     else:
         print("❌ Anna komento: --add, --remove, --update tai --list")
         print("💡 Kokeile: python src/cli/manage_questions.py --list")
-        print("🌐 Uusi CLI: python -m src.cli.questions --help")
+        if MULTINODE_AVAILABLE:
+            print("🌐 Multinode: python src/cli/manage_questions.py --list --enable-multinode")
 
+
+# Mahdollisuus suorittaa suoraan
 if __name__ == "__main__":
-    main()
+    manage_questions()

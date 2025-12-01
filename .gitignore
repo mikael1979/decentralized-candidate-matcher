@@ -100,8 +100,14 @@ all_community_based_python_files.txt
 .env.example
 output/
 output/*
-docs/code_overview_
-docs/template_overview_
-docs/*
-docs
+
+# Auto-generoituja koodidokumentaatioita (ignoroi)
+docs/*_code_documentation_*.txt
+docs/code_overview_*
+docs/template_overview_*
+docs/*_documentation.txt
+
+# KEHITYS: Kommentoi pois jos haluat dokumentaation gittiin
+# docs/*
+
 myenv/
