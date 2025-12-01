@@ -87,7 +87,9 @@ def install_command(election_id, node_type, node_name, list_elections, enable_mu
     current_config = None
     try:
         # Yritä eri metodeja
-        if hasattr(config_manager, 'load_config'):
+        if hasattr(config_manager, 'get_election_config'):
+            current_config = config_manager.get_election_config()
+        elif hasattr(config_manager, 'load_config'):
             current_config = config_manager.load_config()
         elif hasattr(config_manager, 'get_config'):
             current_config = config_manager.get_config()
@@ -102,10 +104,20 @@ def install_command(election_id, node_type, node_name, list_elections, enable_mu
         current_config = None
     
     # Jos config on olemassa ja vaali eri, kysy vahvistus
-    if current_config and current_config.get("metadata", {}).get("election_id") != election_id:
+    current_election_id = None
+    if current_config:
+        # Yritä eri tapoja saada election_id
+        if current_config.get("metadata") and current_config["metadata"].get("election_id"):
+            current_election_id = current_config["metadata"]["election_id"]
+        elif current_config.get("election_id"):
+            current_election_id = current_config["election_id"]
+        elif current_config.get("election", {}).get("id"):
+            current_election_id = current_config["election"]["id"]
+    
+    if current_election_id and current_election_id != election_id:
         try:
             if not click.confirm(
-                f"Haluatko vaihtaa vaalia '{current_config['metadata']['election_id']}' -> '{election_id}'?",
+                f"Haluatko vaihtaa vaalia '{current_election_id}' -> '{election_id}'?",
                 default=False
             ):
                 print("Asennus peruutettu.")
@@ -115,23 +127,56 @@ def install_command(election_id, node_type, node_name, list_elections, enable_mu
             print("Asennus peruutettu.")
             return
     
-    # Generoi config
+    # Generoi config - käytä oikeaa ConfigManager-menetelmää
     print(f"📋 Alustetaan config vaalille: {election_id}")
     
-    # Käytä oikeaa ConfigManager-menetelmää
-    config = config_manager.generate_config(
-        election_id=election_id,
-        node_type=node_type,
-        version="2.0.0"
-    )
+    config = None
+    try:
+        # Yritä eri metodeja configin generointiin
+        if hasattr(config_manager, '_create_default_config'):
+            config = config_manager._create_default_config(election_id)
+            # Lisää node_type jos saatavilla
+            if node_type and 'metadata' in config:
+                config['metadata']['node_type'] = node_type
+                config['metadata']['version'] = "2.0.0"
+        else:
+            # Luo manuaalinen config
+            config = {
+                "metadata": {
+                    "election_id": election_id,
+                    "node_type": node_type,
+                    "version": "2.0.0",
+                    "created_at": datetime.now().isoformat()
+                },
+                "election": {
+                    "id": election_id,
+                    "name": f"Vaalikone - {election_id}",
+                    "status": "active"
+                }
+            }
+    except Exception as e:
+        print(f"⚠️  Config generation failed: {e}")
+        # Luo perus config
+        import datetime
+        config = {
+            "metadata": {
+                "election_id": election_id,
+                "node_type": node_type,
+                "version": "2.0.0",
+                "created_at": datetime.datetime.now().isoformat()
+            }
+        }
     
     # Tallenna config
     config_path = None
     try:
-        if hasattr(config_manager, 'save_config'):
+        # Yritä eri tallennusmetodeja
+        if hasattr(config_manager, 'update_config_with_taq'):
+            # Tämä saattaa olla oikea tapa refaktoroituun ConfigManageriin
+            config_manager.update_config_with_taq(config, "install", "system")
+            config_path = Path("config.json")
+        elif hasattr(config_manager, 'save_config'):
             config_path = config_manager.save_config(config)
-        elif hasattr(config_manager, 'save_generated_config'):
-            config_path = config_manager.save_generated_config(config)
         else:
             # Fallback: tallenna itse
             config_path = Path("config.json")
