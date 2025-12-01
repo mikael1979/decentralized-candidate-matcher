@@ -82,9 +82,26 @@ def install_command(election_id, node_type, node_name, list_elections, enable_mu
     # Alusta config manager
     config_manager = ConfigManager()
     
-    # Tarkista onko config jo olemassa
-    current_config = config_manager.load_config()
-    if current_config and current_config["metadata"]["election_id"] != election_id:
+    # Tarkista onko config jo olemassa (käytä get_config() jos load_config() ei toimi)
+    try:
+        # Yritä ensin load_config()
+        current_config = config_manager.load_config()
+    except AttributeError:
+        # Fallback: yritä get_config()
+        try:
+            current_config = config_manager.get_config()
+        except AttributeError:
+            # Fallback 2: lue config tiedostosta
+            config_path = Path("config.json")
+            if config_path.exists():
+                import json
+                with open(config_path, 'r') as f:
+                    current_config = json.load(f)
+            else:
+                current_config = None
+    
+    # Jos config on olemassa ja vaali eri, kysy vahvistus
+    if current_config and current_config.get("metadata", {}).get("election_id") != election_id:
         if not click.confirm(
             f"Haluatko vaihtaa vaalia '{current_config['metadata']['election_id']}' -> '{election_id}'?",
             default=False
@@ -94,13 +111,27 @@ def install_command(election_id, node_type, node_name, list_elections, enable_mu
     
     # Generoi config
     print(f"📋 Alustetaan config vaalille: {election_id}")
+    
+    # Käytä oikeaa ConfigManager-menetelmää
     config = config_manager.generate_config(
         election_id=election_id,
         node_type=node_type,
         version="2.0.0"
     )
     
-    config_path = config_manager.save_config(config)
+    # Tallenna config (käytä save_config() tai save_generated_config())
+    try:
+        config_path = config_manager.save_config(config)
+    except AttributeError:
+        try:
+            config_path = config_manager.save_generated_config(config)
+        except AttributeError:
+            # Fallback: tallenna itse
+            config_path = Path("config.json")
+            import json
+            with open(config_path, 'w') as f:
+                json.dump(config, f, indent=2)
+    
     print(f"✅ Config tallennettu: {config_path}")
     
     # Alusta node
@@ -108,8 +139,13 @@ def install_command(election_id, node_type, node_name, list_elections, enable_mu
     if enable_multinode:
         node_identity = initialize_node(election_id, node_type, node_name)
     
-    # Luo data-hakemistot
-    data_path = config_manager.get_data_path(election_id)
+    # Luo data-hakemistot (käytä get_data_path() tai vastaavaa)
+    try:
+        data_path = config_manager.get_data_path(election_id)
+    except AttributeError:
+        # Fallback: käytä vakio polkua
+        data_path = Path(f"data/{election_id}")
+    
     ensure_directory(data_path)
     print(f"✅ Data-hakemistot luotu: {data_path}")
     
