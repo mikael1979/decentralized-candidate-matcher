@@ -1,0 +1,61 @@
+# 📊 Modulaarisen Hajautuksen Analyysi
+## 📅 Generoitu: ti 2.12.2025 17.14.16 +0200
+
+## 🏆 REFAKTOROIDUT TIEDOSTOT
+
+### ✅ src/cli/manage_config.py (81 riviä) - REFAKTOROITU
+- **Toteutettu**: 15 moduulia src/cli/config/ -kansiossa
+- **Reduktio**: 311 → 24 riviä (92% pienempi)
+
+### ✅ src/cli/manage_candidates.py (67 riviä) - REFAKTOROITU
+- **Toteutettu**: 7 moduulia src/cli/candidates/ -kansiossa
+- **Reduktio**: 576 → 65 riviä (89% pienempi)
+
+## 🚨 SUOSITELLUT TIEDOSTOT HAJAUTETTAVAKSI
+
+
+## 💡 TODISTETUT HAJAUTUSSTRATEGIAT
+
+### Malli 1: CLI-komennot (manage_*.py)
+```
+src/cli/modulename/
+├── __init__.py              # Päämoduuli (Click-komennot)
+├── commands/
+│   ├── add_command.py       # add-toiminto
+│   ├── list_command.py      # list-toiminto
+│   └── ...                  # Muut komennot
+└── utils/
+    ├── module_manager.py    # Manager-luokka
+    └── validators.py        # Validointifunktiot
+```
+
+### Malli 2: Core-logiikka (engine/*.py)  
+```
+src/core/modulename/
+├── managers/                # Manager-luokat
+├── calculators/             # Laskentalogiikka
+├── validators/              # Validointi
+└── utils/                   # Apufunktiot
+```
+
+### Malli 3: Manager-luokat (managers/*.py)
+```
+src/managers/modulename/
+├── core_manager.py          # Päälogiikka
+├── data_manager.py          # Data-käsittely
+└── network_manager.py       # Verkkotoiminnot
+```
+
+## 🎯 SEURAAVAT ASKELEET
+
+1. **Valitse kohde** - Aloita pienimmästä tai tärkeimmästä
+2. **Luo rakenne** - commands/, utils/, core/ kansiot
+3. **Testaa importit** - Ennen koodin siirtoa
+4. **Siirrä funktiot** - Yksi kerrallaan, testaa jokainen
+5. **Testaa kokonaisuus** - Varmista että CLI toimii
+6. **Commitoi** - Pienet, hallittavat commitit
+
+---
+
+*Generoitu automaattisesti skriptillä `module_splitting_analyzer.sh`*
+*Päivitetty: 02.12.2025 - Refaktoroinnin jälkeen*
