@@ -1,30 +1,18 @@
 """
-Answers CLI package - modulaarinen versio.
+Answers management module for the decentralized candidate matcher.
 """
-import sys
-from pathlib import Path
+__version__ = "1.0.0"
+__author__ = "Decentralized Candidate Matcher Team"
 
-# Yritä importata suhteellisesti
-try:
-    from .managers import AnswerManager
-    from .models import Answer, AnswerCollection
-    
-    __all__ = [
-        'AnswerManager',
-        'Answer',
-        'AnswerCollection'
-    ]
-    
-except ImportError as e:
-    # Fallback: yritä absoluuttisesti
-    try:
-        from src.cli.answers.managers import AnswerManager
-        from src.cli.answers.models import Answer, AnswerCollection
-        
-        __all__ = [
-            'AnswerManager',
-            'Answer',
-            'AnswerCollection'
-        ]
-    except ImportError:
-        __all__ = []
+from .commands import *
+from .managers import *
+from .models import *
+
+# Re-export common classes/functions for easier access
+__all__ = [
+    "AnswerManager",
+    "add_answer",
+    "list_answers",
+    "update_answer",
+    "remove_answer",
+]

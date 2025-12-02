@@ -4,6 +4,8 @@ Testien suorittamisen pääohjelma - KORJATTU VERSIO
 """
 import sys
 import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import os
 import pytest
 
 # Lisää src-hakemisto Python-polkuun

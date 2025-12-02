@@ -1,0 +1,1527 @@
+#!/usr/bin/env python3
+"""
+Testaa kaikki refaktoroitu moduulit yhdessä.
+"""
+import sys
+import subprocess
+from pathlib import Path
+
+# Lisää projektin juuri Python-polkuun
+sys.path.insert(0, str(Path(__file__).parent))
+
+def run_command(cmd, description):
+    """Suorita komento ja raportoi tulos."""
+    print(f"\n🔍 {description}")
+    print(f"   Komento: {cmd}")
+    
+    try:
+        result = subprocess.run(
+            cmd,
+            shell=True,
+            capture_output=True,
+            text=True,
+            timeout=10
+        )
+        
+        if result.returncode == 0:
+            print("   ✅ SUCCESS")
+            # Näytä ensimmäiset 3 riviä outputista
+            lines = result.stdout.strip().split('\n')
+            for line in lines[:3]:
+                if line.strip():
+                    print(f"      {line[:80]}...")
+            return True
+        else:
+            print(f"   ❌ FAILED (exit code: {result.returncode})")
+            if result.stderr:
+                error_lines = result.stderr.strip().split('\n')
+                for line in error_lines[:3]:
+                    if line.strip():
+                        print(f"      ERROR: {line[:80]}...")
+            return False
+            
+    except subprocess.TimeoutExpired:
+        print("   ⏰ TIMEOUT (10s)")
+        return False
+    except Exception as e:
+        print(f"   ❌ EXCEPTION: {e}")
+        return False
+
+def main():
+    """Päätestifunktio."""
+    print("=" * 60)
+    print("🏗️  REFAKTOROITUJEN MODUULIEN KOKONAISTESTAUS")
+    print("=" * 60)
+    
+    tests = [
+        # 1. Install (refaktoroitu)
+        ("python -m src.cli.install --list-elections", "Install module (list elections)"),
+        
+        # 2. Questions (refaktoroitu)  
+        ("python -m src.cli.questions list --election Jumaltenvaalit2026", "Questions module (list)"),
+        
+        # 3. Answers (refaktoroitu)
+        ("python -m src.cli.answers list --election Jumaltenvaalit2026", "Answers module (list)"),
+        
+        # 4. Config (refaktoroitu)
+        ("python -m src.cli.config --help", "Config module (help)"),
+        
+        # 5. Vanha install.py (backward compatibility)
+        ("python src/cli/install.py --list-elections", "Legacy install.py (backward compatibility)"),
+    ]
+    
+    success_count = 0
+    total_count = len(tests)
+    
+    for cmd, description in tests:
+        if run_command(cmd, description):
+            success_count += 1
+    
+    print("\n" + "=" * 60)
+    print("📊 TESTITULOKSET:")
+    print(f"   ✅ Onnistuneita: {success_count}/{total_count}")
+    print(f"   📈 Onnistumisprosentti: {success_count/total_count*100:.1f}%")
+    
+    if success_count == total_count:
+        print("\n🎉 KAIKKI REFAKTOROINNIT TOIMIVAT ONNISTUNEESTI!")
+        print("   - install.py: ✅")
+        print("   - manage_questions.py: ✅")
+        print("   - manage_answers.py: ✅")
+        print("   - config_manager.py: ✅")
+        print("   - Backward compatibility: ✅")
+    else:
+        print(f"\n⚠️  {total_count - success_count} testiä epäonnistui")
+        print("   Tarkista importit ja riippuvuudet.")
+    
+    print("=" * 60)
+
+if __name__ == "__main__":
+    main()
+#!/usr/bin/env python3
+"""
+Testaa vastausten importit.
+"""
+import sys
+
+# Lisää projektin juuri Python-polkuun
+project_root = '/home/toni/Ohjelmointi/HajautettuVaalikone/decentralized-candidate-matcher'
+sys.path.insert(0, project_root)
+
+try:
+    # Testaa importit
+    from cli.answers.managers import AnswerManager
+    from cli.answers.models import Answer
+    
+    print("✅ Imports work!")
+    
+    # Testaa Answer-luokka
+    answer = Answer.create_new(
+        candidate_id='test_candidate',
+        question_id='test_question',
+        value=3,
+        confidence=0.8,
+        explanation_fi='Testi selitys'
+    )
+    print(f"✅ Answer created: {answer.id}")
+    
+    # Testaa AnswerManager
+    manager = AnswerManager('Jumaltenvaalit2026')
+    print(f"✅ Manager created: {manager.election_id}")
+    
+    # Listaa vastaukset
+    answers = manager.list_answers()
+    print(f"✅ Found {len(answers)} answers")
+    
+except Exception as e:
+    print(f"❌ Error: {e}")
+    import traceback
+    traceback.print_exc()
+# test_crypto_installation.py
+#!/usr/bin/env python3
+"""
+Testaa cryptography-kirjaston asennuksen
+"""
+try:
+    from cryptography.hazmat.primitives import serialization
+    from cryptography.hazmat.primitives.asymmetric import rsa
+    from cryptography.hazmat.primitives import hashes
+    print("✅ cryptography-kirjasto toimii!")
+    
+    # Testaa avaimen generointi
+    private_key = rsa.generate_private_key(
+        public_exponent=65537,
+        key_size=2048
+    )
+    
+    # Testaa serialisointi
+    private_pem = private_key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption()
+    )
+    print("✅ RSA-avaimen serialisointi toimii!")
+    
+    # Testaa julkinen avain
+    public_key = private_key.public_key()
+    public_pem = public_key.public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo
+    )
+    print("✅ Julkisen avaimen serialisointi toimii!")
+    
+    print("🎉 Kaikki cryptography-testit läpäisty!")
+    
+except ImportError as e:
+    print(f"❌ cryptography-kirjasto puuttuu: {e}")
+except Exception as e:
+    print(f"❌ Virhe cryptography-testissä: {e}")
+    import traceback
+    traceback.print_exc()
+#!/usr/bin/env python3
+"""
+Testaa täysi CryptoManager-toteutus
+"""
+import sys
+import os
+
+# Lisää src hakemisto Python-polkuun
+sys.path.insert(0, os.path.abspath('.'))
+
+# Käytetään suoraa importtia ilman src/__init__.py:n kautta kulkemista
+try:
+    from src.managers.crypto_manager import CryptoManager
+except ImportError:
+    # Vaihtoehtoinen tapa jos edelleen ongelmia
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "crypto_manager", 
+        "src/managers/crypto_manager.py"
+    )
+    crypto_module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(crypto_module)
+    CryptoManager = crypto_module.CryptoManager
+
+def test_crypto_manager():
+    print("🧪 Testataan CryptoManager PKI-toimintoja...")
+    
+    crypto = CryptoManager()
+    
+    # 1. Testaa avaimen generointi
+    print("1. 🔑 Testataan avaimen generointia...")
+    key_pair = crypto.generate_key_pair()
+    assert "private_key" in key_pair
+    assert "public_key" in key_pair
+    assert "key_fingerprint" in key_pair
+    assert len(key_pair["key_fingerprint"]) == 16
+    print("   ✅ Avaimen generointi toimii")
+    
+    # 2. Testaa allekirjoitus ja varmistus
+    print("2. 📝 Testataan allekirjoitusta...")
+    test_data = {"test": "data", "number": 42, "nested": {"field": "value"}}
+    signature = crypto.sign_data(key_pair["private_key"], test_data)
+    
+    # Varmista että allekirjoitus on validi
+    is_valid = crypto.verify_signature(key_pair["public_key"], test_data, signature)
+    assert is_valid == True
+    print("   ✅ Allekirjoitus ja varmistus toimii")
+    
+    # 3. Testaa että väärä data ei mene läpi
+    print("3. ❌ Testataan väärää dataa...")
+    wrong_data = {"test": "wrong_data", "number": 42}
+    is_valid_wrong = crypto.verify_signature(key_pair["public_key"], wrong_data, signature)
+    assert is_valid_wrong == False
+    print("   ✅ Väärän datan tunnistus toimii")
+    
+    # 4. Testaa että väärä allekirjoitus ei mene läpi
+    print("4. ❌ Testataan väärää allekirjoitusta...")
+    fake_signature = "fake" + signature[4:]
+    is_valid_fake = crypto.verify_signature(key_pair["public_key"], test_data, fake_signature)
+    assert is_valid_fake == False
+    print("   ✅ Väärän allekirjoituksen tunnistus toimii")
+    
+    print("🎉 Kaikki CryptoManager-testit läpäisty!")
+    return True
+
+if __name__ == "__main__":
+    success = test_crypto_manager()
+    sys.exit(0 if success else 1)
+{
+  "credentials": {
+    "candidate_keys": {
+      "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCeCja3u2beEPWQ\nIB5k8anKJu/ihGIHAsOlaw3GLixO6dT8eZpnKhxHsI5+0uaR1FqPdt7FaNFCPvI/\nKG8mgb+eBhBPrusmLfelhOzVJSBInckysR4g/rr3ZIxDYIHmlH1XazdHrCHY/k0w\naEYo09YhHply0jrY/AIksqs0lEiP2AEWWdMXyxyPYKZn81vEkH6+m+evKEk6wxOl\n9pgpSz+x7F21HYBOaZNXgSTf1Lmct0ffHeb+ssQ5ddAF7QNpXc/EFvn79rOaWDnE\n/QNw5Z/duSwV1Sgr+DLwmeVFujY47RceUfr5v3DUBqSOFcG9DttAXMegojFOd7zH\ntPn+WnCLAgMBAAECggEACt6HoN9MqzKIu7QvIvYpR/P276H3M/rmsHZ1E2ToOzfY\neXzLjROCWmk0LljG7s9SDdKObmP6cGSajel0AOFPknNhpSP8nDrxG1B8ZrRk91mS\nwDUaQ16sRojYdLyAcqFSdYle20O6wuJ1Ne0WANzWOfTmzNTUo0kXGfsHzK1IyEu7\nxACBuG42nVWifAIT8yDDsJldl0RrCpnohquPAMzYoE1W7gJbJLuNelEePKhJ33A/\n7VXWgk4qISyV+y5/muJsRZxrKXY6b8U+B5OnlXyId+uKQngcSZvWT4kb7AFylNzL\n8pVQ8x7sY73fQQ3rkkg79Z2l2ZBcG+H6BZ9u1kXBwQKBgQDYe/wB3MI6YCwuojAz\nMuNRYAdhQpw5C/Xmjl59zbQmaZjIWAVYto20uibgdbTVblysX3WWCqUoa+KLLVh9\ncyahm1nuJ9SrfWfh++cU6Xzocrftq+44kZooLAhpS9ksuMf3NowdvJoVYPL2lRM6\nXGfQwnYRIJoqZA8Q6sLEQeIOEQKBgQC64zOm/yMjynjStG0r1SXXh5Cm84hVwdmb\neKxXTH2vw/SDHLpWXpGRartu6TR1mF3mV4jl08rd/UgK9v7qOTId1nVJl4wE+GsI\nysUGlWmDocGLxQ7gqZ6a6imdnKfAyJ1V2/aViXzGkUcUm5udvmpUttVdEl1ai0BQ\nQSDBvKno2wKBgQCUUm5ZQE16/YWH9eucSJNin66uvpqWo1E5Q/YNr7BsWREqwtP2\n8iyo1JnqU/sv+EtadpTz1htOVIyE2u60FP803mGBQJz/Wg6g0JyEwWypPmAyYQf4\njhnWyESDEEqdz4SCJkdd4GiZmTEeLQldhQ5EA9gs5+94d9Gyv4XuPU2KYQKBgFM+\nsNtJ+lUO8xKn25kSsHB4qi4zfB724f8mmV2pbLLGDjv4p+eg6CZl7GdS6VMYM3tO\nsmPtGwgWsehwbMvX/kLcLBJDttLf9I1OBMUR+JXxj0y60g2wgD1w4GicRvzQX4TH\nHect/q5UN90uEvsIvkRNzGxQqdSTAmq9F+I0L1rRAoGADmsW4Mruy+QTtLod83rQ\nuyGE3K8nrYlmwt6ftDqB25BZEPaSpBClyuh+y0pzxeW7orPGBeS0Ksiod310Aepo\nUHsB0MeRQp2bbXkUvOiRMqKaLu/d9wDB+TiLeVuQT9R9MaaUyn8z3LFVvF12qtYR\nwAlAAkU8i94/hvW/KEpczXI=\n-----END PRIVATE KEY-----\n",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAngo2t7tm3hD1kCAeZPGp\nyibv4oRiBwLDpWsNxi4sTunU/HmaZyocR7COftLmkdRaj3bexWjRQj7yPyhvJoG/\nngYQT67rJi33pYTs1SUgSJ3JMrEeIP6692SMQ2CB5pR9V2s3R6wh2P5NMGhGKNPW\nIR6ZctI62PwCJLKrNJRIj9gBFlnTF8scj2CmZ/NbxJB+vpvnryhJOsMTpfaYKUs/\nsexdtR2ATmmTV4Ek39S5nLdH3x3m/rLEOXXQBe0DaV3PxBb5+/azmlg5xP0DcOWf\n3bksFdUoK/gy8JnlRbo2OO0XHlH6+b9w1AakjhXBvQ7bQFzHoKIxTne8x7T5/lpw\niwIDAQAB\n-----END PUBLIC KEY-----\n",
+      "key_fingerprint": "d892be9ef3bc9255"
+    },
+    "delegation_document": {
+      "election_id": "Jumaltenvaalit2026",
+      "party_id": "party_test_delegation",
+      "candidate_id": "cand_test_001",
+      "delegated_powers": [
+        "submit_answers",
+        "modify_answers",
+        "view_own_data",
+        "update_profile"
+      ],
+      "valid_from": "2025-11-18T04:29:44.234760",
+      "valid_until": "2026-02-16T04:29:44.234770",
+      "candidate_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAngo2t7tm3hD1kCAeZPGp\nyibv4oRiBwLDpWsNxi4sTunU/HmaZyocR7COftLmkdRaj3bexWjRQj7yPyhvJoG/\nngYQT67rJi33pYTs1SUgSJ3JMrEeIP6692SMQ2CB5pR9V2s3R6wh2P5NMGhGKNPW\nIR6ZctI62PwCJLKrNJRIj9gBFlnTF8scj2CmZ/NbxJB+vpvnryhJOsMTpfaYKUs/\nsexdtR2ATmmTV4Ek39S5nLdH3x3m/rLEOXXQBe0DaV3PxBb5+/azmlg5xP0DcOWf\n3bksFdUoK/gy8JnlRbo2OO0XHlH6+b9w1AakjhXBvQ7bQFzHoKIxTne8x7T5/lpw\niwIDAQAB\n-----END PUBLIC KEY-----\n",
+      "candidate_key_fingerprint": "d892be9ef3bc9255",
+      "document_version": "1.0"
+    },
+    "delegation_signature": "cytv+WqEG7US0igCnb7WbRA37GY8qRiTfexfGdDYcuOiAOzfgNRe+JdqwEpc1jUyV2DLugsGlHmbex3ymYo6EMwE4G90mqnBgTcR6kfIzhUHNVCnW2/HhahAS1PfOFiTjVPaRyA51frNv2U6kJCbuFHaBwCdaIpL9qAMsOzSC5csaGprcM89DfJ/WWRZAKk/tG63nEpgrmg+O4aoU0/aX+BAUm9cj1FfO8mC4FLrAyEUbSVwC8aHiYzTUlPnU7SfE2ArnInTB5IK5BQk5yTjrkRmpUtJ/nrgXVVLMahbaqsI+iD+x4NhQjQWu6RuJ0i5HpFFjWJ8mHZDuzUoFCmpVw==",
+    "party_verification": {
+      "party_id": "party_test_delegation",
+      "verification_timestamp": "2025-11-18T04:29:44.283874",
+      "validity_days": 90
+    }
+  },
+  "party_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyooUG/P2tE4YC4yR7KJm\ns3QVEakRG83wjTwLsim72PP5E563RoQXGDTnbbD8uo7TxGxyBOMjD+8PmOeP6klM\nbN/lH7Ym9XMyTxUo5sIWbcd5J2aqAsLZtg92RTFbu+hcD28kxzB0ot38eCEtPN5c\ndOeY7v3nxv/+aagnEdy3mSqnvKyCzkSw9tj25qqopS5LADAx7d/UZoCux0tNfiEb\nAhEVqtugkSGHAz2Y28krP5+0lU/kl+jaOO60+tXgwrKHtO7Ym3aCS69XVcCwQBE+\ncRmvJaa1i250g9Id2NoWTHfLXYoadoplJxo00HSvIo3uNLugraiHXR+ZAv5oD9bU\nSwIDAQAB\n-----END PUBLIC KEY-----\n",
+  "test_info": {
+    "party_id": "party_test_delegation",
+    "candidate_id": "cand_test_001",
+    "generated_at": "2025-11-18T04:29:44.234760"
+  }
+}# test_imports.py
+try:
+    from src.cli.config import *
+    print("🎉 KAIKKI CONFIG-MODUULIN IMPORTIT ONNISTUIVAT!")
+except Exception as e:
+    print(f"❌ IMPORT-VIRHE: {e}")
+# test_integrated_imports.py
+#!/usr/bin/env python3
+"""
+Test script for verifying integrated multinode module imports work correctly
+"""
+
+import sys
+import os
+
+# Lisää src-hakemisto Python-polkuun
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+
+def test_legacy_imports():
+    """Test existing legacy module imports"""
+    print("🧪 Testing legacy module imports...")
+    
+    try:
+        from nodes import NodeManager, NetworkSyncManager, QuorumVoting, OLYMPIAN_NODES
+        print("✅ Legacy modules imported successfully")
+        print(f"   Olympian nodes: {len(OLYMPIAN_NODES)}")
+        return True
+    except ImportError as e:
+        print(f"❌ Legacy import failed: {e}")
+        return False
+
+def test_new_architecture_imports():
+    """Test new multinode architecture imports"""
+    print("🧪 Testing new architecture imports...")
+    
+    try:
+        from nodes import NodeIdentity, NetworkManager, ConsensusManager, PeerDiscovery
+        print("✅ New architecture modules imported successfully")
+        return True
+    except ImportError as e:
+        print(f"❌ New architecture import failed: {e}")
+        return False
+
+def test_mixed_imports():
+    """Test mixing legacy and new imports"""
+    print("🧪 Testing mixed imports (legacy + new)...")
+    
+    try:
+        # Legacy
+        from nodes import NodeManager, QuorumVoting
+        # New
+        from nodes import NodeIdentity, ConsensusManager
+        
+        print("✅ Mixed imports work successfully")
+        print(f"   Legacy: NodeManager, QuorumVoting")
+        print(f"   New: NodeIdentity, ConsensusManager")
+        return True
+    except ImportError as e:
+        print(f"❌ Mixed import failed: {e}")
+        return False
+
+def test_module_metadata():
+    """Test module metadata"""
+    print("🧪 Testing module metadata...")
+    
+    try:
+        import nodes
+        print(f"✅ Module metadata:")
+        print(f"   Version: {nodes.__version__}")
+        print(f"   Author: {nodes.__author__}")
+        print(f"   Docstring: {nodes.__doc__.strip()}")
+        return True
+    except Exception as e:
+        print(f"❌ Metadata test failed: {e}")
+        return False
+
+def test_backward_compatibility():
+    """Test that existing code still works"""
+    print("🧪 Testing backward compatibility...")
+    
+    try:
+        # Test existing functionality
+        from nodes.node_manager import NodeManager
+        from nodes.network_sync import NetworkSyncManager
+        from nodes.quorum_voting import QuorumVoting
+        
+        # Create instances (minimal)
+        node_mgr = NodeManager("TestElection")
+        sync_mgr = NetworkSyncManager("TestElection") 
+        quorum = QuorumVoting("TestElection")
+        
+        print("✅ Backward compatibility verified")
+        print(f"   NodeManager: {type(node_mgr)}")
+        print(f"   NetworkSyncManager: {type(sync_mgr)}")
+        print(f"   QuorumVoting: {type(quorum)}")
+        return True
+    except Exception as e:
+        print(f"❌ Backward compatibility failed: {e}")
+        return False
+
+def main():
+    """Run all import tests"""
+    print("🚀 STARTING INTEGRATED MULTINODE IMPORT TESTS")
+    print("=" * 60)
+    
+    tests = [
+        test_legacy_imports,
+        test_new_architecture_imports,
+        test_mixed_imports,
+        test_module_metadata,
+        test_backward_compatibility
+    ]
+    
+    results = []
+    for test in tests:
+        result = test()
+        results.append(result)
+        print()  # Tyhjä rivi testien väliin
+    
+    # Yhteenveto
+    print("📊 INTEGRATED TEST RESULTS SUMMARY:")
+    print("=" * 40)
+    passed = sum(results)
+    total = len(results)
+    
+    print(f"✅ Passed: {passed}/{total}")
+    print(f"❌ Failed: {total - passed}/{total}")
+    
+    if passed == total:
+        print("🎉 ALL INTEGRATED IMPORT TESTS PASSED!")
+        print("   Legacy and new architecture coexist successfully!")
+        return 0
+    else:
+        print("💥 SOME INTEGRATED TESTS FAILED!")
+        print("   Check module structure and imports.")
+        return 1
+
+if __name__ == "__main__":
+    sys.exit(main())
+#!/usr/bin/env python3
+"""
+Testaa IPFS-integrointia
+"""
+import sys
+import os
+
+# Aseta Python-polku
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, current_dir)
+
+from src.core.ipfs_client import IPFSClient
+from src.managers.ipfs_sync_manager import IPFSSyncManager
+
+def test_ipfs_basic():
+    print("🔧 TESTI 1: IPFS-CLIENT PERUSTOIMINNOT")
+    ipfs = IPFSClient.get_client('Jumaltenvaalit2026')
+    print(f"✅ Client type: {type(ipfs._client).__name__}")
+    
+    # Testaa data-julkaisu
+    test_data = {"test": "data", "number": 42}
+    cid = ipfs.publish_election_data("test", test_data)
+    print(f"✅ Data published with CID: {cid}")
+    
+    # Testaa data-haku
+    retrieved = ipfs.fetch_from_ipfs(cid)
+    print(f"✅ Data retrieved: {retrieved is not None}")
+    
+    return True
+
+def test_ipfs_sync():
+    print("\n🔄 TESTI 2: IPFS-SYNKRONOINTI")
+    sync_manager = IPFSSyncManager('Jumaltenvaalit2026')
+    report = sync_manager.full_sync()
+    
+    print(f"✅ Sync completed: {report['status']}")
+    print(f"📊 Files synced: {report['files_synced']}")
+    
+    for file_type, cid in report['ipfs_cids'].items():
+        print(f"   📄 {file_type}: {cid}")
+    
+    return True
+
+def test_ipfs_verify():
+    print("\n🔍 TESTI 3: EHEYDEN VARMISTUS")
+    sync_manager = IPFSSyncManager('Jumaltenvaalit2026')
+    report = sync_manager.verify_sync_integrity()
+    
+    print(f"✅ Verification completed")
+    print(f"📊 Valid files: {report['valid_files']}/{report['total_files']}")
+    
+    for file_type, result in report['results'].items():
+        status = "✅" if result == "valid" else "❌" if result == "invalid" else "⚠️"
+        print(f"   {status} {file_type}: {result}")
+    
+    return True
+
+if __name__ == "__main__":
+    print("🎯 ALoitetaan IPFS-integroinnin testaus")
+    print("=" * 50)
+    
+    try:
+        test_ipfs_basic()
+        test_ipfs_sync() 
+        test_ipfs_verify()
+        print("\n🎉 KAIKKI TESTIT LÄPÄISTY! IPFS-INTEGROINTI TOIMII!")
+    except Exception as e:
+        print(f"\n💥 TESTI EPÄONNISTUI: {e}")
+        import traceback
+        traceback.print_exc()
+#!/usr/bin/env python3
+"""
+Testaa JSON-pohjaista template-järjestelmää.
+"""
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+from src.templates.html_templates import HTMLTemplates
+from src.templates.json_template_manager import get_json_template_manager
+
+def test_json_template_system():
+    """Testaa JSON-templatejärjestelmän perustoiminnot."""
+    print("🧪 TESTATAAN JSON-TEMPLATE-JÄRJESTELMÄÄ")
+    print("=" * 50)
+    
+    # Testaa templatejen lataus
+    tm = get_json_template_manager()
+    templates = tm.list_templates()
+    print(f"📋 Ladatut templatet: {templates}")
+    
+    for template_name in templates:
+        info = tm.get_template_info(template_name)
+        print(f"  - {template_name}: {info.get('description', 'Ei kuvausta')}")
+    
+    # Testaa CSS-generointi
+    print("\n🎨 TESTAA CSS-GENEROINTI:")
+    color_theme = {
+        'primary_color': '#2c3e50',
+        'secondary_color': '#3498db',
+        'accent_color': '#e74c3c', 
+        'background_color': '#ecf0f1',
+        'text_color': '#2c3e50'
+    }
+    
+    try:
+        css = HTMLTemplates.generate_css(color_theme)
+        print(f"✅ CSS-generointi onnistui")
+        print(f"   Pituus: {len(css)} merkkiä")
+        print(f"   Sisältää muuttujat: {'--primary-color' in css and '--secondary-color' in css}")
+        print("   Esimerkki:")
+        print("   " + "\n   ".join(css.split('\n')[:5]))
+    except Exception as e:
+        print(f"❌ CSS-generointi epäonnistui: {e}")
+        return False
+    
+    # Testaa ehdokas-generointi
+    print("\n👤 TESTAA EHDOkas-GENEROINTI:")
+    candidate_data = {
+        'name': 'Liisa Esimerkki',
+        'age': 35,
+        'profession': 'Ohjelmistokehittäjä',
+        'campaign_theme': 'Digitaalinen tasa-arvo',
+        'platform_points': ['Avoin lähdekoodi', 'Tietosuoja', 'Digitaalinen opetus']
+    }
+    
+    try:
+        candidate_html = HTMLTemplates.generate_candidate_html(candidate_data)
+        print(f"✅ Ehdokas-generointi onnistui")
+        print(f"   Pituus: {len(candidate_html)} merkkiä")
+        print(f"   Sisältää nimen: {'Liisa Esimerkki' in candidate_html}")
+        print("   Esimerkki:")
+        print("   " + candidate_html.split('\n')[0][:80] + "...")
+    except Exception as e:
+        print(f"❌ Ehdokas-generointi epäonnistui: {e}")
+        return False
+    
+    # Testaa puolue-generointi
+    print("\n🏛️ TESTAA PUOLUE-GENEROINTI:")
+    party_data = {
+        'name': 'Demo Puolue',
+        'slogan': 'Demokratiaa kaikille',
+        'founded_year': '2020',
+        'chairperson': 'Matti Malli', 
+        'website': 'https://demopuolue.fi',
+        'platform': ['Avoimuus', 'Läpinäkyvyys', 'Kestävä kehitys'],
+        'candidates': [candidate_data],
+        'election_date': '2024-03-01'
+    }
+    
+    try:
+        party_html = HTMLTemplates.generate_party_html(party_data, css)
+        print(f"✅ Puolue-generointi onnistui")
+        print(f"   Pituus: {len(party_html)} merkkiä")
+        print(f"   Sisältää puolueen nimen: {'Demo Puolue' in party_html}")
+        print(f"   Sisältää CSS:ää: {'<style>' in party_html}")
+        print("   Esimerkki (otsikko):")
+        for line in party_html.split('\n')[:3]:
+            print("   " + line)
+    except Exception as e:
+        print(f"❌ Puolue-generointi epäonnistui: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+    
+    print("\n🎉 KAIKKI TESTIT LÄPÄISTY!")
+    return True
+
+if __name__ == "__main__":
+    success = test_json_template_system()
+    sys.exit(0 if success else 1)
+{
+  "publication": {
+    "publication_id": "pub_eedd82281302",
+    "party_id": "party_olympos",
+    "party_name": "Olympos-jumalat",
+    "media_url": "https://yle.fi/uutiset/olympos-jumalat-vaalit",
+    "media_domain": "yle.fi",
+    "public_key_fingerprint": "bd3c031fd3272a67",
+    "publication_data": {
+      "title": "Olympos-jumalat osallistuvat Jumaltenvaaleihin",
+      "publication_date": "2025-01-15",
+      "content_hash": "a1b2c3d4e5f67890",
+      "verification_challenge": "jumalat-2026-verify-001"
+    },
+    "publication_timestamp": "2025-11-18T04:29:44.290766",
+    "verification_status": "pending",
+    "trust_score": 10,
+    "verified_by_nodes": [
+      "node_zeus"
+    ],
+    "verification_evidence": []
+  },
+  "verification": {
+    "publication_id": "pub_eedd82281302",
+    "node_id": "node_zeus",
+    "verification_method": "manual",
+    "verification_timestamp": "2025-11-18T04:29:44.290803",
+    "status": "verified",
+    "confidence_score": 0.85,
+    "evidence": {
+      "screenshot_url": "https://archive.org/pub_eedd82281302",
+      "archive_timestamp": "2025-11-18T04:29:44.290805",
+      "verification_notes": "Manual verification completed"
+    }
+  },
+  "trust_assessment": {
+    "trust_score": 105,
+    "trust_level": "high",
+    "media_trust": 10,
+    "verification_count": 1,
+    "recommendation": "accept"
+  },
+  "test_publications": [
+    {
+      "url": "https://vaalit.fi/julkaisut/ukosen-jumalat",
+      "expected_trust": 10
+    },
+    {
+      "url": "https://blogspot.com/test-julkaisu",
+      "expected_trust": 3
+    },
+    {
+      "url": "https://hs.fi/vaalit/jumalat",
+      "expected_trust": 9
+    }
+  ]
+}# test_multinode_system.py
+#!/usr/bin/env python3
+"""
+Test the complete multinode system implementation
+"""
+
+import sys
+import os
+
+# Lisää src-hakemisto Python-polkuun
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+
+def test_complete_node_identity():
+    """Test complete NodeIdentity implementation"""
+    print("🧪 Testing complete NodeIdentity...")
+    
+    try:
+        from nodes.core.node_identity import NodeIdentity, test_node_identity
+        
+        # Run built-in tests
+        identity = test_node_identity()
+        
+        # Test additional functionality
+        identity.update_last_seen()
+        print(f"✅ Last seen updated: {identity.last_seen}")
+        
+        # Test verification (don't assert, just log)
+        verify_result = identity.verify_identity()
+        print(f"🔐 Identity verification: {verify_result}")
+        
+        return True
+    except Exception as e:
+        print(f"❌ NodeIdentity test failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+def test_network_integration():
+    """Test integration with existing network modules"""
+    print("🧪 Testing network integration...")
+    
+    try:
+        # Test that we can import both old and new systems
+        from nodes import NodeManager, NodeIdentity, NetworkManager
+        
+        # Create instances
+        legacy_manager = NodeManager("IntegrationTest")
+        new_identity = NodeIdentity("IntegrationTest", "worker")
+        network_manager = NetworkManager(new_identity)
+        
+        print("✅ Network integration successful")
+        print(f"   Legacy: {type(legacy_manager)}")
+        print(f"   New Identity: {new_identity}")
+        print(f"   New Network: {network_manager}")
+        
+        return True
+    except Exception as e:
+        print(f"❌ Network integration failed: {e}")
+        return False
+
+def test_multinode_demo():
+    """Demo multinode system functionality - FIXED VERSION"""
+    print("🧪 Running multinode demo...")
+    
+    try:
+        from nodes.core.node_identity import NodeIdentity
+        from nodes.core.network_manager import NetworkManager
+        from nodes.protocols.consensus import ConsensusManager
+        
+        # Create a small network
+        coordinator = NodeIdentity("DemoElection", "coordinator", "DemoCoordinator")
+        worker1 = NodeIdentity("DemoElection", "worker", "Worker1")
+        worker2 = NodeIdentity("DemoElection", "worker", "Worker2")
+        
+        # Create network managers
+        coord_network = NetworkManager(coordinator)
+        worker1_network = NetworkManager(worker1)
+        worker2_network = NetworkManager(worker2)
+        
+        # Connect networks and add peers
+        coord_network.connect_to_network()
+        coord_network.add_peer(worker1)
+        coord_network.add_peer(worker2)
+        
+        # Create consensus managers
+        coord_consensus = ConsensusManager(coord_network)
+        
+        # Demo output - USE THE FIXED METHOD
+        peer_count = coord_network.get_peer_count()
+        print("🎉 Multinode demo successful!")
+        print(f"   Coordinator: {coordinator}")
+        print(f"   Worker1: {worker1}") 
+        print(f"   Worker2: {worker2}")
+        print(f"   Network peers: {peer_count}")  # Fixed: use variable instead of method call
+        print(f"   Consensus proposals: {len(coord_consensus.proposals)}")
+        
+        return True
+    except Exception as e:
+        print(f"❌ Multinode demo failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+def main():
+    """Run all multinode system tests"""
+    print("🚀 COMPLETE MULTINODE SYSTEM TESTS")
+    print("=" * 50)
+    
+    tests = [
+        test_complete_node_identity,
+        test_network_integration, 
+        test_multinode_demo
+    ]
+    
+    results = []
+    for test in tests:
+        result = test()
+        results.append(result)
+        print()  # Empty line between tests
+    
+    # Summary
+    print("📊 MULTINODE SYSTEM TEST RESULTS:")
+    print("=" * 35)
+    passed = sum(results)
+    total = len(results)
+    
+    print(f"✅ Passed: {passed}/{total}")
+    print(f"❌ Failed: {total - passed}/{total}")
+    
+    if passed == total:
+        print("🎉 ALL MULTINODE TESTS PASSED! System is ready for development.")
+        return 0
+    else:
+        print("💥 SOME TESTS FAILED! Check implementation.")
+        return 1
+
+if __name__ == "__main__":
+    sys.exit(main())
+{
+  "verification_process": {
+    "party_id": "party_quorum_test",
+    "party_name": "Kvoorumi-testipuolue",
+    "public_key_fingerprint": "test123456789abcd",
+    "verification_started": "2025-11-18T04:29:44.582488",
+    "verification_timeout": "2025-11-19T04:29:44.582496",
+    "current_phase": "quorum_voting",
+    "quorum_votes": [
+      {
+        "node_id": "node_zeus",
+        "vote": "approve",
+        "weight": 15,
+        "justification": "Hyv\u00e4 mediavahvistus",
+        "timestamp": "2025-11-18T04:29:44.582582",
+        "node_public_key_fingerprint": "43d95084ecc74dc8",
+        "vote_signature": "1ca6722d1286f8845177922efeb6a505198b894cdf96bab081b47c48b8ee210b"
+      },
+      {
+        "node_id": "node_athena",
+        "vote": "approve",
+        "weight": 15,
+        "justification": "Vahva PKI-toteutus",
+        "timestamp": "2025-11-18T04:29:44.582616",
+        "node_public_key_fingerprint": "5990b33ae22c98c9",
+        "vote_signature": "4676b49465bbffcb48746e783544d0beca82ae84681271b6e9bdb0a8d5c01a7f"
+      },
+      {
+        "node_id": "node_poseidon",
+        "vote": "approve",
+        "weight": 10,
+        "justification": "Kaikki kriteerit t\u00e4ytetty",
+        "timestamp": "2025-11-18T04:29:44.582642",
+        "node_public_key_fingerprint": "eefd4f5dbe4b4aab",
+        "vote_signature": "ae5c960bab77cba048bc9e896e9ba1c23aab3fd03def315e3aab8a72d1561aca"
+      },
+      {
+        "node_id": "node_ares",
+        "vote": "reject",
+        "weight": 10,
+        "justification": "Liian v\u00e4h\u00e4n tietoja",
+        "timestamp": "2025-11-18T04:29:44.582666",
+        "node_public_key_fingerprint": "d1079b9b6b7771d6",
+        "vote_signature": "a3be1cd2a8eb1786423783f4b82ca68123148e9ce943d5a0f2b4c848a0ba618d"
+      },
+      {
+        "node_id": "node_aphrodite",
+        "vote": "abstain",
+        "weight": 10,
+        "justification": "Tarvitsen lis\u00e4tietoja",
+        "timestamp": "2025-11-18T04:29:44.582688",
+        "node_public_key_fingerprint": "436415520468e4cd",
+        "vote_signature": "0e69ef2e4e140eaf6b2b109c1bf08af4ad9e6bab215eeb4779e2689e741e8e40"
+      }
+    ],
+    "media_verifications": [
+      {
+        "publication_id": "pub_79a74d0937c8",
+        "media_domain": "vaalit.fi",
+        "trust_score": 10,
+        "verified_by_node": "node_zeus",
+        "verification_timestamp": "2025-11-18T04:29:44.582551",
+        "evidence_url": "https://vaalit.fi/julkaisut/kvoorumi-testi"
+      },
+      {
+        "publication_id": "pub_79a74d0937c8",
+        "media_domain": "vaalit.fi",
+        "trust_score": 10,
+        "verified_by_node": "node_athena",
+        "verification_timestamp": "2025-11-18T04:29:44.582556",
+        "evidence_url": "https://vaalit.fi/julkaisut/kvoorumi-testi"
+      }
+    ],
+    "final_decision": "approved",
+    "decision_timestamp": "2025-11-18T04:29:44.582699"
+  },
+  "status": {
+    "party_id": "party_quorum_test",
+    "current_phase": "quorum_voting",
+    "total_votes": 5,
+    "approve_votes": 3,
+    "reject_votes": 1,
+    "abstain_votes": 1,
+    "media_verifications": 2,
+    "time_remaining_hours": 23.999999939722223,
+    "final_decision": "approved",
+    "quorum_met": true
+  },
+  "test_votes": [
+    {
+      "node": "node_zeus",
+      "vote": "approve",
+      "justification": "Hyv\u00e4 mediavahvistus"
+    },
+    {
+      "node": "node_athena",
+      "vote": "approve",
+      "justification": "Vahva PKI-toteutus"
+    },
+    {
+      "node": "node_poseidon",
+      "vote": "approve",
+      "justification": "Kaikki kriteerit t\u00e4ytetty"
+    },
+    {
+      "node": "node_ares",
+      "vote": "reject",
+      "justification": "Liian v\u00e4h\u00e4n tietoja"
+    },
+    {
+      "node": "node_aphrodite",
+      "vote": "abstain",
+      "justification": "Tarvitsen lis\u00e4tietoja"
+    }
+  ]
+}{
+  "secure_answer": {
+    "answer_document": {
+      "election_id": "Jumaltenvaalit2026",
+      "candidate_id": "cand_secure_001",
+      "question_id": "q_test_001",
+      "answer_value": 5,
+      "confidence": 5,
+      "explanation": {
+        "fi": "T\u00e4ysin samaa mielt\u00e4 - t\u00e4m\u00e4 on t\u00e4rke\u00e4 kysymys",
+        "en": "Completely agree - this is an important question",
+        "sv": "Helt \u00f6verens - detta \u00e4r en viktig fr\u00e5ga"
+      },
+      "submission_timestamp": "2025-11-18T04:29:44.730261",
+      "document_version": "1.0",
+      "previous_answer_hash": "initial"
+    },
+    "answer_signature": "qIymPmd/k6jQXnVsUH4617u5cUGkuUGwFiBqRq54t/8Qd45Gf4qQYNjMs8k4LqaVd6vlzAtT2szT/P5pTvURHsMu0I4o6vW5P41+26vsBB3lR4s0mUDCxIXkXH0hWlGEfqotcRPTSXI0riPE++hAnV0fSLz62l6QMTCpEr0O9bpQeDlNJnn4mrIRb8m/2hgyzJT+M6ZoqvA4FXIojusz6TW5SUj/PUM8MCsfIeLD3YlbEQF7zKBKtppcb4NcjWaX8diag5SGXjdIBKvyLzbi8zHHX7ooyCy+Kbtg8jwypdd+XtuJfD3SKh1Gs7zzsA2V79ZtxfPk6TYbHuOidWRsJg==",
+    "delegation_chain": {
+      "delegation_document": {
+        "election_id": "Jumaltenvaalit2026",
+        "party_id": "party_secure_test",
+        "candidate_id": "cand_secure_001",
+        "delegated_powers": [
+          "submit_answers",
+          "modify_answers",
+          "view_own_data",
+          "update_profile"
+        ],
+        "valid_from": "2025-11-18T04:29:44.685436",
+        "valid_until": "2026-02-16T04:29:44.685448",
+        "candidate_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqYjFsqp+kN61sw6n2S/M\nEhlTiSno6RztYLdSseRxjSYfmrg6DeCB8RwaMgBH/mWFoeB/zhh86oM3qy1gwqE6\n4xseoLQEWaWpr3SrsDRSRHGiA0Kk8c9pvf+GuaIxeQ3WLf+NVDiL6E+XEIgmGqf0\nfENexNqe8KC1PWevazF5X480+dimd90Iap/bSJbA5XGdE2Moh1CNSZ/cajXQoh8n\nNI4F/Zsm3xaYcDAPiQhpYQh1BkTtw3//QiURhdluxK3gMqKTkqXarX8STeMS60oz\np2AUQrh49hDiLZjL+x9OSBKvsWtgUPE5Di2wGawjTMbWYCqYz7R9cfxNR3qWmSKV\ncQIDAQAB\n-----END PUBLIC KEY-----\n",
+        "candidate_key_fingerprint": "a2948a7824e59a82",
+        "document_version": "1.0"
+      },
+      "delegation_signature": "EERd+Pq6XEuN/qay9eBXaLZbjoFUq19uEMVx4v67BPqaaqacS8noH0IkBueycvvdhW0QDbMbbUEiJv5fOX7hRgmUea/EcUUm9J8+DZnzbPPEgduGremY8Tc0/GplCiSAZr/HBd5EJpEds0YNM1s9Tzd+A4noQlLoNxF4f3bnry5SLP9ps2PreCgY/+xL4cPf1uVj60tf6GAtW/+Qv2CFY1djhP6Y2yFoHBc7Nezltx6JO/95B2KNO1eXur6+umAjie8nQnS6H9ZEXdBbVEMDH/R1nWasUoyOkCsRFU6MGFiVJk6J336q0LX/MBuIJbbLmYv3K6YG47PIIGyywMpMtg==",
+      "party_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyvoHbDVp3ldmayHGJiK1\nSM32UtkvXvQ8rpyI+tI9PtOZv0sv5zQ5OWbqM+dFEhhXeDRpJULf+jdcoA+OWukK\nRNyjFhqBYKuWjiULV0CKKqSgS5qJnRCqbP4GUpINP0lh1bBbRZorBEhukU2i+yuk\nz7Bax2WuttOO/NxaQ1al/96sE5Q+eJkFTfkYv8n7kcL/RR4fgEYGv2+xRzRcpwy3\nYQQmo9nedEreszvpF+EzHRxBbqmRDYn22KN+w2lGz86uIFBBFvlJwr/HmDJkhRsG\n/OIxhd8AQMYQCeO/khjOz+udodsJ3usRPNkJgchzEDgpr4C9uA/JAZCukZaK3XQ+\nOQIDAQAB\n-----END PUBLIC KEY-----\n"
+    },
+    "metadata": {
+      "submission_id": "ans_65386d05a1d313a1",
+      "integrity_verified": true,
+      "verification_timestamp": "2025-11-18T04:29:44.776823",
+      "hash_chain": "397e87ead6e64db9386c5f83f235f719664514154a7262ef033ddf0efd80822d"
+    }
+  },
+  "test_info": {
+    "candidate_id": "cand_secure_001",
+    "question_id": "q_test_001",
+    "generated_at": "2025-11-18T04:29:44.730261"
+  }
+}#!/usr/bin/env python3
+"""
+Kevyt testi template-editorille.
+"""
+import tempfile
+from pathlib import Path
+
+def create_test_files():
+    """Luo yksinkertaiset testitiedostot."""
+    # Yksinkertainen testi HTML
+    simple_html = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Testi Puolue</title>
+    <style>
+        body { font-family: Arial; color: #333; }
+        .header { background: #2c3e50; color: white; padding: 20px; }
+        .content { padding: 20px; }
+        .footer { background: #34495e; color: white; padding: 10px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Testi Puolue</h1>
+        <p class="slogan">Yksinkertainen testi</p>
+    </div>
+    
+    <div class="content">
+        <h2>Poliittinen ohjelma</h2>
+        <ul>
+            <li>Kohta 1</li>
+            <li>Kohta 2</li>
+        </ul>
+    </div>
+    
+    <div class="footer">
+        <p>© 2024 Testi Puolue</p>
+    </div>
+</body>
+</html>
+"""
+    
+    return simple_html
+
+def test_template_editor_light():
+    """Kevyt testi template-editorin perustoiminnoille."""
+    print("🧪 KEVIY TESTI TEMPLATE-EDITORILLE")
+    print("=" * 40)
+    
+    # Luo väliaikainen HTML-tiedosto
+    with tempfile.TemporaryDirectory() as temp_dir:
+        html_file = Path(temp_dir) / "simple_test.html"
+        
+        with open(html_file, 'w', encoding='utf-8') as f:
+            f.write(create_test_files())
+        
+        print(f"📄 Luotiin testi HTML: {html_file}")
+        
+        try:
+            # Testaa että editori latautuu
+            from src.tools.template_editor.editor import TemplateEditor
+            print("✅ TemplateEditor import onnistui")
+            
+            # Luo editori
+            editor = TemplateEditor()
+            print("✅ TemplateEditor instanssi luotu")
+            
+            # Testaa template-generointi
+            print("\n🔄 Generoidaan template...")
+            result = editor.create_template_from_website(
+                html_file=str(html_file),
+                output_dir=temp_dir
+            )
+            
+            # Tarkista tulokset
+            templates = result.get('templates', {})
+            print(f"✅ Template-generointi onnistui")
+            print(f"   Generoitu templatet: {len(templates)}")
+            
+            for name, data in templates.items():
+                if data:
+                    template_name = data.get('template_name', 'Nimetön')
+                    print(f"   - {name}: {template_name}")
+            
+            # Tarkista että party_profile on generoitu
+            if 'party_profile' in templates:
+                party_template = templates['party_profile']
+                print(f"✅ Party profile template löytyy")
+                print(f"   Versio: {party_template.get('version')}")
+                print(f"   Kuvaus: {party_template.get('description')}")
+                
+                # Tarkista rakenne
+                structure = party_template.get('structure', {})
+                print(f"   Tyyppi: {structure.get('type')}")
+                print(f"   Osat: {structure.get('sections', [])}")
+            
+            # Testaa CSS-teema jos saatavilla
+            if 'css_theme' in templates:
+                css_template = templates['css_theme']
+                print(f"✅ CSS theme template löytyy")
+                default_values = css_template.get('default_values', {})
+                print(f"   Väriteema: {len(default_values)} väriä")
+            
+            # Testaa analyysi
+            analysis = result.get('analysis', {})
+            html_analysis = analysis.get('html', {})
+            if html_analysis:
+                structure = html_analysis.get('structure', {})
+                print(f"📊 HTML-analyysi:")
+                print(f"   - Otsikoita: {len(structure.get('headings', []))}")
+                print(f"   - Linkkejä: {len(structure.get('links', []))}")
+            
+            print("\n🎉 KEVIY TESTI ONNISTUI!")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Testi epäonnistui: {e}")
+            import traceback
+            traceback.print_exc()
+            return False
+
+def test_sanitizer():
+    """Testaa HTML-suodatinta."""
+    print("\n🛡️ TESTAA HTML-SUODATIN")
+    print("=" * 30)
+    
+    try:
+        from src.tools.template_editor.html_analyzer import HTMLSanitizer
+        
+        # Testaa vaarallinen HTML
+        dangerous_html = """
+        <html>
+        <script>alert('XSS')</script>
+        <div onclick="alert('click')">Testi</div>
+        <a href="javascript:alert('XSS')">Vaarallinen linkki</a>
+        <style>body { background: url(javascript:alert('XSS')) }</style>
+        </html>
+        """
+        
+        sanitizer = HTMLSanitizer()
+        sanitizer.feed(dangerous_html)
+        safe_html = sanitizer.get_safe_html()
+        
+        print("✅ HTML-suodatin toimii")
+        print(f"   Alkuperäinen: {len(dangerous_html)} merkkiä")
+        print(f"   Suodatettu: {len(safe_html)} merkkiä")
+        
+        # Tarkista että vaarallinen koodi on poistettu
+        checks = [
+            ('<script>' not in safe_html, 'Script-tagit poistettu'),
+            ('onclick=' not in safe_html, 'Onclick-attribuutit poistettu'),
+            ('javascript:' not in safe_html, 'JavaScript-URLit poistettu')
+        ]
+        
+        for check_passed, message in checks:
+            if check_passed:
+                print(f"   ✅ {message}")
+            else:
+                print(f"   ❌ {message}")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ Suodatintesti epäonnistui: {e}")
+        return False
+
+def test_css_analyzer():
+    """Testaa CSS-analyysiä."""
+    print("\n🎨 TESTAA CSS-ANALYYSI")
+    print("=" * 30)
+    
+    try:
+        from src.tools.template_editor.css_analyzer import CSSAnalyzer
+        
+        test_css = """
+        body { 
+            color: #333333;
+            background: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: rgb(255, 255, 255);
+        }
+        .accent {
+            color: #e74c3c;
+        }
+        """
+        
+        analyzer = CSSAnalyzer()
+        analysis = analyzer.analyze_css_content(test_css)
+        
+        print("✅ CSS-analyysi toimii")
+        
+        colors = analysis.get('colors', {})
+        print(f"   Löydettyjä värejä:")
+        for color_type, color_list in colors.items():
+            if color_list:
+                print(f"     - {color_type}: {len(color_list)}")
+        
+        # Testaa väriteeman ehdotus
+        theme = analyzer.suggest_color_theme(test_css)
+        print(f"   Ehdotettu väriteema:")
+        for color_name, color_value in theme.items():
+            print(f"     - {color_name}: {color_value}")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ CSS-analyysitesti epäonnistui: {e}")
+        return False
+
+if __name__ == "__main__":
+    print("🚀 AJETAAN KEVIYT TESTIT TEMPLATE-EDITORILLE")
+    print()
+    
+    tests = [
+        test_template_editor_light,
+        test_sanitizer, 
+        test_css_analyzer
+    ]
+    
+    results = []
+    for test in tests:
+        try:
+            result = test()
+            results.append(result)
+        except Exception as e:
+            print(f"❌ Testi {test.__name__} kaatui: {e}")
+            results.append(False)
+    
+    print("\n" + "=" * 50)
+    print("📊 TESTITULOKSET:")
+    
+    passed = sum(results)
+    total = len(results)
+    
+    for i, (test, result) in enumerate(zip(tests, results)):
+        status = "✅ PASS" if result else "❌ FAIL"
+        print(f"  {i+1}. {test.__name__}: {status}")
+    
+    print(f"\n🎯 Yhteenveto: {passed}/{total} testiä läpäisty")
+    
+    if passed == total:
+        print("🎉 KAIKKI TESTIT ONNISTUIVAT!")
+    else:
+        print("⚠️  Jotkin testit epäonnistuivat")
+    
+    exit(0 if passed == total else 1)
+#!/usr/bin/env python3
+"""
+Testaa template-editorin toimintaa.
+"""
+import os
+import tempfile
+from pathlib import Path
+
+# Luo testi HTML ja CSS tiedostot
+test_html = """
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testi Puolue - Kotisivu</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1 class="party-title">Testi Puolue</h1>
+            <p class="slogan">Parempaa politiikkaa kaikille</p>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <section class="platform">
+            <h2>Poliittinen ohjelma</h2>
+            <ul class="platform-list">
+                <li>Koulutuksen kehittäminen</li>
+                <li>Terveydenhuollon parantaminen</li>
+                <li>Ympäristönsuojelu</li>
+            </ul>
+        </section>
+        
+        <section class="candidates">
+            <h2>Ehdokkaat</h2>
+            <div class="candidate-grid">
+                <div class="candidate-card">
+                    <h3>Matti Meikäläinen</h3>
+                    <p class="profession">Opettaja</p>
+                    <p class="theme">Koulutus kaikille</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2024 Testi Puolue. Kaikki oikeudet pidätetään.</p>
+        </div>
+    </footer>
+</body>
+</html>
+"""
+
+test_css = """
+/* Perustyylit */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --background-color: #ecf0f1;
+    --text-color: #2c3e50;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header */
+.site-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+.party-title {
+    font-size: 2.5rem;
+    margin: 0;
+    color: white;
+}
+
+.slogan {
+    font-size: 1.2rem;
+    font-style: italic;
+    margin: 0.5rem 0 0 0;
+    color: #bdc3c7;
+}
+
+/* Main content */
+.main-content {
+    padding: 2rem 0;
+}
+
+.platform h2,
+.candidates h2 {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--secondary-color);
+    padding-bottom: 0.5rem;
+}
+
+.platform-list {
+    list-style: none;
+    padding: 0;
+}
+
+.platform-list li {
+    background: white;
+    margin: 0.5rem 0;
+    padding: 1rem;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Candidate cards */
+.candidate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.candidate-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-left: 4px solid var(--accent-color);
+}
+
+.candidate-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--primary-color);
+}
+
+.profession {
+    font-weight: bold;
+    color: var(--secondary-color);
+    margin: 0;
+}
+
+.theme {
+    font-style: italic;
+    margin: 0.5rem 0 0 0;
+}
+
+/* Footer */
+.site-footer {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+/* Responsiivisuus */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    .party-title {
+        font-size: 2rem;
+    }
+    
+    .candidate-grid {
+        grid-template-columns: 1fr;
+    }
+}
+"""
+
+def test_template_editor():
+    """Testaa template-editorin perustoimintoja."""
+    print("🧪 TESTAA TEMPLATE-EDITORIA")
+    print("=" * 50)
+    
+    # Luo väliaikaiset tiedostot
+    with tempfile.TemporaryDirectory() as temp_dir:
+        html_file = Path(temp_dir) / "test_site.html"
+        css_file = Path(temp_dir) / "styles.css"
+        
+        # Kirjoita testitiedostot
+        with open(html_file, 'w', encoding='utf-8') as f:
+            f.write(test_html)
+        
+        with open(css_file, 'w', encoding='utf-8') as f:
+            f.write(test_css)
+        
+        print(f"📁 Luotiin testitiedostot: {temp_dir}")
+        
+        # Testaa template-editoria
+        try:
+            from src.tools.template_editor.editor import TemplateEditor
+            
+            editor = TemplateEditor()
+            
+            print("\n🎨 LUODAAN TEMPLATE TESTIVERKKOSIVUSTA...")
+            result = editor.create_template_from_website(
+                html_file=str(html_file),
+                css_file=str(css_file),
+                output_dir=temp_dir
+            )
+            
+            # Tarkista tulokset
+            templates = result.get('templates', {})
+            analysis = result.get('analysis', {})
+            
+            print(f"\n📊 TULOKSET:")
+            print(f"✅ Generoitu templatet: {len(templates)}")
+            
+            for template_name, template_data in templates.items():
+                if template_data:
+                    print(f"  - {template_name}: {template_data.get('template_name')}")
+            
+            # Tarkista HTML-analyysi
+            html_analysis = analysis.get('html', {})
+            if html_analysis:
+                structure = html_analysis.get('structure', {})
+                print(f"📄 HTML-analyysi:")
+                print(f"  - Otsikoita: {len(structure.get('headings', []))}")
+                print(f"  - Osia: {len(html_analysis.get('sections', {}))}")
+            
+            # Tarkista CSS-analyysi
+            css_analysis = analysis.get('css', {})
+            if css_analysis:
+                colors = css_analysis.get('colors', {})
+                print(f"🎨 CSS-analyysi:")
+                print(f"  - Värejä: {sum(len(v) for v in colors.values())}")
+            
+            # Testaa esikatselu
+            if 'party_profile' in templates:
+                print(f"\n👁️  TESTAA ESIKATSELU:")
+                preview = editor.preview_template(templates['party_profile'])
+                print(f"Esikatselu pituus: {len(preview)} merkkiä")
+                print("Ensimmäiset 200 merkkiä:")
+                print(preview[:200] + "...")
+            
+            print("\n🎉 TEMPLATE-EDITORI TOIMII!")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Template-editor testi epäonnistui: {e}")
+            import traceback
+            traceback.print_exc()
+            return False
+
+if __name__ == "__main__":
+    success = test_template_editor()
+    exit(0 if success else 1)
+# test_wrong_key.py
+#!/usr/bin/env python3
+"""
+Testaa että väärä avain hylätään
+"""
+import sys
+import os
+import json
+
+sys.path.insert(0, os.path.abspath('.'))
+
+from src.managers.candidate_key_manager import CandidateKeyManager
+from src.managers.crypto_manager import CryptoManager
+
+def test_wrong_key_rejection():
+    """Testaa että väärä puolueen avain hylätään"""
+    print("🧪 Testataan väärän avaimen hylkäämistä...")
+    
+    crypto = CryptoManager()
+    
+    # 1. Luo oikea puolueavain
+    correct_party_keys = crypto.generate_key_pair()
+    
+    # 2. Luo väärä puolueavain
+    wrong_party_keys = crypto.generate_key_pair()
+    
+    candidate_manager = CandidateKeyManager("Jumaltenvaalit2026")
+    
+    # 3. Luo valtuutus oikealla avaimella
+    credentials = candidate_manager.issue_candidate_credentials(
+        party_id="party_test",
+        candidate_id="cand_test",
+        party_private_key=correct_party_keys["private_key"],
+        validity_days=90
+    )
+    
+    # 4. Yritä varmistaa VÄÄRÄLLÄ avaimella
+    is_valid_wrong = candidate_manager.verify_candidate_authorization(
+        candidate_id="cand_test",
+        delegation_document=credentials["delegation_document"],
+        delegation_signature=credentials["delegation_signature"],
+        party_public_key=wrong_party_keys["public_key"]  # VÄÄRÄ AVAIN!
+    )
+    
+    # 5. Varmista OIKEALLA avaimella
+    is_valid_correct = candidate_manager.verify_candidate_authorization(
+        candidate_id="cand_test",
+        delegation_document=credentials["delegation_document"],
+        delegation_signature=credentials["delegation_signature"],
+        party_public_key=correct_party_keys["public_key"]  # OIKEA AVAIN
+    )
+    
+    print(f"✅ Väärällä avaimella: {'HYLÄTTY' if not is_valid_wrong else 'HYVÄKSYTTY'}")
+    print(f"✅ Oikealla avaimella: {'HYVÄKSYTTY' if is_valid_correct else 'HYLÄTTY'}")
+    
+    success = (not is_valid_wrong) and is_valid_correct
+    print(f"🎯 Testin tulos: {'✅ ONNISTUI' if success else '❌ EPÄONNISTUI'}")
+    
+    return success
+
+if __name__ == "__main__":
+    success = test_wrong_key_rejection()
+    sys.exit(0 if success else 1)
